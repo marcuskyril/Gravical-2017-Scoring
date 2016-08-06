@@ -1,0 +1,49 @@
+@import "/app.scss";
+
+.top-bar-left {
+    margin-top: 1.5rem;
+}
+
+.top-bar-right {
+    margin-top: 1.5rem;
+}
+
+.top-bar {
+  padding: 0rem 2rem 0rem 2rem;
+  background: $night-ocean;
+  height: 4rem;
+  box-shadow: 0.5px 0.5px 5px $light-grey;
+}
+
+.top-bar ul {
+  background: $night-ocean;
+  /* temporary fix */
+  position: absolute;
+  top: 15px;
+  right: 15px;
+}
+
+.top-bar.lower {
+  padding-top: 0px;
+}
+
+.top-bar-title {
+  font-size: 1.7rem;
+  text-transform: uppercase;
+  font-weight: bold;
+  font-family: 'Pathway Gothic One', sans-serif;
+  position: absolute;
+  top: 15px;
+  left: 15px;
+}
+
+.menu>li>a {
+  color: #fafafa;
+  font-weight: bold;
+  font-size: 1rem;
+  text-transform: uppercase;
+}
+
+.is-dropdown-submenu {
+    border: 1px solid #373737;
+}
