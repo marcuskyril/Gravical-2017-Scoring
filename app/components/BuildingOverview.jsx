@@ -14,24 +14,22 @@ class Building extends React.Component {
     render() {
         return (
             <div>
-                <div className="callout-dark-header">
-                    <div className="header">{this.props.buildingName}</div>
-                </div>
-                <div className="callout-dark">
+                <div className="header">{this.props.buildingName}</div>
+
                     <PieChart colorScale={d3.scale.ordinal().range(myColors)} data={{
                         label: 'Chart',
                         values: [
                             {
-                                x: 'OK',
+                                x: "OK",
                                 y: this.props.ok
                             }, {
-                                x: 'Warning',
+                                x: "Warning",
                                 y: this.props.warning
                             }, {
-                                x: 'Danger',
+                                x: "Danger",
                                 y: this.props.danger
                             }, {
-                                x: 'Down',
+                                x: "Down",
                                 y: this.props.down
                             }
                         ]
@@ -41,7 +39,6 @@ class Building extends React.Component {
                         left: 0,
                         right: 100
                     }}/>
-                </div>
             </div>
         );
     }
@@ -52,14 +49,21 @@ class SearchBar extends React.Component {
         super(props);
     }
 
-    handleChange(e) {
-        e.preventDefault();
-        this.props.onUserInput(this.refs.filterTextInput.value,);
+    handleChange() {
+
+        console.log("THIS", this);
+        this.props.onUserInput(
+            this.refs.filterTextInput.value
+        );
     }
     render() {
+
         return (
             <form>
-                <input type="text" placeholder="Search..." value={this.props.filterText} ref="filterTextInput" onChange={this.handleChange}/>
+                <input type="text" placeholder="Search..."
+                  value={this.props.filterText}
+                  ref="filterTextInput"
+                  onChange={this.handleChange.bind(this)}/>
             </form>
         );
     }
@@ -72,10 +76,10 @@ class BuildingList extends React.Component {
 
     render() {
 
-        console.log("BuildingList now has: ", this.props.data);
+        //console.log("BuildingList now has: ", this.props.data);
 
         var rows = [];
-        console.log("data.data!", this.props.data.data);
+        //console.log("data.data!", this.props.data.data);
 
         var buildings = this.props.data.data;
 
@@ -85,19 +89,21 @@ class BuildingList extends React.Component {
 
                 console.log("buildingName" + buildingName);
                 console.log("filter text:", this.props.filterText);
+                console.log(buildingName +" === " +this.props.filterText);
+                console.log("Is this so?", buildingName.indexOf(this.props.filterText) === -1);
 
                 if (buildingName.indexOf(this.props.filterText) === -1) {
-                    return;
+                    return <div></div>;
+                } else {
+                  var danger = buildings[property]["danger"]["count"];
+                  var warning = buildings[property]["warning"]["count"];
+                  var ok = buildings[property]["ok"]["count"];
+                  var down = buildings[property]["down"]["count"];
+
+                  console.log("data: " + buildingName + " -> " + ok + warning + danger + down);
+
+                  rows.push(<Building buildingName={buildingName} ok={ok} warning={warning} danger={danger} down={down}/>);
                 }
-
-                var danger = buildings[property]["danger"]["count"];
-                var warning = buildings[property]["warning"]["count"];
-                var ok = buildings[property]["ok"]["count"];
-                var down = buildings[property]["down"]["count"];
-
-                console.log("data: " + buildingName + " -> " + ok + warning + danger + down);
-
-                rows.push(<Building buildingName={buildingName} ok={ok} warning={warning} danger={danger} down={down}/>);
             }
         }
 
@@ -123,13 +129,16 @@ class BuildingOverview extends React.Component {
     }
 
     render() {
-
-        console.log("BuildingOverview says hi", this.props.data);
-
+        // console.log("BuildingOverview says hi", this.props.data);
         return (
             <div>
-                <SearchBar filterText={this.state.filterText} onUserInput={this.handleUserInput}/>
-                <BuildingList data={this.props.data} filterText={this.state.filterText}/>
+                <div className="callout-dark-header">
+                  <div className="header">at a glance</div>
+                </div>
+                <div className="callout-dark">
+                  <SearchBar filterText={this.state.filterText} onUserInput={this.handleUserInput.bind(this)}/>
+                  <BuildingList data={this.props.data} filterText={this.state.filterText}/>
+                </div>
             </div>
         );
     }

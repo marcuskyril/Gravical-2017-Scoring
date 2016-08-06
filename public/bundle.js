@@ -41998,9 +41998,13 @@
 	  },
 	  render: function render() {
 
-	    // var self = this;
+	    console.log("Dashboard's overall data is: ", this.props.overall);
 
-	    console.log("Dashboard's data is: ", this.props.overall);
+	    console.log("Dashboard's BFG data is: ", this.props.bfg);
+
+	    // var oveall = this.props.overall.data;
+
+	    // console.log("unknown data: ", unknown);
 
 	    var _state = this.state;
 	    var isLoading = _state.isLoading;
@@ -42051,20 +42055,6 @@
 	          { className: 'columns medium-6' },
 	          React.createElement(
 	            'div',
-	            { className: 'callout callout-dark-header' },
-	            React.createElement(
-	              'h4',
-	              { className: 'header' },
-	              'At a Glance'
-	            )
-	          ),
-	          React.createElement(
-	            'div',
-	            { className: 'callout callout-dark' },
-	            renderOverview()
-	          ),
-	          React.createElement(
-	            'div',
 	            null,
 	            React.createElement(
 	              'div',
@@ -42085,7 +42075,7 @@
 	            React.createElement(
 	              'div',
 	              { className: 'callout callout-dark' },
-	              React.createElement(GeneralMetrics, null)
+	              React.createElement(GeneralMetrics, { data: this.props.bfg })
 	            )
 	          ),
 	          React.createElement(
@@ -42145,7 +42135,7 @@
 	          ),
 	          React.createElement(
 	            'div',
-	            { className: 'callout callout-dark' },
+	            { className: 'callout callout-dark', id: 'bfg' },
 	            React.createElement(Tableaux, { data: this.props.bfg })
 	          )
 	        )
@@ -51232,7 +51222,7 @@
 /* 514 */
 /***/ function(module, exports, __webpack_require__) {
 
-	/* WEBPACK VAR INJECTION */(function($) {'use strict';
+	'use strict';
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
@@ -51287,23 +51277,29 @@
 	  "displayName": "Mac Address",
 	  "customComponent": LinkComponent
 	}, {
-	  "columnName": "building_name",
+	  "columnName": "geo-region",
 	  "order": 2,
 	  "locked": false,
 	  "visible": true,
-	  "displayName": "Building"
+	  "displayName": "Region"
 	}, {
-	  "columnName": "building_level",
+	  "columnName": "building",
 	  "order": 3,
 	  "locked": true,
 	  "visible": true,
-	  "displayName": "Level"
+	  "displayName": "Building"
 	}, {
-	  "columnName": "area_id",
+	  "columnName": "sensor-level-id",
 	  "order": 4,
 	  "locked": true,
 	  "visible": true,
-	  "displayName": "Area ID"
+	  "displayName": "ID"
+	}, {
+	  "columnName": "sensor_status",
+	  "order": 4,
+	  "locked": true,
+	  "visible": true,
+	  "displayName": "Health"
 	}];
 
 	var NoDataComponent = function (_React$Component2) {
@@ -51350,28 +51346,27 @@
 	  }
 
 	  _createClass(GeneralMetrics, [{
-	    key: 'componentDidMount',
-	    value: function componentDidMount() {
-	      $(document).foundation();
-
-	      var baseUrl = 'http://52.74.119.147/PisaSchitt/websocket-functions/0-sample-generators/regionmall-sample.php?number=';
-	      var numRows = 30;
-	      axios.get(baseUrl + numRows).then(function (res) {
-
-	        var that = this;
-
-	        dataList = res.data;
-
-	        that.setState({
-	          dataList: dataList
-	        });
-	      }).catch(function (error) {
-	        console.log("Problem siol", error);
-	      }.bind(this));
-	    }
-	  }, {
 	    key: 'render',
 	    value: function render() {
+
+	      var allSensorData = this.props.data;
+	      var dataList = [];
+	      for (var sensor in allSensorData) {
+	        if (allSensorData.hasOwnProperty(sensor)) {
+	          var mac = sensor;
+
+	          var row = {
+	            "mac_address": mac,
+	            "geo-region": allSensorData[sensor]["geo-region"],
+	            "building": allSensorData[sensor]["building"],
+	            "sensor-level-id": allSensorData[sensor]["sensor-location-level"] + allSensorData[sensor]["sensor-location-id"],
+	            "sensor_status": allSensorData[sensor]["sensor_status"]
+	          };
+
+	          dataList.push(row);
+	        }
+	      }
+
 	      return React.createElement(
 	        'div',
 	        null,
@@ -51389,7 +51384,6 @@
 	}(React.Component);
 
 	module.exports = GeneralMetrics;
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(9)))
 
 /***/ },
 /* 515 */
@@ -51564,7 +51558,7 @@
 /* 517 */
 /***/ function(module, exports, __webpack_require__) {
 
-	'use strict';
+	/* WEBPACK VAR INJECTION */(function($) {'use strict';
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
@@ -51579,12 +51573,40 @@
 	var axios = __webpack_require__(128);
 	var FontAwesome = __webpack_require__(150);
 
+	var dataList = [];
+
+	var LinkComponent2 = function (_React$Component) {
+	  _inherits(LinkComponent2, _React$Component);
+
+	  function LinkComponent2(props) {
+	    _classCallCheck(this, LinkComponent2);
+
+	    return _possibleConstructorReturn(this, Object.getPrototypeOf(LinkComponent2).call(this, props));
+	  }
+
+	  _createClass(LinkComponent2, [{
+	    key: 'render',
+	    value: function render() {
+	      return React.createElement(
+	        'a',
+	        { href: 'google.com', 'data-toggle': 'offCanvas' },
+	        this.props.data
+	      );
+	    }
+	  }]);
+
+	  return LinkComponent2;
+	}(React.Component);
+
+	;
+
 	var tableMetaData = [{
 	  "columnName": "mac_address",
 	  "order": 1,
-	  "locked": false,
+	  "locked": true,
 	  "visible": true,
-	  "displayName": "Mac Address"
+	  "displayName": "Mac Address",
+	  "customCommponent": LinkComponent2
 	}, {
 	  "columnName": "latest_timestamp",
 	  "order": 2,
@@ -51592,170 +51614,171 @@
 	  "visible": true,
 	  "displayName": "Latest Timestamp"
 	}, {
-	  "columnName": "location",
+	  "columnName": "building",
 	  "order": 3,
 	  "locked": false,
 	  "visible": true,
-	  "displayName": "Location"
+	  "displayName": "Building"
+	}, {
+	  "columnName": "sensor-level-id",
+	  "order": 4,
+	  "locked": false,
+	  "visible": true,
+	  "displayName": "Location ID"
 	}, {
 	  "columnName": "sensor_type",
-	  "order": 4,
+	  "order": 5,
 	  "locked": false,
 	  "visible": true,
 	  "displayName": "Sensor Type"
 	}, {
 	  "columnName": "current_status",
-	  "order": 5,
+	  "order": 6,
 	  "locked": false,
 	  "visible": true,
 	  "displayName": "Current Status"
 	}, {
 	  "columnName": "sensor_status",
-	  "order": 6,
+	  "order": 7,
 	  "locked": false,
 	  "visible": true,
 	  "sortable": true,
 	  "displayName": "Sensor Status"
 	}, {
 	  "columnName": "flapping",
-	  "order": 7,
+	  "order": 8,
 	  "locked": false,
 	  "visible": true,
 	  "sortable": true,
 	  "displayName": "Flapping"
 	}, {
 	  "columnName": "network_router",
-	  "order": 8,
+	  "order": 9,
 	  "locked": false,
 	  "visible": true,
 	  "sortable": true,
 	  "displayName": "Network Router"
 	}, {
 	  "columnName": "temperature",
-	  "order": 9,
+	  "order": 10,
 	  "locked": false,
 	  "visible": true,
 	  "sortable": true,
 	  "displayName": "Temperature"
 	}, {
 	  "columnName": "CPU_usage",
-	  "order": 10,
+	  "order": 11,
 	  "locked": false,
 	  "visible": true,
 	  "sortable": true,
 	  "displayName": "CPU Usage"
 	}, {
 	  "columnName": "RAM_total",
-	  "order": 11,
+	  "order": 12,
 	  "locked": false,
 	  "visible": true,
 	  "sortable": true,
 	  "displayName": "Total RAM"
 	}, {
 	  "columnName": "RAM_free",
-	  "order": 12,
+	  "order": 13,
 	  "locked": false,
 	  "visible": true,
 	  "sortable": true,
 	  "displayName": "RAM Free"
 	}, {
 	  "columnName": "RAM_used",
-	  "order": 13,
+	  "order": 14,
 	  "locked": false,
 	  "visible": true,
 	  "sortable": true,
 	  "displayName": "RAM used"
 	}, {
 	  "columnName": "RAM_available",
-	  "order": 14,
+	  "order": 15,
 	  "locked": false,
 	  "visible": true,
 	  "sortable": true,
 	  "displayName": "RAM Available"
 	}, {
 	  "columnName": "disk_space_total",
-	  "order": 15,
+	  "order": 16,
 	  "locked": false,
 	  "visible": true,
 	  "sortable": true,
 	  "displayName": "Total Disk Space"
 	}, {
 	  "columnName": "disk_space_free",
-	  "order": 16,
+	  "order": 17,
 	  "locked": false,
 	  "visible": true,
 	  "sortable": true,
 	  "displayName": "Disk Space Available"
 	}, {
 	  "columnName": "disk_space_used",
-	  "order": 17,
+	  "order": 18,
 	  "locked": false,
 	  "visible": true,
 	  "sortable": true,
 	  "displayName": "Disk Space Used"
 	}];
 
-	var dataList = [];
+	var columnDisplayName = {
+	  "Mac Address": "mac_address",
+	  "Latest Timestamp": "latest_timestamp",
+	  "geo-region": "geo-region",
+	  "building": "building",
+	  "Location ID": "sensor-level-id",
+	  "Sensor Type": "sensor_type",
+	  "Current Status": "current_status",
+	  "Sensor Status": "sensor_status",
+	  "Flapping": "flapping",
+	  "Network Router": "network_router",
+	  "Temperature": "temperature",
+	  "CPU Usage": "CPU_usage",
+	  "Total RAM": "RAM_total",
+	  "RAM Free": "RAM_free",
+	  "RAM used": "RAM_used",
+	  "RAM Available": "RAM_available",
+	  "Total Disk Space": "disk_space_total",
+	  "Disk Space Available": "disk_space_free",
+	  "Disk Space Used": "disk_space_used"
+	};
 
-	var Tableaux = function (_React$Component) {
-	  _inherits(Tableaux, _React$Component);
+	var Tableaux = function (_React$Component2) {
+	  _inherits(Tableaux, _React$Component2);
 
 	  function Tableaux(props) {
 	    _classCallCheck(this, Tableaux);
 
-	    var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(Tableaux).call(this, props));
+	    var _this2 = _possibleConstructorReturn(this, Object.getPrototypeOf(Tableaux).call(this, props));
 
-	    _this.state = {
-	      dataList: [],
-	      colsSelected: ["mac_address", "sensor_status"]
+	    _this2.state = {
+	      dataList: []
+	      // colsSelected: ["mac_address", "sensor_status"]
 	    };
-	    return _this;
+	    return _this2;
 	  }
 
 	  _createClass(Tableaux, [{
-	    key: 'componentDidMount',
-	    value: function componentDidMount() {
-	      // var baseUrl = 'http://52.74.119.147/PisaSchitt/websocket-functions/0-sample-generators/sensor-data-generator.php?number=';
-	      // var url = baseUrl + 30;
-	      // axios.get(url).then(function(res) {
-	      //
-	      //     var temp = res.data;
-	      //
-	      //     for(var k in temp) {
-	      //       //  console.log(k, temp[k]);
-	      //        dataList.push(temp[k]);
-	      //     }
-	      //
-	      //     this.setState({
-	      //       dataList: dataList
-	      //     });
-	      //
-	      //     // console.log("axios data result 2", dataList['sensor1']);
-	      //
-	      // }.bind(this), function (e) {
-	      //
-	      //   console.log("Error occurred: " +e);
-	      //
-	      // }.bind(this));
-	    }
-	  }, {
 	    key: 'render',
 	    value: function render() {
 
-	      var self = this;
+	      var that = this;
 
-	      console.log("Tableaux now has: ", this.props.data);
-
-	      console.log("cols selected: ", this.state);
-
-	      // self.setState({
-	      //     colsSelected: data
-	      // });
+	      var currentlySelected = ["mac_address", "latest_timestamp", "sensor_status"];
+	      var findStuff = $('#bfg').find('table > thead > tr > th > span');
+	      console.log(findStuff);
+	      if (findStuff.length > 0) {
+	        currentlySelected = [];
+	        for (var i = 0; i < findStuff.length; i++) {
+	          currentlySelected.push(columnDisplayName[findStuff[i].innerHTML]);
+	        }
+	      }
+	      // that.state.colsSelected = currentlySelected;
 
 	      var allSensorData = this.props.data;
-
 	      var dataList = [];
-
 	      for (var sensor in allSensorData) {
 	        if (allSensorData.hasOwnProperty(sensor)) {
 	          var mac = sensor;
@@ -51763,7 +51786,8 @@
 	          var row = {
 	            "mac_address": mac,
 	            "latest_timestamp": allSensorData[sensor]["latest_timestamp"],
-	            "location": allSensorData[sensor]["location"],
+	            "building": allSensorData[sensor]["building"],
+	            "sensor-level-id": allSensorData[sensor]["sensor-location-level"] + allSensorData[sensor]["sensor-location-id"],
 	            "sensor_type": allSensorData[sensor]["sensor_type"],
 	            "current_status": allSensorData[sensor]["current_status"],
 	            "sensor_status": allSensorData[sensor]["sensor_status"],
@@ -51784,13 +51808,15 @@
 	        }
 	      }
 
+	      console.log("currentlySelected", currentlySelected);
+
 	      return React.createElement(Griddle, {
 	        results: dataList,
 	        settingsIconComponent: React.createElement(FontAwesome, { name: 'cog', style: { color: '#232f32' }, size: '2x', className: 'margin-left-small' }),
 	        columnMetadata: tableMetaData,
 	        tableClassName: 'table',
 	        showFilter: true,
-	        columns: this.state.colsSelected,
+	        columns: currentlySelected,
 	        showSettings: true,
 	        settingsText: ''
 	      });
@@ -51801,6 +51827,7 @@
 	}(React.Component);
 
 	module.exports = Tableaux;
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(9)))
 
 /***/ },
 /* 518 */
@@ -51818,20 +51845,6 @@
 	        return React.createElement(
 	            'table',
 	            { className: 'notificationsTable' },
-	            React.createElement(
-	                'thead',
-	                null,
-	                React.createElement(
-	                    'tr',
-	                    null,
-	                    React.createElement('th', null),
-	                    React.createElement(
-	                        'th',
-	                        null,
-	                        'Notification'
-	                    )
-	                )
-	            ),
 	            React.createElement(
 	                'tbody',
 	                null,
@@ -52245,38 +52258,30 @@
 	                null,
 	                React.createElement(
 	                    'div',
-	                    { className: 'callout-dark-header' },
-	                    React.createElement(
-	                        'div',
-	                        { className: 'header' },
-	                        this.props.buildingName
-	                    )
+	                    { className: 'header' },
+	                    this.props.buildingName
 	                ),
-	                React.createElement(
-	                    'div',
-	                    { className: 'callout-dark' },
-	                    React.createElement(PieChart, { colorScale: d3.scale.ordinal().range(myColors), data: {
-	                            label: 'Chart',
-	                            values: [{
-	                                x: 'OK',
-	                                y: this.props.ok
-	                            }, {
-	                                x: 'Warning',
-	                                y: this.props.warning
-	                            }, {
-	                                x: 'Danger',
-	                                y: this.props.danger
-	                            }, {
-	                                x: 'Down',
-	                                y: this.props.down
-	                            }]
-	                        }, width: 400, height: 250, tooltipHtml: tooltipPie, margin: {
-	                            top: 10,
-	                            bottom: 50,
-	                            left: 0,
-	                            right: 100
-	                        } })
-	                )
+	                React.createElement(PieChart, { colorScale: d3.scale.ordinal().range(myColors), data: {
+	                        label: 'Chart',
+	                        values: [{
+	                            x: "OK",
+	                            y: this.props.ok
+	                        }, {
+	                            x: "Warning",
+	                            y: this.props.warning
+	                        }, {
+	                            x: "Danger",
+	                            y: this.props.danger
+	                        }, {
+	                            x: "Down",
+	                            y: this.props.down
+	                        }]
+	                    }, width: 400, height: 250, tooltipHtml: tooltipPie, margin: {
+	                        top: 10,
+	                        bottom: 50,
+	                        left: 0,
+	                        right: 100
+	                    } })
 	            );
 	        }
 	    }]);
@@ -52295,17 +52300,22 @@
 
 	    _createClass(SearchBar, [{
 	        key: 'handleChange',
-	        value: function handleChange(e) {
-	            e.preventDefault();
+	        value: function handleChange() {
+
+	            console.log("THIS", this);
 	            this.props.onUserInput(this.refs.filterTextInput.value);
 	        }
 	    }, {
 	        key: 'render',
 	        value: function render() {
+
 	            return React.createElement(
 	                'form',
 	                null,
-	                React.createElement('input', { type: 'text', placeholder: 'Search...', value: this.props.filterText, ref: 'filterTextInput', onChange: this.handleChange })
+	                React.createElement('input', { type: 'text', placeholder: 'Search...',
+	                    value: this.props.filterText,
+	                    ref: 'filterTextInput',
+	                    onChange: this.handleChange.bind(this) })
 	            );
 	        }
 	    }]);
@@ -52328,10 +52338,10 @@
 	        key: 'render',
 	        value: function render() {
 
-	            console.log("BuildingList now has: ", this.props.data);
+	            //console.log("BuildingList now has: ", this.props.data);
 
 	            var rows = [];
-	            console.log("data.data!", this.props.data.data);
+	            //console.log("data.data!", this.props.data.data);
 
 	            var buildings = this.props.data.data;
 
@@ -52341,19 +52351,21 @@
 
 	                    console.log("buildingName" + buildingName);
 	                    console.log("filter text:", this.props.filterText);
+	                    console.log(buildingName + " === " + this.props.filterText);
+	                    console.log("Is this so?", buildingName.indexOf(this.props.filterText) === -1);
 
 	                    if (buildingName.indexOf(this.props.filterText) === -1) {
-	                        return;
+	                        return React.createElement('div', null);
+	                    } else {
+	                        var danger = buildings[property]["danger"]["count"];
+	                        var warning = buildings[property]["warning"]["count"];
+	                        var ok = buildings[property]["ok"]["count"];
+	                        var down = buildings[property]["down"]["count"];
+
+	                        console.log("data: " + buildingName + " -> " + ok + warning + danger + down);
+
+	                        rows.push(React.createElement(Building, { buildingName: buildingName, ok: ok, warning: warning, danger: danger, down: down }));
 	                    }
-
-	                    var danger = buildings[property]["danger"]["count"];
-	                    var warning = buildings[property]["warning"]["count"];
-	                    var ok = buildings[property]["ok"]["count"];
-	                    var down = buildings[property]["down"]["count"];
-
-	                    console.log("data: " + buildingName + " -> " + ok + warning + danger + down);
-
-	                    rows.push(React.createElement(Building, { buildingName: buildingName, ok: ok, warning: warning, danger: danger, down: down }));
 	                }
 	            }
 
@@ -52390,14 +52402,25 @@
 	    }, {
 	        key: 'render',
 	        value: function render() {
-
-	            console.log("BuildingOverview says hi", this.props.data);
-
+	            // console.log("BuildingOverview says hi", this.props.data);
 	            return React.createElement(
 	                'div',
 	                null,
-	                React.createElement(SearchBar, { filterText: this.state.filterText, onUserInput: this.handleUserInput }),
-	                React.createElement(BuildingList, { data: this.props.data, filterText: this.state.filterText })
+	                React.createElement(
+	                    'div',
+	                    { className: 'callout-dark-header' },
+	                    React.createElement(
+	                        'div',
+	                        { className: 'header' },
+	                        'at a glance'
+	                    )
+	                ),
+	                React.createElement(
+	                    'div',
+	                    { className: 'callout-dark' },
+	                    React.createElement(SearchBar, { filterText: this.state.filterText, onUserInput: this.handleUserInput.bind(this) }),
+	                    React.createElement(BuildingList, { data: this.props.data, filterText: this.state.filterText })
+	                )
 	            );
 	        }
 	    }]);

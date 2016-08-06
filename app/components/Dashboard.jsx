@@ -32,9 +32,13 @@ var Dashboard = React.createClass({
     },
     render: function() {
 
-        // var self = this;
+        console.log("Dashboard's overall data is: ", this.props.overall);
 
-        console.log("Dashboard's data is: ", this.props.overall);
+        console.log("Dashboard's BFG data is: ", this.props.bfg);
+
+        // var oveall = this.props.overall.data;
+
+        // console.log("unknown data: ", unknown);
 
         var {
             isLoading,
@@ -75,11 +79,6 @@ var Dashboard = React.createClass({
                       <BuildingOverview data={this.props.overall} />
                   </div>
                   <div className="columns medium-6">
-                    <div className="callout callout-dark-header"><h4 className="header">At a Glance</h4></div>
-                    <div className="callout callout-dark">
-                      {renderOverview()}
-                    </div>
-
                     <div>
                       <div className="callout callout-dark-header"><h4 className="header">Pi Health Overview</h4>
                       <button onClick={this.launchAddSensor} className="icon-btn-text-small">
@@ -88,7 +87,7 @@ var Dashboard = React.createClass({
                       <AddSensor/>
                       </div>
                       <div className="callout callout-dark">
-                        <GeneralMetrics/>
+                        <GeneralMetrics data={this.props.bfg}/>
                       </div>
                     </div>
 
@@ -114,8 +113,8 @@ var Dashboard = React.createClass({
                 <div className="row">
                   <div className = "large-offset-3 columns large-9">
                     <div className="callout callout-dark-header"><h4 className="header">All Sensors</h4></div>
-                    <div className="callout callout-dark">
-                      <Tableaux data={this.props.bfg} />
+                    <div className="callout callout-dark" id="bfg">
+                      <Tableaux data={this.props.bfg}/>
                     </div>
                   </div>
                   </div>

@@ -5,14 +5,7 @@ var Notifications = React.createClass({
     render: function() {
         return (
             <table className="notificationsTable">
-                <thead>
-                  <tr>
-                    <th></th>
-                    <th>
-                        Notification
-                    </th>
-                  </tr>
-                </thead>
+                
                 <tbody>
                     <tr>
                         <td className="textAlignCenter">

@@ -3,13 +3,28 @@ var Griddle = require('griddle-react');
 var axios = require('axios');
 var FontAwesome = require('react-fontawesome');
 
+var dataList = [];
+
+class LinkComponent2 extends React.Component{
+  constructor(props) {
+    super(props);
+  }
+
+  render() {
+    return (
+        <a href="google.com" data-toggle="offCanvas">{this.props.data}</a>
+    );
+  }
+};
+
 const tableMetaData =  [
   {
     "columnName": "mac_address",
     "order": 1,
-    "locked": false,
+    "locked": true,
     "visible": true,
-    "displayName": "Mac Address"
+    "displayName": "Mac Address",
+    "customCommponent": LinkComponent2
   },
   {
     "columnName": "latest_timestamp",
@@ -19,29 +34,36 @@ const tableMetaData =  [
     "displayName": "Latest Timestamp"
   },
   {
-    "columnName": "location",
+    "columnName": "building",
     "order": 3,
     "locked": false,
     "visible": true,
-    "displayName": "Location"
+    "displayName": "Building"
+  },
+  {
+    "columnName": "sensor-level-id",
+    "order": 4,
+    "locked": false,
+    "visible": true,
+    "displayName": "Location ID"
   },
   {
     "columnName": "sensor_type",
-    "order": 4,
+    "order": 5,
     "locked": false,
     "visible": true,
     "displayName": "Sensor Type"
   },
   {
     "columnName": "current_status",
-    "order": 5,
+    "order": 6,
     "locked": false,
     "visible": true,
     "displayName": "Current Status"
   },
   {
     "columnName": "sensor_status",
-    "order":  6,
+    "order":  7,
     "locked": false,
     "visible": true,
     "sortable": true,
@@ -49,7 +71,7 @@ const tableMetaData =  [
   },
   {
     "columnName": "flapping",
-    "order":  7,
+    "order":  8,
     "locked": false,
     "visible": true,
     "sortable": true,
@@ -57,7 +79,7 @@ const tableMetaData =  [
   },
   {
     "columnName": "network_router",
-    "order":  8,
+    "order":  9,
     "locked": false,
     "visible": true,
     "sortable": true,
@@ -65,7 +87,7 @@ const tableMetaData =  [
   },
   {
     "columnName": "temperature",
-    "order":  9,
+    "order":  10,
     "locked": false,
     "visible": true,
     "sortable": true,
@@ -73,7 +95,7 @@ const tableMetaData =  [
   },
   {
     "columnName": "CPU_usage",
-    "order":  10,
+    "order":  11,
     "locked": false,
     "visible": true,
     "sortable": true,
@@ -81,7 +103,7 @@ const tableMetaData =  [
   },
   {
     "columnName": "RAM_total",
-    "order":  11,
+    "order":  12,
     "locked": false,
     "visible": true,
     "sortable": true,
@@ -89,7 +111,7 @@ const tableMetaData =  [
   },
   {
     "columnName": "RAM_free",
-    "order":  12,
+    "order":  13,
     "locked": false,
     "visible": true,
     "sortable": true,
@@ -97,7 +119,7 @@ const tableMetaData =  [
   },
   {
     "columnName": "RAM_used",
-    "order":  13,
+    "order":  14,
     "locked": false,
     "visible": true,
     "sortable": true,
@@ -105,7 +127,7 @@ const tableMetaData =  [
   },
   {
     "columnName": "RAM_available",
-    "order":  14,
+    "order":  15,
     "locked": false,
     "visible": true,
     "sortable": true,
@@ -113,7 +135,7 @@ const tableMetaData =  [
   },
   {
     "columnName": "disk_space_total",
-    "order":  15,
+    "order":  16,
     "locked": false,
     "visible": true,
     "sortable": true,
@@ -121,7 +143,7 @@ const tableMetaData =  [
   },
   {
     "columnName": "disk_space_free",
-    "order":  16,
+    "order":  17,
     "locked": false,
     "visible": true,
     "sortable": true,
@@ -129,7 +151,7 @@ const tableMetaData =  [
   },
   {
     "columnName": "disk_space_used",
-    "order":  17,
+    "order":  18,
     "locked": false,
     "visible": true,
     "sortable": true,
@@ -137,68 +159,63 @@ const tableMetaData =  [
   }
 ];
 
-var dataList = [];
+const columnDisplayName = {
+    "Mac Address" : "mac_address",
+    "Latest Timestamp" : "latest_timestamp",
+    "geo-region" : "geo-region",
+    "building" : "building",
+    "Location ID" : "sensor-level-id",
+    "Sensor Type" : "sensor_type",
+    "Current Status" : "current_status",
+    "Sensor Status" : "sensor_status",
+    "Flapping" : "flapping",
+    "Network Router" : "network_router",
+    "Temperature" : "temperature",
+    "CPU Usage" : "CPU_usage",
+    "Total RAM" : "RAM_total",
+    "RAM Free" : "RAM_free",
+    "RAM used" : "RAM_used",
+    "RAM Available" : "RAM_available",
+    "Total Disk Space" : "disk_space_total",
+    "Disk Space Available" : "disk_space_free",
+    "Disk Space Used" : "disk_space_used"
+};
 
 class Tableaux extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-        dataList: [],
-        colsSelected: ["mac_address", "sensor_status"]
+        dataList: []
+        // colsSelected: ["mac_address", "sensor_status"]
     };
-  }
-
-  componentDidMount() {
-    // var baseUrl = 'http://52.74.119.147/PisaSchitt/websocket-functions/0-sample-generators/sensor-data-generator.php?number=';
-    // var url = baseUrl + 30;
-    // axios.get(url).then(function(res) {
-    //
-    //     var temp = res.data;
-    //
-    //     for(var k in temp) {
-    //       //  console.log(k, temp[k]);
-    //        dataList.push(temp[k]);
-    //     }
-    //
-    //     this.setState({
-    //       dataList: dataList
-    //     });
-    //
-    //     // console.log("axios data result 2", dataList['sensor1']);
-    //
-    // }.bind(this), function (e) {
-    //
-    //   console.log("Error occurred: " +e);
-    //
-    // }.bind(this));
   }
 
   render() {
 
-    var self = this;
+    var that = this;
 
-    console.log("Tableaux now has: ", this.props.data);
-
-
-    console.log("cols selected: ", this.state);
-
-    // self.setState({
-    //     colsSelected: data
-    // });
+    var currentlySelected = ["mac_address", "latest_timestamp", "sensor_status"];
+    var findStuff = $('#bfg').find('table > thead > tr > th > span');
+    console.log(findStuff);
+    if (findStuff.length > 0) {
+        currentlySelected = [];
+        for (var i = 0; i < findStuff.length; i++) {
+            currentlySelected.push(columnDisplayName[findStuff[i].innerHTML]);
+        }
+    }
+    // that.state.colsSelected = currentlySelected;
 
     var allSensorData = this.props.data;
-
     var dataList = [];
-
     for (var sensor in allSensorData) {
         if (allSensorData.hasOwnProperty(sensor)) {
             var mac = sensor;
 
-
             var row = {
                 "mac_address" : mac,
                 "latest_timestamp" : allSensorData[sensor]["latest_timestamp"],
-                "location" : allSensorData[sensor]["location"],
+                "building" : allSensorData[sensor]["building"],
+                "sensor-level-id" : allSensorData[sensor]["sensor-location-level"] + allSensorData[sensor]["sensor-location-id"],
                 "sensor_type" : allSensorData[sensor]["sensor_type"],
                 "current_status" : allSensorData[sensor]["current_status"],
                 "sensor_status" : allSensorData[sensor]["sensor_status"],
@@ -216,9 +233,10 @@ class Tableaux extends React.Component {
             };
 
             dataList.push(row);
-
         }
     }
+
+    console.log("currentlySelected", currentlySelected);
 
     return (
         <Griddle
@@ -227,7 +245,7 @@ class Tableaux extends React.Component {
             columnMetadata={tableMetaData}
             tableClassName="table"
             showFilter={true}
-            columns={this.state.colsSelected}
+            columns={currentlySelected}
             showSettings={true}
             settingsText=""
         />

@@ -12,7 +12,6 @@ class LinkComponent extends React.Component{
 
   handleClick(data) {
     console.log("click", data);
-
   }
 
   render() {
@@ -32,25 +31,32 @@ const tableMetaData =  [
     "customComponent": LinkComponent
   },
   {
-    "columnName": "building_name",
+    "columnName": "geo-region",
     "order": 2,
     "locked": false,
+    "visible": true,
+    "displayName": "Region"
+  },
+  {
+    "columnName": "building",
+    "order": 3,
+    "locked": true,
     "visible": true,
     "displayName": "Building"
   },
   {
-    "columnName": "building_level",
-    "order": 3,
-    "locked": true,
-    "visible": true,
-    "displayName": "Level"
-  },
-  {
-    "columnName": "area_id",
+    "columnName": "sensor-level-id",
     "order": 4,
     "locked": true,
     "visible": true,
-    "displayName": "Area ID"
+    "displayName": "ID"
+  },
+  {
+    "columnName": "sensor_status",
+    "order": 4,
+    "locked": true,
+    "visible": true,
+    "displayName": "Health"
   }
 ];
 
@@ -77,27 +83,26 @@ class GeneralMetrics extends React.Component{
       };
     }
 
-    componentDidMount() {
-        $(document).foundation();
-
-        var baseUrl = 'http://52.74.119.147/PisaSchitt/websocket-functions/0-sample-generators/regionmall-sample.php?number=';
-        var numRows = 30;
-        axios.get(baseUrl+numRows).then(function(res) {
-
-          var that = this;
-
-          dataList = res.data;
-
-          that.setState({
-            dataList: dataList
-          });
-
-        }).catch(function(error) {
-            console.log("Problem siol", error);
-        }.bind(this));
-    }
-
     render() {
+
+        var allSensorData = this.props.data;
+        var dataList = [];
+        for (var sensor in allSensorData) {
+            if (allSensorData.hasOwnProperty(sensor)) {
+                var mac = sensor;
+
+                var row = {
+                    "mac_address" : mac,
+                    "geo-region" : allSensorData[sensor]["geo-region"],
+                    "building" : allSensorData[sensor]["building"],
+                    "sensor-level-id" : allSensorData[sensor]["sensor-location-level"] + allSensorData[sensor]["sensor-location-id"],
+                    "sensor_status" : allSensorData[sensor]["sensor_status"]
+                };
+
+                dataList.push(row);
+            }
+        }
+
         return (
             <div>
                 <Griddle
