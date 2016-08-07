@@ -6,7 +6,7 @@ module.exports = {
 
     addSensor: function(inputMac, inputRegion, inputLocationLevel, inputLocationID, inputBuilding) {
     console.log(inputMac, inputRegion, inputLocationLevel, inputLocationID, inputBuilding);
-    return axios.post(ADD_SENSOR_URL, {
+    return axios.get(ADD_SENSOR_URL, {
           params: {
               MAC: inputMac,
               "geo-region": inputRegion,
@@ -17,7 +17,11 @@ module.exports = {
       }).then(function(response) {
           console.log(response);
           if(response.status == 200) {
-            return response.data.message;
+            if(response.data.error) {
+              return response.data.error;
+            } else {
+              return response.data.result;
+            }
           } else {
             throw new Error(response.status +" :" +response.data.error);
           }

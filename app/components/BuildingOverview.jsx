@@ -99,7 +99,7 @@ class BuildingList extends React.Component {
                 // });
 
                 // filterText is part of the buildingName
-                if ((buildingName.toLowerCase()).indexOf((this.props.filterText).toLowerCase()) !== -1) {
+                if ((buildingName.toLowerCase()).indexOf((this.props.filterText).toLowerCase()) === -1) {
 
                       var danger = buildings[property]["danger"]["count"];
                       var warning = buildings[property]["warning"]["count"];

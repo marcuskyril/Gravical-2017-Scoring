@@ -15,6 +15,10 @@ class AddSensor extends React.Component {
 
   constructor(props) {
     super(props);
+
+    this.state = {
+      message: ''
+    }
   }
 
   onAddSensor(e) {
@@ -31,6 +35,12 @@ class AddSensor extends React.Component {
     AddSensorAPI.addSensor(inputMac, inputRegion, inputLocationLevel, inputLocationID, inputBuilding).then(function(response){
       console.log("response", response);
 
+      that.setState({
+        message: response
+      });
+
+      console.log("message", that.state.message);
+
       that.refs.macAddress.value = '';
       that.refs.region.value = '';
       that.refs.sensorLocationLevel.value = '';
@@ -44,6 +54,10 @@ class AddSensor extends React.Component {
   }
 
   render() {
+    var message = this.state.message;
+
+    console.log("render", message);
+
     return (
       <div id="add-sensor-modal" className="reveal tiny text-center" data-reveal="">
           <form>
@@ -76,6 +90,7 @@ class AddSensor extends React.Component {
                       <label>Building
                           <input type="text" name="building" ref="building" placeholder="Building"/>
                       </label>
+                      <AddSensorMessage message={message}/>
                       <button className="button hollow expanded" onClick={this.onAddSensor.bind(this)}>
                           Add Pi
                       </button>
@@ -90,25 +105,36 @@ class AddSensor extends React.Component {
   }
 }
 
+class AddSensorMessage extends React.Component {
+  render() {
+    var message = this.props.message;
+    console.log("message from parent: ", message);
+
+    return (
+      <div className="statusText">{message}</div>
+    );
+  }
+}
+
 var Dashboard = React.createClass({
+
     getInitialState: function() {
-        return {
-          isLoading: false
+      return(
+        this.state = {
+          message: ''
         }
+      );
     },
+
     launchAddSensor: function() {
         var modal = new Foundation.Reveal($('#add-sensor-modal'));
         modal.open();
-    },
-
-    handleSearch: function(location) {
-        var that = this;
 
         this.setState({
-          isLoading: true,
-          errorMessage: undefined
+          message: ''
         });
     },
+
     render: function() {
 
         // console.log("Dashboard's overall data is: ", this.props.overall);
@@ -118,7 +144,6 @@ var Dashboard = React.createClass({
         // var oveall = this.props.overall.data;
 
         // console.log("unknown data: ", unknown);
-
 
         return (
 
@@ -143,7 +168,7 @@ var Dashboard = React.createClass({
                     <div>
                       <div className="callout callout-dark-header"><h4 className="header">Abnormal Behaviour</h4></div>
                       <div className="callout callout-dark">
-                      <Abnormal onSearch={this.handleSearch} data={this.props.bfg}/>
+                      <Abnormal data={this.props.bfg}/>
                       </div>
                     </div>
 

@@ -41983,266 +41983,306 @@
 	var AddSensorAPI = __webpack_require__(519);
 
 	var AddSensor = function (_React$Component) {
-	    _inherits(AddSensor, _React$Component);
+	  _inherits(AddSensor, _React$Component);
 
-	    function AddSensor(props) {
-	        _classCallCheck(this, AddSensor);
+	  function AddSensor(props) {
+	    _classCallCheck(this, AddSensor);
 
-	        return _possibleConstructorReturn(this, Object.getPrototypeOf(AddSensor).call(this, props));
+	    var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(AddSensor).call(this, props));
+
+	    _this.state = {
+	      message: ''
+	    };
+	    return _this;
+	  }
+
+	  _createClass(AddSensor, [{
+	    key: 'onAddSensor',
+	    value: function onAddSensor(e) {
+	      e.preventDefault();
+
+	      var inputMac = this.refs.macAddress.value;
+	      var inputRegion = this.refs.region.value;
+	      var inputLocationLevel = this.refs.sensorLocationLevel.value;
+	      var inputLocationID = this.refs.sensorLocationID.value;
+	      var inputBuilding = this.refs.building.value;
+
+	      var that = this;
+
+	      AddSensorAPI.addSensor(inputMac, inputRegion, inputLocationLevel, inputLocationID, inputBuilding).then(function (response) {
+	        console.log("response", response);
+
+	        that.setState({
+	          message: response
+	        });
+
+	        console.log("message", that.state.message);
+
+	        that.refs.macAddress.value = '';
+	        that.refs.region.value = '';
+	        that.refs.sensorLocationLevel.value = '';
+	        that.refs.sensorLocationID.value = '';
+	        that.refs.building.value = '';
+	      }, function (error) {
+	        alert(error);
+	      });
 	    }
+	  }, {
+	    key: 'render',
+	    value: function render() {
+	      var message = this.state.message;
 
-	    _createClass(AddSensor, [{
-	        key: 'onAddSensor',
-	        value: function onAddSensor(e) {
-	            e.preventDefault();
+	      console.log("render", message);
 
-	            var inputMac = this.refs.macAddress.value;
-	            var inputRegion = this.refs.region.value;
-	            var inputLocationLevel = this.refs.sensorLocationLevel.value;
-	            var inputLocationID = this.refs.sensorLocationID.value;
-	            var inputBuilding = this.refs.building.value;
-
-	            var that = this;
-
-	            AddSensorAPI.addSensor(inputMac, inputRegion, inputLocationLevel, inputLocationID, inputBuilding).then(function (response) {
-	                console.log("response", response);
-
-	                that.refs.macAddress.value = '';
-	                that.refs.region.value = '';
-	                that.refs.sensorLocationLevel.value = '';
-	                that.refs.sensorLocationID.value = '';
-	                that.refs.building.value = '';
-	            }, function (error) {
-	                alert(error);
-	            });
-	        }
-	    }, {
-	        key: 'render',
-	        value: function render() {
-	            return React.createElement(
+	      return React.createElement(
+	        'div',
+	        { id: 'add-sensor-modal', className: 'reveal tiny text-center', 'data-reveal': '' },
+	        React.createElement(
+	          'form',
+	          null,
+	          React.createElement(
+	            'div',
+	            { className: 'row' },
+	            React.createElement(
+	              'div',
+	              { className: 'large-12 columns' },
+	              React.createElement(
 	                'div',
-	                { id: 'add-sensor-modal', className: 'reveal tiny text-center', 'data-reveal': '' },
+	                { className: 'header' },
+	                'Add Sensor'
+	              ),
+	              React.createElement(
+	                'label',
+	                null,
+	                'Mac Address',
+	                React.createElement('input', { type: 'text', name: 'macAddress', ref: 'macAddress', placeholder: 'Mac Address', required: true })
+	              ),
+	              React.createElement(
+	                'label',
+	                null,
+	                'Region',
 	                React.createElement(
-	                    'form',
-	                    null,
-	                    React.createElement(
-	                        'div',
-	                        { className: 'row' },
-	                        React.createElement(
-	                            'div',
-	                            { className: 'large-12 columns' },
-	                            React.createElement(
-	                                'div',
-	                                { className: 'header' },
-	                                'Add Sensor'
-	                            ),
-	                            React.createElement(
-	                                'label',
-	                                null,
-	                                'Mac Address',
-	                                React.createElement('input', { type: 'text', name: 'macAddress', ref: 'macAddress', placeholder: 'Mac Address', required: true })
-	                            ),
-	                            React.createElement(
-	                                'label',
-	                                null,
-	                                'Region',
-	                                React.createElement(
-	                                    'select',
-	                                    { ref: 'region', name: 'region', required: true },
-	                                    React.createElement('option', { value: '' }),
-	                                    React.createElement(
-	                                        'option',
-	                                        { value: 'north' },
-	                                        'North'
-	                                    ),
-	                                    React.createElement(
-	                                        'option',
-	                                        { value: 'south' },
-	                                        'South'
-	                                    ),
-	                                    React.createElement(
-	                                        'option',
-	                                        { value: 'east' },
-	                                        'East'
-	                                    ),
-	                                    React.createElement(
-	                                        'option',
-	                                        { value: 'west' },
-	                                        'West'
-	                                    ),
-	                                    React.createElement(
-	                                        'option',
-	                                        { value: 'central' },
-	                                        'Central'
-	                                    )
-	                                )
-	                            ),
-	                            React.createElement(
-	                                'label',
-	                                null,
-	                                'Sensor Location level',
-	                                React.createElement('input', { type: 'text', name: 'sensorLocationLevel', ref: 'sensorLocationLevel', placeholder: 'Sensor Location Level' })
-	                            ),
-	                            React.createElement(
-	                                'label',
-	                                null,
-	                                'Sensor Location ID',
-	                                React.createElement('input', { type: 'text', name: 'sensorLocationID', ref: 'sensorLocationID', placeholder: 'Sensor Location ID' })
-	                            ),
-	                            React.createElement(
-	                                'label',
-	                                null,
-	                                'Building',
-	                                React.createElement('input', { type: 'text', name: 'building', ref: 'building', placeholder: 'Building' })
-	                            ),
-	                            React.createElement(
-	                                'button',
-	                                { className: 'button hollow expanded', onClick: this.onAddSensor.bind(this) },
-	                                'Add Pi'
-	                            ),
-	                            React.createElement(
-	                                'button',
-	                                { className: 'button hollow expanded', 'data-close': '' },
-	                                'Cancel'
-	                            )
-	                        )
-	                    )
+	                  'select',
+	                  { ref: 'region', name: 'region', required: true },
+	                  React.createElement('option', { value: '' }),
+	                  React.createElement(
+	                    'option',
+	                    { value: 'north' },
+	                    'North'
+	                  ),
+	                  React.createElement(
+	                    'option',
+	                    { value: 'south' },
+	                    'South'
+	                  ),
+	                  React.createElement(
+	                    'option',
+	                    { value: 'east' },
+	                    'East'
+	                  ),
+	                  React.createElement(
+	                    'option',
+	                    { value: 'west' },
+	                    'West'
+	                  ),
+	                  React.createElement(
+	                    'option',
+	                    { value: 'central' },
+	                    'Central'
+	                  )
 	                )
-	            );
-	        }
-	    }]);
+	              ),
+	              React.createElement(
+	                'label',
+	                null,
+	                'Sensor Location level',
+	                React.createElement('input', { type: 'text', name: 'sensorLocationLevel', ref: 'sensorLocationLevel', placeholder: 'Sensor Location Level' })
+	              ),
+	              React.createElement(
+	                'label',
+	                null,
+	                'Sensor Location ID',
+	                React.createElement('input', { type: 'text', name: 'sensorLocationID', ref: 'sensorLocationID', placeholder: 'Sensor Location ID' })
+	              ),
+	              React.createElement(
+	                'label',
+	                null,
+	                'Building',
+	                React.createElement('input', { type: 'text', name: 'building', ref: 'building', placeholder: 'Building' })
+	              ),
+	              React.createElement(AddSensorMessage, { message: message }),
+	              React.createElement(
+	                'button',
+	                { className: 'button hollow expanded', onClick: this.onAddSensor.bind(this) },
+	                'Add Pi'
+	              ),
+	              React.createElement(
+	                'button',
+	                { className: 'button hollow expanded', 'data-close': '' },
+	                'Cancel'
+	              )
+	            )
+	          )
+	        )
+	      );
+	    }
+	  }]);
 
-	    return AddSensor;
+	  return AddSensor;
+	}(React.Component);
+
+	var AddSensorMessage = function (_React$Component2) {
+	  _inherits(AddSensorMessage, _React$Component2);
+
+	  function AddSensorMessage() {
+	    _classCallCheck(this, AddSensorMessage);
+
+	    return _possibleConstructorReturn(this, Object.getPrototypeOf(AddSensorMessage).apply(this, arguments));
+	  }
+
+	  _createClass(AddSensorMessage, [{
+	    key: 'render',
+	    value: function render() {
+	      var message = this.props.message;
+	      console.log("message from parent: ", message);
+
+	      return React.createElement(
+	        'div',
+	        { className: 'statusText' },
+	        message
+	      );
+	    }
+	  }]);
+
+	  return AddSensorMessage;
 	}(React.Component);
 
 	var Dashboard = React.createClass({
-	    displayName: 'Dashboard',
+	  displayName: 'Dashboard',
 
-	    getInitialState: function getInitialState() {
-	        return {
-	            isLoading: false
-	        };
-	    },
-	    launchAddSensor: function launchAddSensor() {
-	        var modal = new Foundation.Reveal($('#add-sensor-modal'));
-	        modal.open();
-	    },
 
-	    handleSearch: function handleSearch(location) {
-	        var that = this;
+	  getInitialState: function getInitialState() {
+	    return this.state = {
+	      message: ''
+	    };
+	  },
 
-	        this.setState({
-	            isLoading: true,
-	            errorMessage: undefined
-	        });
-	    },
-	    render: function render() {
+	  launchAddSensor: function launchAddSensor() {
+	    var modal = new Foundation.Reveal($('#add-sensor-modal'));
+	    modal.open();
 
-	        // console.log("Dashboard's overall data is: ", this.props.overall);
-	        //
-	        // console.log("Dashboard's BFG data is: ", this.props.bfg);
+	    this.setState({
+	      message: ''
+	    });
+	  },
 
-	        // var oveall = this.props.overall.data;
+	  render: function render() {
 
-	        // console.log("unknown data: ", unknown);
+	    // console.log("Dashboard's overall data is: ", this.props.overall);
+	    //
+	    // console.log("Dashboard's BFG data is: ", this.props.bfg);
 
-	        return React.createElement(
+	    // var oveall = this.props.overall.data;
+
+	    // console.log("unknown data: ", unknown);
+
+	    return React.createElement(
+	      'div',
+	      { className: 'dashboard margin-top-md' },
+	      React.createElement(
+	        'div',
+	        { className: 'row' },
+	        React.createElement(
+	          'div',
+	          { className: 'columns medium-3 large 3' },
+	          React.createElement(BuildingOverview, { data: this.props.overall })
+	        ),
+	        React.createElement(
+	          'div',
+	          { className: 'columns medium-6' },
+	          React.createElement(
 	            'div',
-	            { className: 'dashboard margin-top-md' },
+	            null,
 	            React.createElement(
-	                'div',
-	                { className: 'row' },
-	                React.createElement(
-	                    'div',
-	                    { className: 'columns medium-3 large 3' },
-	                    React.createElement(BuildingOverview, { data: this.props.overall })
-	                ),
-	                React.createElement(
-	                    'div',
-	                    { className: 'columns medium-6' },
-	                    React.createElement(
-	                        'div',
-	                        null,
-	                        React.createElement(
-	                            'div',
-	                            { className: 'callout callout-dark-header' },
-	                            React.createElement(
-	                                'h4',
-	                                { className: 'header' },
-	                                'Pi Health Overview'
-	                            ),
-	                            React.createElement(
-	                                'button',
-	                                { onClick: this.launchAddSensor, className: 'icon-btn-text-small' },
-	                                React.createElement(FontAwesome, { name: 'plus-circle' }),
-	                                ' ADD SENSOR'
-	                            ),
-	                            React.createElement(AddSensor, null)
-	                        ),
-	                        React.createElement(
-	                            'div',
-	                            { className: 'callout callout-dark' },
-	                            React.createElement(GeneralMetrics, { data: this.props.bfg })
-	                        )
-	                    ),
-	                    React.createElement(
-	                        'div',
-	                        null,
-	                        React.createElement(
-	                            'div',
-	                            { className: 'callout callout-dark-header' },
-	                            React.createElement(
-	                                'h4',
-	                                { className: 'header' },
-	                                'Abnormal Behaviour'
-	                            )
-	                        ),
-	                        React.createElement(
-	                            'div',
-	                            { className: 'callout callout-dark' },
-	                            React.createElement(Abnormal, { onSearch: this.handleSearch, data: this.props.bfg })
-	                        )
-	                    )
-	                ),
-	                React.createElement(
-	                    'div',
-	                    { className: 'columns medium-3' },
-	                    React.createElement(
-	                        'div',
-	                        { className: 'callout callout-dark-header' },
-	                        React.createElement(
-	                            'h4',
-	                            { className: 'header' },
-	                            'Notifications'
-	                        )
-	                    ),
-	                    React.createElement(Notifications, null)
-	                )
+	              'div',
+	              { className: 'callout callout-dark-header' },
+	              React.createElement(
+	                'h4',
+	                { className: 'header' },
+	                'Pi Health Overview'
+	              ),
+	              React.createElement(
+	                'button',
+	                { onClick: this.launchAddSensor, className: 'icon-btn-text-small' },
+	                React.createElement(FontAwesome, { name: 'plus-circle' }),
+	                ' ADD SENSOR'
+	              ),
+	              React.createElement(AddSensor, null)
 	            ),
 	            React.createElement(
-	                'div',
-	                { className: 'row' },
-	                React.createElement(
-	                    'div',
-	                    { className: 'large-offset-3 columns large-9' },
-	                    React.createElement(
-	                        'div',
-	                        { className: 'callout callout-dark-header' },
-	                        React.createElement(
-	                            'h4',
-	                            { className: 'header' },
-	                            'All Sensors'
-	                        )
-	                    ),
-	                    React.createElement(
-	                        'div',
-	                        { className: 'callout callout-dark', id: 'bfg' },
-	                        React.createElement(Tableaux, { data: this.props.bfg })
-	                    )
-	                )
+	              'div',
+	              { className: 'callout callout-dark' },
+	              React.createElement(GeneralMetrics, { data: this.props.bfg })
 	            )
-	        );
-	    }
+	          ),
+	          React.createElement(
+	            'div',
+	            null,
+	            React.createElement(
+	              'div',
+	              { className: 'callout callout-dark-header' },
+	              React.createElement(
+	                'h4',
+	                { className: 'header' },
+	                'Abnormal Behaviour'
+	              )
+	            ),
+	            React.createElement(
+	              'div',
+	              { className: 'callout callout-dark' },
+	              React.createElement(Abnormal, { data: this.props.bfg })
+	            )
+	          )
+	        ),
+	        React.createElement(
+	          'div',
+	          { className: 'columns medium-3' },
+	          React.createElement(
+	            'div',
+	            { className: 'callout callout-dark-header' },
+	            React.createElement(
+	              'h4',
+	              { className: 'header' },
+	              'Notifications'
+	            )
+	          ),
+	          React.createElement(Notifications, null)
+	        )
+	      ),
+	      React.createElement(
+	        'div',
+	        { className: 'row' },
+	        React.createElement(
+	          'div',
+	          { className: 'large-offset-3 columns large-9' },
+	          React.createElement(
+	            'div',
+	            { className: 'callout callout-dark-header' },
+	            React.createElement(
+	              'h4',
+	              { className: 'header' },
+	              'All Sensors'
+	            )
+	          ),
+	          React.createElement(
+	            'div',
+	            { className: 'callout callout-dark', id: 'bfg' },
+	            React.createElement(Tableaux, { data: this.props.bfg })
+	          )
+	        )
+	      )
+	    );
+	  }
 	});
 
 	module.exports = Dashboard;
@@ -52194,7 +52234,7 @@
 	                    // });
 
 	                    // filterText is part of the buildingName
-	                    if (buildingName.toLowerCase().indexOf(this.props.filterText.toLowerCase()) !== -1) {
+	                    if (buildingName.toLowerCase().indexOf(this.props.filterText.toLowerCase()) === -1) {
 
 	                        var danger = buildings[property]["danger"]["count"];
 	                        var warning = buildings[property]["warning"]["count"];
@@ -52283,25 +52323,29 @@
 
 	module.exports = {
 
-	    addSensor: function addSensor(inputMac, inputRegion, inputLocationLevel, inputLocationID, inputBuilding) {
-	        console.log(inputMac, inputRegion, inputLocationLevel, inputLocationID, inputBuilding);
-	        return axios.post(ADD_SENSOR_URL, {
-	            params: {
-	                MAC: inputMac,
-	                "geo-region": inputRegion,
-	                "sensor-location-level": inputLocationLevel,
-	                "sensor-location-id": inputLocationID,
-	                "building": inputBuilding
-	            }
-	        }).then(function (response) {
-	            console.log(response);
-	            if (response.status == 200) {
-	                return response.data.message;
-	            } else {
-	                throw new Error(response.status + " :" + response.data.error);
-	            }
-	        });
-	    }
+	  addSensor: function addSensor(inputMac, inputRegion, inputLocationLevel, inputLocationID, inputBuilding) {
+	    console.log(inputMac, inputRegion, inputLocationLevel, inputLocationID, inputBuilding);
+	    return axios.get(ADD_SENSOR_URL, {
+	      params: {
+	        MAC: inputMac,
+	        "geo-region": inputRegion,
+	        "sensor-location-level": inputLocationLevel,
+	        "sensor-location-id": inputLocationID,
+	        "building": inputBuilding
+	      }
+	    }).then(function (response) {
+	      console.log(response);
+	      if (response.status == 200) {
+	        if (response.data.error) {
+	          return response.data.error;
+	        } else {
+	          return response.data.result;
+	        }
+	      } else {
+	        throw new Error(response.status + " :" + response.data.error);
+	      }
+	    });
+	  }
 	};
 
 	// module.exports = {
@@ -53235,7 +53279,7 @@
 	exports.push([module.id, "@import url(https://fonts.googleapis.com/css?family=Pathway+Gothic+One);", ""]);
 
 	// module
-	exports.push([module.id, "body, html {\n  background: #fff;\n  height: 100%;\n  font-family: roboto;\n  color: #f2f2f2; }\n\n.row {\n  max-width: 85rem; }\n\ndiv#offCanvas {\n  width: 350px;\n  height: 100%;\n  padding: 1.5rem;\n  background: #e8e8e8; }\n\n.is-open-right {\n  transform: translateX(-350px); }\n\n.off-canvas.position-right {\n  right: -350px; }\n\n.off-canvas-content {\n  background: #fff; }\n\na {\n  color: #6abedb; }\n\nhr {\n  border-color: #373837;\n  margin-top: 0.5rem; }\n\ntable thead {\n  background: #232f32;\n  color: white;\n  border: 1px solid #232f32; }\n\ntable tbody {\n  color: #1a1b1b;\n  border: 1px solid #232f32; }\n\n.margin-top-large {\n  margin-top: 4rem; }\n\n.margin-bottom-large {\n  margin-bottom: 4rem; }\n\n.margin-right-small {\n  margin-right: 2rem; }\n\n.margin-left-small {\n  margin-left: 2rem; }\n\n.margin-top-md {\n  margin-top: 2rem; }\n\n.margin-bottom-md {\n  margin-bottom: 2rem; }\n\n.margin-bottom-small {\n  margin-bottom: 1rem; }\n\n.textAlignCenter {\n  text-align: center; }\n\n.callout {\n  background-color: #f2f2f2; }\n\n.callout-dark {\n  padding: 1.5rem;\n  background-color: #f2f2f2;\n  border: 1px solid #373837;\n  border-bottom-left-radius: 4px;\n  border-bottom-right-radius: 4px;\n  margin-top: 0px; }\n\n.callout-dark-header {\n  padding: 0.5rem;\n  background-color: #232f32;\n  border: 1px solid #373837;\n  border-top-left-radius: 4px;\n  border-top-right-radius: 4px;\n  margin-bottom: 0px; }\n\n.callout-auth {\n  background-color: #fafafa;\n  border: 1px solid #fafafa;\n  padding: 2rem;\n  text-align: center; }\n  .callout-auth h3, .callout-auth p {\n    margin-bottom: 2rem; }\n\n.icon-btn-text-small {\n  font-weight: bold;\n  font-family: 'Pathway Gothic One', sans-serif;\n  text-transform: uppercase;\n  top: 15px;\n  right: 15px;\n  position: absolute;\n  color: #f8f8f8;\n  font-size: 1.2rem; }\n\nlabel {\n  text-transform: capitalize;\n  color: #232f32; }\n\n.header {\n  color: #6abedb;\n  margin-bottom: 0px;\n  font-size: 1.5rem;\n  text-transform: uppercase;\n  font-weight: bold;\n  font-family: 'Pathway Gothic One', sans-serif; }\n\n.sub-header {\n  color: #232f32;\n  font-size: 0.9rem;\n  font-family: 'Pathway Gothic One', sans-serif; }\n\n.page-title {\n  color: #555;\n  font-family: 'Pathway Gothic One', sans-serif;\n  font-size: 1.5rem;\n  margin-top: 1.5rem;\n  margin-bottom: 1.5rem; }\n\ninput[type=search] {\n  box-shadow: none; }\n\n.top-bar-upper {\n  color: #333;\n  font-size: 0.5rem; }\n\n.app-header {\n  font-size: 1.3rem; }\n\ntable.overview-custom thead, table.overview-custom tbody, table.overview-custom tr, table.overview-custom th {\n  text-align: center; }\n\ntable.sensor-details-table tbody {\n  text-align: left; }\n\ng text {\n  fill: #232f32;\n  stroke: #232f32; }\n\npolyline {\n  stroke: #232f32; }\n", ""]);
+	exports.push([module.id, "body,\nhtml {\n  background: #fff;\n  height: 100%;\n  font-family: roboto;\n  color: #f2f2f2; }\n\n.row {\n  max-width: 85rem; }\n\ndiv#offCanvas {\n  width: 350px;\n  height: 100%;\n  padding: 1.5rem;\n  background: #e8e8e8; }\n\n.is-open-right {\n  transform: translateX(-350px); }\n\n.off-canvas.position-right {\n  right: -350px; }\n\n.off-canvas-content {\n  background: #fff; }\n\na {\n  color: #6abedb; }\n\nhr {\n  border-color: #373837;\n  margin-top: 0.5rem; }\n\ntable thead {\n  background: #232f32;\n  color: white;\n  border: 1px solid #232f32; }\n\ntable tbody {\n  color: #1a1b1b;\n  border: 1px solid #232f32; }\n\n.margin-top-large {\n  margin-top: 4rem; }\n\n.margin-bottom-large {\n  margin-bottom: 4rem; }\n\n.margin-right-small {\n  margin-right: 2rem; }\n\n.margin-left-small {\n  margin-left: 2rem; }\n\n.margin-top-md {\n  margin-top: 2rem; }\n\n.margin-bottom-md {\n  margin-bottom: 2rem; }\n\n.margin-bottom-small {\n  margin-bottom: 1rem; }\n\n.textAlignCenter {\n  text-align: center; }\n\n.callout {\n  background-color: #f2f2f2; }\n\n.callout-dark {\n  padding: 1.5rem;\n  background-color: #f2f2f2;\n  border: 1px solid #373837;\n  border-bottom-left-radius: 4px;\n  border-bottom-right-radius: 4px;\n  margin-top: 0; }\n\n.callout-dark-header {\n  padding: 0.5rem;\n  background-color: #232f32;\n  border: 1px solid #373837;\n  border-top-left-radius: 4px;\n  border-top-right-radius: 4px;\n  margin-bottom: 0; }\n\n.callout-auth {\n  background-color: #fafafa;\n  border: 1px solid #fafafa;\n  padding: 2rem;\n  text-align: center; }\n  .callout-auth h3,\n  .callout-auth p {\n    margin-bottom: 2rem; }\n\n.icon-btn-text-small {\n  font-weight: bold;\n  font-family: 'Pathway Gothic One', sans-serif;\n  text-transform: uppercase;\n  top: 15px;\n  right: 15px;\n  position: absolute;\n  color: #f8f8f8;\n  font-size: 1.2rem; }\n\nlabel {\n  text-transform: capitalize;\n  color: #232f32; }\n\n.header {\n  color: #6abedb;\n  margin-bottom: 0;\n  font-size: 1.5rem;\n  text-transform: uppercase;\n  font-weight: bold;\n  font-family: 'Pathway Gothic One', sans-serif; }\n\n.sub-header {\n  color: #232f32;\n  font-size: 0.9rem;\n  font-family: 'Pathway Gothic One', sans-serif; }\n\n.page-title {\n  color: #555;\n  font-family: 'Pathway Gothic One', sans-serif;\n  font-size: 1.5rem;\n  margin-top: 1.5rem;\n  margin-bottom: 1.5rem; }\n\ninput[type=search] {\n  box-shadow: none; }\n\n.top-bar-upper {\n  color: #333;\n  font-size: 0.5rem; }\n\n.app-header {\n  font-size: 1.3rem; }\n\ntable.overview-custom tbody,\ntable.overview-custom th,\ntable.overview-custom thead,\ntable.overview-custom tr {\n  text-align: center; }\n\ntable.sensor-details-table tbody {\n  text-align: left; }\n\ng text {\n  fill: #232f32;\n  stroke: #232f32; }\n\npolyline {\n  stroke: #232f32; }\n\n.statusText {\n  color: red;\n  margin-bottom: 1rem;\n  text-transform: uppercase;\n  font-size: 0.5em;\n  font-weight: bold; }\n", ""]);
 
 	// exports
 
@@ -53276,7 +53320,7 @@
 	exports.push([module.id, "@import url(https://fonts.googleapis.com/css?family=Pathway+Gothic+One);", ""]);
 
 	// module
-	exports.push([module.id, "body, html {\n  background: #fff;\n  height: 100%;\n  font-family: roboto;\n  color: #f2f2f2; }\n\n.row {\n  max-width: 85rem; }\n\ndiv#offCanvas {\n  width: 350px;\n  height: 100%;\n  padding: 1.5rem;\n  background: #e8e8e8; }\n\n.is-open-right {\n  transform: translateX(-350px); }\n\n.off-canvas.position-right {\n  right: -350px; }\n\n.off-canvas-content {\n  background: #fff; }\n\na {\n  color: #6abedb; }\n\nhr {\n  border-color: #373837;\n  margin-top: 0.5rem; }\n\ntable thead {\n  background: #232f32;\n  color: white;\n  border: 1px solid #232f32; }\n\ntable tbody {\n  color: #1a1b1b;\n  border: 1px solid #232f32; }\n\n.margin-top-large {\n  margin-top: 4rem; }\n\n.margin-bottom-large {\n  margin-bottom: 4rem; }\n\n.margin-right-small {\n  margin-right: 2rem; }\n\n.margin-left-small {\n  margin-left: 2rem; }\n\n.margin-top-md {\n  margin-top: 2rem; }\n\n.margin-bottom-md {\n  margin-bottom: 2rem; }\n\n.margin-bottom-small {\n  margin-bottom: 1rem; }\n\n.textAlignCenter {\n  text-align: center; }\n\n.callout {\n  background-color: #f2f2f2; }\n\n.callout-dark {\n  padding: 1.5rem;\n  background-color: #f2f2f2;\n  border: 1px solid #373837;\n  border-bottom-left-radius: 4px;\n  border-bottom-right-radius: 4px;\n  margin-top: 0px; }\n\n.callout-dark-header {\n  padding: 0.5rem;\n  background-color: #232f32;\n  border: 1px solid #373837;\n  border-top-left-radius: 4px;\n  border-top-right-radius: 4px;\n  margin-bottom: 0px; }\n\n.callout-auth {\n  background-color: #fafafa;\n  border: 1px solid #fafafa;\n  padding: 2rem;\n  text-align: center; }\n  .callout-auth h3, .callout-auth p {\n    margin-bottom: 2rem; }\n\n.icon-btn-text-small {\n  font-weight: bold;\n  font-family: 'Pathway Gothic One', sans-serif;\n  text-transform: uppercase;\n  top: 15px;\n  right: 15px;\n  position: absolute;\n  color: #f8f8f8;\n  font-size: 1.2rem; }\n\nlabel {\n  text-transform: capitalize;\n  color: #232f32; }\n\n.header {\n  color: #6abedb;\n  margin-bottom: 0px;\n  font-size: 1.5rem;\n  text-transform: uppercase;\n  font-weight: bold;\n  font-family: 'Pathway Gothic One', sans-serif; }\n\n.sub-header {\n  color: #232f32;\n  font-size: 0.9rem;\n  font-family: 'Pathway Gothic One', sans-serif; }\n\n.page-title {\n  color: #555;\n  font-family: 'Pathway Gothic One', sans-serif;\n  font-size: 1.5rem;\n  margin-top: 1.5rem;\n  margin-bottom: 1.5rem; }\n\ninput[type=search] {\n  box-shadow: none; }\n\n.top-bar-upper {\n  color: #333;\n  font-size: 0.5rem; }\n\n.app-header {\n  font-size: 1.3rem; }\n\ntable.overview-custom thead, table.overview-custom tbody, table.overview-custom tr, table.overview-custom th {\n  text-align: center; }\n\ntable.sensor-details-table tbody {\n  text-align: left; }\n\ng text {\n  fill: #232f32;\n  stroke: #232f32; }\n\npolyline {\n  stroke: #232f32; }\n\n.top-bar-left {\n  margin-top: 1.5rem; }\n\n.top-bar-right {\n  margin-top: 1.5rem; }\n\n.top-bar {\n  padding: 0rem 2rem 0rem 2rem;\n  background: #232f32;\n  height: 4rem;\n  box-shadow: 0.5px 0.5px 5px #373837; }\n\n.top-bar ul {\n  background: #232f32;\n  /* temporary fix */\n  position: absolute;\n  top: 15px;\n  right: 15px; }\n\n.top-bar.lower {\n  padding-top: 0px; }\n\n.top-bar-title {\n  font-size: 1.7rem;\n  text-transform: uppercase;\n  font-weight: bold;\n  font-family: 'Pathway Gothic One', sans-serif;\n  position: absolute;\n  top: 15px;\n  left: 15px; }\n\n.menu > li > a {\n  color: #fafafa;\n  font-weight: bold;\n  font-size: 1rem;\n  text-transform: uppercase; }\n\n.is-dropdown-submenu {\n  border: 1px solid #373737; }\n", ""]);
+	exports.push([module.id, "body,\nhtml {\n  background: #fff;\n  height: 100%;\n  font-family: roboto;\n  color: #f2f2f2; }\n\n.row {\n  max-width: 85rem; }\n\ndiv#offCanvas {\n  width: 350px;\n  height: 100%;\n  padding: 1.5rem;\n  background: #e8e8e8; }\n\n.is-open-right {\n  transform: translateX(-350px); }\n\n.off-canvas.position-right {\n  right: -350px; }\n\n.off-canvas-content {\n  background: #fff; }\n\na {\n  color: #6abedb; }\n\nhr {\n  border-color: #373837;\n  margin-top: 0.5rem; }\n\ntable thead {\n  background: #232f32;\n  color: white;\n  border: 1px solid #232f32; }\n\ntable tbody {\n  color: #1a1b1b;\n  border: 1px solid #232f32; }\n\n.margin-top-large {\n  margin-top: 4rem; }\n\n.margin-bottom-large {\n  margin-bottom: 4rem; }\n\n.margin-right-small {\n  margin-right: 2rem; }\n\n.margin-left-small {\n  margin-left: 2rem; }\n\n.margin-top-md {\n  margin-top: 2rem; }\n\n.margin-bottom-md {\n  margin-bottom: 2rem; }\n\n.margin-bottom-small {\n  margin-bottom: 1rem; }\n\n.textAlignCenter {\n  text-align: center; }\n\n.callout {\n  background-color: #f2f2f2; }\n\n.callout-dark {\n  padding: 1.5rem;\n  background-color: #f2f2f2;\n  border: 1px solid #373837;\n  border-bottom-left-radius: 4px;\n  border-bottom-right-radius: 4px;\n  margin-top: 0; }\n\n.callout-dark-header {\n  padding: 0.5rem;\n  background-color: #232f32;\n  border: 1px solid #373837;\n  border-top-left-radius: 4px;\n  border-top-right-radius: 4px;\n  margin-bottom: 0; }\n\n.callout-auth {\n  background-color: #fafafa;\n  border: 1px solid #fafafa;\n  padding: 2rem;\n  text-align: center; }\n  .callout-auth h3,\n  .callout-auth p {\n    margin-bottom: 2rem; }\n\n.icon-btn-text-small {\n  font-weight: bold;\n  font-family: 'Pathway Gothic One', sans-serif;\n  text-transform: uppercase;\n  top: 15px;\n  right: 15px;\n  position: absolute;\n  color: #f8f8f8;\n  font-size: 1.2rem; }\n\nlabel {\n  text-transform: capitalize;\n  color: #232f32; }\n\n.header {\n  color: #6abedb;\n  margin-bottom: 0;\n  font-size: 1.5rem;\n  text-transform: uppercase;\n  font-weight: bold;\n  font-family: 'Pathway Gothic One', sans-serif; }\n\n.sub-header {\n  color: #232f32;\n  font-size: 0.9rem;\n  font-family: 'Pathway Gothic One', sans-serif; }\n\n.page-title {\n  color: #555;\n  font-family: 'Pathway Gothic One', sans-serif;\n  font-size: 1.5rem;\n  margin-top: 1.5rem;\n  margin-bottom: 1.5rem; }\n\ninput[type=search] {\n  box-shadow: none; }\n\n.top-bar-upper {\n  color: #333;\n  font-size: 0.5rem; }\n\n.app-header {\n  font-size: 1.3rem; }\n\ntable.overview-custom tbody,\ntable.overview-custom th,\ntable.overview-custom thead,\ntable.overview-custom tr {\n  text-align: center; }\n\ntable.sensor-details-table tbody {\n  text-align: left; }\n\ng text {\n  fill: #232f32;\n  stroke: #232f32; }\n\npolyline {\n  stroke: #232f32; }\n\n.statusText {\n  color: red;\n  margin-bottom: 1rem;\n  text-transform: uppercase;\n  font-size: 0.5em;\n  font-weight: bold; }\n\n.top-bar-left {\n  margin-top: 1.5rem; }\n\n.top-bar-right {\n  margin-top: 1.5rem; }\n\n.top-bar {\n  padding: 0rem 2rem 0rem 2rem;\n  background: #232f32;\n  height: 4rem;\n  box-shadow: 0.5px 0.5px 5px #373837; }\n\n.top-bar ul {\n  background: #232f32;\n  /* temporary fix */\n  position: absolute;\n  top: 15px;\n  right: 15px; }\n\n.top-bar.lower {\n  padding-top: 0px; }\n\n.top-bar-title {\n  font-size: 1.7rem;\n  text-transform: uppercase;\n  font-weight: bold;\n  font-family: 'Pathway Gothic One', sans-serif;\n  position: absolute;\n  top: 15px;\n  left: 15px; }\n\n.menu > li > a {\n  color: #fafafa;\n  font-weight: bold;\n  font-size: 1rem;\n  text-transform: uppercase; }\n\n.is-dropdown-submenu {\n  border: 1px solid #373737; }\n", ""]);
 
 	// exports
 
@@ -53357,7 +53401,7 @@
 	exports.push([module.id, "@import url(https://fonts.googleapis.com/css?family=Pathway+Gothic+One);", ""]);
 
 	// module
-	exports.push([module.id, "body, html {\n  background: #fff;\n  height: 100%;\n  font-family: roboto;\n  color: #f2f2f2; }\n\n.row {\n  max-width: 85rem; }\n\ndiv#offCanvas {\n  width: 350px;\n  height: 100%;\n  padding: 1.5rem;\n  background: #e8e8e8; }\n\n.is-open-right {\n  transform: translateX(-350px); }\n\n.off-canvas.position-right {\n  right: -350px; }\n\n.off-canvas-content {\n  background: #fff; }\n\na {\n  color: #6abedb; }\n\nhr {\n  border-color: #373837;\n  margin-top: 0.5rem; }\n\ntable thead {\n  background: #232f32;\n  color: white;\n  border: 1px solid #232f32; }\n\ntable tbody {\n  color: #1a1b1b;\n  border: 1px solid #232f32; }\n\n.margin-top-large {\n  margin-top: 4rem; }\n\n.margin-bottom-large {\n  margin-bottom: 4rem; }\n\n.margin-right-small {\n  margin-right: 2rem; }\n\n.margin-left-small {\n  margin-left: 2rem; }\n\n.margin-top-md {\n  margin-top: 2rem; }\n\n.margin-bottom-md {\n  margin-bottom: 2rem; }\n\n.margin-bottom-small {\n  margin-bottom: 1rem; }\n\n.textAlignCenter {\n  text-align: center; }\n\n.callout {\n  background-color: #f2f2f2; }\n\n.callout-dark {\n  padding: 1.5rem;\n  background-color: #f2f2f2;\n  border: 1px solid #373837;\n  border-bottom-left-radius: 4px;\n  border-bottom-right-radius: 4px;\n  margin-top: 0px; }\n\n.callout-dark-header {\n  padding: 0.5rem;\n  background-color: #232f32;\n  border: 1px solid #373837;\n  border-top-left-radius: 4px;\n  border-top-right-radius: 4px;\n  margin-bottom: 0px; }\n\n.callout-auth {\n  background-color: #fafafa;\n  border: 1px solid #fafafa;\n  padding: 2rem;\n  text-align: center; }\n  .callout-auth h3, .callout-auth p {\n    margin-bottom: 2rem; }\n\n.icon-btn-text-small {\n  font-weight: bold;\n  font-family: 'Pathway Gothic One', sans-serif;\n  text-transform: uppercase;\n  top: 15px;\n  right: 15px;\n  position: absolute;\n  color: #f8f8f8;\n  font-size: 1.2rem; }\n\nlabel {\n  text-transform: capitalize;\n  color: #232f32; }\n\n.header {\n  color: #6abedb;\n  margin-bottom: 0px;\n  font-size: 1.5rem;\n  text-transform: uppercase;\n  font-weight: bold;\n  font-family: 'Pathway Gothic One', sans-serif; }\n\n.sub-header {\n  color: #232f32;\n  font-size: 0.9rem;\n  font-family: 'Pathway Gothic One', sans-serif; }\n\n.page-title {\n  color: #555;\n  font-family: 'Pathway Gothic One', sans-serif;\n  font-size: 1.5rem;\n  margin-top: 1.5rem;\n  margin-bottom: 1.5rem; }\n\ninput[type=search] {\n  box-shadow: none; }\n\n.top-bar-upper {\n  color: #333;\n  font-size: 0.5rem; }\n\n.app-header {\n  font-size: 1.3rem; }\n\ntable.overview-custom thead, table.overview-custom tbody, table.overview-custom tr, table.overview-custom th {\n  text-align: center; }\n\ntable.sensor-details-table tbody {\n  text-align: left; }\n\ng text {\n  fill: #232f32;\n  stroke: #232f32; }\n\npolyline {\n  stroke: #232f32; }\n\n.griddle-container {\n  border: none !important; }\n\n.griddle .top-section {\n  clear: both;\n  display: table;\n  width: 100%; }\n\n.griddle .griddle-filter {\n  float: left;\n  width: 50%;\n  text-align: left;\n  color: #222;\n  min-height: 1px; }\n\n.griddle .griddle-settings-toggle {\n  float: left;\n  width: 50%;\n  text-align: right;\n  color: #f8f8f8; }\n\n.griddle .griddle-settings {\n  background-color: #FFF;\n  border: 1px solid #DDD;\n  color: #222;\n  padding: 10px;\n  margin-bottom: 10px; }\n\n.griddle .griddle-settings .settings {\n  color: #f8f8f8; }\n\n.griddle .griddle-settings .griddle-columns {\n  clear: both;\n  display: table;\n  width: 100%;\n  border-bottom: 1px solid #EDEDED;\n  margin-bottom: 10px; }\n\n.griddle .griddle-settings .griddle-column-selection {\n  float: left;\n  width: 20%; }\n\n.griddle table {\n  width: 100%;\n  table-layout: fixed; }\n\n.griddle th {\n  background-color: #EDEDEF;\n  border: 0px;\n  border-bottom: 1px solid #DDD;\n  color: #222;\n  padding: 5px; }\n\n.griddle td {\n  padding: 5px;\n  background-color: #FFF;\n  border-top-color: #DDD;\n  color: #222; }\n\n.griddle .footer-container {\n  padding: 0px;\n  background-color: #EDEDED;\n  border: 0px;\n  color: #222; }\n\n.griddle button {\n  color: transparent; }\n\n.griddle .griddle-previous, .griddle .griddle-page, .griddle .griddle-next {\n  float: left;\n  width: 33%;\n  min-height: 1px;\n  margin-top: 5px; }\n\n.griddle .griddle-page {\n  text-align: center; }\n\n.griddle .griddle-next {\n  text-align: right; }\n", ""]);
+	exports.push([module.id, "body,\nhtml {\n  background: #fff;\n  height: 100%;\n  font-family: roboto;\n  color: #f2f2f2; }\n\n.row {\n  max-width: 85rem; }\n\ndiv#offCanvas {\n  width: 350px;\n  height: 100%;\n  padding: 1.5rem;\n  background: #e8e8e8; }\n\n.is-open-right {\n  transform: translateX(-350px); }\n\n.off-canvas.position-right {\n  right: -350px; }\n\n.off-canvas-content {\n  background: #fff; }\n\na {\n  color: #6abedb; }\n\nhr {\n  border-color: #373837;\n  margin-top: 0.5rem; }\n\ntable thead {\n  background: #232f32;\n  color: white;\n  border: 1px solid #232f32; }\n\ntable tbody {\n  color: #1a1b1b;\n  border: 1px solid #232f32; }\n\n.margin-top-large {\n  margin-top: 4rem; }\n\n.margin-bottom-large {\n  margin-bottom: 4rem; }\n\n.margin-right-small {\n  margin-right: 2rem; }\n\n.margin-left-small {\n  margin-left: 2rem; }\n\n.margin-top-md {\n  margin-top: 2rem; }\n\n.margin-bottom-md {\n  margin-bottom: 2rem; }\n\n.margin-bottom-small {\n  margin-bottom: 1rem; }\n\n.textAlignCenter {\n  text-align: center; }\n\n.callout {\n  background-color: #f2f2f2; }\n\n.callout-dark {\n  padding: 1.5rem;\n  background-color: #f2f2f2;\n  border: 1px solid #373837;\n  border-bottom-left-radius: 4px;\n  border-bottom-right-radius: 4px;\n  margin-top: 0; }\n\n.callout-dark-header {\n  padding: 0.5rem;\n  background-color: #232f32;\n  border: 1px solid #373837;\n  border-top-left-radius: 4px;\n  border-top-right-radius: 4px;\n  margin-bottom: 0; }\n\n.callout-auth {\n  background-color: #fafafa;\n  border: 1px solid #fafafa;\n  padding: 2rem;\n  text-align: center; }\n  .callout-auth h3,\n  .callout-auth p {\n    margin-bottom: 2rem; }\n\n.icon-btn-text-small {\n  font-weight: bold;\n  font-family: 'Pathway Gothic One', sans-serif;\n  text-transform: uppercase;\n  top: 15px;\n  right: 15px;\n  position: absolute;\n  color: #f8f8f8;\n  font-size: 1.2rem; }\n\nlabel {\n  text-transform: capitalize;\n  color: #232f32; }\n\n.header {\n  color: #6abedb;\n  margin-bottom: 0;\n  font-size: 1.5rem;\n  text-transform: uppercase;\n  font-weight: bold;\n  font-family: 'Pathway Gothic One', sans-serif; }\n\n.sub-header {\n  color: #232f32;\n  font-size: 0.9rem;\n  font-family: 'Pathway Gothic One', sans-serif; }\n\n.page-title {\n  color: #555;\n  font-family: 'Pathway Gothic One', sans-serif;\n  font-size: 1.5rem;\n  margin-top: 1.5rem;\n  margin-bottom: 1.5rem; }\n\ninput[type=search] {\n  box-shadow: none; }\n\n.top-bar-upper {\n  color: #333;\n  font-size: 0.5rem; }\n\n.app-header {\n  font-size: 1.3rem; }\n\ntable.overview-custom tbody,\ntable.overview-custom th,\ntable.overview-custom thead,\ntable.overview-custom tr {\n  text-align: center; }\n\ntable.sensor-details-table tbody {\n  text-align: left; }\n\ng text {\n  fill: #232f32;\n  stroke: #232f32; }\n\npolyline {\n  stroke: #232f32; }\n\n.statusText {\n  color: red;\n  margin-bottom: 1rem;\n  text-transform: uppercase;\n  font-size: 0.5em;\n  font-weight: bold; }\n\n.griddle-container {\n  border: none !important; }\n\n.griddle .top-section {\n  clear: both;\n  display: table;\n  width: 100%; }\n\n.griddle .griddle-filter {\n  float: left;\n  width: 50%;\n  text-align: left;\n  color: #222;\n  min-height: 1px; }\n\n.griddle .griddle-settings-toggle {\n  float: left;\n  width: 50%;\n  text-align: right;\n  color: #f8f8f8; }\n\n.griddle .griddle-settings {\n  background-color: #FFF;\n  border: 1px solid #DDD;\n  color: #222;\n  padding: 10px;\n  margin-bottom: 10px; }\n\n.griddle .griddle-settings .settings {\n  color: #f8f8f8; }\n\n.griddle .griddle-settings .griddle-columns {\n  clear: both;\n  display: table;\n  width: 100%;\n  border-bottom: 1px solid #EDEDED;\n  margin-bottom: 10px; }\n\n.griddle .griddle-settings .griddle-column-selection {\n  float: left;\n  width: 20%; }\n\n.griddle table {\n  width: 100%;\n  table-layout: fixed; }\n\n.griddle th {\n  background-color: #EDEDEF;\n  border: 0px;\n  border-bottom: 1px solid #DDD;\n  color: #222;\n  padding: 5px; }\n\n.griddle td {\n  padding: 5px;\n  background-color: #FFF;\n  border-top-color: #DDD;\n  color: #222; }\n\n.griddle .footer-container {\n  padding: 0px;\n  background-color: #EDEDED;\n  border: 0px;\n  color: #222; }\n\n.griddle button {\n  color: transparent; }\n\n.griddle .griddle-previous, .griddle .griddle-page, .griddle .griddle-next {\n  float: left;\n  width: 33%;\n  min-height: 1px;\n  margin-top: 5px; }\n\n.griddle .griddle-page {\n  text-align: center; }\n\n.griddle .griddle-next {\n  text-align: right; }\n", ""]);
 
 	// exports
 
@@ -53457,27 +53501,23 @@
 	            for (var sensor in allSensorData) {
 	                if (allSensorData.hasOwnProperty(sensor)) {
 	                    var mac = sensor;
+	                    if (allSensorData[sensor]["flapping"]) {
+	                        var row = {
+	                            "mac_address": mac,
+	                            "sensor_status": allSensorData[sensor]["sensor_status"],
+	                            "flapping": allSensorData[sensor]["flapping"],
+	                            "network_router": allSensorData[sensor]["network_router"]
+	                        };
 
-	                    var row = {
-	                        "mac_address": mac,
-	                        "sensor_status": allSensorData[sensor]["sensor_status"],
-	                        "flapping": allSensorData[sensor]["flapping"],
-	                        "network_router": allSensorData[sensor]["network_router"]
-	                    };
-
-	                    dataList.push(row);
+	                        dataList.push(row);
+	                    }
 	                }
 	            }
 
 	            return React.createElement(
 	                'div',
 	                null,
-	                React.createElement(Griddle, {
-	                    results: dataList,
-	                    columnMetadata: tableMetaData,
-	                    tableClassName: 'table',
-	                    columns: ["mac_address", "sensor_status", "flapping", "network_router"]
-	                })
+	                React.createElement(Griddle, { results: dataList, columnMetadata: tableMetaData, tableClassName: 'table', columns: ["mac_address", "sensor_status", "flapping", "network_router"] })
 	            );
 	        }
 	    }]);
