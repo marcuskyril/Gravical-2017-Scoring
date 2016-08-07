@@ -1,5 +1,5 @@
 var React = require('react');
-var WeatherForm = require('WeatherForm');
+var Abnormal = require('Abnormal');
 var piSensorOverview = require('piSensorOverview');
 var Uptime = require('Uptime');
 var SensorHealthOverview = require('SensorHealthOverview');
@@ -7,9 +7,88 @@ var GeneralMetrics = require('GeneralMetrics');
 var ErrorModal = require('ErrorModal');
 var Tableaux = require('Tableaux');
 var Notifications = require('Notifications');
-var AddSensor = require('AddSensor');
 var FontAwesome = require('react-fontawesome');
 var BuildingOverview = require('BuildingOverview');
+var AddSensorAPI = require('AddSensorAPI');
+
+class AddSensor extends React.Component {
+
+  constructor(props) {
+    super(props);
+  }
+
+  onAddSensor(e) {
+    e.preventDefault();
+
+    var inputMac = this.refs.macAddress.value;
+    var inputRegion = this.refs.region.value;
+    var inputLocationLevel = this.refs.sensorLocationLevel.value;
+    var inputLocationID = this.refs.sensorLocationID.value;
+    var inputBuilding = this.refs.building.value;
+
+    var that = this;
+
+    AddSensorAPI.addSensor(inputMac, inputRegion, inputLocationLevel, inputLocationID, inputBuilding).then(function(response){
+      console.log("response", response);
+
+      that.refs.macAddress.value = '';
+      that.refs.region.value = '';
+      that.refs.sensorLocationLevel.value = '';
+      that.refs.sensorLocationID.value = '';
+      that.refs.building.value = '';
+
+    }, function(error) {
+      alert(error);
+    });
+
+  }
+
+  render() {
+    return (
+      <div id="add-sensor-modal" className="reveal tiny text-center" data-reveal="">
+          <form>
+              <div className="row">
+                  <div className="large-12 columns">
+                      <div className="header">Add Sensor</div>
+
+                      <label>Mac Address
+                          <input type="text" name="macAddress" ref="macAddress" placeholder="Mac Address" required/>
+                      </label>
+                      <label>Region
+                          <select ref="region" name="region" required>
+                              <option value=""></option>
+                              <option value="north">North</option>
+                              <option value="south">South</option>
+                              <option value="east">East</option>
+                              <option value="west">West</option>
+                              <option value="central">Central</option>
+                          </select>
+                      </label>
+
+                      <label>Sensor Location level
+                          <input type="text" name="sensorLocationLevel" ref="sensorLocationLevel" placeholder="Sensor Location Level"/>
+                      </label>
+
+                      <label>Sensor Location ID
+                          <input type="text" name="sensorLocationID" ref="sensorLocationID" placeholder="Sensor Location ID"/>
+                      </label>
+
+                      <label>Building
+                          <input type="text" name="building" ref="building" placeholder="Building"/>
+                      </label>
+                      <button className="button hollow expanded" onClick={this.onAddSensor.bind(this)}>
+                          Add Pi
+                      </button>
+                      <button className="button hollow expanded" data-close="">
+                          Cancel
+                      </button>
+                  </div>
+              </div>
+          </form>
+      </div>
+    );
+  }
+}
 
 var Dashboard = React.createClass({
     getInitialState: function() {
@@ -32,44 +111,14 @@ var Dashboard = React.createClass({
     },
     render: function() {
 
-        console.log("Dashboard's overall data is: ", this.props.overall);
-
-        console.log("Dashboard's BFG data is: ", this.props.bfg);
+        // console.log("Dashboard's overall data is: ", this.props.overall);
+        //
+        // console.log("Dashboard's BFG data is: ", this.props.bfg);
 
         // var oveall = this.props.overall.data;
 
         // console.log("unknown data: ", unknown);
 
-        var {
-            isLoading,
-            temp,
-            location,
-            ok,
-            danger,
-            warning,
-            down,
-            errorMessage
-        } = this.state;
-
-        function renderError () {
-          if (typeof errorMessage === 'string') {
-            return (
-              <ErrorModal/>
-            )
-          }
-        }
-
-        function renderOverview() {
-            return <SensorHealthOverview ok={ok} danger={danger} warning={warning} down={down}/>
-        }
-
-        function renderMessage() {
-            if (isLoading) {
-                return <h3>Fetching information...</h3>;
-            } else if (temp && location) {
-                return <WeatherMessage temp={temp} location={location}/>;
-            }
-        }
 
         return (
 
@@ -94,9 +143,7 @@ var Dashboard = React.createClass({
                     <div>
                       <div className="callout callout-dark-header"><h4 className="header">Abnormal Behaviour</h4></div>
                       <div className="callout callout-dark">
-                      <WeatherForm onSearch={this.handleSearch}/>
-                      {renderMessage()}
-                      {renderError()}
+                      <Abnormal onSearch={this.handleSearch} data={this.props.bfg}/>
                       </div>
                     </div>
 
@@ -104,9 +151,7 @@ var Dashboard = React.createClass({
 
                   <div className="columns medium-3">
                     <div className="callout callout-dark-header"><h4 className="header">Notifications</h4></div>
-                    <div className="callout callout-dark">
                       <Notifications/>
-                    </div>
                   </div>
                 </div>
 

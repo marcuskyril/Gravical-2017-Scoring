@@ -163,7 +163,7 @@ const columnDisplayName = {
     "Mac Address" : "mac_address",
     "Latest Timestamp" : "latest_timestamp",
     "geo-region" : "geo-region",
-    "building" : "building",
+    "Building" : "building",
     "Location ID" : "sensor-level-id",
     "Sensor Type" : "sensor_type",
     "Current Status" : "current_status",
@@ -210,27 +210,51 @@ class Tableaux extends React.Component {
     for (var sensor in allSensorData) {
         if (allSensorData.hasOwnProperty(sensor)) {
             var mac = sensor;
+            var row = {};
 
-            var row = {
-                "mac_address" : mac,
-                "latest_timestamp" : allSensorData[sensor]["latest_timestamp"],
-                "building" : allSensorData[sensor]["building"],
-                "sensor-level-id" : allSensorData[sensor]["sensor-location-level"] + allSensorData[sensor]["sensor-location-id"],
-                "sensor_type" : allSensorData[sensor]["sensor_type"],
-                "current_status" : allSensorData[sensor]["current_status"],
-                "sensor_status" : allSensorData[sensor]["sensor_status"],
-                "flapping" : allSensorData[sensor]["flapping"] ? "true" : "false",
-                "network_router" : allSensorData[sensor]["network_router"],
-                "temperature" : allSensorData[sensor]["temperature"],
-                "CPU_usage" : allSensorData[sensor]["CPU_Usage"],
-                "RAM_total" : allSensorData[sensor]["RAM_total"],
-                "RAM_free" : allSensorData[sensor]["RAM_free"],
-                "RAM_used" : allSensorData[sensor]["RAM_used"],
-                "RAM_available" : allSensorData[sensor]["RAM_available"],
-                "disk_space_total" : allSensorData[sensor]["Disk_Space_total"],
-                "disk_space_free" : allSensorData[sensor]["Disk_Space_used"],
-                "disk_space_used" :allSensorData[sensor]["Disk_Space_free"]
-            };
+            if (typeof allSensorData[sensor]["error"] == "undefined") {
+                row = {
+                    "mac_address" : mac,
+                    "latest_timestamp" : allSensorData[sensor]["latest_timestamp"],
+                    "building" : allSensorData[sensor]["building"],
+                    "sensor-level-id" : allSensorData[sensor]["sensor-location-level"] + allSensorData[sensor]["sensor-location-id"],
+                    "sensor_type" : allSensorData[sensor]["sensor_type"],
+                    "current_status" : allSensorData[sensor]["current_status"],
+                    "sensor_status" : allSensorData[sensor]["sensor_status"],
+                    "flapping" : allSensorData[sensor]["flapping"] ? "true" : "false",
+                    "network_router" : allSensorData[sensor]["network_router"],
+                    "temperature" : allSensorData[sensor]["temperature"],
+                    "CPU_usage" : allSensorData[sensor]["CPU_Usage"],
+                    "RAM_total" : allSensorData[sensor]["RAM_total"],
+                    "RAM_free" : allSensorData[sensor]["RAM_free"],
+                    "RAM_used" : allSensorData[sensor]["RAM_used"],
+                    "RAM_available" : allSensorData[sensor]["RAM_available"],
+                    "disk_space_total" : allSensorData[sensor]["Disk_Space_total"],
+                    "disk_space_free" : allSensorData[sensor]["Disk_Space_used"],
+                    "disk_space_used" : allSensorData[sensor]["Disk_Space_free"]
+                };
+            } else {
+                row = {
+                    "mac_address" : mac,
+                    "latest_timestamp" : "no data",
+                    "building" : allSensorData[sensor]["building"],
+                    "sensor-level-id" : allSensorData[sensor]["sensor-location-level"] + allSensorData[sensor]["sensor-location-id"],
+                    "sensor_type" : allSensorData[sensor]["sensor_type"],
+                    "current_status" : "-",
+                    "sensor_status" : "-",
+                    "flapping" : "-",
+                    "network_router" : "-",
+                    "temperature" : "-",
+                    "CPU_usage" : "-",
+                    "RAM_total" : "-",
+                    "RAM_free" : "-",
+                    "RAM_used" : "-",
+                    "RAM_available" : "-",
+                    "disk_space_total" : "-",
+                    "disk_space_free" : "-",
+                    "disk_space_used" : "-"
+                };
+            }
 
             dataList.push(row);
         }

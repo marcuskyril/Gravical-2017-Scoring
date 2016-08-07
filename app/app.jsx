@@ -30,7 +30,6 @@ $(document).foundation();
 
 require('style!css!sass!applicationStyles');
 require('style!css!sass!navStyles');
-require('style!css!sass!sensorBlock');
 require('style!css!sass!loginStyles');
 require('style!css!sass!griddleStyles');
 

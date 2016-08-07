@@ -59,8 +59,8 @@ class SearchBar extends React.Component {
     render() {
 
         return (
-            <form>
-                <input type="text" placeholder="Search..."
+            <form id="buildingFilter">
+                <input type="text" placeholder="Filter Results"
                   value={this.props.filterText}
                   ref="filterTextInput"
                   onChange={this.handleChange.bind(this)}/>
@@ -90,19 +90,28 @@ class BuildingList extends React.Component {
                 console.log("buildingName" + buildingName);
                 console.log("filter text:", this.props.filterText);
                 console.log(buildingName +" === " +this.props.filterText);
-                console.log("Is this so?", buildingName.indexOf(this.props.filterText) === -1);
+                console.log("Not part of filterText?", buildingName.indexOf(this.props.filterText) === -1);
 
-                if (buildingName.indexOf(this.props.filterText) === -1) {
-                    return <div></div>;
+                // var search = $('#buildingFilter');
+                //
+                // search.on('change keyup', function (e) {
+                //
+                // });
+
+                // filterText is part of the buildingName
+                if ((buildingName.toLowerCase()).indexOf((this.props.filterText).toLowerCase()) !== -1) {
+
+                      var danger = buildings[property]["danger"]["count"];
+                      var warning = buildings[property]["warning"]["count"];
+                      var ok = buildings[property]["ok"]["count"];
+                      var down = buildings[property]["down"]["count"];
+
+                      console.log("data: " + buildingName + " -> " + ok + warning + danger + down);
+
+                      rows.push(<Building buildingName={buildingName} ok={ok} warning={warning} danger={danger} down={down}/>);
                 } else {
-                  var danger = buildings[property]["danger"]["count"];
-                  var warning = buildings[property]["warning"]["count"];
-                  var ok = buildings[property]["ok"]["count"];
-                  var down = buildings[property]["down"]["count"];
+                  return <div></div>;
 
-                  console.log("data: " + buildingName + " -> " + ok + warning + danger + down);
-
-                  rows.push(<Building buildingName={buildingName} ok={ok} warning={warning} danger={danger} down={down}/>);
                 }
             }
         }

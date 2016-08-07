@@ -99,6 +99,10 @@ class GeneralMetrics extends React.Component{
                     "sensor_status" : allSensorData[sensor]["sensor_status"]
                 };
 
+                if (typeof allSensorData[sensor]["error"] !== "undefined") {
+                    row["sensor_status"] = "-";
+                }
+
                 dataList.push(row);
             }
         }
