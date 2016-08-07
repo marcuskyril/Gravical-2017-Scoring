@@ -39,6 +39,18 @@ class Main extends React.Component {
         }, function() {
             console.warn('WebSocket connection closed');
         }, {'skipSubprotocolCheck': true});
+
+        var conn3 = new ab.Session('ws://52.74.119.147:9002', function() {
+            conn3.subscribe('', function(topic, data) {
+
+                that.setState({
+                    notifications: data
+                });
+            });
+        }, function() {
+            console.warn('WebSocket connection closed');
+        }, {'skipSubprotocolCheck': true});
+
     }
 
     render() {
@@ -55,6 +67,7 @@ class Main extends React.Component {
                 <div className="off-canvas-wrapper">
                     <div className="off-canvas-wrapper-inner" data-off-canvas-wrapper>
                         <div className="off-canvas position-right" data-position="right" id="offCanvas" data-off-canvas>
+                            <div id="sensorDetails"></div>
                             <SensorDetails/>
                         </div>
 
@@ -63,7 +76,7 @@ class Main extends React.Component {
 
                             <div className="row">
                                 <div className="columns medium-12 large 12">
-                                  <Dashboard overall={this.state.overall} bfg={this.state.bfg}/>
+                                  <Dashboard overall={this.state.overall} bfg={this.state.bfg} notifications={this.state.notifcations}/>
                                 </div>
                             </div>
                         </div>

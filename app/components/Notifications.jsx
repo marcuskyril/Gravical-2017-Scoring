@@ -1,11 +1,25 @@
 var React = require('react');
 var FontAwesome = require('react-fontawesome');
 
-var Notifications = React.createClass({
-    render: function() {
+class Notification extends React.Component {
+  render() {
+    return (
+      <tr>
+
+      </tr>
+    );
+  }
+}
+
+class Notifications extends React.Component {
+    render() {
+       var notificationsList = this.props.data;
+
+       console.log(notificationsList);
+
         return (
             <table className="notificationsTable">
-                
+
                 <tbody>
                     <tr>
                         <td className="textAlignCenter">
@@ -107,6 +121,6 @@ var Notifications = React.createClass({
             </table>
         );
     }
-});
+};
 
 module.exports = Notifications;

@@ -74,7 +74,8 @@ module.exports = {
       loginStyles: 'app/styles/login.scss',
       Tableaux: 'app/components/Tableaux.jsx',
       Notifications: 'app/components/Notifications.jsx',
-      DataStore: 'app/components/DataStore.js'
+      DataStore: 'app/components/DataStore.js',
+      retrieveSensorDetails: 'app/api/retrieveSensorDetails.jsx'
     },
     extensions: ['', '.js', '.jsx']
   },

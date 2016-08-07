@@ -2,6 +2,8 @@ var React = require('react');
 var SensorStatus = require('SensorStatus');
 var axios = require('axios');
 var Griddle = require('griddle-react');
+var retrieveSensorDetails = require('retrieveSensorDetails');
+var ReactDOM = require('react-dom');
 
 var dataList = [];
 
@@ -10,13 +12,41 @@ class LinkComponent extends React.Component{
     super(props);
   }
 
-  handleClick(data) {
-    console.log("click", data);
+  handleClick(event, macAddress) {
+    event.stopPropagation();
+    console.log("click", macAddress);
+
+    var interval = null;
+
+    $('#offCanvas').on('opened.zf.offcanvas', function() {
+
+      console.log("OPEN!!!!");
+
+      interval = setInterval(function () {
+        retrieveSensorDetails.retrieveSensorDetails(macAddress).then(function(response){
+          console.log(response);
+        }, function(error) {
+          console.log(error);
+        });
+      }, 10000);
+
+    });
+
+    $('#offCanvas').on('closed.zf.offcanvas', function() {
+
+      console.log("CLOSE!!!!");
+
+      if(interval != null){
+        clearInterval(interval);
+      }
+    });
+
+    // call API at intervals with mac address as param and render directly to id (React-DOM.render....)
   }
 
   render() {
     return (
-        <a onClick={this.handleClick(this.props.data)} data-toggle="offCanvas">{this.props.data}</a>
+        <a onClick={this.handleClick(event, this.props.data)} data-toggle="offCanvas">{this.props.data}</a>
     );
   }
 };

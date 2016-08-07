@@ -33,13 +33,12 @@ class AddSensor extends React.Component {
     var that = this;
 
     AddSensorAPI.addSensor(inputMac, inputRegion, inputLocationLevel, inputLocationID, inputBuilding).then(function(response){
-      console.log("response", response);
 
       that.setState({
         message: response
       });
 
-      console.log("message", that.state.message);
+      //console.log("message", that.state.message);
 
       that.refs.macAddress.value = '';
       that.refs.region.value = '';
@@ -50,13 +49,20 @@ class AddSensor extends React.Component {
     }, function(error) {
       alert(error);
     });
-
   }
 
   render() {
     var message = this.state.message;
+    var that = this;
+    //console.log("render", message);
 
-    console.log("render", message);
+    // resets message to empty string on close
+    $('#add-sensor-modal').on('closed.zf.reveal', function() {
+        //console.log("close");
+        that.setState({
+          message: ''
+        });
+    });
 
     return (
       <div id="add-sensor-modal" className="reveal tiny text-center" data-reveal="">
@@ -90,9 +96,9 @@ class AddSensor extends React.Component {
                       <label>Building
                           <input type="text" name="building" ref="building" placeholder="Building"/>
                       </label>
-                      <AddSensorMessage message={message}/>
+                      <div id="sensorMessage"><AddSensorMessage message={message}/></div>
                       <button className="button hollow expanded" onClick={this.onAddSensor.bind(this)}>
-                          Add Pi
+                          Add Sensor
                       </button>
                       <button className="button hollow expanded" data-close="">
                           Cancel
@@ -129,10 +135,6 @@ var Dashboard = React.createClass({
     launchAddSensor: function() {
         var modal = new Foundation.Reveal($('#add-sensor-modal'));
         modal.open();
-
-        this.setState({
-          message: ''
-        });
     },
 
     render: function() {
@@ -176,7 +178,7 @@ var Dashboard = React.createClass({
 
                   <div className="columns medium-3">
                     <div className="callout callout-dark-header"><h4 className="header">Notifications</h4></div>
-                      <Notifications/>
+                      <Notifications data={this.props.notifications}/>
                   </div>
                 </div>
 

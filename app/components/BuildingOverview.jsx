@@ -51,7 +51,6 @@ class SearchBar extends React.Component {
 
     handleChange() {
 
-        console.log("THIS", this);
         this.props.onUserInput(
             this.refs.filterTextInput.value
         );
@@ -94,8 +93,8 @@ class BuildingList extends React.Component {
 
                 // var search = $('#buildingFilter');
                 //
-                // search.on('change keyup', function (e) {
-                //
+                // search.on('change keyup paste', function (e) {
+                //   console.log("helo");
                 // });
 
                 // filterText is part of the buildingName
