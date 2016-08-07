@@ -10,7 +10,8 @@ class Main extends React.Component {
 
         this.state = {
             overall: [],
-            bfg: []
+            bfg: [],
+            notifications: []
         }
     }
 

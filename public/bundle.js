@@ -12654,7 +12654,8 @@
 
 	        _this.state = {
 	            overall: [],
-	            bfg: []
+	            bfg: [],
+	            notifications: []
 	        };
 	        return _this;
 	    }
@@ -42197,9 +42198,9 @@
 
 	  render: function render() {
 
-	    // console.log("Dashboard's overall data is: ", this.props.overall);
+	    console.log("Dashboard's overall data is: ", this.props.overall);
 	    //
-	    // console.log("Dashboard's BFG data is: ", this.props.bfg);
+	    console.log("Dashboard's notifications data is: ", this.props.notifications);
 
 	    // var oveall = this.props.overall.data;
 
@@ -52367,6 +52368,15 @@
 	    _createClass(Building, [{
 	        key: 'render',
 	        value: function render() {
+	            var obj = this.props;
+	            var slices = [];
+
+	            slices.forEach(function (slice) {
+	                console.log("slice", slice);
+	            });
+
+	            //console.log("slices", obj);
+
 	            return React.createElement(
 	                'div',
 	                null,
@@ -52454,6 +52464,7 @@
 	            //console.log("BuildingList now has: ", this.props.data);
 
 	            var rows = [];
+	            var allBuildings = [];
 	            //console.log("data.data!", this.props.data.data);
 
 	            var buildings = this.props.data.data;
@@ -52462,33 +52473,27 @@
 	                if (buildings.hasOwnProperty(property)) {
 	                    var buildingName = property;
 
-	                    console.log("buildingName" + buildingName);
-	                    console.log("filter text:", this.props.filterText);
-	                    console.log(buildingName + " === " + this.props.filterText);
-	                    console.log("Not part of filterText?", buildingName.indexOf(this.props.filterText) === -1);
+	                    var temp = {
+	                        buildingName: buildingName,
+	                        danger: buildings[property]["danger"]["count"],
+	                        warning: buildings[property]["warning"]["count"],
+	                        ok: buildings[property]["ok"]["count"],
+	                        down: buildings[property]["down"]["count"]
+	                    };
 
-	                    // var search = $('#buildingFilter');
-	                    //
-	                    // search.on('change keyup paste', function (e) {
-	                    //   console.log("helo");
-	                    // });
-
-	                    // filterText is part of the buildingName
-	                    if (buildingName.toLowerCase().indexOf(this.props.filterText.toLowerCase()) === -1) {
-
-	                        var danger = buildings[property]["danger"]["count"];
-	                        var warning = buildings[property]["warning"]["count"];
-	                        var ok = buildings[property]["ok"]["count"];
-	                        var down = buildings[property]["down"]["count"];
-
-	                        console.log("data: " + buildingName + " -> " + ok + warning + danger + down);
-
-	                        rows.push(React.createElement(Building, { buildingName: buildingName, ok: ok, warning: warning, danger: danger, down: down }));
-	                    } else {
-	                        return React.createElement('div', null);
-	                    }
+	                    allBuildings.push(temp);
 	                }
 	            }
+
+	            // console.log("allBuildings", allBuildings);
+
+	            allBuildings.forEach(function (building) {
+	                var buildingName = building.buildingName;
+	                if (buildingName.toLowerCase().indexOf(this.props.filterText.toLowerCase()) === -1) {
+	                    return React.createElement('div', null);
+	                }
+	                rows.push(React.createElement(Building, { buildingName: buildingName, ok: building.ok, warning: building.warning, danger: building.danger, down: building.down }));
+	            }.bind(this));
 
 	            return React.createElement(
 	                'div',

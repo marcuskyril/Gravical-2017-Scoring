@@ -139,9 +139,9 @@ var Dashboard = React.createClass({
 
     render: function() {
 
-        // console.log("Dashboard's overall data is: ", this.props.overall);
+        console.log("Dashboard's overall data is: ", this.props.overall);
         //
-        // console.log("Dashboard's BFG data is: ", this.props.bfg);
+        console.log("Dashboard's notifications data is: ", this.props.notifications);
 
         // var oveall = this.props.overall.data;
 

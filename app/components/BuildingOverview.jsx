@@ -12,6 +12,17 @@ class Building extends React.Component {
     }
 
     render() {
+        var obj = this.props;
+        var slices = [];
+
+        slices.forEach(function(slice) {
+          console.log("slice", slice);
+        });
+
+        //console.log("slices", obj);
+
+
+
         return (
             <div>
                 <div className="header">{this.props.buildingName}</div>
@@ -78,6 +89,7 @@ class BuildingList extends React.Component {
         //console.log("BuildingList now has: ", this.props.data);
 
         var rows = [];
+        var allBuildings = [];
         //console.log("data.data!", this.props.data.data);
 
         var buildings = this.props.data.data;
@@ -86,34 +98,27 @@ class BuildingList extends React.Component {
             if (buildings.hasOwnProperty(property)) {
                 var buildingName = property;
 
-                console.log("buildingName" + buildingName);
-                console.log("filter text:", this.props.filterText);
-                console.log(buildingName +" === " +this.props.filterText);
-                console.log("Not part of filterText?", buildingName.indexOf(this.props.filterText) === -1);
-
-                // var search = $('#buildingFilter');
-                //
-                // search.on('change keyup paste', function (e) {
-                //   console.log("helo");
-                // });
-
-                // filterText is part of the buildingName
-                if ((buildingName.toLowerCase()).indexOf((this.props.filterText).toLowerCase()) === -1) {
-
-                      var danger = buildings[property]["danger"]["count"];
-                      var warning = buildings[property]["warning"]["count"];
-                      var ok = buildings[property]["ok"]["count"];
-                      var down = buildings[property]["down"]["count"];
-
-                      console.log("data: " + buildingName + " -> " + ok + warning + danger + down);
-
-                      rows.push(<Building buildingName={buildingName} ok={ok} warning={warning} danger={danger} down={down}/>);
-                } else {
-                  return <div></div>;
-
+                var temp = {
+                  buildingName: buildingName,
+                  danger: buildings[property]["danger"]["count"],
+                  warning: buildings[property]["warning"]["count"],
+                  ok: buildings[property]["ok"]["count"],
+                  down: buildings[property]["down"]["count"]
                 }
+
+                allBuildings.push(temp);
             }
         }
+
+        // console.log("allBuildings", allBuildings);
+
+        allBuildings.forEach(function(building){
+          var buildingName = building.buildingName;
+          if((buildingName.toLowerCase()).indexOf((this.props.filterText.toLowerCase())) === -1) {
+            return <div></div>
+          }
+          rows.push(<Building buildingName={buildingName} ok={building.ok} warning={building.warning} danger={building.danger} down={building.down}/>);
+        }.bind(this));
 
         return (
             <div>
