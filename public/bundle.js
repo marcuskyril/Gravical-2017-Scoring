@@ -12673,7 +12673,7 @@
 	                    that.setState({ overall: data });
 	                });
 	            }, function () {
-	                console.warn('WebSocket connection closed');
+	                console.warn('WebSocket connection closed: Building data not available');
 	            }, { 'skipSubprotocolCheck': true });
 
 	            var conn2 = new ab.Session('ws://52.74.119.147:9001', function () {
@@ -12684,31 +12684,28 @@
 	                    });
 	                });
 	            }, function () {
-	                console.warn('WebSocket connection closed');
+	                console.warn('WebSocket connection closed: BFG data not available');
 	            }, { 'skipSubprotocolCheck': true });
 
 	            var conn3 = new ab.Session('ws://52.74.119.147:9002', function () {
 	                conn3.subscribe('', function (topic, data) {
+
+	                    console.log("main notifications data: ", data);
 
 	                    that.setState({
 	                        notifications: data
 	                    });
 	                });
 	            }, function () {
-	                console.warn('WebSocket connection closed');
+	                console.warn('WebSocket connection closed: Notification data not available');
 	            }, { 'skipSubprotocolCheck': true });
 	        }
 	    }, {
 	        key: 'render',
 	        value: function render() {
-	            //const childrenWithProps = React.Children.map(this.props.children, (child) => React.cloneElement(child, {doSomething: this.doSomething}));
-	            // <Dashboard data={this.state.result}/>
-	            // var childrenWithProps = React.Children.map(this.props.children, (child) => {
-	            //     return React.cloneElement(child, {
-	            //         state: this.state,
-	            //         updateState: (state) => this.setState(state)
-	            //       });
-	            //     });
+	            console.log("main render: ", this.state.notifications);
+	            var iframeLink = "./test.html?";
+
 	            return React.createElement(
 	                'div',
 	                null,
@@ -12720,9 +12717,9 @@
 	                        { className: 'off-canvas-wrapper-inner', 'data-off-canvas-wrapper': true },
 	                        React.createElement(
 	                            'div',
-	                            { className: 'off-canvas position-right', 'data-position': 'right', id: 'offCanvas', 'data-off-canvas': true },
+	                            { className: 'off-canvas position-right', 'data-position': 'right', id: 'offCanvas', 'data-off-canvas': true, style: { padding: 0 } },
 	                            React.createElement('div', { id: 'sensorDetails' }),
-	                            React.createElement(SensorDetails, null)
+	                            React.createElement('iframe', { id: 'sensorDetailsIFrame', src: iframeLink, width: '350px', height: '99%' })
 	                        ),
 	                        React.createElement(
 	                            'div',
@@ -13336,7 +13333,7 @@
 	        ),
 	        React.createElement(
 	          'button',
-	          { className: 'button hollow expanded' },
+	          { className: 'button hollow expanded disabled' },
 	          'Pin to watch list'
 	        )
 	      );
@@ -42185,12 +42182,6 @@
 	  displayName: 'Dashboard',
 
 
-	  getInitialState: function getInitialState() {
-	    return this.state = {
-	      message: ''
-	    };
-	  },
-
 	  launchAddSensor: function launchAddSensor() {
 	    var modal = new Foundation.Reveal($('#add-sensor-modal'));
 	    modal.open();
@@ -42199,12 +42190,7 @@
 	  render: function render() {
 
 	    console.log("Dashboard's overall data is: ", this.props.overall);
-	    //
 	    console.log("Dashboard's notifications data is: ", this.props.notifications);
-
-	    // var oveall = this.props.overall.data;
-
-	    // console.log("unknown data: ", unknown);
 
 	    return React.createElement(
 	      'div',
@@ -42277,14 +42263,10 @@
 	            )
 	          ),
 	          React.createElement(Notifications, { data: this.props.notifications })
-	        )
-	      ),
-	      React.createElement(
-	        'div',
-	        { className: 'row' },
+	        ),
 	        React.createElement(
 	          'div',
-	          { className: 'large-offset-3 columns large-9' },
+	          { className: 'columns large-9' },
 	          React.createElement(
 	            'div',
 	            { className: 'callout callout-dark-header' },
@@ -51382,7 +51364,7 @@
 /* 514 */
 /***/ function(module, exports, __webpack_require__) {
 
-	/* WEBPACK VAR INJECTION */(function($) {'use strict';
+	'use strict';
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
@@ -51412,42 +51394,20 @@
 
 	  _createClass(LinkComponent, [{
 	    key: 'handleClick',
-	    value: function handleClick(event, macAddress) {
-	      event.stopPropagation();
-	      console.log("click", macAddress);
-
-	      var interval = null;
-
-	      $('#offCanvas').on('opened.zf.offcanvas', function () {
-
-	        console.log("OPEN!!!!");
-
-	        interval = setInterval(function () {
-	          retrieveSensorDetails.retrieveSensorDetails(macAddress).then(function (response) {
-	            console.log(response);
-	          }, function (error) {
-	            console.log(error);
-	          });
-	        }, 10000);
-	      });
-
-	      $('#offCanvas').on('closed.zf.offcanvas', function () {
-
-	        console.log("CLOSE!!!!");
-
-	        if (interval != null) {
-	          clearInterval(interval);
-	        }
-	      });
-
-	      // call API at intervals with mac address as param and render directly to id (React-DOM.render....)
+	    value: function handleClick(macAddress) {
+	      // console.log("event", macAddress);
+	      document.getElementById("sensorDetailsIFrame").src = "./test.html?offCanMac=" + macAddress;
 	    }
 	  }, {
 	    key: 'render',
 	    value: function render() {
+	      var _this2 = this;
+
 	      return React.createElement(
 	        'a',
-	        { onClick: this.handleClick(event, this.props.data), 'data-toggle': 'offCanvas' },
+	        { onClick: function onClick() {
+	            return _this2.handleClick(_this2.props.data);
+	          }, 'data-toggle': 'offCanvas' },
 	        this.props.data
 	      );
 	    }
@@ -51526,12 +51486,12 @@
 	  function GeneralMetrics(props) {
 	    _classCallCheck(this, GeneralMetrics);
 
-	    var _this3 = _possibleConstructorReturn(this, Object.getPrototypeOf(GeneralMetrics).call(this, props));
+	    var _this4 = _possibleConstructorReturn(this, Object.getPrototypeOf(GeneralMetrics).call(this, props));
 
-	    _this3.state = {
+	    _this4.state = {
 	      dataList: []
 	    };
-	    return _this3;
+	    return _this4;
 	  }
 
 	  _createClass(GeneralMetrics, [{
@@ -51577,7 +51537,6 @@
 	}(React.Component);
 
 	module.exports = GeneralMetrics;
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(9)))
 
 /***/ },
 /* 515 */
@@ -52122,7 +52081,7 @@
 	        value: function render() {
 	            var notificationsList = this.props.data;
 
-	            console.log(notificationsList);
+	            console.log("notificationsList", notificationsList);
 
 	            return React.createElement(
 	                'table',
@@ -52351,9 +52310,9 @@
 	var React = __webpack_require__(14);
 	var PieChart = __webpack_require__(152).PieChart;
 
-	var myColors = ["#006600", "#cc7a00", "#990000", "#1a1b1b"];
+	var myColors = ["#006600", "#cc7a00", "#990000", "#1a1b1b", "#737373"];
 	var tooltipPie = function tooltipPie(x, y) {
-	    return y.toString();
+	    return x.toString() + ": " + y.toString();
 	};
 
 	var Building = function (_React$Component) {
@@ -52368,18 +52327,10 @@
 	    _createClass(Building, [{
 	        key: 'render',
 	        value: function render() {
-	            var obj = this.props;
-	            var slices = [];
-
-	            slices.forEach(function (slice) {
-	                console.log("slice", slice);
-	            });
-
-	            //console.log("slices", obj);
 
 	            return React.createElement(
 	                'div',
-	                null,
+	                { className: 'column row' },
 	                React.createElement(
 	                    'div',
 	                    { className: 'header' },
@@ -52399,13 +52350,62 @@
 	                        }, {
 	                            x: "Down",
 	                            y: this.props.down
+	                        }, {
+	                            x: "No Data",
+	                            y: this.props.noData
 	                        }]
 	                    }, width: 400, height: 250, tooltipHtml: tooltipPie, margin: {
 	                        top: 10,
 	                        bottom: 50,
 	                        left: 0,
-	                        right: 100
-	                    } })
+	                        right: 140
+	                    } }),
+	                React.createElement(
+	                    'table',
+	                    { style: { textAlign: "center" } },
+	                    React.createElement(
+	                        'tbody',
+	                        null,
+	                        React.createElement(
+	                            'tr',
+	                            null,
+	                            React.createElement('th', { style: { backgroundColor: "#006600", height: "3px" } }),
+	                            React.createElement('th', { style: { backgroundColor: "#cc7a00", height: "3px" } }),
+	                            React.createElement('th', { style: { backgroundColor: "#990000", height: "3px" } }),
+	                            React.createElement('th', { style: { backgroundColor: "#1a1b1b", height: "3px" } }),
+	                            React.createElement('th', { style: { backgroundColor: "#737373", height: "3px" } })
+	                        ),
+	                        React.createElement(
+	                            'tr',
+	                            null,
+	                            React.createElement(
+	                                'th',
+	                                { style: { color: "#006600" } },
+	                                this.props.ok
+	                            ),
+	                            React.createElement(
+	                                'th',
+	                                { style: { color: "#cc7a00" } },
+	                                this.props.warning
+	                            ),
+	                            React.createElement(
+	                                'th',
+	                                { style: { color: "#990000" } },
+	                                this.props.danger
+	                            ),
+	                            React.createElement(
+	                                'th',
+	                                { style: { color: "#1a1b1b" } },
+	                                this.props.down
+	                            ),
+	                            React.createElement(
+	                                'th',
+	                                { style: { color: "#737373" } },
+	                                this.props.noData
+	                            )
+	                        )
+	                    )
+	                )
 	            );
 	        }
 	    }]);
@@ -52478,7 +52478,8 @@
 	                        danger: buildings[property]["danger"]["count"],
 	                        warning: buildings[property]["warning"]["count"],
 	                        ok: buildings[property]["ok"]["count"],
-	                        down: buildings[property]["down"]["count"]
+	                        down: buildings[property]["down"]["count"],
+	                        noData: buildings[property]["no data"]["count"]
 	                    };
 
 	                    allBuildings.push(temp);
@@ -52492,7 +52493,7 @@
 	                if (buildingName.toLowerCase().indexOf(this.props.filterText.toLowerCase()) === -1) {
 	                    return React.createElement('div', null);
 	                }
-	                rows.push(React.createElement(Building, { buildingName: buildingName, ok: building.ok, warning: building.warning, danger: building.danger, down: building.down }));
+	                rows.push(React.createElement(Building, { buildingName: buildingName, ok: building.ok, warning: building.warning, danger: building.danger, down: building.down, noData: building.noData }));
 	            }.bind(this));
 
 	            return React.createElement(
@@ -53524,7 +53525,7 @@
 	exports.push([module.id, "@import url(https://fonts.googleapis.com/css?family=Pathway+Gothic+One);", ""]);
 
 	// module
-	exports.push([module.id, "body,\nhtml {\n  background: #fff;\n  height: 100%;\n  font-family: roboto;\n  color: #f2f2f2; }\n\n.row {\n  max-width: 85rem; }\n\ndiv#offCanvas {\n  width: 350px;\n  height: 100%;\n  padding: 1.5rem;\n  background: #e8e8e8; }\n\n.is-open-right {\n  transform: translateX(-350px); }\n\n.off-canvas.position-right {\n  right: -350px; }\n\n.off-canvas-content {\n  background: #fff; }\n\na {\n  color: #6abedb; }\n\nhr {\n  border-color: #373837;\n  margin-top: 0.5rem; }\n\ntable thead {\n  background: #232f32;\n  color: white;\n  border: 1px solid #232f32; }\n\ntable tbody {\n  color: #1a1b1b;\n  border: 1px solid #232f32; }\n\n.margin-top-large {\n  margin-top: 4rem; }\n\n.margin-bottom-large {\n  margin-bottom: 4rem; }\n\n.margin-right-small {\n  margin-right: 2rem; }\n\n.margin-left-small {\n  margin-left: 2rem; }\n\n.margin-top-md {\n  margin-top: 2rem; }\n\n.margin-bottom-md {\n  margin-bottom: 2rem; }\n\n.margin-bottom-small {\n  margin-bottom: 1rem; }\n\n.textAlignCenter {\n  text-align: center; }\n\n.callout {\n  background-color: #f2f2f2; }\n\n.callout-dark {\n  padding: 1.5rem;\n  background-color: #f2f2f2;\n  border: 1px solid #373837;\n  border-bottom-left-radius: 4px;\n  border-bottom-right-radius: 4px;\n  margin-top: 0; }\n\n.callout-dark-header {\n  padding: 0.5rem;\n  background-color: #232f32;\n  border: 1px solid #373837;\n  border-top-left-radius: 4px;\n  border-top-right-radius: 4px;\n  margin-bottom: 0; }\n\n.callout-auth {\n  background-color: #fafafa;\n  border: 1px solid #fafafa;\n  padding: 2rem;\n  text-align: center; }\n  .callout-auth h3,\n  .callout-auth p {\n    margin-bottom: 2rem; }\n\n.icon-btn-text-small {\n  font-weight: bold;\n  font-family: 'Pathway Gothic One', sans-serif;\n  text-transform: uppercase;\n  top: 15px;\n  right: 15px;\n  position: absolute;\n  color: #f8f8f8;\n  font-size: 1.2rem; }\n\nlabel {\n  text-transform: capitalize;\n  color: #232f32; }\n\n.header {\n  color: #6abedb;\n  margin-bottom: 0;\n  font-size: 1.5rem;\n  text-transform: uppercase;\n  font-weight: bold;\n  font-family: 'Pathway Gothic One', sans-serif; }\n\n.sub-header {\n  color: #232f32;\n  font-size: 0.9rem;\n  font-family: 'Pathway Gothic One', sans-serif; }\n\n.page-title {\n  color: #555;\n  font-family: 'Pathway Gothic One', sans-serif;\n  font-size: 1.5rem;\n  margin-top: 1.5rem;\n  margin-bottom: 1.5rem; }\n\ninput[type=search] {\n  box-shadow: none; }\n\n.top-bar-upper {\n  color: #333;\n  font-size: 0.5rem; }\n\n.app-header {\n  font-size: 1.3rem; }\n\ntable.overview-custom tbody,\ntable.overview-custom th,\ntable.overview-custom thead,\ntable.overview-custom tr {\n  text-align: center; }\n\ntable.sensor-details-table tbody {\n  text-align: left; }\n\ng text {\n  fill: #232f32;\n  stroke: #232f32; }\n\npolyline {\n  stroke: #232f32; }\n\n.statusText {\n  color: red;\n  margin-bottom: 1rem;\n  text-transform: uppercase;\n  font-size: 0.5em;\n  font-weight: bold; }\n", ""]);
+	exports.push([module.id, "body,\nhtml {\n  background: #fff;\n  height: 100%;\n  font-family: roboto;\n  color: #f2f2f2; }\n\n.row {\n  max-width: 85rem; }\n\ndiv#offCanvas {\n  width: 350px;\n  height: 100%;\n  padding: 1.5rem;\n  background: #e8e8e8; }\n\n.is-open-right {\n  transform: translateX(-350px); }\n\n.off-canvas.position-right {\n  right: -350px; }\n\n.off-canvas-content {\n  background: #fff; }\n\na {\n  color: #6abedb; }\n\nhr {\n  border-color: #373837;\n  margin-top: 0.5rem; }\n\ntable thead {\n  background: #232f32;\n  color: white;\n  border: 1px solid #232f32; }\n\ntable tbody {\n  color: #1a1b1b;\n  border: 1px solid #232f32; }\n\n.margin-top-large {\n  margin-top: 4rem; }\n\n.margin-bottom-large {\n  margin-bottom: 4rem; }\n\n.margin-right-small {\n  margin-right: 2rem; }\n\n.margin-left-small {\n  margin-left: 2rem; }\n\n.margin-top-md {\n  margin-top: 2rem; }\n\n.margin-bottom-md {\n  margin-bottom: 2rem; }\n\n.margin-bottom-small {\n  margin-bottom: 1rem; }\n\n.textAlignCenter {\n  text-align: center; }\n\n.callout {\n  background-color: #f2f2f2; }\n\n.callout-dark {\n  padding: 1.5rem;\n  background-color: #f2f2f2;\n  border: 1px solid #373837;\n  border-bottom-left-radius: 4px;\n  border-bottom-right-radius: 4px;\n  margin-top: 0; }\n\n.callout-dark-header {\n  padding: 0.5rem;\n  background-color: #232f32;\n  border: 1px solid #373837;\n  border-top-left-radius: 4px;\n  border-top-right-radius: 4px;\n  margin-bottom: 0; }\n\n.callout-auth {\n  background-color: #fafafa;\n  border: 1px solid #fafafa;\n  padding: 2rem;\n  text-align: center; }\n  .callout-auth h3,\n  .callout-auth p {\n    margin-bottom: 2rem; }\n\n.icon-btn-text-small {\n  font-weight: bold;\n  font-family: 'Pathway Gothic One', sans-serif;\n  text-transform: uppercase;\n  top: 15px;\n  right: 15px;\n  position: absolute;\n  color: #f8f8f8;\n  font-size: 1.2rem; }\n\nlabel {\n  text-transform: capitalize;\n  color: #232f32; }\n\n.header {\n  color: #6abedb;\n  margin-bottom: 0;\n  font-size: 1.5rem;\n  text-transform: uppercase;\n  font-weight: bold;\n  font-family: 'Pathway Gothic One', sans-serif; }\n\n.sub-header {\n  color: #232f32;\n  font-size: 0.9rem;\n  font-family: 'Pathway Gothic One', sans-serif; }\n\n.page-title {\n  color: #555;\n  font-family: 'Pathway Gothic One', sans-serif;\n  font-size: 1.5rem;\n  margin-top: 1.5rem;\n  margin-bottom: 1.5rem; }\n\ninput[type=search] {\n  box-shadow: none; }\n\n.top-bar-upper {\n  color: #333;\n  font-size: 0.5rem; }\n\n.app-header {\n  font-size: 1.3rem; }\n\ntable.overview-custom tbody,\ntable.overview-custom th,\ntable.overview-custom thead,\ntable.overview-custom tr {\n  text-align: center; }\n\ntable.sensor-details-table tbody {\n  text-align: left; }\n\ng text {\n  fill: #232f32;\n  stroke: #232f32;\n  display: none; }\n\npolyline {\n  stroke: #232f32;\n  display: none; }\n\n.statusText {\n  color: red;\n  margin-bottom: 1rem;\n  text-transform: uppercase;\n  font-size: 0.5em;\n  font-weight: bold; }\n", ""]);
 
 	// exports
 
@@ -53565,7 +53566,7 @@
 	exports.push([module.id, "@import url(https://fonts.googleapis.com/css?family=Pathway+Gothic+One);", ""]);
 
 	// module
-	exports.push([module.id, "body,\nhtml {\n  background: #fff;\n  height: 100%;\n  font-family: roboto;\n  color: #f2f2f2; }\n\n.row {\n  max-width: 85rem; }\n\ndiv#offCanvas {\n  width: 350px;\n  height: 100%;\n  padding: 1.5rem;\n  background: #e8e8e8; }\n\n.is-open-right {\n  transform: translateX(-350px); }\n\n.off-canvas.position-right {\n  right: -350px; }\n\n.off-canvas-content {\n  background: #fff; }\n\na {\n  color: #6abedb; }\n\nhr {\n  border-color: #373837;\n  margin-top: 0.5rem; }\n\ntable thead {\n  background: #232f32;\n  color: white;\n  border: 1px solid #232f32; }\n\ntable tbody {\n  color: #1a1b1b;\n  border: 1px solid #232f32; }\n\n.margin-top-large {\n  margin-top: 4rem; }\n\n.margin-bottom-large {\n  margin-bottom: 4rem; }\n\n.margin-right-small {\n  margin-right: 2rem; }\n\n.margin-left-small {\n  margin-left: 2rem; }\n\n.margin-top-md {\n  margin-top: 2rem; }\n\n.margin-bottom-md {\n  margin-bottom: 2rem; }\n\n.margin-bottom-small {\n  margin-bottom: 1rem; }\n\n.textAlignCenter {\n  text-align: center; }\n\n.callout {\n  background-color: #f2f2f2; }\n\n.callout-dark {\n  padding: 1.5rem;\n  background-color: #f2f2f2;\n  border: 1px solid #373837;\n  border-bottom-left-radius: 4px;\n  border-bottom-right-radius: 4px;\n  margin-top: 0; }\n\n.callout-dark-header {\n  padding: 0.5rem;\n  background-color: #232f32;\n  border: 1px solid #373837;\n  border-top-left-radius: 4px;\n  border-top-right-radius: 4px;\n  margin-bottom: 0; }\n\n.callout-auth {\n  background-color: #fafafa;\n  border: 1px solid #fafafa;\n  padding: 2rem;\n  text-align: center; }\n  .callout-auth h3,\n  .callout-auth p {\n    margin-bottom: 2rem; }\n\n.icon-btn-text-small {\n  font-weight: bold;\n  font-family: 'Pathway Gothic One', sans-serif;\n  text-transform: uppercase;\n  top: 15px;\n  right: 15px;\n  position: absolute;\n  color: #f8f8f8;\n  font-size: 1.2rem; }\n\nlabel {\n  text-transform: capitalize;\n  color: #232f32; }\n\n.header {\n  color: #6abedb;\n  margin-bottom: 0;\n  font-size: 1.5rem;\n  text-transform: uppercase;\n  font-weight: bold;\n  font-family: 'Pathway Gothic One', sans-serif; }\n\n.sub-header {\n  color: #232f32;\n  font-size: 0.9rem;\n  font-family: 'Pathway Gothic One', sans-serif; }\n\n.page-title {\n  color: #555;\n  font-family: 'Pathway Gothic One', sans-serif;\n  font-size: 1.5rem;\n  margin-top: 1.5rem;\n  margin-bottom: 1.5rem; }\n\ninput[type=search] {\n  box-shadow: none; }\n\n.top-bar-upper {\n  color: #333;\n  font-size: 0.5rem; }\n\n.app-header {\n  font-size: 1.3rem; }\n\ntable.overview-custom tbody,\ntable.overview-custom th,\ntable.overview-custom thead,\ntable.overview-custom tr {\n  text-align: center; }\n\ntable.sensor-details-table tbody {\n  text-align: left; }\n\ng text {\n  fill: #232f32;\n  stroke: #232f32; }\n\npolyline {\n  stroke: #232f32; }\n\n.statusText {\n  color: red;\n  margin-bottom: 1rem;\n  text-transform: uppercase;\n  font-size: 0.5em;\n  font-weight: bold; }\n\n.top-bar-left {\n  margin-top: 1.5rem; }\n\n.top-bar-right {\n  margin-top: 1.5rem; }\n\n.top-bar {\n  padding: 0rem 2rem 0rem 2rem;\n  background: #232f32;\n  height: 4rem;\n  box-shadow: 0.5px 0.5px 5px #373837; }\n\n.top-bar ul {\n  background: #232f32;\n  /* temporary fix */\n  position: absolute;\n  top: 15px;\n  right: 15px; }\n\n.top-bar.lower {\n  padding-top: 0px; }\n\n.top-bar-title {\n  font-size: 1.7rem;\n  text-transform: uppercase;\n  font-weight: bold;\n  font-family: 'Pathway Gothic One', sans-serif;\n  position: absolute;\n  top: 15px;\n  left: 15px; }\n\n.menu > li > a {\n  color: #fafafa;\n  font-weight: bold;\n  font-size: 1rem;\n  text-transform: uppercase; }\n\n.is-dropdown-submenu {\n  border: 1px solid #373737; }\n", ""]);
+	exports.push([module.id, "body,\nhtml {\n  background: #fff;\n  height: 100%;\n  font-family: roboto;\n  color: #f2f2f2; }\n\n.row {\n  max-width: 85rem; }\n\ndiv#offCanvas {\n  width: 350px;\n  height: 100%;\n  padding: 1.5rem;\n  background: #e8e8e8; }\n\n.is-open-right {\n  transform: translateX(-350px); }\n\n.off-canvas.position-right {\n  right: -350px; }\n\n.off-canvas-content {\n  background: #fff; }\n\na {\n  color: #6abedb; }\n\nhr {\n  border-color: #373837;\n  margin-top: 0.5rem; }\n\ntable thead {\n  background: #232f32;\n  color: white;\n  border: 1px solid #232f32; }\n\ntable tbody {\n  color: #1a1b1b;\n  border: 1px solid #232f32; }\n\n.margin-top-large {\n  margin-top: 4rem; }\n\n.margin-bottom-large {\n  margin-bottom: 4rem; }\n\n.margin-right-small {\n  margin-right: 2rem; }\n\n.margin-left-small {\n  margin-left: 2rem; }\n\n.margin-top-md {\n  margin-top: 2rem; }\n\n.margin-bottom-md {\n  margin-bottom: 2rem; }\n\n.margin-bottom-small {\n  margin-bottom: 1rem; }\n\n.textAlignCenter {\n  text-align: center; }\n\n.callout {\n  background-color: #f2f2f2; }\n\n.callout-dark {\n  padding: 1.5rem;\n  background-color: #f2f2f2;\n  border: 1px solid #373837;\n  border-bottom-left-radius: 4px;\n  border-bottom-right-radius: 4px;\n  margin-top: 0; }\n\n.callout-dark-header {\n  padding: 0.5rem;\n  background-color: #232f32;\n  border: 1px solid #373837;\n  border-top-left-radius: 4px;\n  border-top-right-radius: 4px;\n  margin-bottom: 0; }\n\n.callout-auth {\n  background-color: #fafafa;\n  border: 1px solid #fafafa;\n  padding: 2rem;\n  text-align: center; }\n  .callout-auth h3,\n  .callout-auth p {\n    margin-bottom: 2rem; }\n\n.icon-btn-text-small {\n  font-weight: bold;\n  font-family: 'Pathway Gothic One', sans-serif;\n  text-transform: uppercase;\n  top: 15px;\n  right: 15px;\n  position: absolute;\n  color: #f8f8f8;\n  font-size: 1.2rem; }\n\nlabel {\n  text-transform: capitalize;\n  color: #232f32; }\n\n.header {\n  color: #6abedb;\n  margin-bottom: 0;\n  font-size: 1.5rem;\n  text-transform: uppercase;\n  font-weight: bold;\n  font-family: 'Pathway Gothic One', sans-serif; }\n\n.sub-header {\n  color: #232f32;\n  font-size: 0.9rem;\n  font-family: 'Pathway Gothic One', sans-serif; }\n\n.page-title {\n  color: #555;\n  font-family: 'Pathway Gothic One', sans-serif;\n  font-size: 1.5rem;\n  margin-top: 1.5rem;\n  margin-bottom: 1.5rem; }\n\ninput[type=search] {\n  box-shadow: none; }\n\n.top-bar-upper {\n  color: #333;\n  font-size: 0.5rem; }\n\n.app-header {\n  font-size: 1.3rem; }\n\ntable.overview-custom tbody,\ntable.overview-custom th,\ntable.overview-custom thead,\ntable.overview-custom tr {\n  text-align: center; }\n\ntable.sensor-details-table tbody {\n  text-align: left; }\n\ng text {\n  fill: #232f32;\n  stroke: #232f32;\n  display: none; }\n\npolyline {\n  stroke: #232f32;\n  display: none; }\n\n.statusText {\n  color: red;\n  margin-bottom: 1rem;\n  text-transform: uppercase;\n  font-size: 0.5em;\n  font-weight: bold; }\n\n.top-bar-left {\n  margin-top: 1.5rem; }\n\n.top-bar-right {\n  margin-top: 1.5rem; }\n\n.top-bar {\n  padding: 0rem 2rem 0rem 2rem;\n  background: #232f32;\n  height: 4rem;\n  box-shadow: 0.5px 0.5px 5px #373837; }\n\n.top-bar ul {\n  background: #232f32;\n  /* temporary fix */\n  position: absolute;\n  top: 15px;\n  right: 15px; }\n\n.top-bar.lower {\n  padding-top: 0px; }\n\n.top-bar-title {\n  font-size: 1.7rem;\n  text-transform: uppercase;\n  font-weight: bold;\n  font-family: 'Pathway Gothic One', sans-serif;\n  position: absolute;\n  top: 15px;\n  left: 15px; }\n\n.menu > li > a {\n  color: #fafafa;\n  font-weight: bold;\n  font-size: 1rem;\n  text-transform: uppercase; }\n\n.is-dropdown-submenu {\n  border: 1px solid #373737; }\n", ""]);
 
 	// exports
 
@@ -53646,7 +53647,7 @@
 	exports.push([module.id, "@import url(https://fonts.googleapis.com/css?family=Pathway+Gothic+One);", ""]);
 
 	// module
-	exports.push([module.id, "body,\nhtml {\n  background: #fff;\n  height: 100%;\n  font-family: roboto;\n  color: #f2f2f2; }\n\n.row {\n  max-width: 85rem; }\n\ndiv#offCanvas {\n  width: 350px;\n  height: 100%;\n  padding: 1.5rem;\n  background: #e8e8e8; }\n\n.is-open-right {\n  transform: translateX(-350px); }\n\n.off-canvas.position-right {\n  right: -350px; }\n\n.off-canvas-content {\n  background: #fff; }\n\na {\n  color: #6abedb; }\n\nhr {\n  border-color: #373837;\n  margin-top: 0.5rem; }\n\ntable thead {\n  background: #232f32;\n  color: white;\n  border: 1px solid #232f32; }\n\ntable tbody {\n  color: #1a1b1b;\n  border: 1px solid #232f32; }\n\n.margin-top-large {\n  margin-top: 4rem; }\n\n.margin-bottom-large {\n  margin-bottom: 4rem; }\n\n.margin-right-small {\n  margin-right: 2rem; }\n\n.margin-left-small {\n  margin-left: 2rem; }\n\n.margin-top-md {\n  margin-top: 2rem; }\n\n.margin-bottom-md {\n  margin-bottom: 2rem; }\n\n.margin-bottom-small {\n  margin-bottom: 1rem; }\n\n.textAlignCenter {\n  text-align: center; }\n\n.callout {\n  background-color: #f2f2f2; }\n\n.callout-dark {\n  padding: 1.5rem;\n  background-color: #f2f2f2;\n  border: 1px solid #373837;\n  border-bottom-left-radius: 4px;\n  border-bottom-right-radius: 4px;\n  margin-top: 0; }\n\n.callout-dark-header {\n  padding: 0.5rem;\n  background-color: #232f32;\n  border: 1px solid #373837;\n  border-top-left-radius: 4px;\n  border-top-right-radius: 4px;\n  margin-bottom: 0; }\n\n.callout-auth {\n  background-color: #fafafa;\n  border: 1px solid #fafafa;\n  padding: 2rem;\n  text-align: center; }\n  .callout-auth h3,\n  .callout-auth p {\n    margin-bottom: 2rem; }\n\n.icon-btn-text-small {\n  font-weight: bold;\n  font-family: 'Pathway Gothic One', sans-serif;\n  text-transform: uppercase;\n  top: 15px;\n  right: 15px;\n  position: absolute;\n  color: #f8f8f8;\n  font-size: 1.2rem; }\n\nlabel {\n  text-transform: capitalize;\n  color: #232f32; }\n\n.header {\n  color: #6abedb;\n  margin-bottom: 0;\n  font-size: 1.5rem;\n  text-transform: uppercase;\n  font-weight: bold;\n  font-family: 'Pathway Gothic One', sans-serif; }\n\n.sub-header {\n  color: #232f32;\n  font-size: 0.9rem;\n  font-family: 'Pathway Gothic One', sans-serif; }\n\n.page-title {\n  color: #555;\n  font-family: 'Pathway Gothic One', sans-serif;\n  font-size: 1.5rem;\n  margin-top: 1.5rem;\n  margin-bottom: 1.5rem; }\n\ninput[type=search] {\n  box-shadow: none; }\n\n.top-bar-upper {\n  color: #333;\n  font-size: 0.5rem; }\n\n.app-header {\n  font-size: 1.3rem; }\n\ntable.overview-custom tbody,\ntable.overview-custom th,\ntable.overview-custom thead,\ntable.overview-custom tr {\n  text-align: center; }\n\ntable.sensor-details-table tbody {\n  text-align: left; }\n\ng text {\n  fill: #232f32;\n  stroke: #232f32; }\n\npolyline {\n  stroke: #232f32; }\n\n.statusText {\n  color: red;\n  margin-bottom: 1rem;\n  text-transform: uppercase;\n  font-size: 0.5em;\n  font-weight: bold; }\n\n.griddle-container {\n  border: none !important; }\n\n.griddle .top-section {\n  clear: both;\n  display: table;\n  width: 100%; }\n\n.griddle .griddle-filter {\n  float: left;\n  width: 50%;\n  text-align: left;\n  color: #222;\n  min-height: 1px; }\n\n.griddle .griddle-settings-toggle {\n  float: left;\n  width: 50%;\n  text-align: right;\n  color: #f8f8f8; }\n\n.griddle .griddle-settings {\n  background-color: #FFF;\n  border: 1px solid #DDD;\n  color: #222;\n  padding: 10px;\n  margin-bottom: 10px; }\n\n.griddle .griddle-settings .settings {\n  color: #f8f8f8; }\n\n.griddle .griddle-settings .griddle-columns {\n  clear: both;\n  display: table;\n  width: 100%;\n  border-bottom: 1px solid #EDEDED;\n  margin-bottom: 10px; }\n\n.griddle .griddle-settings .griddle-column-selection {\n  float: left;\n  width: 20%; }\n\n.griddle table {\n  width: 100%;\n  table-layout: fixed; }\n\n.griddle th {\n  background-color: #EDEDEF;\n  border: 0px;\n  border-bottom: 1px solid #DDD;\n  color: #222;\n  padding: 5px; }\n\n.griddle td {\n  padding: 5px;\n  background-color: #FFF;\n  border-top-color: #DDD;\n  color: #222; }\n\n.griddle .footer-container {\n  padding: 0px;\n  background-color: #EDEDED;\n  border: 0px;\n  color: #222; }\n\n.griddle button {\n  color: transparent; }\n\n.griddle .griddle-previous, .griddle .griddle-page, .griddle .griddle-next {\n  float: left;\n  width: 33%;\n  min-height: 1px;\n  margin-top: 5px; }\n\n.griddle .griddle-page {\n  text-align: center; }\n\n.griddle .griddle-next {\n  text-align: right; }\n", ""]);
+	exports.push([module.id, "body,\nhtml {\n  background: #fff;\n  height: 100%;\n  font-family: roboto;\n  color: #f2f2f2; }\n\n.row {\n  max-width: 85rem; }\n\ndiv#offCanvas {\n  width: 350px;\n  height: 100%;\n  padding: 1.5rem;\n  background: #e8e8e8; }\n\n.is-open-right {\n  transform: translateX(-350px); }\n\n.off-canvas.position-right {\n  right: -350px; }\n\n.off-canvas-content {\n  background: #fff; }\n\na {\n  color: #6abedb; }\n\nhr {\n  border-color: #373837;\n  margin-top: 0.5rem; }\n\ntable thead {\n  background: #232f32;\n  color: white;\n  border: 1px solid #232f32; }\n\ntable tbody {\n  color: #1a1b1b;\n  border: 1px solid #232f32; }\n\n.margin-top-large {\n  margin-top: 4rem; }\n\n.margin-bottom-large {\n  margin-bottom: 4rem; }\n\n.margin-right-small {\n  margin-right: 2rem; }\n\n.margin-left-small {\n  margin-left: 2rem; }\n\n.margin-top-md {\n  margin-top: 2rem; }\n\n.margin-bottom-md {\n  margin-bottom: 2rem; }\n\n.margin-bottom-small {\n  margin-bottom: 1rem; }\n\n.textAlignCenter {\n  text-align: center; }\n\n.callout {\n  background-color: #f2f2f2; }\n\n.callout-dark {\n  padding: 1.5rem;\n  background-color: #f2f2f2;\n  border: 1px solid #373837;\n  border-bottom-left-radius: 4px;\n  border-bottom-right-radius: 4px;\n  margin-top: 0; }\n\n.callout-dark-header {\n  padding: 0.5rem;\n  background-color: #232f32;\n  border: 1px solid #373837;\n  border-top-left-radius: 4px;\n  border-top-right-radius: 4px;\n  margin-bottom: 0; }\n\n.callout-auth {\n  background-color: #fafafa;\n  border: 1px solid #fafafa;\n  padding: 2rem;\n  text-align: center; }\n  .callout-auth h3,\n  .callout-auth p {\n    margin-bottom: 2rem; }\n\n.icon-btn-text-small {\n  font-weight: bold;\n  font-family: 'Pathway Gothic One', sans-serif;\n  text-transform: uppercase;\n  top: 15px;\n  right: 15px;\n  position: absolute;\n  color: #f8f8f8;\n  font-size: 1.2rem; }\n\nlabel {\n  text-transform: capitalize;\n  color: #232f32; }\n\n.header {\n  color: #6abedb;\n  margin-bottom: 0;\n  font-size: 1.5rem;\n  text-transform: uppercase;\n  font-weight: bold;\n  font-family: 'Pathway Gothic One', sans-serif; }\n\n.sub-header {\n  color: #232f32;\n  font-size: 0.9rem;\n  font-family: 'Pathway Gothic One', sans-serif; }\n\n.page-title {\n  color: #555;\n  font-family: 'Pathway Gothic One', sans-serif;\n  font-size: 1.5rem;\n  margin-top: 1.5rem;\n  margin-bottom: 1.5rem; }\n\ninput[type=search] {\n  box-shadow: none; }\n\n.top-bar-upper {\n  color: #333;\n  font-size: 0.5rem; }\n\n.app-header {\n  font-size: 1.3rem; }\n\ntable.overview-custom tbody,\ntable.overview-custom th,\ntable.overview-custom thead,\ntable.overview-custom tr {\n  text-align: center; }\n\ntable.sensor-details-table tbody {\n  text-align: left; }\n\ng text {\n  fill: #232f32;\n  stroke: #232f32;\n  display: none; }\n\npolyline {\n  stroke: #232f32;\n  display: none; }\n\n.statusText {\n  color: red;\n  margin-bottom: 1rem;\n  text-transform: uppercase;\n  font-size: 0.5em;\n  font-weight: bold; }\n\n.griddle-container {\n  border: none !important; }\n\n.griddle .top-section {\n  clear: both;\n  display: table;\n  width: 100%; }\n\n.griddle .griddle-filter {\n  float: left;\n  width: 50%;\n  text-align: left;\n  color: #222;\n  min-height: 1px; }\n\n.griddle-body {\n  font-size: 0.7em; }\n\n.griddle .griddle-settings-toggle {\n  float: left;\n  width: 50%;\n  text-align: right;\n  color: #f8f8f8; }\n\n.griddle .griddle-settings {\n  background-color: #FFF;\n  border: 1px solid #DDD;\n  color: #222;\n  padding: 10px;\n  margin-bottom: 10px; }\n\n.griddle .griddle-settings .settings {\n  color: #f8f8f8; }\n\n.griddle .griddle-settings .griddle-columns {\n  clear: both;\n  display: table;\n  width: 100%;\n  border-bottom: 1px solid #EDEDED;\n  margin-bottom: 10px; }\n\n.griddle .griddle-settings .griddle-column-selection {\n  float: left;\n  width: 20%; }\n\n.griddle table {\n  width: 100%;\n  table-layout: fixed; }\n\n.griddle th {\n  background-color: #EDEDEF;\n  border: 0px;\n  border-bottom: 1px solid #DDD;\n  color: #222;\n  padding: 5px; }\n\n.griddle td {\n  padding: 5px;\n  background-color: #FFF;\n  border-top-color: #DDD;\n  color: #222; }\n\n.griddle .footer-container {\n  padding: 0px;\n  background-color: #EDEDED;\n  border: 0px;\n  color: #222; }\n\n.griddle button {\n  color: transparent; }\n\n.griddle .griddle-previous, .griddle .griddle-page, .griddle .griddle-next {\n  float: left;\n  width: 33%;\n  min-height: 1px;\n  margin-top: 5px; }\n\n.griddle .griddle-page {\n  text-align: center; }\n\n.griddle .griddle-next {\n  text-align: right; }\n", ""]);
 
 	// exports
 

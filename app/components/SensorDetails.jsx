@@ -163,7 +163,7 @@ class SensorDetails extends React.Component{
         />
 
       <button className="button hollow expanded disabled">Reboot</button>
-        <button className="button hollow expanded">Pin to watch list</button>
+        <button className="button hollow expanded disabled">Pin to watch list</button>
       </div>
     );
   }

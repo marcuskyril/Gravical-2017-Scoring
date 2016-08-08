@@ -15,7 +15,7 @@ class Notifications extends React.Component {
     render() {
        var notificationsList = this.props.data;
 
-       console.log(notificationsList);
+       console.log("notificationsList", notificationsList);
 
         return (
             <table className="notificationsTable">

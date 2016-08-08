@@ -1,9 +1,9 @@
 var React = require('react');
 var PieChart = require('react-d3-components').PieChart;
 
-var myColors = ["#006600", "#cc7a00", "#990000", "#1a1b1b"];
+var myColors = ["#006600", "#cc7a00", "#990000", "#1a1b1b", "#737373"];
 var tooltipPie = function(x, y) {
-    return y.toString();
+    return x.toString() +": " +y.toString();
 };
 
 class Building extends React.Component {
@@ -12,19 +12,9 @@ class Building extends React.Component {
     }
 
     render() {
-        var obj = this.props;
-        var slices = [];
-
-        slices.forEach(function(slice) {
-          console.log("slice", slice);
-        });
-
-        //console.log("slices", obj);
-
-
 
         return (
-            <div>
+            <div className="column row">
                 <div className="header">{this.props.buildingName}</div>
 
                     <PieChart colorScale={d3.scale.ordinal().range(myColors)} data={{
@@ -42,14 +32,35 @@ class Building extends React.Component {
                             }, {
                                 x: "Down",
                                 y: this.props.down
+                            }, {
+                                x: "No Data",
+                                y: this.props.noData
                             }
                         ]
                     }} width={400} height={250} tooltipHtml={tooltipPie} margin={{
                         top: 10,
                         bottom: 50,
                         left: 0,
-                        right: 100
+                        right: 140
                     }}/>
+                  <table style={{textAlign: "center"}}>
+                    <tbody>
+                      <tr>
+                        <th style={{backgroundColor:"#006600", height: "3px"}}></th>
+                        <th style={{backgroundColor:"#cc7a00", height: "3px"}}></th>
+                        <th style={{backgroundColor:"#990000", height: "3px"}}></th>
+                        <th style={{backgroundColor:"#1a1b1b", height: "3px"}}></th>
+                        <th style={{backgroundColor:"#737373", height: "3px"}}></th>
+                      </tr>
+                      <tr>
+                        <th style={{color:"#006600"}}>{this.props.ok}</th>
+                        <th style={{color:"#cc7a00"}}>{this.props.warning}</th>
+                        <th style={{color:"#990000"}}>{this.props.danger}</th>
+                        <th style={{color:"#1a1b1b"}}>{this.props.down}</th>
+                        <th style={{color:"#737373"}}>{this.props.noData}</th>
+                      </tr>
+                    </tbody>
+                  </table>
             </div>
         );
     }
@@ -103,7 +114,8 @@ class BuildingList extends React.Component {
                   danger: buildings[property]["danger"]["count"],
                   warning: buildings[property]["warning"]["count"],
                   ok: buildings[property]["ok"]["count"],
-                  down: buildings[property]["down"]["count"]
+                  down: buildings[property]["down"]["count"],
+                  noData: buildings[property]["no data"]["count"]
                 }
 
                 allBuildings.push(temp);
@@ -117,7 +129,7 @@ class BuildingList extends React.Component {
           if((buildingName.toLowerCase()).indexOf((this.props.filterText.toLowerCase())) === -1) {
             return <div></div>
           }
-          rows.push(<Building buildingName={buildingName} ok={building.ok} warning={building.warning} danger={building.danger} down={building.down}/>);
+          rows.push(<Building buildingName={buildingName} ok={building.ok} warning={building.warning} danger={building.danger} down={building.down} noData={building.noData}/>);
         }.bind(this));
 
         return (

@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title></title>
+        <!-- <link rel="stylesheet" href="/css/master.css" media="screen" title="no title" charset="utf-8"> -->
+        <link rel="stylesheet" href="css/foundation.min.css" media="screen" title="no title" charset="utf-8">
+        <script src="https://use.fontawesome.com/67b81887ff.js"></script>
+        <script src="https://npmcdn.com/axios/dist/axios.min.js"></script>
+
+        <style type="text/css">
+            body,html {
+              background: #fff;
+              height: 100%;
+              font-family: 'Pathway Gothic One', sans-serif;
+              color: #6abedb;
+              text-transform: uppercase;
+              width:100%;
+              background-color: #e8e8e8;
+              overflow: scroll;
+              overflow-x: hidden;
+              overflow-y: hidden;
+              padding: 10px
+            }
+
+            #diagnosis {
+                color: #1a1b1b;
+                margin-left: 30px;
+            }
+
+            #itsDeadJim{
+                margin-top: 10px;
+            }
+
+            hr{
+                border-color: #373837;
+                margin-top: 0.5rem;
+            }
+
+            .row {
+              max-width: 85rem; }
+
+            div#offCanvas {
+              width: 350px;
+              height: 100%;
+              padding: 1.5rem;
+              background: #e8e8e8; }
+
+            .is-open-right {
+              transform: translateX(-350px); }
+
+            .off-canvas.position-right {
+              right: -350px; }
+
+            .off-canvas-content {
+              background: #fff; }
+
+            a {
+              color: #6abedb; }
+
+            hr {
+              border-color: #373837;
+              margin-top: 0.5rem; }
+
+            table thead {
+              background: #232f32;
+              color: white;
+              border: 1px solid #232f32; }
+
+            table tbody {
+              color: #1a1b1b;
+              border: 1px solid #232f32; }
+
+            .margin-top-large {
+              margin-top: 4rem; }
+
+            .margin-bottom-large {
+              margin-bottom: 4rem; }
+
+            .margin-right-small {
+              margin-right: 2rem; }
+
+            .margin-left-small {
+              margin-left: 2rem; }
+
+            .margin-top-md {
+              margin-top: 2rem; }
+
+            .margin-bottom-md {
+              margin-bottom: 2rem; }
+
+            .margin-bottom-small {
+              margin-bottom: 1rem; }
+
+            .textAlignCenter {
+              text-align: center; }
+
+            .callout {
+              background-color: #f2f2f2; }
+
+            .callout-dark {
+              padding: 1.5rem;
+              background-color: #f2f2f2;
+              border: 1px solid #373837;
+              border-bottom-left-radius: 4px;
+              border-bottom-right-radius: 4px;
+              margin-top: 0; }
+
+            .callout-dark-header {
+              padding: 0.5rem;
+              background-color: #232f32;
+              border: 1px solid #373837;
+              border-top-left-radius: 4px;
+              border-top-right-radius: 4px;
+              margin-bottom: 0; }
+
+            .callout-auth {
+              background-color: #fafafa;
+              border: 1px solid #fafafa;
+              padding: 2rem;
+              text-align: center; }
+              .callout-auth h3,
+              .callout-auth p {
+                margin-bottom: 2rem; }
+
+            .icon-btn-text-small {
+              font-weight: bold;
+              font-family: 'Pathway Gothic One', sans-serif;
+              text-transform: uppercase;
+              top: 15px;
+              right: 15px;
+              position: absolute;
+              color: #f8f8f8;
+              font-size: 1.2rem; }
+
+            label {
+              text-transform: capitalize;
+              color: #232f32; }
+
+            .header {
+              color: #6abedb;
+              margin-bottom: 0;
+              font-size: 1.5rem;
+              text-transform: uppercase;
+              font-weight: bold;
+              font-family: 'Pathway Gothic One', sans-serif; }
+
+            .sub-header {
+              color: #232f32;
+              font-size: 0.9rem;
+              font-family: 'Pathway Gothic One', sans-serif; }
+
+            .page-title {
+              color: #555;
+              font-family: 'Pathway Gothic One', sans-serif;
+              font-size: 1.5rem;
+              margin-top: 1.5rem;
+              margin-bottom: 1.5rem; }
+
+            input[type=search] {
+              box-shadow: none; }
+
+            .top-bar-upper {
+              color: #333;
+              font-size: 0.5rem; }
+
+            .app-header {
+              font-size: 1.3rem; }
+
+            table.overview-custom tbody,
+            table.overview-custom th,
+            table.overview-custom thead,
+            table.overview-custom tr {
+              text-align: center; }
+
+            table.sensor-details-table tbody {
+              text-align: left; }
+
+            g text {
+              fill: #232f32;
+              stroke: #232f32; }
+
+            polyline {
+              stroke: #232f32; }
+
+            .statusText {
+              color: red;
+              margin-bottom: 1rem;
+              text-transform: uppercase;
+              font-size: 0.5em;
+              font-weight: bold; }
+
+
+              .table-container {
+                  text-align: center;
+              }
+
+
+        </style>
+    </head>
+    <body>
+<!--
+        <div id="text">
+            HAHAHA
+        </div> -->
+        <div class="sensor-details">
+          <div class="header textAlignCenter" id="mac_address">Loading</div>
+          <hr/>
+          <div class="sub-header textAlignCenter" id="building"></div>
+          <div class="sub-header textAlignCenter">
+              <span id="level"></span>
+              <span id="id"></span>
+          </div>
+
+          <div class="header textAlignCenter" id="status"></div>
+          <div class="sub-header textAlignCenter" id="last_reboot">loading...</div>
+
+          <div class="sub-header textAlignCenter" id="itsDeadJim">
+
+          </div>
+
+          <div class="table-container" id="tableaux-mini">
+              <table class="sensor-details-table margin-top-md">
+                <tbody>
+                  <tr>
+                    <td>
+                      <i class="fa fa-arrow-up" aria-hidden="true"></i> Uptime
+                    </td>
+                    <td id="uptime">
+                      -
+                    </td>
+                    <td>
+                        %
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <i class="fa fa-fire" aria-hidden="true"></i> Temperature
+                    </td>
+                    <td id="temperature">
+                      -
+                    </td>
+                    <td>
+                        &deg;C
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <i class="fa fa-hdd-o" aria-hidden="true"></i> CPU Usage
+                    </td>
+                    <td id="cpu">
+                      -
+                    </td>
+                    <td>
+                        %
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                        <i class="fa fa-database" aria-hidden="true"></i> Storage
+                    </td>
+                    <td id="storage">
+                      -
+                    </td>
+                    <td>
+                        %
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                        <i class="fa fa-tachometer" aria-hidden="true"></i> RAM
+                    </td>
+                    <td id="ram">
+                      -
+                    </td>
+                    <td>
+                        %
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                        <i class="fa fa-arrows-v" aria-hidden="true"></i> Flapping
+                    </td>
+                    <td id="flapping">
+                      -
+                    </td>
+                    <td>
+
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+          </div>
+          <div class="top-5">
+              <h4>Top 5 Processes</h4>
+              <table>
+                  <tr>
+                      <td>
+                          1
+                      </td>
+                      <td id="top1">
+
+                      </td>
+                      <td id="top1-usage">
+
+                      </td>
+                  </tr>
+                  <tr>
+                      <td>
+                          2
+                      </td>
+                      <td id="top2">
+
+                      </td>
+                      <td id="top2-usage">
+
+                      </td>
+                  </tr>
+                  </tr>
+                  <tr>
+                      <td>
+                          3
+                      </td>
+                      <td id="top3">
+
+                      </td>
+                      <td id="top3-usage">
+
+                      </td>
+                  </tr>
+                  </tr>
+                  <tr>
+                      <td>
+                          4
+                      </td>
+                      <td id="top4">
+
+                      </td>
+                      <td id="top4-usage">
+
+                      </td>
+                  </tr>
+                  </tr>
+                  <tr>
+                      <td>
+                          5
+                      </td>
+                      <td id="top5">
+
+                      </td>
+                      <td id="top5-usage">
+
+                      </td>
+                  </tr>
+                  </tr>
+              </table>
+          </div>
+          <div class="diagnosis">
+              <h4>Diagnosis</h4>
+              <span id="diagnosis"></span>
+          </div>
+          <div class="buttons margin-top-md">
+              <button class="button hollow expanded disabled">Reboot</button>
+              <button class="button hollow expanded disabled">Pin to watch list</button>
+          </div>
+
+        <script src="js/jquery.js"></script>
+        <script src="js/foundation.min.js"></script>
+        <script src="js/what-input.js"></script>
+
+        <script type="text/javascript">
+            var QueryString = function () {
+                // This function is anonymous, is executed immediately and
+                // the return value is assigned to QueryString!
+                var query_string = {};
+                var query = window.location.search.substring(1);
+                var vars = query.split("&");
+                for (var i=0;i<vars.length;i++) {
+                    var pair = vars[i].split("=");
+                        // If first entry with this name
+                    if (typeof query_string[pair[0]] === "undefined") {
+                      query_string[pair[0]] = decodeURIComponent(pair[1]);
+                        // If second entry with this name
+                    } else if (typeof query_string[pair[0]] === "string") {
+                      var arr = [ query_string[pair[0]],decodeURIComponent(pair[1]) ];
+                      query_string[pair[0]] = arr;
+                        // If third or later entry with this name
+                    } else {
+                      query_string[pair[0]].push(decodeURIComponent(pair[1]));
+                    }
+                }
+                return query_string;
+            }();
+            var macAddress = QueryString["offCanMac"];
+            // console.log(macAddress);
+
+            document.getElementById("mac_address").innerHTML = macAddress;
+
+            setInterval(function () {
+
+                const RETRIEVE_SENSOR_DETAILS_URL = "http://52.74.119.147/PisaSchitt/get-sensor-info.php?mac="+macAddress;
+
+                axios.get(RETRIEVE_SENSOR_DETAILS_URL, macAddress).then(function(response) {
+                    console.log(response.data);
+                    if(response.status == 200) {
+                        document.getElementById("building").innerHTML = response.data["building"];
+                        document.getElementById("level").innerHTML = response.data["sensor_location_level"];
+                        document.getElementById("id").innerHTML = response.data["sensor_location_id"];
+                        document.getElementById("status").innerHTML = response.data["status"];
+                        document.getElementById("last_reboot").innerHTML = response.data["last_reboot"];
+
+                        document.getElementById("uptime").innerHTML = response.data["uptime_percentage"];
+                        document.getElementById("temperature").innerHTML = response.data["temperature"];
+                        document.getElementById("cpu").innerHTML = response.data["cpu"];
+                        document.getElementById("storage").innerHTML = response.data["storage"];
+                        document.getElementById("ram").innerHTML = response.data["ram"];
+                        document.getElementById("flapping").innerHTML = response.data["flapping"] ? true : false;
+
+                        document.getElementById("top1").innerHTML = response.data["top_5_processes"]["1"]["process"];
+                        document.getElementById("top2").innerHTML = response.data["top_5_processes"]["2"]["process"];
+                        document.getElementById("top3").innerHTML = response.data["top_5_processes"]["3"]["process"];
+                        document.getElementById("top4").innerHTML = response.data["top_5_processes"]["4"]["process"];
+                        document.getElementById("top5").innerHTML = response.data["top_5_processes"]["5"]["process"];
+
+
+                        document.getElementById("top1-usage").innerHTML = response.data["top_5_processes"]["1"]["usage"];
+                        document.getElementById("top2-usage").innerHTML = response.data["top_5_processes"]["2"]["usage"];
+                        document.getElementById("top3-usage").innerHTML = response.data["top_5_processes"]["3"]["usage"];
+                        document.getElementById("top4-usage").innerHTML = response.data["top_5_processes"]["4"]["usage"];
+                        document.getElementById("top5-usage").innerHTML = response.data["top_5_processes"]["5"]["usage"];
+
+                        document.getElementById("diagnosis").innerHTML = response.data["diagnosis"];
+
+                    } else {
+                        throw new Error(response.status +" :" +response.data.error);
+                    }
+
+                    if (response.data["status"].toLowerCase() == "down") {
+                        document.getElementById("itsDeadJim").innerHTML = "<b>Sensor Data is correct as of<br> " + response.data["latest_timestamp"] + "</b>";
+                        document.getElementById("last_reboot").innerHTML = "";
+                    } else {
+                        document.getElementById("itsDeadJim").innerHTML = "";
+                    }
+
+                });
+
+            }, 10000);
+
+        </script>
+    </body>
+</html>

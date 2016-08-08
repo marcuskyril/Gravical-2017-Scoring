@@ -12,41 +12,14 @@ class LinkComponent extends React.Component{
     super(props);
   }
 
-  handleClick(event, macAddress) {
-    event.stopPropagation();
-    console.log("click", macAddress);
-
-    var interval = null;
-
-    $('#offCanvas').on('opened.zf.offcanvas', function() {
-
-      console.log("OPEN!!!!");
-
-      interval = setInterval(function () {
-        retrieveSensorDetails.retrieveSensorDetails(macAddress).then(function(response){
-          console.log(response);
-        }, function(error) {
-          console.log(error);
-        });
-      }, 10000);
-
-    });
-
-    $('#offCanvas').on('closed.zf.offcanvas', function() {
-
-      console.log("CLOSE!!!!");
-
-      if(interval != null){
-        clearInterval(interval);
-      }
-    });
-
-    // call API at intervals with mac address as param and render directly to id (React-DOM.render....)
+  handleClick(macAddress) {
+    // console.log("event", macAddress);
+    document.getElementById("sensorDetailsIFrame").src = "./test.html?offCanMac="+macAddress;
   }
 
   render() {
     return (
-        <a onClick={this.handleClick(event, this.props.data)} data-toggle="offCanvas">{this.props.data}</a>
+        <a onClick={() => this.handleClick(this.props.data)} data-toggle="offCanvas">{this.props.data}</a>
     );
   }
 };

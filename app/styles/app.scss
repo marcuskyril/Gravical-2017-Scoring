@@ -166,9 +166,11 @@ table.sensor-details-table {
 g text {
     fill: $night-ocean;
     stroke: $night-ocean;
+    display: none;
 }
 polyline {
     stroke: $night-ocean;
+    display: none;
 }
 .statusText {
     color: red;

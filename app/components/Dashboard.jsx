@@ -124,14 +124,6 @@ class AddSensorMessage extends React.Component {
 
 var Dashboard = React.createClass({
 
-    getInitialState: function() {
-      return(
-        this.state = {
-          message: ''
-        }
-      );
-    },
-
     launchAddSensor: function() {
         var modal = new Foundation.Reveal($('#add-sensor-modal'));
         modal.open();
@@ -140,12 +132,7 @@ var Dashboard = React.createClass({
     render: function() {
 
         console.log("Dashboard's overall data is: ", this.props.overall);
-        //
         console.log("Dashboard's notifications data is: ", this.props.notifications);
-
-        // var oveall = this.props.overall.data;
-
-        // console.log("unknown data: ", unknown);
 
         return (
 
@@ -180,16 +167,14 @@ var Dashboard = React.createClass({
                     <div className="callout callout-dark-header"><h4 className="header">Notifications</h4></div>
                       <Notifications data={this.props.notifications}/>
                   </div>
-                </div>
 
-                <div className="row">
-                  <div className = "large-offset-3 columns large-9">
+                  <div className = "columns large-9">
                     <div className="callout callout-dark-header"><h4 className="header">All Sensors</h4></div>
                     <div className="callout callout-dark" id="bfg">
                       <Tableaux data={this.props.bfg}/>
                     </div>
                   </div>
-                  </div>
+                </div>
             </div>
         );
     }

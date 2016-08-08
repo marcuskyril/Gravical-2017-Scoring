@@ -27,7 +27,7 @@ class Main extends React.Component {
 
             });
         }, function() {
-            console.warn('WebSocket connection closed');
+            console.warn('WebSocket connection closed: Building data not available');
         }, {'skipSubprotocolCheck': true});
 
         var conn2 = new ab.Session('ws://52.74.119.147:9001', function() {
@@ -38,38 +38,35 @@ class Main extends React.Component {
                 });
             });
         }, function() {
-            console.warn('WebSocket connection closed');
+            console.warn('WebSocket connection closed: BFG data not available');
         }, {'skipSubprotocolCheck': true});
 
         var conn3 = new ab.Session('ws://52.74.119.147:9002', function() {
             conn3.subscribe('', function(topic, data) {
+
+              console.log("main notifications data: ", data);
 
                 that.setState({
                     notifications: data
                 });
             });
         }, function() {
-            console.warn('WebSocket connection closed');
+            console.warn('WebSocket connection closed: Notification data not available');
         }, {'skipSubprotocolCheck': true});
 
     }
 
     render() {
-        //const childrenWithProps = React.Children.map(this.props.children, (child) => React.cloneElement(child, {doSomething: this.doSomething}));
-// <Dashboard data={this.state.result}/>
-        // var childrenWithProps = React.Children.map(this.props.children, (child) => {
-        //     return React.cloneElement(child, {
-        //         state: this.state,
-        //         updateState: (state) => this.setState(state)
-        //       });
-        //     });
+        console.log("main render: ", this.state.notifications);
+        var iframeLink = "./test.html?";
+
         return (
             <div>
                 <div className="off-canvas-wrapper">
                     <div className="off-canvas-wrapper-inner" data-off-canvas-wrapper>
-                        <div className="off-canvas position-right" data-position="right" id="offCanvas" data-off-canvas>
+                        <div className="off-canvas position-right" data-position="right" id="offCanvas" data-off-canvas style={{padding: 0}}>
                             <div id="sensorDetails"></div>
-                            <SensorDetails/>
+                            <iframe id="sensorDetailsIFrame" src={iframeLink} width="350px" height="99%"></iframe>
                         </div>
 
                         <div className="off-canvas-content" data-off-canvas-content>
