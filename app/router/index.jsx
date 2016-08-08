@@ -34,6 +34,7 @@ export default(
           <Route path="/about" component={About} onEnter={requireLogin}/>
           <Route path="/examples" component={Examples} onEnter={requireLogin}/>
           <Route path="/accountSettings" component={AccountSettings} onEnter={requireLogin}/>
+
           <IndexRoute component={Dashboard}/>
       </Route>
       <Route path="/" component={Login} onEnter={redirectIfLoggedIn}/>

@@ -12655,7 +12655,8 @@
 	        _this.state = {
 	            overall: [],
 	            bfg: [],
-	            notifications: []
+	            notifications: [],
+	            currentTime: ''
 	        };
 	        return _this;
 	    }
@@ -12670,7 +12671,11 @@
 	            var conn1 = new ab.Session('ws://52.74.119.147:9000', function () {
 	                conn1.subscribe('', function (topic, data) {
 	                    console.log(data);
-	                    that.setState({ overall: data });
+
+	                    var timestamp = new Date().toLocaleString();
+	                    console.log("now: ", timestamp);
+
+	                    that.setState({ overall: data, currentTime: timestamp });
 	                });
 	            }, function () {
 	                console.warn('WebSocket connection closed: Building data not available');
@@ -12679,8 +12684,12 @@
 	            var conn2 = new ab.Session('ws://52.74.119.147:9001', function () {
 	                conn2.subscribe('', function (topic, data) {
 
+	                    var timestamp = new Date().toLocaleString();
+	                    console.log("now: ", timestamp);
+
 	                    that.setState({
-	                        bfg: data
+	                        bfg: data,
+	                        currentTime: timestamp
 	                    });
 	                });
 	            }, function () {
@@ -12692,8 +12701,12 @@
 
 	                    console.log("main notifications data: ", data);
 
+	                    var timestamp = new Date().toLocaleString();
+	                    console.log("now: ", timestamp);
+
 	                    that.setState({
-	                        notifications: data
+	                        notifications: data,
+	                        currentTime: timestamp
 	                    });
 	                });
 	            }, function () {
@@ -12705,6 +12718,7 @@
 	        value: function render() {
 	            console.log("main render: ", this.state.notifications);
 	            var iframeLink = "./test.html?";
+	            console.log("currentTime in main: ", this.state.currentTime);
 
 	            return React.createElement(
 	                'div',
@@ -12719,12 +12733,12 @@
 	                            'div',
 	                            { className: 'off-canvas position-right', 'data-position': 'right', id: 'offCanvas', 'data-off-canvas': true, style: { padding: 0 } },
 	                            React.createElement('div', { id: 'sensorDetails' }),
-	                            React.createElement('iframe', { id: 'sensorDetailsIFrame', src: iframeLink, width: '350px', height: '99%' })
+	                            React.createElement('iframe', { id: 'sensorDetailsIFrame', src: iframeLink, width: '350px', style: { border: "none" }, height: '99%' })
 	                        ),
 	                        React.createElement(
 	                            'div',
 	                            { className: 'off-canvas-content', 'data-off-canvas-content': true },
-	                            React.createElement(Nav, null),
+	                            React.createElement(Nav, { timestamp: this.state.currentTime }),
 	                            React.createElement(
 	                                'div',
 	                                { className: 'row' },
@@ -12793,6 +12807,7 @@
 	    },
 
 	    render: function render() {
+	        console.log("currentTime:", this.props.timestamp);
 	        return _react2.default.createElement(
 	            'div',
 	            { className: 'top-bar' },
@@ -12816,7 +12831,8 @@
 	                    _react2.default.createElement(
 	                        'li',
 	                        null,
-	                        'Last refresh at 29/07/16 02:17',
+	                        'Last sync at ',
+	                        this.props.timestamp,
 	                        _react2.default.createElement(FontAwesome, { name: 'refresh', spin: true, style: {
 	                                textShadow: '0 1px 0 rgba(0, 0, 0, 0.1)', marginLeft: '0.5rem'
 	                            } })

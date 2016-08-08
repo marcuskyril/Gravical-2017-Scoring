@@ -15,6 +15,7 @@ var Nav = React.createClass({
         dispatch(actions.startLogout());
     },
     render: function() {
+        console.log("currentTime:", this.props.timestamp);
         return (
             <div className="top-bar">
                 <div className="top-bar-title">
@@ -25,7 +26,7 @@ var Nav = React.createClass({
                 <div className="top-bar-right">
                     <ul className="dropdown menu" data-dropdown-menu>
                         <li>
-                            Last refresh at 29/07/16 02:17
+                            Last sync at {this.props.timestamp}
                             <FontAwesome name='refresh' spin style={{
                                 textShadow: '0 1px 0 rgba(0, 0, 0, 0.1)', marginLeft: '0.5rem'
                             }}/>
