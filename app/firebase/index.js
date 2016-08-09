@@ -8,7 +8,7 @@ try {
     storageBucket: "ortsolutions-77549.appspot.com",
   };
 
-  console.log('config', config);
+  // console.log('config', config);
   firebase.initializeApp(config);
 } catch (e) {
   console.log("pfft", e);

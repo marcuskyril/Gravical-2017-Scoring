@@ -1,5 +1,5 @@
 import React from 'react';
-import {Route, Router, IndexRoute, hashHistory} from 'react-router';
+import {Route, Router, IndexRoute, hashHistory, browserHistory} from 'react-router';
 var Main = require('Main');
 var Dashboard = require('Dashboard');
 var About = require('About');
@@ -11,8 +11,6 @@ import Login from 'Login';
 import firebase from 'app/firebase/';
 
 var requireLogin = (nextState, replace, next) => {
-
-    console.log(firebase.auth().currentUser);
 
     if (!firebase.auth().currentUser) {
         replace('/');

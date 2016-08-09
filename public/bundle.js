@@ -199,7 +199,7 @@
 	    storageBucket: "ortsolutions-77549.appspot.com"
 	  };
 
-	  console.log('config', config);
+	  // console.log('config', config);
 	  _firebase2.default.initializeApp(config);
 	} catch (e) {
 	  console.log("pfft", e);
@@ -921,8 +921,6 @@
 
 
 	var requireLogin = function requireLogin(nextState, replace, next) {
-
-	    console.log(_firebase2.default.auth().currentUser);
 
 	    if (!_firebase2.default.auth().currentUser) {
 	        replace('/');
@@ -12633,6 +12631,12 @@
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
+	var _firebase = __webpack_require__(10);
+
+	var _firebase2 = _interopRequireDefault(_firebase);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
@@ -12643,6 +12647,8 @@
 	var Nav = __webpack_require__(149);
 	var SensorDetails = __webpack_require__(151);
 	var Dashboard = __webpack_require__(309);
+
+	var toastr = __webpack_require__(547);
 
 	var Main = function (_React$Component) {
 	    _inherits(Main, _React$Component);
@@ -12656,7 +12662,8 @@
 	            overall: [],
 	            bfg: [],
 	            notifications: [],
-	            currentTime: ''
+	            currentTime: '',
+	            userDisplayName: ''
 	        };
 	        return _this;
 	    }
@@ -12665,8 +12672,15 @@
 	        key: 'componentDidMount',
 	        value: function componentDidMount() {
 	            $(document).foundation();
-
 	            var that = this;
+
+	            _firebase2.default.auth().onAuthStateChanged(function (user) {
+	                if (user) {
+	                    that.setState({ userDisplayName: user.displayName });
+	                }
+	            }, function (error) {
+	                console.warn(Error);
+	            });
 
 	            var conn1 = new ab.Session('ws://52.74.119.147:9000', function () {
 	                conn1.subscribe('', function (topic, data) {
@@ -12687,10 +12701,7 @@
 	                    var timestamp = new Date().toLocaleString();
 	                    console.log("now: ", timestamp);
 
-	                    that.setState({
-	                        bfg: data,
-	                        currentTime: timestamp
-	                    });
+	                    that.setState({ bfg: data, currentTime: timestamp });
 	                });
 	            }, function () {
 	                console.warn('WebSocket connection closed: BFG data not available');
@@ -12704,10 +12715,7 @@
 	                    var timestamp = new Date().toLocaleString();
 	                    console.log("now: ", timestamp);
 
-	                    that.setState({
-	                        notifications: data,
-	                        currentTime: timestamp
-	                    });
+	                    that.setState({ notifications: data, currentTime: timestamp });
 	                });
 	            }, function () {
 	                console.warn('WebSocket connection closed: Notification data not available');
@@ -12718,7 +12726,7 @@
 	        value: function render() {
 	            console.log("main render: ", this.state.notifications);
 	            var iframeLink = "./test.html?";
-	            console.log("currentTime in main: ", this.state.currentTime);
+	            console.log("userDisplayName in main: ", this.state.userDisplayName);
 
 	            return React.createElement(
 	                'div',
@@ -12731,9 +12739,13 @@
 	                        { className: 'off-canvas-wrapper-inner', 'data-off-canvas-wrapper': true },
 	                        React.createElement(
 	                            'div',
-	                            { className: 'off-canvas position-right', 'data-position': 'right', id: 'offCanvas', 'data-off-canvas': true, style: { padding: 0 } },
+	                            { className: 'off-canvas position-right', 'data-position': 'right', id: 'offCanvas', 'data-off-canvas': true, style: {
+	                                    padding: 0
+	                                } },
 	                            React.createElement('div', { id: 'sensorDetails' }),
-	                            React.createElement('iframe', { id: 'sensorDetailsIFrame', src: iframeLink, width: '350px', style: { border: "none" }, height: '99%' })
+	                            React.createElement('iframe', { id: 'sensorDetailsIFrame', src: iframeLink, width: '350px', style: {
+	                                    border: "none"
+	                                }, height: '99%' })
 	                        ),
 	                        React.createElement(
 	                            'div',
@@ -12745,7 +12757,7 @@
 	                                React.createElement(
 	                                    'div',
 	                                    { className: 'columns medium-12 large 12' },
-	                                    React.createElement(Dashboard, { overall: this.state.overall, bfg: this.state.bfg, notifications: this.state.notifcations })
+	                                    React.createElement(Dashboard, { displayName: this.state.userDisplayName, overall: this.state.overall, bfg: this.state.bfg, notificationData: this.state.notifcations })
 	                                )
 	                            )
 	                        )
@@ -12769,6 +12781,8 @@
 
 	/* WEBPACK VAR INJECTION */(function($) {'use strict';
 
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
 	var _react = __webpack_require__(14);
 
 	var _react2 = _interopRequireDefault(_react);
@@ -12785,6 +12799,12 @@
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
 	var FontAwesome = __webpack_require__(150);
 
 	var _require = __webpack_require__(45);
@@ -12792,169 +12812,185 @@
 	var Link = _require.Link;
 	var IndexLink = _require.IndexLink;
 
+	var Nav = function (_React$Component) {
+	    _inherits(Nav, _React$Component);
 
-	var Nav = _react2.default.createClass({
-	    displayName: 'Nav',
+	    function Nav() {
+	        _classCallCheck(this, Nav);
 
-	    componentDidMount: function componentDidMount() {
-	        $(document).foundation();
-	    },
-	    onLogout: function onLogout() {
-	        console.log("attempting logout");
-	        var dispatch = this.props.dispatch;
+	        return _possibleConstructorReturn(this, Object.getPrototypeOf(Nav).apply(this, arguments));
+	    }
 
-	        dispatch(actions.startLogout());
-	    },
+	    _createClass(Nav, [{
+	        key: 'componentDidMount',
+	        value: function componentDidMount() {
+	            $(document).foundation();
+	        }
+	    }, {
+	        key: 'onLogout',
+	        value: function onLogout() {
+	            console.log("attempting logout");
+	            var dispatch = this.props.dispatch;
 
-	    render: function render() {
-	        console.log("currentTime:", this.props.timestamp);
-	        return _react2.default.createElement(
-	            'div',
-	            { className: 'top-bar' },
-	            _react2.default.createElement(
+	            dispatch(actions.startLogout());
+	        }
+	    }, {
+	        key: 'render',
+	        value: function render() {
+	            console.log("currentTime:", this.props.timestamp);
+	            console.log("displayName:", this.props.displayName);
+	            return _react2.default.createElement(
 	                'div',
-	                { className: 'top-bar-title' },
+	                { className: 'top-bar' },
 	                _react2.default.createElement(
-	                    IndexLink,
-	                    { to: '/', activeClassName: 'active', activeStyle: {
-	                            color: '#f8f8f8'
-	                        } },
-	                    'Dashboard'
-	                )
-	            ),
-	            _react2.default.createElement(
-	                'div',
-	                { className: 'top-bar-right' },
+	                    'div',
+	                    { className: 'top-bar-title' },
+	                    _react2.default.createElement(
+	                        IndexLink,
+	                        { to: '/', activeClassName: 'active', activeStyle: {
+	                                color: '#f8f8f8'
+	                            } },
+	                        'Dashboard'
+	                    )
+	                ),
 	                _react2.default.createElement(
-	                    'ul',
-	                    { className: 'dropdown menu', 'data-dropdown-menu': true },
+	                    'div',
+	                    { className: 'top-bar-right' },
 	                    _react2.default.createElement(
-	                        'li',
-	                        null,
-	                        'Last sync at ',
-	                        this.props.timestamp,
-	                        _react2.default.createElement(FontAwesome, { name: 'refresh', spin: true, style: {
-	                                textShadow: '0 1px 0 rgba(0, 0, 0, 0.1)', marginLeft: '0.5rem'
-	                            } })
-	                    ),
-	                    _react2.default.createElement(
-	                        'li',
-	                        null,
+	                        'ul',
+	                        { className: 'dropdown menu', 'data-dropdown-menu': true },
 	                        _react2.default.createElement(
-	                            Link,
-	                            { to: '/', activeClassName: 'active', activeStyle: {
-	                                    color: '#222'
-	                                } },
-	                            _react2.default.createElement(FontAwesome, { name: 'bar-chart' })
+	                            'li',
+	                            null,
+	                            'Last sync at ',
+	                            this.props.timestamp,
+	                            _react2.default.createElement(FontAwesome, { name: 'refresh', spin: true, style: {
+	                                    textShadow: '0 1px 0 rgba(0, 0, 0, 0.1)', marginLeft: '0.5rem'
+	                                } })
 	                        ),
 	                        _react2.default.createElement(
-	                            'ul',
-	                            { className: 'menu vertical' },
+	                            'li',
+	                            null,
 	                            _react2.default.createElement(
-	                                'li',
-	                                null,
-	                                _react2.default.createElement(
-	                                    'a',
-	                                    { href: '#' },
-	                                    'Uptime'
-	                                )
+	                                Link,
+	                                { to: '/', activeClassName: 'active', activeStyle: {
+	                                        color: '#222'
+	                                    } },
+	                                _react2.default.createElement(FontAwesome, { name: 'bar-chart' })
 	                            ),
 	                            _react2.default.createElement(
-	                                'li',
-	                                null,
+	                                'ul',
+	                                { className: 'menu vertical' },
 	                                _react2.default.createElement(
-	                                    'a',
-	                                    { href: '#' },
-	                                    'CPU Usage'
-	                                )
-	                            ),
-	                            _react2.default.createElement(
-	                                'li',
-	                                null,
+	                                    'li',
+	                                    null,
+	                                    _react2.default.createElement(
+	                                        'a',
+	                                        { href: '#' },
+	                                        'Uptime'
+	                                    )
+	                                ),
 	                                _react2.default.createElement(
-	                                    'a',
-	                                    { href: '#' },
-	                                    'Temperature'
-	                                )
-	                            ),
-	                            _react2.default.createElement(
-	                                'li',
-	                                null,
+	                                    'li',
+	                                    null,
+	                                    _react2.default.createElement(
+	                                        'a',
+	                                        { href: '#' },
+	                                        'CPU Usage'
+	                                    )
+	                                ),
 	                                _react2.default.createElement(
-	                                    'a',
-	                                    { href: '#' },
-	                                    'RAM Usage'
-	                                )
-	                            ),
-	                            _react2.default.createElement(
-	                                'li',
-	                                null,
+	                                    'li',
+	                                    null,
+	                                    _react2.default.createElement(
+	                                        'a',
+	                                        { href: '#' },
+	                                        'Temperature'
+	                                    )
+	                                ),
 	                                _react2.default.createElement(
-	                                    'a',
-	                                    { href: '#' },
-	                                    'Storage'
-	                                )
-	                            ),
-	                            _react2.default.createElement(
-	                                'li',
-	                                null,
+	                                    'li',
+	                                    null,
+	                                    _react2.default.createElement(
+	                                        'a',
+	                                        { href: '#' },
+	                                        'RAM Usage'
+	                                    )
+	                                ),
 	                                _react2.default.createElement(
-	                                    'a',
-	                                    { href: '#' },
-	                                    'Network Speed'
+	                                    'li',
+	                                    null,
+	                                    _react2.default.createElement(
+	                                        'a',
+	                                        { href: '#' },
+	                                        'Storage'
+	                                    )
+	                                ),
+	                                _react2.default.createElement(
+	                                    'li',
+	                                    null,
+	                                    _react2.default.createElement(
+	                                        'a',
+	                                        { href: '#' },
+	                                        'Network Speed'
+	                                    )
 	                                )
 	                            )
-	                        )
-	                    ),
-	                    _react2.default.createElement(
-	                        'li',
-	                        null,
-	                        _react2.default.createElement(
-	                            Link,
-	                            { to: '/', activeClassName: 'active', activeStyle: {
-	                                    color: 'blue'
-	                                } },
-	                            _react2.default.createElement(FontAwesome, { name: 'cog' })
 	                        ),
 	                        _react2.default.createElement(
-	                            'ul',
-	                            { className: 'menu vertical' },
+	                            'li',
+	                            null,
 	                            _react2.default.createElement(
-	                                'li',
-	                                null,
-	                                _react2.default.createElement(
-	                                    Link,
-	                                    { to: '/accountSettings', activeClassName: 'active', activeStyle: {
-	                                            color: '#222`'
-	                                        } },
-	                                    'Update Profile'
-	                                )
+	                                Link,
+	                                { to: '/', activeClassName: 'active', activeStyle: {
+	                                        color: 'blue'
+	                                    } },
+	                                _react2.default.createElement(FontAwesome, { name: 'cog' })
 	                            ),
 	                            _react2.default.createElement(
-	                                'li',
-	                                null,
+	                                'ul',
+	                                { className: 'menu vertical' },
 	                                _react2.default.createElement(
-	                                    'a',
-	                                    { href: '#' },
-	                                    'Configure Settings'
-	                                )
-	                            ),
-	                            _react2.default.createElement(
-	                                'li',
-	                                null,
+	                                    'li',
+	                                    null,
+	                                    _react2.default.createElement(
+	                                        Link,
+	                                        { to: '/accountSettings', activeClassName: 'active', activeStyle: {
+	                                                color: '#222`'
+	                                            } },
+	                                        'Update Profile'
+	                                    )
+	                                ),
 	                                _react2.default.createElement(
-	                                    'a',
-	                                    { onClick: this.onLogout },
-	                                    'Log Out'
+	                                    'li',
+	                                    null,
+	                                    _react2.default.createElement(
+	                                        'a',
+	                                        { href: '#' },
+	                                        'Configure Settings'
+	                                    )
+	                                ),
+	                                _react2.default.createElement(
+	                                    'li',
+	                                    null,
+	                                    _react2.default.createElement(
+	                                        'a',
+	                                        { onClick: this.onLogout },
+	                                        'Log Out'
+	                                    )
 	                                )
 	                            )
 	                        )
 	                    )
 	                )
-	            )
-	        );
-	    }
-	});
+	            );
+	        }
+	    }]);
+
+	    return Nav;
+	}(_react2.default.Component);
+
+	;
 
 	module.exports = Redux.connect()(Nav);
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(9)))
@@ -42008,6 +42044,11 @@
 	var BuildingOverview = __webpack_require__(520);
 	var AddSensorAPI = __webpack_require__(521);
 
+	var _require = __webpack_require__(45);
+
+	var Link = _require.Link;
+	var IndexLink = _require.IndexLink;
+
 	var AddSensor = function (_React$Component) {
 	  _inherits(AddSensor, _React$Component);
 
@@ -42207,10 +42248,34 @@
 
 	    console.log("Dashboard's overall data is: ", this.props.overall);
 	    console.log("Dashboard's notifications data is: ", this.props.notifications);
+	    console.log("Display name in dashboard:", this.props.userDisplayName);
 
 	    return React.createElement(
 	      'div',
 	      { className: 'dashboard margin-top-md' },
+	      React.createElement(
+	        'div',
+	        { className: 'row' },
+	        React.createElement(
+	          'div',
+	          { className: 'columns large-12' },
+	          React.createElement(
+	            'div',
+	            { className: 'sub-header margin-bottom-small' },
+	            'Welcome, ',
+	            this.props.displayName,
+	            ' /',
+	            React.createElement(
+	              Link,
+	              { to: '/', activeClassName: 'active', activeStyle: {
+	                  color: '#222'
+	                } },
+	              ' View all notifications ',
+	              React.createElement(FontAwesome, { name: 'caret-right' })
+	            )
+	          )
+	        )
+	      ),
 	      React.createElement(
 	        'div',
 	        { className: 'row' },
@@ -42221,7 +42286,7 @@
 	        ),
 	        React.createElement(
 	          'div',
-	          { className: 'columns medium-6' },
+	          { className: 'columns medium-9' },
 	          React.createElement(
 	            'div',
 	            null,
@@ -42268,20 +42333,6 @@
 	        ),
 	        React.createElement(
 	          'div',
-	          { className: 'columns medium-3' },
-	          React.createElement(
-	            'div',
-	            { className: 'callout callout-dark-header' },
-	            React.createElement(
-	              'h4',
-	              { className: 'header' },
-	              'Notifications'
-	            )
-	          ),
-	          React.createElement(Notifications, { data: this.props.notifications })
-	        ),
-	        React.createElement(
-	          'div',
 	          { className: 'columns large-9' },
 	          React.createElement(
 	            'div',
@@ -42304,6 +42355,11 @@
 	});
 
 	module.exports = Dashboard;
+
+	// <div className="columns medium-3">
+	//   <div className="callout callout-dark-header"><h4 className="header">Notifications</h4></div>
+	//     <Notifications data={this.props.notificationData}/>
+	// </div>
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(9)))
 
 /***/ },
@@ -53541,7 +53597,7 @@
 	exports.push([module.id, "@import url(https://fonts.googleapis.com/css?family=Pathway+Gothic+One);", ""]);
 
 	// module
-	exports.push([module.id, "body,\nhtml {\n  background: #fff;\n  height: 100%;\n  font-family: roboto;\n  color: #f2f2f2; }\n\n.row {\n  max-width: 85rem; }\n\ndiv#offCanvas {\n  width: 350px;\n  height: 100%;\n  padding: 1.5rem;\n  background: #e8e8e8; }\n\n.is-open-right {\n  transform: translateX(-350px); }\n\n.off-canvas.position-right {\n  right: -350px; }\n\n.off-canvas-content {\n  background: #fff; }\n\na {\n  color: #6abedb; }\n\nhr {\n  border-color: #373837;\n  margin-top: 0.5rem; }\n\ntable thead {\n  background: #232f32;\n  color: white;\n  border: 1px solid #232f32; }\n\ntable tbody {\n  color: #1a1b1b;\n  border: 1px solid #232f32; }\n\n.margin-top-large {\n  margin-top: 4rem; }\n\n.margin-bottom-large {\n  margin-bottom: 4rem; }\n\n.margin-right-small {\n  margin-right: 2rem; }\n\n.margin-left-small {\n  margin-left: 2rem; }\n\n.margin-top-md {\n  margin-top: 2rem; }\n\n.margin-bottom-md {\n  margin-bottom: 2rem; }\n\n.margin-bottom-small {\n  margin-bottom: 1rem; }\n\n.textAlignCenter {\n  text-align: center; }\n\n.callout {\n  background-color: #f2f2f2; }\n\n.callout-dark {\n  padding: 1.5rem;\n  background-color: #f2f2f2;\n  border: 1px solid #373837;\n  border-bottom-left-radius: 4px;\n  border-bottom-right-radius: 4px;\n  margin-top: 0; }\n\n.callout-dark-header {\n  padding: 0.5rem;\n  background-color: #232f32;\n  border: 1px solid #373837;\n  border-top-left-radius: 4px;\n  border-top-right-radius: 4px;\n  margin-bottom: 0; }\n\n.callout-auth {\n  background-color: #fafafa;\n  border: 1px solid #fafafa;\n  padding: 2rem;\n  text-align: center; }\n  .callout-auth h3,\n  .callout-auth p {\n    margin-bottom: 2rem; }\n\n.icon-btn-text-small {\n  font-weight: bold;\n  font-family: 'Pathway Gothic One', sans-serif;\n  text-transform: uppercase;\n  top: 15px;\n  right: 15px;\n  position: absolute;\n  color: #f8f8f8;\n  font-size: 1.2rem; }\n\nlabel {\n  text-transform: capitalize;\n  color: #232f32; }\n\n.header {\n  color: #6abedb;\n  margin-bottom: 0;\n  font-size: 1.5rem;\n  text-transform: uppercase;\n  font-weight: bold;\n  font-family: 'Pathway Gothic One', sans-serif; }\n\n.sub-header {\n  color: #232f32;\n  font-size: 0.9rem;\n  font-family: 'Pathway Gothic One', sans-serif; }\n\n.page-title {\n  color: #555;\n  font-family: 'Pathway Gothic One', sans-serif;\n  font-size: 1.5rem;\n  margin-top: 1.5rem;\n  margin-bottom: 1.5rem; }\n\ninput[type=search] {\n  box-shadow: none; }\n\n.top-bar-upper {\n  color: #333;\n  font-size: 0.5rem; }\n\n.app-header {\n  font-size: 1.3rem; }\n\ntable.overview-custom tbody,\ntable.overview-custom th,\ntable.overview-custom thead,\ntable.overview-custom tr {\n  text-align: center; }\n\ntable.sensor-details-table tbody {\n  text-align: left; }\n\ng text {\n  fill: #232f32;\n  stroke: #232f32;\n  display: none; }\n\npolyline {\n  stroke: #232f32;\n  display: none; }\n\n.statusText {\n  color: red;\n  margin-bottom: 1rem;\n  text-transform: uppercase;\n  font-size: 0.5em;\n  font-weight: bold; }\n", ""]);
+	exports.push([module.id, "body,\nhtml {\n  background: #fff;\n  height: 100%;\n  font-family: roboto;\n  color: #f2f2f2; }\n\n.row {\n  max-width: 85rem; }\n\ndiv#offCanvas {\n  width: 350px;\n  height: 100%;\n  padding: 1.5rem;\n  background: #e8e8e8; }\n\n.is-open-right {\n  transform: translateX(-350px); }\n\n.off-canvas.position-right {\n  right: -350px; }\n\n.off-canvas-content {\n  background: #fff; }\n\na {\n  color: #6abedb; }\n\nhr {\n  border-color: #373837;\n  margin-top: 0.5rem; }\n\ntable thead {\n  background: #232f32;\n  color: white;\n  border: 1px solid #232f32; }\n\ntable tbody {\n  color: #1a1b1b;\n  border: 1px solid #232f32; }\n\n.margin-top-large {\n  margin-top: 4rem; }\n\n.margin-bottom-large {\n  margin-bottom: 4rem; }\n\n.margin-right-small {\n  margin-right: 2rem; }\n\n.margin-left-small {\n  margin-left: 2rem; }\n\n.margin-top-md {\n  margin-top: 2rem; }\n\n.margin-bottom-md {\n  margin-bottom: 2rem; }\n\n.margin-bottom-small {\n  margin-bottom: 1rem; }\n\n.textAlignCenter {\n  text-align: center; }\n\n.callout {\n  background-color: #f2f2f2; }\n\n.callout-dark {\n  padding: 1.5rem;\n  background-color: #f2f2f2;\n  border: 1px solid #373837;\n  border-bottom-left-radius: 4px;\n  border-bottom-right-radius: 4px;\n  margin-top: 0; }\n\n.callout-dark-header {\n  padding: 0.5rem;\n  background-color: #232f32;\n  border: 1px solid #373837;\n  border-top-left-radius: 4px;\n  border-top-right-radius: 4px;\n  margin-bottom: 0; }\n\n.callout-auth {\n  background-color: #fafafa;\n  border: 1px solid #fafafa;\n  padding: 2rem;\n  text-align: center; }\n  .callout-auth h3,\n  .callout-auth p {\n    margin-bottom: 2rem; }\n\n.icon-btn-text-small {\n  font-weight: bold;\n  font-family: 'Pathway Gothic One', sans-serif;\n  text-transform: uppercase;\n  top: 15px;\n  right: 15px;\n  position: absolute;\n  color: #f8f8f8;\n  font-size: 1.2rem; }\n\nlabel {\n  text-transform: capitalize;\n  color: #232f32; }\n\n.header {\n  color: #6abedb;\n  margin-bottom: 0;\n  font-size: 1.5rem;\n  text-transform: uppercase;\n  font-weight: bold;\n  font-family: 'Pathway Gothic One', sans-serif; }\n\n.sub-header {\n  color: #232f32;\n  font-size: 1.2rem;\n  text-transform: uppercase;\n  font-family: 'Pathway Gothic One', sans-serif; }\n\n.page-title {\n  color: #555;\n  font-family: 'Pathway Gothic One', sans-serif;\n  font-size: 1.5rem;\n  margin-top: 1.5rem;\n  margin-bottom: 1.5rem; }\n\ninput[type=search] {\n  box-shadow: none; }\n\n.top-bar-upper {\n  color: #333;\n  font-size: 0.5rem; }\n\n.app-header {\n  font-size: 1.3rem; }\n\ntable.overview-custom tbody,\ntable.overview-custom th,\ntable.overview-custom thead,\ntable.overview-custom tr {\n  text-align: center; }\n\ntable.sensor-details-table tbody {\n  text-align: left; }\n\ng text {\n  fill: #232f32;\n  stroke: #232f32;\n  display: none; }\n\npolyline {\n  stroke: #232f32;\n  display: none; }\n\n.statusText {\n  color: red;\n  margin-bottom: 1rem;\n  text-transform: uppercase;\n  font-size: 0.5em;\n  font-weight: bold; }\n", ""]);
 
 	// exports
 
@@ -53582,7 +53638,7 @@
 	exports.push([module.id, "@import url(https://fonts.googleapis.com/css?family=Pathway+Gothic+One);", ""]);
 
 	// module
-	exports.push([module.id, "body,\nhtml {\n  background: #fff;\n  height: 100%;\n  font-family: roboto;\n  color: #f2f2f2; }\n\n.row {\n  max-width: 85rem; }\n\ndiv#offCanvas {\n  width: 350px;\n  height: 100%;\n  padding: 1.5rem;\n  background: #e8e8e8; }\n\n.is-open-right {\n  transform: translateX(-350px); }\n\n.off-canvas.position-right {\n  right: -350px; }\n\n.off-canvas-content {\n  background: #fff; }\n\na {\n  color: #6abedb; }\n\nhr {\n  border-color: #373837;\n  margin-top: 0.5rem; }\n\ntable thead {\n  background: #232f32;\n  color: white;\n  border: 1px solid #232f32; }\n\ntable tbody {\n  color: #1a1b1b;\n  border: 1px solid #232f32; }\n\n.margin-top-large {\n  margin-top: 4rem; }\n\n.margin-bottom-large {\n  margin-bottom: 4rem; }\n\n.margin-right-small {\n  margin-right: 2rem; }\n\n.margin-left-small {\n  margin-left: 2rem; }\n\n.margin-top-md {\n  margin-top: 2rem; }\n\n.margin-bottom-md {\n  margin-bottom: 2rem; }\n\n.margin-bottom-small {\n  margin-bottom: 1rem; }\n\n.textAlignCenter {\n  text-align: center; }\n\n.callout {\n  background-color: #f2f2f2; }\n\n.callout-dark {\n  padding: 1.5rem;\n  background-color: #f2f2f2;\n  border: 1px solid #373837;\n  border-bottom-left-radius: 4px;\n  border-bottom-right-radius: 4px;\n  margin-top: 0; }\n\n.callout-dark-header {\n  padding: 0.5rem;\n  background-color: #232f32;\n  border: 1px solid #373837;\n  border-top-left-radius: 4px;\n  border-top-right-radius: 4px;\n  margin-bottom: 0; }\n\n.callout-auth {\n  background-color: #fafafa;\n  border: 1px solid #fafafa;\n  padding: 2rem;\n  text-align: center; }\n  .callout-auth h3,\n  .callout-auth p {\n    margin-bottom: 2rem; }\n\n.icon-btn-text-small {\n  font-weight: bold;\n  font-family: 'Pathway Gothic One', sans-serif;\n  text-transform: uppercase;\n  top: 15px;\n  right: 15px;\n  position: absolute;\n  color: #f8f8f8;\n  font-size: 1.2rem; }\n\nlabel {\n  text-transform: capitalize;\n  color: #232f32; }\n\n.header {\n  color: #6abedb;\n  margin-bottom: 0;\n  font-size: 1.5rem;\n  text-transform: uppercase;\n  font-weight: bold;\n  font-family: 'Pathway Gothic One', sans-serif; }\n\n.sub-header {\n  color: #232f32;\n  font-size: 0.9rem;\n  font-family: 'Pathway Gothic One', sans-serif; }\n\n.page-title {\n  color: #555;\n  font-family: 'Pathway Gothic One', sans-serif;\n  font-size: 1.5rem;\n  margin-top: 1.5rem;\n  margin-bottom: 1.5rem; }\n\ninput[type=search] {\n  box-shadow: none; }\n\n.top-bar-upper {\n  color: #333;\n  font-size: 0.5rem; }\n\n.app-header {\n  font-size: 1.3rem; }\n\ntable.overview-custom tbody,\ntable.overview-custom th,\ntable.overview-custom thead,\ntable.overview-custom tr {\n  text-align: center; }\n\ntable.sensor-details-table tbody {\n  text-align: left; }\n\ng text {\n  fill: #232f32;\n  stroke: #232f32;\n  display: none; }\n\npolyline {\n  stroke: #232f32;\n  display: none; }\n\n.statusText {\n  color: red;\n  margin-bottom: 1rem;\n  text-transform: uppercase;\n  font-size: 0.5em;\n  font-weight: bold; }\n\n.top-bar-left {\n  margin-top: 1.5rem; }\n\n.top-bar-right {\n  margin-top: 1.5rem; }\n\n.top-bar {\n  padding: 0rem 2rem 0rem 2rem;\n  background: #232f32;\n  height: 4rem;\n  box-shadow: 0.5px 0.5px 5px #373837; }\n\n.top-bar ul {\n  background: #232f32;\n  /* temporary fix */\n  position: absolute;\n  top: 15px;\n  right: 15px; }\n\n.top-bar.lower {\n  padding-top: 0px; }\n\n.top-bar-title {\n  font-size: 1.7rem;\n  text-transform: uppercase;\n  font-weight: bold;\n  font-family: 'Pathway Gothic One', sans-serif;\n  position: absolute;\n  top: 15px;\n  left: 15px; }\n\n.menu > li > a {\n  color: #fafafa;\n  font-weight: bold;\n  font-size: 1rem;\n  text-transform: uppercase; }\n\n.is-dropdown-submenu {\n  border: 1px solid #373737; }\n", ""]);
+	exports.push([module.id, "body,\nhtml {\n  background: #fff;\n  height: 100%;\n  font-family: roboto;\n  color: #f2f2f2; }\n\n.row {\n  max-width: 85rem; }\n\ndiv#offCanvas {\n  width: 350px;\n  height: 100%;\n  padding: 1.5rem;\n  background: #e8e8e8; }\n\n.is-open-right {\n  transform: translateX(-350px); }\n\n.off-canvas.position-right {\n  right: -350px; }\n\n.off-canvas-content {\n  background: #fff; }\n\na {\n  color: #6abedb; }\n\nhr {\n  border-color: #373837;\n  margin-top: 0.5rem; }\n\ntable thead {\n  background: #232f32;\n  color: white;\n  border: 1px solid #232f32; }\n\ntable tbody {\n  color: #1a1b1b;\n  border: 1px solid #232f32; }\n\n.margin-top-large {\n  margin-top: 4rem; }\n\n.margin-bottom-large {\n  margin-bottom: 4rem; }\n\n.margin-right-small {\n  margin-right: 2rem; }\n\n.margin-left-small {\n  margin-left: 2rem; }\n\n.margin-top-md {\n  margin-top: 2rem; }\n\n.margin-bottom-md {\n  margin-bottom: 2rem; }\n\n.margin-bottom-small {\n  margin-bottom: 1rem; }\n\n.textAlignCenter {\n  text-align: center; }\n\n.callout {\n  background-color: #f2f2f2; }\n\n.callout-dark {\n  padding: 1.5rem;\n  background-color: #f2f2f2;\n  border: 1px solid #373837;\n  border-bottom-left-radius: 4px;\n  border-bottom-right-radius: 4px;\n  margin-top: 0; }\n\n.callout-dark-header {\n  padding: 0.5rem;\n  background-color: #232f32;\n  border: 1px solid #373837;\n  border-top-left-radius: 4px;\n  border-top-right-radius: 4px;\n  margin-bottom: 0; }\n\n.callout-auth {\n  background-color: #fafafa;\n  border: 1px solid #fafafa;\n  padding: 2rem;\n  text-align: center; }\n  .callout-auth h3,\n  .callout-auth p {\n    margin-bottom: 2rem; }\n\n.icon-btn-text-small {\n  font-weight: bold;\n  font-family: 'Pathway Gothic One', sans-serif;\n  text-transform: uppercase;\n  top: 15px;\n  right: 15px;\n  position: absolute;\n  color: #f8f8f8;\n  font-size: 1.2rem; }\n\nlabel {\n  text-transform: capitalize;\n  color: #232f32; }\n\n.header {\n  color: #6abedb;\n  margin-bottom: 0;\n  font-size: 1.5rem;\n  text-transform: uppercase;\n  font-weight: bold;\n  font-family: 'Pathway Gothic One', sans-serif; }\n\n.sub-header {\n  color: #232f32;\n  font-size: 1.2rem;\n  text-transform: uppercase;\n  font-family: 'Pathway Gothic One', sans-serif; }\n\n.page-title {\n  color: #555;\n  font-family: 'Pathway Gothic One', sans-serif;\n  font-size: 1.5rem;\n  margin-top: 1.5rem;\n  margin-bottom: 1.5rem; }\n\ninput[type=search] {\n  box-shadow: none; }\n\n.top-bar-upper {\n  color: #333;\n  font-size: 0.5rem; }\n\n.app-header {\n  font-size: 1.3rem; }\n\ntable.overview-custom tbody,\ntable.overview-custom th,\ntable.overview-custom thead,\ntable.overview-custom tr {\n  text-align: center; }\n\ntable.sensor-details-table tbody {\n  text-align: left; }\n\ng text {\n  fill: #232f32;\n  stroke: #232f32;\n  display: none; }\n\npolyline {\n  stroke: #232f32;\n  display: none; }\n\n.statusText {\n  color: red;\n  margin-bottom: 1rem;\n  text-transform: uppercase;\n  font-size: 0.5em;\n  font-weight: bold; }\n\n.top-bar-left {\n  margin-top: 1.5rem; }\n\n.top-bar-right {\n  margin-top: 1.5rem; }\n\n.top-bar {\n  padding: 0rem 2rem 0rem 2rem;\n  background: #232f32;\n  height: 4rem;\n  box-shadow: 0.5px 0.5px 5px #373837; }\n\n.top-bar ul {\n  background: #232f32;\n  /* temporary fix */\n  position: absolute;\n  top: 15px;\n  right: 15px; }\n\n.top-bar.lower {\n  padding-top: 0px; }\n\n.top-bar-title {\n  font-size: 1.7rem;\n  text-transform: uppercase;\n  font-weight: bold;\n  font-family: 'Pathway Gothic One', sans-serif;\n  position: absolute;\n  top: 15px;\n  left: 15px; }\n\n.menu > li > a {\n  color: #fafafa;\n  font-weight: bold;\n  font-size: 1rem;\n  text-transform: uppercase; }\n\n.is-dropdown-submenu {\n  border: 1px solid #373737; }\n", ""]);
 
 	// exports
 
@@ -53663,9 +53719,458 @@
 	exports.push([module.id, "@import url(https://fonts.googleapis.com/css?family=Pathway+Gothic+One);", ""]);
 
 	// module
-	exports.push([module.id, "body,\nhtml {\n  background: #fff;\n  height: 100%;\n  font-family: roboto;\n  color: #f2f2f2; }\n\n.row {\n  max-width: 85rem; }\n\ndiv#offCanvas {\n  width: 350px;\n  height: 100%;\n  padding: 1.5rem;\n  background: #e8e8e8; }\n\n.is-open-right {\n  transform: translateX(-350px); }\n\n.off-canvas.position-right {\n  right: -350px; }\n\n.off-canvas-content {\n  background: #fff; }\n\na {\n  color: #6abedb; }\n\nhr {\n  border-color: #373837;\n  margin-top: 0.5rem; }\n\ntable thead {\n  background: #232f32;\n  color: white;\n  border: 1px solid #232f32; }\n\ntable tbody {\n  color: #1a1b1b;\n  border: 1px solid #232f32; }\n\n.margin-top-large {\n  margin-top: 4rem; }\n\n.margin-bottom-large {\n  margin-bottom: 4rem; }\n\n.margin-right-small {\n  margin-right: 2rem; }\n\n.margin-left-small {\n  margin-left: 2rem; }\n\n.margin-top-md {\n  margin-top: 2rem; }\n\n.margin-bottom-md {\n  margin-bottom: 2rem; }\n\n.margin-bottom-small {\n  margin-bottom: 1rem; }\n\n.textAlignCenter {\n  text-align: center; }\n\n.callout {\n  background-color: #f2f2f2; }\n\n.callout-dark {\n  padding: 1.5rem;\n  background-color: #f2f2f2;\n  border: 1px solid #373837;\n  border-bottom-left-radius: 4px;\n  border-bottom-right-radius: 4px;\n  margin-top: 0; }\n\n.callout-dark-header {\n  padding: 0.5rem;\n  background-color: #232f32;\n  border: 1px solid #373837;\n  border-top-left-radius: 4px;\n  border-top-right-radius: 4px;\n  margin-bottom: 0; }\n\n.callout-auth {\n  background-color: #fafafa;\n  border: 1px solid #fafafa;\n  padding: 2rem;\n  text-align: center; }\n  .callout-auth h3,\n  .callout-auth p {\n    margin-bottom: 2rem; }\n\n.icon-btn-text-small {\n  font-weight: bold;\n  font-family: 'Pathway Gothic One', sans-serif;\n  text-transform: uppercase;\n  top: 15px;\n  right: 15px;\n  position: absolute;\n  color: #f8f8f8;\n  font-size: 1.2rem; }\n\nlabel {\n  text-transform: capitalize;\n  color: #232f32; }\n\n.header {\n  color: #6abedb;\n  margin-bottom: 0;\n  font-size: 1.5rem;\n  text-transform: uppercase;\n  font-weight: bold;\n  font-family: 'Pathway Gothic One', sans-serif; }\n\n.sub-header {\n  color: #232f32;\n  font-size: 0.9rem;\n  font-family: 'Pathway Gothic One', sans-serif; }\n\n.page-title {\n  color: #555;\n  font-family: 'Pathway Gothic One', sans-serif;\n  font-size: 1.5rem;\n  margin-top: 1.5rem;\n  margin-bottom: 1.5rem; }\n\ninput[type=search] {\n  box-shadow: none; }\n\n.top-bar-upper {\n  color: #333;\n  font-size: 0.5rem; }\n\n.app-header {\n  font-size: 1.3rem; }\n\ntable.overview-custom tbody,\ntable.overview-custom th,\ntable.overview-custom thead,\ntable.overview-custom tr {\n  text-align: center; }\n\ntable.sensor-details-table tbody {\n  text-align: left; }\n\ng text {\n  fill: #232f32;\n  stroke: #232f32;\n  display: none; }\n\npolyline {\n  stroke: #232f32;\n  display: none; }\n\n.statusText {\n  color: red;\n  margin-bottom: 1rem;\n  text-transform: uppercase;\n  font-size: 0.5em;\n  font-weight: bold; }\n\n.griddle-container {\n  border: none !important; }\n\n.griddle .top-section {\n  clear: both;\n  display: table;\n  width: 100%; }\n\n.griddle .griddle-filter {\n  float: left;\n  width: 50%;\n  text-align: left;\n  color: #222;\n  min-height: 1px; }\n\n.griddle-body {\n  font-size: 0.7em; }\n\n.griddle .griddle-settings-toggle {\n  float: left;\n  width: 50%;\n  text-align: right;\n  color: #f8f8f8; }\n\n.griddle .griddle-settings {\n  background-color: #FFF;\n  border: 1px solid #DDD;\n  color: #222;\n  padding: 10px;\n  margin-bottom: 10px; }\n\n.griddle .griddle-settings .settings {\n  color: #f8f8f8; }\n\n.griddle .griddle-settings .griddle-columns {\n  clear: both;\n  display: table;\n  width: 100%;\n  border-bottom: 1px solid #EDEDED;\n  margin-bottom: 10px; }\n\n.griddle .griddle-settings .griddle-column-selection {\n  float: left;\n  width: 20%; }\n\n.griddle table {\n  width: 100%;\n  table-layout: fixed; }\n\n.griddle th {\n  background-color: #EDEDEF;\n  border: 0px;\n  border-bottom: 1px solid #DDD;\n  color: #222;\n  padding: 5px; }\n\n.griddle td {\n  padding: 5px;\n  background-color: #FFF;\n  border-top-color: #DDD;\n  color: #222; }\n\n.griddle .footer-container {\n  padding: 0px;\n  background-color: #EDEDED;\n  border: 0px;\n  color: #222; }\n\n.griddle button {\n  color: transparent; }\n\n.griddle .griddle-previous, .griddle .griddle-page, .griddle .griddle-next {\n  float: left;\n  width: 33%;\n  min-height: 1px;\n  margin-top: 5px; }\n\n.griddle .griddle-page {\n  text-align: center; }\n\n.griddle .griddle-next {\n  text-align: right; }\n", ""]);
+	exports.push([module.id, "body,\nhtml {\n  background: #fff;\n  height: 100%;\n  font-family: roboto;\n  color: #f2f2f2; }\n\n.row {\n  max-width: 85rem; }\n\ndiv#offCanvas {\n  width: 350px;\n  height: 100%;\n  padding: 1.5rem;\n  background: #e8e8e8; }\n\n.is-open-right {\n  transform: translateX(-350px); }\n\n.off-canvas.position-right {\n  right: -350px; }\n\n.off-canvas-content {\n  background: #fff; }\n\na {\n  color: #6abedb; }\n\nhr {\n  border-color: #373837;\n  margin-top: 0.5rem; }\n\ntable thead {\n  background: #232f32;\n  color: white;\n  border: 1px solid #232f32; }\n\ntable tbody {\n  color: #1a1b1b;\n  border: 1px solid #232f32; }\n\n.margin-top-large {\n  margin-top: 4rem; }\n\n.margin-bottom-large {\n  margin-bottom: 4rem; }\n\n.margin-right-small {\n  margin-right: 2rem; }\n\n.margin-left-small {\n  margin-left: 2rem; }\n\n.margin-top-md {\n  margin-top: 2rem; }\n\n.margin-bottom-md {\n  margin-bottom: 2rem; }\n\n.margin-bottom-small {\n  margin-bottom: 1rem; }\n\n.textAlignCenter {\n  text-align: center; }\n\n.callout {\n  background-color: #f2f2f2; }\n\n.callout-dark {\n  padding: 1.5rem;\n  background-color: #f2f2f2;\n  border: 1px solid #373837;\n  border-bottom-left-radius: 4px;\n  border-bottom-right-radius: 4px;\n  margin-top: 0; }\n\n.callout-dark-header {\n  padding: 0.5rem;\n  background-color: #232f32;\n  border: 1px solid #373837;\n  border-top-left-radius: 4px;\n  border-top-right-radius: 4px;\n  margin-bottom: 0; }\n\n.callout-auth {\n  background-color: #fafafa;\n  border: 1px solid #fafafa;\n  padding: 2rem;\n  text-align: center; }\n  .callout-auth h3,\n  .callout-auth p {\n    margin-bottom: 2rem; }\n\n.icon-btn-text-small {\n  font-weight: bold;\n  font-family: 'Pathway Gothic One', sans-serif;\n  text-transform: uppercase;\n  top: 15px;\n  right: 15px;\n  position: absolute;\n  color: #f8f8f8;\n  font-size: 1.2rem; }\n\nlabel {\n  text-transform: capitalize;\n  color: #232f32; }\n\n.header {\n  color: #6abedb;\n  margin-bottom: 0;\n  font-size: 1.5rem;\n  text-transform: uppercase;\n  font-weight: bold;\n  font-family: 'Pathway Gothic One', sans-serif; }\n\n.sub-header {\n  color: #232f32;\n  font-size: 1.2rem;\n  text-transform: uppercase;\n  font-family: 'Pathway Gothic One', sans-serif; }\n\n.page-title {\n  color: #555;\n  font-family: 'Pathway Gothic One', sans-serif;\n  font-size: 1.5rem;\n  margin-top: 1.5rem;\n  margin-bottom: 1.5rem; }\n\ninput[type=search] {\n  box-shadow: none; }\n\n.top-bar-upper {\n  color: #333;\n  font-size: 0.5rem; }\n\n.app-header {\n  font-size: 1.3rem; }\n\ntable.overview-custom tbody,\ntable.overview-custom th,\ntable.overview-custom thead,\ntable.overview-custom tr {\n  text-align: center; }\n\ntable.sensor-details-table tbody {\n  text-align: left; }\n\ng text {\n  fill: #232f32;\n  stroke: #232f32;\n  display: none; }\n\npolyline {\n  stroke: #232f32;\n  display: none; }\n\n.statusText {\n  color: red;\n  margin-bottom: 1rem;\n  text-transform: uppercase;\n  font-size: 0.5em;\n  font-weight: bold; }\n\n.griddle-container {\n  border: none !important; }\n\n.griddle .top-section {\n  clear: both;\n  display: table;\n  width: 100%; }\n\n.griddle .griddle-filter {\n  float: left;\n  width: 50%;\n  text-align: left;\n  color: #222;\n  min-height: 1px; }\n\n.griddle-body {\n  font-size: 0.7em; }\n\n.griddle .griddle-settings-toggle {\n  float: left;\n  width: 50%;\n  text-align: right;\n  color: #f8f8f8; }\n\n.griddle .griddle-settings {\n  background-color: #FFF;\n  border: 1px solid #DDD;\n  color: #222;\n  padding: 10px;\n  margin-bottom: 10px; }\n\n.griddle .griddle-settings .settings {\n  color: #f8f8f8; }\n\n.griddle .griddle-settings .griddle-columns {\n  clear: both;\n  display: table;\n  width: 100%;\n  border-bottom: 1px solid #EDEDED;\n  margin-bottom: 10px; }\n\n.griddle .griddle-settings .griddle-column-selection {\n  float: left;\n  width: 20%; }\n\n.griddle table {\n  width: 100%;\n  table-layout: fixed; }\n\n.griddle th {\n  background-color: #EDEDEF;\n  border: 0px;\n  border-bottom: 1px solid #DDD;\n  color: #222;\n  padding: 5px; }\n\n.griddle td {\n  padding: 5px;\n  background-color: #FFF;\n  border-top-color: #DDD;\n  color: #222; }\n\n.griddle .footer-container {\n  padding: 0px;\n  background-color: #EDEDED;\n  border: 0px;\n  color: #222; }\n\n.griddle button {\n  color: transparent; }\n\n.griddle .griddle-previous, .griddle .griddle-page, .griddle .griddle-next {\n  float: left;\n  width: 33%;\n  min-height: 1px;\n  margin-top: 5px; }\n\n.griddle .griddle-page {\n  text-align: center; }\n\n.griddle .griddle-next {\n  text-align: right; }\n", ""]);
 
 	// exports
+
+
+/***/ },
+/* 540 */,
+/* 541 */,
+/* 542 */,
+/* 543 */,
+/* 544 */,
+/* 545 */,
+/* 546 */,
+/* 547 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*
+	 * Toastr
+	 * Copyright 2012-2015
+	 * Authors: John Papa, Hans Fjällemark, and Tim Ferrell.
+	 * All Rights Reserved.
+	 * Use, reproduction, distribution, and modification of this code is subject to the terms and
+	 * conditions of the MIT license, available at http://www.opensource.org/licenses/mit-license.php
+	 *
+	 * ARIA Support: Greta Krafsig
+	 *
+	 * Project: https://github.com/CodeSeven/toastr
+	 */
+	/* global define */
+	; (function (define) {
+	    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(9)], __WEBPACK_AMD_DEFINE_RESULT__ = function ($) {
+	        return (function () {
+	            var $container;
+	            var listener;
+	            var toastId = 0;
+	            var toastType = {
+	                error: 'error',
+	                info: 'info',
+	                success: 'success',
+	                warning: 'warning'
+	            };
+
+	            var toastr = {
+	                clear: clear,
+	                remove: remove,
+	                error: error,
+	                getContainer: getContainer,
+	                info: info,
+	                options: {},
+	                subscribe: subscribe,
+	                success: success,
+	                version: '2.1.2',
+	                warning: warning
+	            };
+
+	            var previousToast;
+
+	            return toastr;
+
+	            ////////////////
+
+	            function error(message, title, optionsOverride) {
+	                return notify({
+	                    type: toastType.error,
+	                    iconClass: getOptions().iconClasses.error,
+	                    message: message,
+	                    optionsOverride: optionsOverride,
+	                    title: title
+	                });
+	            }
+
+	            function getContainer(options, create) {
+	                if (!options) { options = getOptions(); }
+	                $container = $('#' + options.containerId);
+	                if ($container.length) {
+	                    return $container;
+	                }
+	                if (create) {
+	                    $container = createContainer(options);
+	                }
+	                return $container;
+	            }
+
+	            function info(message, title, optionsOverride) {
+	                return notify({
+	                    type: toastType.info,
+	                    iconClass: getOptions().iconClasses.info,
+	                    message: message,
+	                    optionsOverride: optionsOverride,
+	                    title: title
+	                });
+	            }
+
+	            function subscribe(callback) {
+	                listener = callback;
+	            }
+
+	            function success(message, title, optionsOverride) {
+	                return notify({
+	                    type: toastType.success,
+	                    iconClass: getOptions().iconClasses.success,
+	                    message: message,
+	                    optionsOverride: optionsOverride,
+	                    title: title
+	                });
+	            }
+
+	            function warning(message, title, optionsOverride) {
+	                return notify({
+	                    type: toastType.warning,
+	                    iconClass: getOptions().iconClasses.warning,
+	                    message: message,
+	                    optionsOverride: optionsOverride,
+	                    title: title
+	                });
+	            }
+
+	            function clear($toastElement, clearOptions) {
+	                var options = getOptions();
+	                if (!$container) { getContainer(options); }
+	                if (!clearToast($toastElement, options, clearOptions)) {
+	                    clearContainer(options);
+	                }
+	            }
+
+	            function remove($toastElement) {
+	                var options = getOptions();
+	                if (!$container) { getContainer(options); }
+	                if ($toastElement && $(':focus', $toastElement).length === 0) {
+	                    removeToast($toastElement);
+	                    return;
+	                }
+	                if ($container.children().length) {
+	                    $container.remove();
+	                }
+	            }
+
+	            // internal functions
+
+	            function clearContainer (options) {
+	                var toastsToClear = $container.children();
+	                for (var i = toastsToClear.length - 1; i >= 0; i--) {
+	                    clearToast($(toastsToClear[i]), options);
+	                }
+	            }
+
+	            function clearToast ($toastElement, options, clearOptions) {
+	                var force = clearOptions && clearOptions.force ? clearOptions.force : false;
+	                if ($toastElement && (force || $(':focus', $toastElement).length === 0)) {
+	                    $toastElement[options.hideMethod]({
+	                        duration: options.hideDuration,
+	                        easing: options.hideEasing,
+	                        complete: function () { removeToast($toastElement); }
+	                    });
+	                    return true;
+	                }
+	                return false;
+	            }
+
+	            function createContainer(options) {
+	                $container = $('<div/>')
+	                    .attr('id', options.containerId)
+	                    .addClass(options.positionClass)
+	                    .attr('aria-live', 'polite')
+	                    .attr('role', 'alert');
+
+	                $container.appendTo($(options.target));
+	                return $container;
+	            }
+
+	            function getDefaults() {
+	                return {
+	                    tapToDismiss: true,
+	                    toastClass: 'toast',
+	                    containerId: 'toast-container',
+	                    debug: false,
+
+	                    showMethod: 'fadeIn', //fadeIn, slideDown, and show are built into jQuery
+	                    showDuration: 300,
+	                    showEasing: 'swing', //swing and linear are built into jQuery
+	                    onShown: undefined,
+	                    hideMethod: 'fadeOut',
+	                    hideDuration: 1000,
+	                    hideEasing: 'swing',
+	                    onHidden: undefined,
+	                    closeMethod: false,
+	                    closeDuration: false,
+	                    closeEasing: false,
+
+	                    extendedTimeOut: 1000,
+	                    iconClasses: {
+	                        error: 'toast-error',
+	                        info: 'toast-info',
+	                        success: 'toast-success',
+	                        warning: 'toast-warning'
+	                    },
+	                    iconClass: 'toast-info',
+	                    positionClass: 'toast-top-right',
+	                    timeOut: 5000, // Set timeOut and extendedTimeOut to 0 to make it sticky
+	                    titleClass: 'toast-title',
+	                    messageClass: 'toast-message',
+	                    escapeHtml: false,
+	                    target: 'body',
+	                    closeHtml: '<button type="button">&times;</button>',
+	                    newestOnTop: true,
+	                    preventDuplicates: false,
+	                    progressBar: false
+	                };
+	            }
+
+	            function publish(args) {
+	                if (!listener) { return; }
+	                listener(args);
+	            }
+
+	            function notify(map) {
+	                var options = getOptions();
+	                var iconClass = map.iconClass || options.iconClass;
+
+	                if (typeof (map.optionsOverride) !== 'undefined') {
+	                    options = $.extend(options, map.optionsOverride);
+	                    iconClass = map.optionsOverride.iconClass || iconClass;
+	                }
+
+	                if (shouldExit(options, map)) { return; }
+
+	                toastId++;
+
+	                $container = getContainer(options, true);
+
+	                var intervalId = null;
+	                var $toastElement = $('<div/>');
+	                var $titleElement = $('<div/>');
+	                var $messageElement = $('<div/>');
+	                var $progressElement = $('<div/>');
+	                var $closeElement = $(options.closeHtml);
+	                var progressBar = {
+	                    intervalId: null,
+	                    hideEta: null,
+	                    maxHideTime: null
+	                };
+	                var response = {
+	                    toastId: toastId,
+	                    state: 'visible',
+	                    startTime: new Date(),
+	                    options: options,
+	                    map: map
+	                };
+
+	                personalizeToast();
+
+	                displayToast();
+
+	                handleEvents();
+
+	                publish(response);
+
+	                if (options.debug && console) {
+	                    console.log(response);
+	                }
+
+	                return $toastElement;
+
+	                function escapeHtml(source) {
+	                    if (source == null)
+	                        source = "";
+
+	                    return new String(source)
+	                        .replace(/&/g, '&amp;')
+	                        .replace(/"/g, '&quot;')
+	                        .replace(/'/g, '&#39;')
+	                        .replace(/</g, '&lt;')
+	                        .replace(/>/g, '&gt;');
+	                }
+
+	                function personalizeToast() {
+	                    setIcon();
+	                    setTitle();
+	                    setMessage();
+	                    setCloseButton();
+	                    setProgressBar();
+	                    setSequence();
+	                }
+
+	                function handleEvents() {
+	                    $toastElement.hover(stickAround, delayedHideToast);
+	                    if (!options.onclick && options.tapToDismiss) {
+	                        $toastElement.click(hideToast);
+	                    }
+
+	                    if (options.closeButton && $closeElement) {
+	                        $closeElement.click(function (event) {
+	                            if (event.stopPropagation) {
+	                                event.stopPropagation();
+	                            } else if (event.cancelBubble !== undefined && event.cancelBubble !== true) {
+	                                event.cancelBubble = true;
+	                            }
+	                            hideToast(true);
+	                        });
+	                    }
+
+	                    if (options.onclick) {
+	                        $toastElement.click(function (event) {
+	                            options.onclick(event);
+	                            hideToast();
+	                        });
+	                    }
+	                }
+
+	                function displayToast() {
+	                    $toastElement.hide();
+
+	                    $toastElement[options.showMethod](
+	                        {duration: options.showDuration, easing: options.showEasing, complete: options.onShown}
+	                    );
+
+	                    if (options.timeOut > 0) {
+	                        intervalId = setTimeout(hideToast, options.timeOut);
+	                        progressBar.maxHideTime = parseFloat(options.timeOut);
+	                        progressBar.hideEta = new Date().getTime() + progressBar.maxHideTime;
+	                        if (options.progressBar) {
+	                            progressBar.intervalId = setInterval(updateProgress, 10);
+	                        }
+	                    }
+	                }
+
+	                function setIcon() {
+	                    if (map.iconClass) {
+	                        $toastElement.addClass(options.toastClass).addClass(iconClass);
+	                    }
+	                }
+
+	                function setSequence() {
+	                    if (options.newestOnTop) {
+	                        $container.prepend($toastElement);
+	                    } else {
+	                        $container.append($toastElement);
+	                    }
+	                }
+
+	                function setTitle() {
+	                    if (map.title) {
+	                        $titleElement.append(!options.escapeHtml ? map.title : escapeHtml(map.title)).addClass(options.titleClass);
+	                        $toastElement.append($titleElement);
+	                    }
+	                }
+
+	                function setMessage() {
+	                    if (map.message) {
+	                        $messageElement.append(!options.escapeHtml ? map.message : escapeHtml(map.message)).addClass(options.messageClass);
+	                        $toastElement.append($messageElement);
+	                    }
+	                }
+
+	                function setCloseButton() {
+	                    if (options.closeButton) {
+	                        $closeElement.addClass('toast-close-button').attr('role', 'button');
+	                        $toastElement.prepend($closeElement);
+	                    }
+	                }
+
+	                function setProgressBar() {
+	                    if (options.progressBar) {
+	                        $progressElement.addClass('toast-progress');
+	                        $toastElement.prepend($progressElement);
+	                    }
+	                }
+
+	                function shouldExit(options, map) {
+	                    if (options.preventDuplicates) {
+	                        if (map.message === previousToast) {
+	                            return true;
+	                        } else {
+	                            previousToast = map.message;
+	                        }
+	                    }
+	                    return false;
+	                }
+
+	                function hideToast(override) {
+	                    var method = override && options.closeMethod !== false ? options.closeMethod : options.hideMethod;
+	                    var duration = override && options.closeDuration !== false ?
+	                        options.closeDuration : options.hideDuration;
+	                    var easing = override && options.closeEasing !== false ? options.closeEasing : options.hideEasing;
+	                    if ($(':focus', $toastElement).length && !override) {
+	                        return;
+	                    }
+	                    clearTimeout(progressBar.intervalId);
+	                    return $toastElement[method]({
+	                        duration: duration,
+	                        easing: easing,
+	                        complete: function () {
+	                            removeToast($toastElement);
+	                            if (options.onHidden && response.state !== 'hidden') {
+	                                options.onHidden();
+	                            }
+	                            response.state = 'hidden';
+	                            response.endTime = new Date();
+	                            publish(response);
+	                        }
+	                    });
+	                }
+
+	                function delayedHideToast() {
+	                    if (options.timeOut > 0 || options.extendedTimeOut > 0) {
+	                        intervalId = setTimeout(hideToast, options.extendedTimeOut);
+	                        progressBar.maxHideTime = parseFloat(options.extendedTimeOut);
+	                        progressBar.hideEta = new Date().getTime() + progressBar.maxHideTime;
+	                    }
+	                }
+
+	                function stickAround() {
+	                    clearTimeout(intervalId);
+	                    progressBar.hideEta = 0;
+	                    $toastElement.stop(true, true)[options.showMethod](
+	                        {duration: options.showDuration, easing: options.showEasing}
+	                    );
+	                }
+
+	                function updateProgress() {
+	                    var percentage = ((progressBar.hideEta - (new Date().getTime())) / progressBar.maxHideTime) * 100;
+	                    $progressElement.width(percentage + '%');
+	                }
+	            }
+
+	            function getOptions() {
+	                return $.extend({}, getDefaults(), toastr.options);
+	            }
+
+	            function removeToast($toastElement) {
+	                if (!$container) { $container = getContainer(); }
+	                if ($toastElement.is(':visible')) {
+	                    return;
+	                }
+	                $toastElement.remove();
+	                $toastElement = null;
+	                if ($container.children().length === 0) {
+	                    $container.remove();
+	                    previousToast = undefined;
+	                }
+	            }
+
+	        })();
+	    }.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+	}(__webpack_require__(548)));
+
+
+/***/ },
+/* 548 */
+/***/ function(module, exports) {
+
+	module.exports = function() { throw new Error("define cannot be used indirect"); };
 
 
 /***/ }

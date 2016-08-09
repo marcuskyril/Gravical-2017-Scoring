@@ -5,17 +5,18 @@ var FontAwesome = require('react-fontawesome');
 
 var {Link, IndexLink} = require('react-router');
 
-var Nav = React.createClass({
-    componentDidMount: function() {
+class Nav extends React.Component {
+    componentDidMount() {
         $(document).foundation();
-    },
+    }
     onLogout() {
         console.log("attempting logout");
         var {dispatch} = this.props;
         dispatch(actions.startLogout());
-    },
-    render: function() {
+    }
+    render() {
         console.log("currentTime:", this.props.timestamp);
+        console.log("displayName:", this.props.displayName);
         return (
             <div className="top-bar">
                 <div className="top-bar-title">
@@ -80,6 +81,6 @@ var Nav = React.createClass({
             </div>
         );
     }
-});
+};
 
 module.exports = Redux.connect()(Nav);

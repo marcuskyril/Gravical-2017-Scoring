@@ -10,6 +10,7 @@ var Notifications = require('Notifications');
 var FontAwesome = require('react-fontawesome');
 var BuildingOverview = require('BuildingOverview');
 var AddSensorAPI = require('AddSensorAPI');
+var {Link, IndexLink} = require('react-router');
 
 class AddSensor extends React.Component {
 
@@ -133,15 +134,26 @@ var Dashboard = React.createClass({
 
         console.log("Dashboard's overall data is: ", this.props.overall);
         console.log("Dashboard's notifications data is: ", this.props.notifications);
+        console.log("Display name in dashboard:", this.props.userDisplayName);
 
         return (
 
             <div className="dashboard margin-top-md">
                 <div className="row">
+                  <div className="columns large-12">
+                    <div className="sub-header margin-bottom-small">
+                      Welcome, {this.props.displayName} /
+                       <Link to="/" activeClassName="active" activeStyle={{
+                          color: '#222'
+                      }}> View all notifications <FontAwesome name='caret-right'/></Link>
+                    </div>
+                  </div>
+                </div>
+                <div className="row">
                   <div className="columns medium-3 large 3">
                       <BuildingOverview data={this.props.overall} />
                   </div>
-                  <div className="columns medium-6">
+                  <div className="columns medium-9">
                     <div>
                       <div className="callout callout-dark-header"><h4 className="header">Pi Health Overview</h4>
                       <button onClick={this.launchAddSensor} className="icon-btn-text-small">
@@ -163,11 +175,6 @@ var Dashboard = React.createClass({
 
                   </div>
 
-                  <div className="columns medium-3">
-                    <div className="callout callout-dark-header"><h4 className="header">Notifications</h4></div>
-                      <Notifications data={this.props.notifications}/>
-                  </div>
-
                   <div className = "columns large-9">
                     <div className="callout callout-dark-header"><h4 className="header">All Sensors</h4></div>
                     <div className="callout callout-dark" id="bfg">
@@ -181,3 +188,9 @@ var Dashboard = React.createClass({
 });
 
 module.exports = Dashboard;
+
+
+// <div className="columns medium-3">
+//   <div className="callout callout-dark-header"><h4 className="header">Notifications</h4></div>
+//     <Notifications data={this.props.notificationData}/>
+// </div>
