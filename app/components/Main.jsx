@@ -22,14 +22,18 @@ class NotificationBar extends React.Component {
     const { notifications, count } = this.state;
     const id = notifications.size + 1;
     const newCount = count + 1;
-    if ((this.props.notificationMsg).length > 0) {
+
+    console.log("hello from the other side: ", this.props.notificationData);
+    console.log("notification data", this.props.notificationData.mac, this.props.notificationData.problem);
+    if(this.props.notificationData.mac) {
       return this.setState({
         count: newCount,
         notifications: notifications.add({
-          message: `${id}. ${this.props.notificationMsg}`,
+          title: this.props.notificationData.mac,
+          message: ` | ${this.props.notificationData.problem.status} | ${this.props.notificationData.timestamp.date}`,
           key: newCount,
           action: 'Dismiss',
-          dismissAfter: 3000,
+          dismissAfter: 100000,
           onClick: () => this.removeNotification(newCount),
         })
       });
@@ -48,8 +52,6 @@ class NotificationBar extends React.Component {
   }
 
   render () {
-
-
 
     return (
       <div>
@@ -73,9 +75,9 @@ constructor(props) {
         overall: [],
         bfg: [],
         notifications: [],
-        currentTime: '',
+        currentTime: '-',
         userDisplayName: '',
-        notificationMsg: ''
+        notificationData: {}
     }
 }
 
@@ -88,7 +90,7 @@ componentDidMount() {
             that.setState({userDisplayName: user.displayName});
         }
     }, function(error) {
-        console.warn(Error);
+        console.warn(error);
     });
 
     var conn1 = new ab.Session('ws://52.74.119.147:9000', function() {
@@ -124,11 +126,13 @@ componentDidMount() {
 
             var timestamp = new Date().toLocaleString();
 
+            console.log('this.refs', that.refs);
+
             if(data.length > 0) {
-              data.forEach(function(notificationMessage) {
-                console.log("notificationMessage", notificationMessage);
+              data.forEach(function(notificationData) {
+                console.log("notificationMessage", notificationData);
                   that.setState({
-                    notificationMsg: notificationMessage.problem.status
+                    notificationData: notificationData
                   })
               });
             }
@@ -143,11 +147,12 @@ componentDidMount() {
 }
 
 render() {
-    console.log("main render: ", this.state.notifications);
+    console.log("main render: ", this.state.notificationData);
     var iframeLink = "./offCrepe.html?";
 
     return (
         <div>
+
             <div className="off-canvas-wrapper">
                 <div className="off-canvas-wrapper-inner" data-off-canvas-wrapper>
                     <div className="off-canvas position-right" data-position="right" id="offCanvas" data-off-canvas style={{
@@ -161,12 +166,12 @@ render() {
 
                     <div className="off-canvas-content" data-off-canvas-content>
                         <Nav timestamp={this.state.currentTime}/>
-                        <NotificationBar notificationMsg={this.state.notificationMsg}/>
                         <div className="row">
                             <div className="columns medium-12 large 12">
-                                <Dashboard displayName={this.state.userDisplayName} overall={this.state.overall} bfg={this.state.bfg} notificationData={this.state.notifcations}/>
+                                <Dashboard timestamp={this.state.currentTime} displayName={this.state.userDisplayName} overall={this.state.overall} bfg={this.state.bfg} notificationData={this.state.notifcations}/>
                             </div>
                         </div>
+                        <NotificationBar notificationData={this.state.notificationData}/>
                     </div>
                 </div>
             </div>

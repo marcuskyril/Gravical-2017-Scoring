@@ -33,7 +33,7 @@ class LinkComponent extends React.Component {
 
     handleClick(macAddress) {
         // console.log("event", macAddress);
-        document.getElementById("sensorDetailsIFrame").src = "./test.html?offCanMac=" + macAddress;
+        document.getElementById("sensorDetailsIFrame").src = "./offCrepe.html?offCanMac=" + macAddress;
     }
 
     render() {

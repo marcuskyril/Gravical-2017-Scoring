@@ -141,11 +141,19 @@ var Dashboard = React.createClass({
             <div className="dashboard margin-top-md">
                 <div className="row">
                   <div className="columns large-12">
-                    <div className="sub-header margin-bottom-small">
-                      Welcome, {this.props.displayName} /
+                    <div className="sub-header">
+                      Welcome, {this.props.displayName}
+                    </div>
+                    <div className="sub-header">
                        <Link to="/" activeClassName="active" activeStyle={{
                           color: '#222'
                       }}> View all notifications <FontAwesome name='caret-right'/></Link>
+                    </div>
+                    <div className="sub-header margin-bottom-small">
+                      Last sync at {this.props.timestamp}
+                      <FontAwesome name='refresh' spin style={{
+                          textShadow: '0 1px 0 rgba(0, 0, 0, 0.1)', marginLeft: '0.5rem'
+                      }}/>
                     </div>
                   </div>
                 </div>

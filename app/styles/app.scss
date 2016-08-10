@@ -75,6 +75,11 @@ table tbody {
 .margin-top-md {
     margin-top: 2rem;
 }
+
+.margin-top-small {
+    margin-top: 1rem;
+}
+
 .margin-bottom-md {
     margin-bottom: 2rem;
 }
@@ -182,17 +187,25 @@ polyline {
     stroke: $night-ocean;
     display: none;
 }
+
 .statusText {
     color: red;
     margin-bottom: 1rem;
     text-transform: uppercase;
-    font-size: 0.5em;
+    font-size: 0.8em;
     font-weight: bold;
+}
+
+.notificationHeader {
+  color: #fff;
+  text-transform: uppercase;
+  font-size: 0.5em;
+  font-weight: bold;
 }
 
 .sensorBlock {
   height: 30px;
-  width: 180px;
+  width: auto;
   color: #fff;
   text-align: center;
   font-family: 'Pathway Gothic One', sans-serif;

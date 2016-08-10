@@ -27,13 +27,6 @@ class Nav extends React.Component {
                 <div className="top-bar-right">
                     <ul className="dropdown menu" data-dropdown-menu>
                         <li>
-                            Last sync at {this.props.timestamp}
-                            <FontAwesome name='refresh' spin style={{
-                                textShadow: '0 1px 0 rgba(0, 0, 0, 0.1)', marginLeft: '0.5rem'
-                            }}/>
-                        </li>
-
-                        <li>
                             <Link to="/" activeClassName="active" activeStyle={{
                                 color: '#222'
                             }}><FontAwesome name='bar-chart'/></Link>
