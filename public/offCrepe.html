@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title></title>
+    <!-- <link rel="stylesheet" href="/css/master.css" media="screen" title="no title" charset="utf-8"> -->
+    <link rel="stylesheet" href="css/foundation.min.css" media="screen" title="no title" charset="utf-8">
+    <link rel="stylesheet" href="css/nvd3.css" media="screen" title="no title" charset="utf-8">
+    <link href='https://fonts.googleapis.com/css?family=Pathway+Gothic+One' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" href="css/master.css">
+
+</head>
+
+<body>
+
+    <div class="sensor-details">
+        <div class="header textAlignCenter" id="mac_address">Loading</div>
+        <hr/>
+        <div class="sub-header textAlignCenter" id="building"></div>
+        <div class="sub-header textAlignCenter">
+            <span id="level"></span>
+            <span id="id"></span>
+        </div>
+
+        <div class="header textAlignCenter" id="status"></div>
+        <div class="sub-header textAlignCenter" id="last_reboot">loading...</div>
+
+        <div class="sub-header textAlignCenter" id="itsDeadJim">
+
+        </div>
+
+        <div class="table-container" id="tableaux-mini">
+            <table class="sensor-details-table margin-top-md">
+                <tbody>
+                    <tr>
+                        <td>
+                            <i class="fa fa-arrow-up" aria-hidden="true"></i> Uptime
+                        </td>
+                        <td id="uptime">
+                            -
+                        </td>
+                        <td>
+                            %
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <i class="fa fa-fire" aria-hidden="true"></i> Temperature
+                        </td>
+                        <td id="temperature">
+                            -
+                        </td>
+                        <td>
+                            &deg;C
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <i class="fa fa-hdd-o" aria-hidden="true"></i> CPU Usage
+                        </td>
+                        <td id="cpu">
+                            -
+                        </td>
+                        <td>
+                            %
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <i class="fa fa-database" aria-hidden="true"></i> Storage
+                        </td>
+                        <td id="storage">
+                            -
+                        </td>
+                        <td>
+                            %
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <i class="fa fa-tachometer" aria-hidden="true"></i> RAM
+                        </td>
+                        <td id="ram">
+                            -
+                        </td>
+                        <td>
+                            %
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <i class="fa fa-arrows-v" aria-hidden="true"></i> Flapping
+                        </td>
+                        <td id="flapping">
+                            -
+                        </td>
+                        <td>
+
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="top-5">
+            <div class="header textAlignCenter">Top 5 Processes</div>
+            <table>
+                <tr>
+                    <td>
+                        1
+                    </td>
+                    <td id="top1">
+
+                    </td>
+                    <td id="top1-usage">
+
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        2
+                    </td>
+                    <td id="top2">
+
+                    </td>
+                    <td id="top2-usage">
+
+                    </td>
+                </tr>
+                </tr>
+                <tr>
+                    <td>
+                        3
+                    </td>
+                    <td id="top3">
+
+                    </td>
+                    <td id="top3-usage">
+
+                    </td>
+                </tr>
+                </tr>
+                <tr>
+                    <td>
+                        4
+                    </td>
+                    <td id="top4">
+
+                    </td>
+                    <td id="top4-usage">
+
+                    </td>
+                </tr>
+                </tr>
+                <tr>
+                    <td>
+                        5
+                    </td>
+                    <td id="top5">
+
+                    </td>
+                    <td id="top5-usage">
+
+                    </td>
+                </tr>
+                </tr>
+            </table>
+        </div>
+
+        <!-- <canvas id="myChart" width="300" height="300"></canvas> -->
+
+        <div class="diagnosis">
+            <div class="header textAlignCenter">Diagnosis</div>
+            <span id="diagnosis"></span>
+        </div>
+        <div class="buttons margin-top-md">
+            <button class="button hollow expanded disabled">Reboot</button>
+            <button class="button hollow expanded disabled">Pin to watch list</button>
+        </div>
+
+        <script src="https://use.fontawesome.com/67b81887ff.js"></script>
+        <script src="https://npmcdn.com/axios/dist/axios.min.js"></script>
+        <script src="js/jquery.js"></script>
+        <script src="js/foundation.min.js"></script>
+        <script src="js/what-input.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.2.1/Chart.js"></script>
+        <script type="text/javascript">
+            // function sleep(milliseconds) {
+
+            var socket;
+            var macAddress;
+
+            var data = [];
+            var usage = [];
+            var ctx = document.getElementById("myChart");
+            var QueryString = function() {
+                // This function is anonymous, is executed immediately and
+                // the return value is assigned to QueryString!
+                var query_string = {};
+                var query = window.location.search.substring(1);
+                var vars = query.split("&");
+                for (var i = 0; i < vars.length; i++) {
+                    var pair = vars[i].split("=");
+                    // If first entry with this name
+                    if (typeof query_string[pair[0]] === "undefined") {
+                        query_string[pair[0]] = decodeURIComponent(pair[1]);
+                        // If second entry with this name
+                    } else if (typeof query_string[pair[0]] === "string") {
+                        var arr = [query_string[pair[0]], decodeURIComponent(pair[1])];
+                        query_string[pair[0]] = arr;
+                        // If third or later entry with this name
+                    } else {
+                        query_string[pair[0]].push(decodeURIComponent(pair[1]));
+                    }
+                }
+                return query_string;
+            }();
+
+            macAddress = QueryString["offCanMac"];
+
+            //connect to WebSocket
+            var host = "ws://52.74.119.147:9010/SensorStatus";
+            try {
+                socket = new WebSocket(host);
+                // log('WebSocket - status ' + socket.readyState);
+                socket.onopen = function(msg) {
+                    console.log("connected");
+
+                    send(macAddress);
+                    console.log("1st send");
+                };
+                socket.onmessage = function(msg) {
+                    console.log("here's ur response mada dawg", msg);
+
+                    var response = JSON.parse(msg.data);
+
+                    if (typeof response.error == "undefined") {
+
+                        document.getElementById("building").innerHTML = response["building"];
+                        document.getElementById("level").innerHTML = response["sensor_location_level"];
+                        document.getElementById("id").innerHTML = response["sensor_location_id"];
+                        document.getElementById("status").innerHTML = response["status"];
+                        document.getElementById("last_reboot").innerHTML = "Up since<br>" + response["last_reboot"];
+
+                        document.getElementById("uptime").innerHTML = response["uptime_percentage"];
+                        document.getElementById("temperature").innerHTML = response["temperature"];
+                        document.getElementById("cpu").innerHTML = response["cpu"];
+                        document.getElementById("storage").innerHTML = response["storage"];
+                        document.getElementById("ram").innerHTML = response["ram"];
+                        document.getElementById("flapping").innerHTML = response["flapping"] ? true : false;
+
+                        document.getElementById("top1").innerHTML = response["top_5_processes"]["1"]["process"];
+                        document.getElementById("top2").innerHTML = response["top_5_processes"]["2"]["process"];
+                        document.getElementById("top3").innerHTML = response["top_5_processes"]["3"]["process"];
+                        document.getElementById("top4").innerHTML = response["top_5_processes"]["4"]["process"];
+                        document.getElementById("top5").innerHTML = response["top_5_processes"]["5"]["process"];
+
+
+                        data = [response["top_5_processes"]["1"]["process"],
+                            response["top_5_processes"]["2"]["process"],
+                            response["top_5_processes"]["3"]["process"],
+                            response["top_5_processes"]["4"]["process"],
+                            response["top_5_processes"]["5"]["process"]
+                        ];
+
+                        document.getElementById("top1-usage").innerHTML = response["top_5_processes"]["1"]["usage"];
+                        document.getElementById("top2-usage").innerHTML = response["top_5_processes"]["2"]["usage"];
+                        document.getElementById("top3-usage").innerHTML = response["top_5_processes"]["3"]["usage"];
+                        document.getElementById("top4-usage").innerHTML = response["top_5_processes"]["4"]["usage"];
+                        document.getElementById("top5-usage").innerHTML = response["top_5_processes"]["5"]["usage"];
+
+                        usage = [parseFloat(response["top_5_processes"]["1"]["usage"]),
+                            parseFloat(response["top_5_processes"]["2"]["usage"]),
+                            parseFloat(response["top_5_processes"]["3"]["usage"]),
+                            parseFloat(response["top_5_processes"]["4"]["usage"]),
+                            parseFloat(response["top_5_processes"]["5"]["usage"])
+                        ];
+
+                        document.getElementById("diagnosis").innerHTML = response["diagnosis"]["result"];
+
+                        console.log("fields to color: ", response["diagnosis"]["fields"]);
+                        var fields = response["diagnosis"]["fields"];
+                        for (var i = 0; i < fields.length; i++) {
+                            console.log("field: ", fields[i]);
+                            console.log("painting the walls red");
+                            document.getElementById(fields[i]).parentNode.className = "table-row-highlight";
+                        }
+
+
+                        if (response["status"].toLowerCase() == "down") {
+                            document.getElementById("itsDeadJim").innerHTML = "<b>Sensor Data is correct as of<br> " + response["latest_timestamp"] + "</b>";
+                            document.getElementById("last_reboot").innerHTML = "";
+                        } else {
+                            document.getElementById("itsDeadJim").innerHTML = "";
+                            // ctx = document.getElementById("myChart");
+                            //
+                            // var myChart = new Chart(ctx, {
+                            //     type: 'bar',
+                            //     data: {
+                            //         labels: data,
+                            //         datasets: [{
+                            //             label: 'CPU Usage',
+                            //             data: usage,
+                            //             backgroundColor: [
+                            //                 'rgba(255, 99, 132, 0.2)',
+                            //                 'rgba(54, 162, 235, 0.2)',
+                            //                 'rgba(255, 206, 86, 0.2)',
+                            //                 'rgba(75, 192, 192, 0.2)',
+                            //                 'rgba(153, 102, 255, 0.2)',
+                            //                 'rgba(255, 159, 64, 0.2)'
+                            //             ],
+                            //             borderColor: [
+                            //                 'rgba(255,99,132,1)',
+                            //                 'rgba(54, 162, 235, 1)',
+                            //                 'rgba(255, 206, 86, 1)',
+                            //                 'rgba(75, 192, 192, 1)',
+                            //                 'rgba(153, 102, 255, 1)',
+                            //                 'rgba(255, 159, 64, 1)'
+                            //             ],
+                            //             borderWidth: 1
+                            //         }]
+                            //     },
+                            //     options: {
+                            //         scales: {
+                            //             yAxes: [{
+                            //                 ticks: {
+                            //                     beginAtZero: true
+                            //                 }
+                            //             }]
+                            //         }
+                            //     }
+                            // });
+                        }
+
+                    } else {
+                        document.getElementById("status").innerHTML = "no data";
+                        document.getElementById("last_reboot").innerHTML = "";
+                    }
+
+                    // send(macAddress);
+
+                    setTimeout(function() {
+                        send(macAddress);
+                    }, 10000);
+
+                };
+                socket.onclose = function(msg) {
+                    console.log("Disconnected");
+                };
+
+            } catch (ex) {
+                console.log(ex);
+            }
+
+
+
+
+
+            document.getElementById("mac_address").innerHTML = macAddress;
+
+
+
+
+            function send(msg) {
+                console.log("sent: " + msg);
+                try {
+                    socket.send(msg);
+                    console.log('Sent');
+                } catch (ex) {
+                    console.log(ex);
+                }
+            }
+
+            function quit() {
+                if (socket != null) {
+                    log("Goodbye!");
+                    socket.close();
+                    socket = null;
+                }
+            }
+        </script>
+
+</body>
+
+</html>

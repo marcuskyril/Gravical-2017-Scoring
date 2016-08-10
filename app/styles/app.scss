@@ -10,6 +10,15 @@ $dark-grey: #323232;
 $light-grey: #373837;
 $not-so-dark-grey: #e8e8e8;
 $crazy-light-grey: #f2f2f2;
+
+// Chart colors
+
+$green: #006600;
+$orange: #cc7a00;
+$red: #990000;
+$black: #1a1b1b;
+$grey: #737373;
+
 body,
 html {
     background: #fff;
@@ -179,4 +188,33 @@ polyline {
     text-transform: uppercase;
     font-size: 0.5em;
     font-weight: bold;
+}
+
+.sensorBlock {
+  height: 30px;
+  width: 180px;
+  color: #fff;
+  text-align: center;
+  font-family: 'Pathway Gothic One', sans-serif;
+  text-transform: uppercase;
+}
+
+.green {
+  background-color: $green;
+}
+
+.orange {
+  background-color: $orange;
+}
+
+.red {
+  background-color: $red;
+}
+
+.black {
+  background-color: $black;
+}
+
+.grey {
+  background-color: $grey;
 }

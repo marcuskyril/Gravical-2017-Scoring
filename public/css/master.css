@@ -210,3 +210,8 @@ table.sensor-details-table tbody {
 .table-container {
     text-align: center;
 }
+
+.table-row-highlight {
+    border: solid 1px rgb(153, 0, 0);
+    background-color: rgba(153,0,0,0.4);
+}

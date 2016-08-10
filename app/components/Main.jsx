@@ -3,7 +3,66 @@ var Nav = require('Nav');
 var SensorDetails = require('SensorDetails');
 var Dashboard = require('Dashboard');
 import firebase from 'app/firebase/';
-var toastr = require('toastr');
+import { NotificationStack, Notification } from 'react-notification';
+import { OrderedSet } from 'immutable';
+
+class NotificationBar extends React.Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      notifications: OrderedSet(),
+      count: 0
+    };
+
+    this.removeNotification = this.removeNotification.bind(this);
+  }
+
+  addNotification() {
+    const { notifications, count } = this.state;
+    const id = notifications.size + 1;
+    const newCount = count + 1;
+    if ((this.props.notificationMsg).length > 0) {
+      return this.setState({
+        count: newCount,
+        notifications: notifications.add({
+          message: `${id}. ${this.props.notificationMsg}`,
+          key: newCount,
+          action: 'Dismiss',
+          dismissAfter: 3000,
+          onClick: () => this.removeNotification(newCount),
+        })
+      });
+    }
+  }
+
+  componentWillReceiveProps() {
+    this.addNotification();
+  }
+
+  removeNotification (count) {
+    const { notifications } = this.state;
+    this.setState({
+      notifications: notifications.filter(n => n.key !== count)
+    })
+  }
+
+  render () {
+
+
+
+    return (
+      <div>
+        <NotificationStack
+          notifications={this.state.notifications.toArray()}
+          onDismiss={notification => this.setState({
+            notifications: this.state.notifications.delete(notification)
+          })}
+        />
+      </div>
+    );
+  }
+}
 
 class Main extends React.Component {
 
@@ -15,7 +74,8 @@ constructor(props) {
         bfg: [],
         notifications: [],
         currentTime: '',
-        userDisplayName: ''
+        userDisplayName: '',
+        notificationMsg: ''
     }
 }
 
@@ -63,9 +123,18 @@ componentDidMount() {
             console.log("main notifications data: ", data);
 
             var timestamp = new Date().toLocaleString();
-            console.log("now: ", timestamp);
+
+            if(data.length > 0) {
+              data.forEach(function(notificationMessage) {
+                console.log("notificationMessage", notificationMessage);
+                  that.setState({
+                    notificationMsg: notificationMessage.problem.status
+                  })
+              });
+            }
 
             that.setState({notifications: data, currentTime: timestamp});
+
         });
     }, function() {
         console.warn('WebSocket connection closed: Notification data not available');
@@ -75,8 +144,7 @@ componentDidMount() {
 
 render() {
     console.log("main render: ", this.state.notifications);
-    var iframeLink = "./test.html?";
-    console.log("userDisplayName in main: ", this.state.userDisplayName);
+    var iframeLink = "./offCrepe.html?";
 
     return (
         <div>
@@ -93,7 +161,7 @@ render() {
 
                     <div className="off-canvas-content" data-off-canvas-content>
                         <Nav timestamp={this.state.currentTime}/>
-
+                        <NotificationBar notificationMsg={this.state.notificationMsg}/>
                         <div className="row">
                             <div className="columns medium-12 large 12">
                                 <Dashboard displayName={this.state.userDisplayName} overall={this.state.overall} bfg={this.state.bfg} notificationData={this.state.notifcations}/>

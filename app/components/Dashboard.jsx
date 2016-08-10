@@ -155,7 +155,7 @@ var Dashboard = React.createClass({
                   </div>
                   <div className="columns medium-9">
                     <div>
-                      <div className="callout callout-dark-header"><h4 className="header">Pi Health Overview</h4>
+                      <div className="callout callout-dark-header"><h4 className="header">Sensor Health Overview</h4>
                       <button onClick={this.launchAddSensor} className="icon-btn-text-small">
                         <FontAwesome name='plus-circle'/> ADD SENSOR
                       </button>
