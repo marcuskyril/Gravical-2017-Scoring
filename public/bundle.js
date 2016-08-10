@@ -12691,7 +12691,7 @@
 	                        message: ' | ' + this.props.notificationData.problem.status + ' | ' + this.props.notificationData.timestamp.date,
 	                        key: newCount,
 	                        action: 'Dismiss',
-	                        dismissAfter: 100000,
+	                        dismissAfter: 3000,
 	                        onClick: function onClick() {
 	                            return _this2.removeNotification(newCount);
 	                        }
