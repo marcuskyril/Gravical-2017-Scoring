@@ -238,7 +238,28 @@
                         document.getElementById("building").innerHTML = response["building"];
                         document.getElementById("level").innerHTML = response["sensor_location_level"];
                         document.getElementById("id").innerHTML = response["sensor_location_id"];
-                        document.getElementById("status").innerHTML = response["status"];
+                        var status = response["status"];
+                        document.getElementById("status").innerHTML = status;
+
+                        switch (status) {
+                            case "ok":
+                                document.getElementById("status").style.color = "#006600";
+                                break;
+                            case "warning":
+                                document.getElementById("status").style.color = "#cc7a00";
+                                break;
+                            case "danger":
+                                document.getElementById("status").style.color = "#990000";
+                                break;
+                            case "down":
+                                document.getElementById("status").style.color = "#1a1b1b";
+                                break;
+                            case "no data":
+                                document.getElementById("status").style.color = "#737373";
+                                break;
+                            default:
+                                break;
+                        }
                         document.getElementById("last_reboot").innerHTML = "Up since<br>" + response["last_reboot"];
 
                         document.getElementById("uptime").innerHTML = response["uptime_percentage"];

@@ -12,7 +12,8 @@ class NotificationBar extends React.Component {
 
     this.state = {
       notifications: OrderedSet(),
-      count: 0
+      count: 0,
+      testCount: 0
     };
 
     this.removeNotification = this.removeNotification.bind(this);
@@ -23,8 +24,8 @@ class NotificationBar extends React.Component {
     const id = notifications.size + 1;
     const newCount = count + 1;
 
-    console.log("hello from the other side: ", this.props.notificationData);
-    console.log("notification data", this.props.notificationData.mac, this.props.notificationData.problem);
+    //console.log("hello from the other side: ", this.props.notificationData);
+    //console.log("notification data", this.props.notificationData.mac, this.props.notificationData.problem);
     if(this.props.notificationData.mac) {
       return this.setState({
         count: newCount,
@@ -42,6 +43,11 @@ class NotificationBar extends React.Component {
 
   componentWillReceiveProps() {
     this.addNotification();
+    this.setState({
+      testCount: this.state.testCount + 1
+    });
+
+    console.log("testCount", this.state.testCount);
   }
 
   removeNotification (count) {
@@ -52,7 +58,6 @@ class NotificationBar extends React.Component {
   }
 
   render () {
-
     return (
       <div>
         <NotificationStack

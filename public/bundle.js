@@ -12662,7 +12662,8 @@
 
 	        _this.state = {
 	            notifications: (0, _immutable.OrderedSet)(),
-	            count: 0
+	            count: 0,
+	            testCount: 0
 	        };
 
 	        _this.removeNotification = _this.removeNotification.bind(_this);
@@ -12681,8 +12682,8 @@
 	            var id = notifications.size + 1;
 	            var newCount = count + 1;
 
-	            console.log("hello from the other side: ", this.props.notificationData);
-	            console.log("notification data", this.props.notificationData.mac, this.props.notificationData.problem);
+	            //console.log("hello from the other side: ", this.props.notificationData);
+	            //console.log("notification data", this.props.notificationData.mac, this.props.notificationData.problem);
 	            if (this.props.notificationData.mac) {
 	                return this.setState({
 	                    count: newCount,
@@ -12703,6 +12704,11 @@
 	        key: 'componentWillReceiveProps',
 	        value: function componentWillReceiveProps() {
 	            this.addNotification();
+	            this.setState({
+	                testCount: this.state.testCount + 1
+	            });
+
+	            console.log("testCount", this.state.testCount);
 	        }
 	    }, {
 	        key: 'removeNotification',
@@ -12984,8 +12990,8 @@
 	        margin: 0,
 	        color: '#fafafa',
 	        font: '1rem normal Roboto, sans-serif',
-	        borderRadius: '5px',
-	        background: '#212121',
+	        borderRadius: '4px',
+	        background: '#232f32',
 	        borderSizing: 'border-box',
 	        boxShadow: '0 0 1px 1px rgba(10, 10, 11, .125)',
 	        cursor: 'default',
@@ -13114,6 +13120,7 @@
 
 	exports.default = Notification;
 
+
 /***/ },
 /* 151 */
 /***/ function(module, exports, __webpack_require__) {
@@ -13208,12 +13215,13 @@
 	};
 
 	NotificationStack.defaultProps = {
-	  dismissAfter: 1000,
+	  dismissAfter: 3000,
 	  activeBarStyleFactory: defaultStyleFactory,
 	  barStyleFactory: defaultStyleFactory
 	};
 
 	exports.default = NotificationStack;
+
 
 /***/ },
 /* 153 */
