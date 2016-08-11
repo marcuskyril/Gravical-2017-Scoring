@@ -12863,8 +12863,7 @@
 	                                    { className: 'columns medium-12 large 12' },
 	                                    React.createElement(Dashboard, { timestamp: this.state.currentTime, displayName: this.state.userDisplayName, overall: this.state.overall, bfg: this.state.bfg, notificationData: this.state.notifcations })
 	                                )
-	                            ),
-	                            React.createElement(NotificationBar, { notificationData: this.state.notificationData })
+	                            )
 	                        )
 	                    )
 	                )
@@ -12878,6 +12877,8 @@
 	;
 
 	module.exports = Main;
+
+	// <NotificationBar notificationData={this.state.notificationData}/>
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(9)))
 
 /***/ },
@@ -47798,12 +47799,12 @@
 	        { className: 'row' },
 	        React.createElement(
 	          'div',
-	          { className: 'columns medium-3 large 3' },
+	          { className: 'columns medium-3 large 3 margin-bottom-small' },
 	          React.createElement(BuildingOverview, { data: this.props.overall })
 	        ),
 	        React.createElement(
 	          'div',
-	          { className: 'columns medium-9' },
+	          { className: 'columns medium-9 large 9' },
 	          React.createElement(
 	            'div',
 	            null,

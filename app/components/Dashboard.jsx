@@ -158,10 +158,10 @@ var Dashboard = React.createClass({
                   </div>
                 </div>
                 <div className="row">
-                  <div className="columns medium-3 large 3">
+                  <div className="columns medium-3 large 3 margin-bottom-small">
                       <BuildingOverview data={this.props.overall} />
                   </div>
-                  <div className="columns medium-9">
+                  <div className="columns medium-9 large 9">
                     <div>
                       <div className="callout callout-dark-header"><h4 className="header">Sensor Health Overview</h4>
                       <button onClick={this.launchAddSensor} className="icon-btn-text-small">

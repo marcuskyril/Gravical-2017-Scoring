@@ -176,7 +176,6 @@ render() {
                                 <Dashboard timestamp={this.state.currentTime} displayName={this.state.userDisplayName} overall={this.state.overall} bfg={this.state.bfg} notificationData={this.state.notifcations}/>
                             </div>
                         </div>
-                        <NotificationBar notificationData={this.state.notificationData}/>
                     </div>
                 </div>
             </div>
@@ -186,3 +185,5 @@ render() {
 };
 
 module.exports = Main;
+
+// <NotificationBar notificationData={this.state.notificationData}/>
