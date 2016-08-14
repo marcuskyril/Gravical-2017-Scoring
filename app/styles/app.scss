@@ -211,6 +211,20 @@ polyline {
   text-transform: uppercase;
 }
 
+.button-custom {
+  height: 30px;
+  width: auto !important;
+  margin: 0px;
+  color: #fff !important;
+  text-align: center;
+  font-family: 'Pathway Gothic One', sans-serif;
+  text-transform: uppercase;
+}
+
+.blue {
+  background-color: $header-color;
+}
+
 .green {
   background-color: $green;
 }

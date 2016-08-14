@@ -7,6 +7,17 @@ var ReactDOM = require('react-dom');
 
 var dataList = [];
 
+class RemoveComponent extends React.Component {
+    render() {
+      return (
+        <a href="www.google.com.sg">
+            <div className="sensorBlock blue">Remove</div>
+        </a>
+      );
+
+    }
+};
+
 class SensorBlockComponent extends React.Component {
     render() {
         // url ="speakers/" + this.props.rowData.state + "/" + this.props.data;
@@ -76,7 +87,15 @@ const tableMetaData = [
         "visible": true,
         "displayName": "Health",
         "customComponent": SensorBlockComponent
+    },{
+        "columnName": "remove",
+        "order": 5,
+        "locked": true,
+        "visible": true,
+        "displayName": "Remove?",
+        "customComponent": RemoveComponent
     }
+
 ];
 
 class NoDataComponent extends React.Component {
@@ -115,7 +134,8 @@ class GeneralMetrics extends React.Component {
                     "geo-region": allSensorData[sensor]["geo-region"],
                     "building": allSensorData[sensor]["building"],
                     "sensor-level-id": allSensorData[sensor]["sensor-location-level"] + allSensorData[sensor]["sensor-location-id"],
-                    "sensor_status": allSensorData[sensor]["sensor_status"]
+                    "sensor_status": allSensorData[sensor]["sensor_status"],
+                    "remove" : "test"
                 };
 
                 if (typeof allSensorData[sensor]["error"] !== "undefined") {

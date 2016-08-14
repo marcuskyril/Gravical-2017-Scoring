@@ -12,14 +12,21 @@ class NotificationBar extends React.Component {
 
     this.state = {
       notifications: OrderedSet(),
-      count: 0,
-      testCount: 0
+      count: 0
     };
 
     this.removeNotification = this.removeNotification.bind(this);
   }
 
-  addNotification() {
+  removeNotification (count) {
+    const { notifications } = this.state;
+    this.setState({
+      notifications: notifications.filter(n => n.key !== count)
+    })
+  }
+
+  render () {
+
     const { notifications, count } = this.state;
     const id = notifications.size + 1;
     const newCount = count + 1;
@@ -39,25 +46,7 @@ class NotificationBar extends React.Component {
         })
       });
     }
-  }
 
-  componentWillReceiveProps() {
-    this.addNotification();
-    this.setState({
-      testCount: this.state.testCount + 1
-    });
-
-    console.log("testCount", this.state.testCount);
-  }
-
-  removeNotification (count) {
-    const { notifications } = this.state;
-    this.setState({
-      notifications: notifications.filter(n => n.key !== count)
-    })
-  }
-
-  render () {
     return (
       <div>
         <NotificationStack
@@ -176,6 +165,7 @@ render() {
                                 <Dashboard timestamp={this.state.currentTime} displayName={this.state.userDisplayName} overall={this.state.overall} bfg={this.state.bfg} notificationData={this.state.notifcations}/>
                             </div>
                         </div>
+                        <NotificationBar notificationData={this.state.notificationData}/>
                     </div>
                 </div>
             </div>
@@ -185,5 +175,3 @@ render() {
 };
 
 module.exports = Main;
-
-// <NotificationBar notificationData={this.state.notificationData}/>

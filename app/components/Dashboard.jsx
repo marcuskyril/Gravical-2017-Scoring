@@ -3,6 +3,7 @@ var Abnormal = require('Abnormal');
 var piSensorOverview = require('piSensorOverview');
 var Uptime = require('Uptime');
 var SensorHealthOverview = require('SensorHealthOverview');
+var SensorHealthOverviewV2 = require('SensorHealthOverviewV2');
 var GeneralMetrics = require('GeneralMetrics');
 var ErrorModal = require('ErrorModal');
 var Tableaux = require('Tableaux');
@@ -73,10 +74,10 @@ class AddSensor extends React.Component {
                       <div className="header">Add Sensor</div>
 
                       <label>Mac Address
-                          <input type="text" name="macAddress" ref="macAddress" placeholder="Mac Address" required/>
+                          <input type="text" name="macAddress" ref="macAddress" placeholder="Mac Address" novalidate/>
                       </label>
                       <label>Region
-                          <select ref="region" name="region" required>
+                          <select ref="region" name="region" novalidate>
                               <option value=""></option>
                               <option value="north">North</option>
                               <option value="south">South</option>
@@ -163,6 +164,13 @@ var Dashboard = React.createClass({
                   </div>
                   <div className="columns medium-9 large 9">
                     <div>
+                      <div className="callout callout-dark-header"><h4 className="header">Watch List</h4></div>
+                      <div className="callout callout-dark">
+                        <GeneralMetrics data={this.props.bfg}/>
+                      </div>
+                    </div>
+
+                    <div>
                       <div className="callout callout-dark-header"><h4 className="header">Sensor Health Overview</h4>
                       <button onClick={this.launchAddSensor} className="icon-btn-text-small">
                         <FontAwesome name='plus-circle'/> ADD SENSOR
@@ -170,7 +178,7 @@ var Dashboard = React.createClass({
                       <AddSensor/>
                       </div>
                       <div className="callout callout-dark">
-                        <GeneralMetrics data={this.props.bfg}/>
+                        <SensorHealthOverviewV2 data={this.props.bfg}/>
                       </div>
                     </div>
 

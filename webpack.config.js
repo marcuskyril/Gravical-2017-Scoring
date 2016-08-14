@@ -60,6 +60,7 @@ module.exports = {
       navStyles: 'app/styles/nav.scss',
       griddleStyles: 'app/styles/griddle.scss',
       SensorHealthOverview: 'app/components/SensorHealthOverview.jsx',
+      SensorHealthOverviewV2: 'app/components/SensorHealthOverviewV2.jsx',
       GeneralMetrics: 'app/components/GeneralMetrics.jsx',
       SensorStatus: 'app/components/SensorStatus.jsx',
       Uptime: 'app/components/Uptime.jsx',

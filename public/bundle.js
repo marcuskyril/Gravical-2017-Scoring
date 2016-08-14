@@ -127,9 +127,10 @@
 	var _require2 = __webpack_require__(45);
 
 	var hashHistory = _require2.hashHistory;
+	var browserHistory = _require2.browserHistory;
 
 	var actions = __webpack_require__(127);
-	var store = __webpack_require__(531).configure();
+	var store = __webpack_require__(532).configure();
 
 	_firebase2.default.auth().onAuthStateChanged(function (user) {
 	  if (user) {
@@ -149,13 +150,13 @@
 	});
 
 	// Load foundation
-	__webpack_require__(534);
+	__webpack_require__(535);
 	$(document).foundation();
 
-	__webpack_require__(538);
-	__webpack_require__(540);
-	__webpack_require__(542);
-	__webpack_require__(544);
+	__webpack_require__(539);
+	__webpack_require__(541);
+	__webpack_require__(543);
+	__webpack_require__(545);
 
 	ReactDOM.render(React.createElement(
 	  'div',
@@ -914,9 +915,9 @@
 
 	var Main = __webpack_require__(148);
 	var Dashboard = __webpack_require__(315);
-	var About = __webpack_require__(528);
-	var Examples = __webpack_require__(529);
-	var AccountSettings = __webpack_require__(530);
+	var About = __webpack_require__(529);
+	var Examples = __webpack_require__(530);
+	var AccountSettings = __webpack_require__(531);
 	var Nav = __webpack_require__(155);
 
 
@@ -944,7 +945,7 @@
 	        { path: '/dashboard', component: Main },
 	        _react2.default.createElement(_reactRouter.Route, { path: '/about', component: About, onEnter: requireLogin }),
 	        _react2.default.createElement(_reactRouter.Route, { path: '/examples', component: Examples, onEnter: requireLogin }),
-	        _react2.default.createElement(_reactRouter.Route, { path: '/accountSettings', component: AccountSettings, onEnter: requireLogin }),
+	        _react2.default.createElement(_reactRouter.Route, { path: '/dashboard/accountSettings', component: AccountSettings, onEnter: requireLogin }),
 	        _react2.default.createElement(_reactRouter.IndexRoute, { component: Dashboard })
 	    ),
 	    _react2.default.createElement(_reactRouter.Route, { path: '/', component: _Login2.default, onEnter: redirectIfLoggedIn })
@@ -12662,8 +12663,7 @@
 
 	        _this.state = {
 	            notifications: (0, _immutable.OrderedSet)(),
-	            count: 0,
-	            testCount: 0
+	            count: 0
 	        };
 
 	        _this.removeNotification = _this.removeNotification.bind(_this);
@@ -12671,8 +12671,19 @@
 	    }
 
 	    _createClass(NotificationBar, [{
-	        key: 'addNotification',
-	        value: function addNotification() {
+	        key: 'removeNotification',
+	        value: function removeNotification(count) {
+	            var notifications = this.state.notifications;
+
+	            this.setState({
+	                notifications: notifications.filter(function (n) {
+	                    return n.key !== count;
+	                })
+	            });
+	        }
+	    }, {
+	        key: 'render',
+	        value: function render() {
 	            var _this2 = this;
 
 	            var _state = this.state;
@@ -12699,32 +12710,6 @@
 	                    })
 	                });
 	            }
-	        }
-	    }, {
-	        key: 'componentWillReceiveProps',
-	        value: function componentWillReceiveProps() {
-	            this.addNotification();
-	            this.setState({
-	                testCount: this.state.testCount + 1
-	            });
-
-	            console.log("testCount", this.state.testCount);
-	        }
-	    }, {
-	        key: 'removeNotification',
-	        value: function removeNotification(count) {
-	            var notifications = this.state.notifications;
-
-	            this.setState({
-	                notifications: notifications.filter(function (n) {
-	                    return n.key !== count;
-	                })
-	            });
-	        }
-	    }, {
-	        key: 'render',
-	        value: function render() {
-	            var _this3 = this;
 
 	            return React.createElement(
 	                'div',
@@ -12732,8 +12717,8 @@
 	                React.createElement(_reactNotification.NotificationStack, {
 	                    notifications: this.state.notifications.toArray(),
 	                    onDismiss: function onDismiss(notification) {
-	                        return _this3.setState({
-	                            notifications: _this3.state.notifications.delete(notification)
+	                        return _this2.setState({
+	                            notifications: _this2.state.notifications.delete(notification)
 	                        });
 	                    }
 	                })
@@ -12750,9 +12735,9 @@
 	    function Main(props) {
 	        _classCallCheck(this, Main);
 
-	        var _this4 = _possibleConstructorReturn(this, Object.getPrototypeOf(Main).call(this, props));
+	        var _this3 = _possibleConstructorReturn(this, Object.getPrototypeOf(Main).call(this, props));
 
-	        _this4.state = {
+	        _this3.state = {
 	            overall: [],
 	            bfg: [],
 	            notifications: [],
@@ -12760,7 +12745,7 @@
 	            userDisplayName: '',
 	            notificationData: {}
 	        };
-	        return _this4;
+	        return _this3;
 	    }
 
 	    _createClass(Main, [{
@@ -12863,7 +12848,8 @@
 	                                    { className: 'columns medium-12 large 12' },
 	                                    React.createElement(Dashboard, { timestamp: this.state.currentTime, displayName: this.state.userDisplayName, overall: this.state.overall, bfg: this.state.bfg, notificationData: this.state.notifcations })
 	                                )
-	                            )
+	                            ),
+	                            React.createElement(NotificationBar, { notificationData: this.state.notificationData })
 	                        )
 	                    )
 	                )
@@ -12877,8 +12863,6 @@
 	;
 
 	module.exports = Main;
-
-	// <NotificationBar notificationData={this.state.notificationData}/>
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(9)))
 
 /***/ },
@@ -47542,13 +47526,14 @@
 	var piSensorOverview = __webpack_require__(517);
 	var Uptime = __webpack_require__(518);
 	var SensorHealthOverview = __webpack_require__(519);
-	var GeneralMetrics = __webpack_require__(520);
-	var ErrorModal = __webpack_require__(523);
-	var Tableaux = __webpack_require__(524);
-	var Notifications = __webpack_require__(525);
+	var SensorHealthOverviewV2 = __webpack_require__(520);
+	var GeneralMetrics = __webpack_require__(521);
+	var ErrorModal = __webpack_require__(524);
+	var Tableaux = __webpack_require__(525);
+	var Notifications = __webpack_require__(526);
 	var FontAwesome = __webpack_require__(156);
-	var BuildingOverview = __webpack_require__(526);
-	var AddSensorAPI = __webpack_require__(527);
+	var BuildingOverview = __webpack_require__(527);
+	var AddSensorAPI = __webpack_require__(528);
 
 	var _require = __webpack_require__(45);
 
@@ -47635,7 +47620,7 @@
 	                'label',
 	                null,
 	                'Mac Address',
-	                React.createElement('input', { type: 'text', name: 'macAddress', ref: 'macAddress', placeholder: 'Mac Address', required: true })
+	                React.createElement('input', { type: 'text', name: 'macAddress', ref: 'macAddress', placeholder: 'Mac Address', novalidate: true })
 	              ),
 	              React.createElement(
 	                'label',
@@ -47643,7 +47628,7 @@
 	                'Region',
 	                React.createElement(
 	                  'select',
-	                  { ref: 'region', name: 'region', required: true },
+	                  { ref: 'region', name: 'region', novalidate: true },
 	                  React.createElement('option', { value: '' }),
 	                  React.createElement(
 	                    'option',
@@ -47814,6 +47799,24 @@
 	              React.createElement(
 	                'h4',
 	                { className: 'header' },
+	                'Watch List'
+	              )
+	            ),
+	            React.createElement(
+	              'div',
+	              { className: 'callout callout-dark' },
+	              React.createElement(GeneralMetrics, { data: this.props.bfg })
+	            )
+	          ),
+	          React.createElement(
+	            'div',
+	            null,
+	            React.createElement(
+	              'div',
+	              { className: 'callout callout-dark-header' },
+	              React.createElement(
+	                'h4',
+	                { className: 'header' },
 	                'Sensor Health Overview'
 	              ),
 	              React.createElement(
@@ -47827,7 +47830,7 @@
 	            React.createElement(
 	              'div',
 	              { className: 'callout callout-dark' },
-	              React.createElement(GeneralMetrics, { data: this.props.bfg })
+	              React.createElement(SensorHealthOverviewV2, { data: this.props.bfg })
 	            )
 	          ),
 	          React.createElement(
@@ -56965,16 +56968,152 @@
 	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 	var React = __webpack_require__(14);
-	var SensorStatus = __webpack_require__(521);
+	var dataList = [];
+
+	var BuildingList = function (_React$Component) {
+	  _inherits(BuildingList, _React$Component);
+
+	  function BuildingList() {
+	    _classCallCheck(this, BuildingList);
+
+	    return _possibleConstructorReturn(this, Object.getPrototypeOf(BuildingList).apply(this, arguments));
+	  }
+
+	  _createClass(BuildingList, [{
+	    key: 'render',
+	    value: function render() {
+	      return React.createElement('div', null);
+	    }
+	  }]);
+
+	  return BuildingList;
+	}(React.Component);
+
+	var LevelList = function (_React$Component2) {
+	  _inherits(LevelList, _React$Component2);
+
+	  function LevelList() {
+	    _classCallCheck(this, LevelList);
+
+	    return _possibleConstructorReturn(this, Object.getPrototypeOf(LevelList).apply(this, arguments));
+	  }
+
+	  _createClass(LevelList, [{
+	    key: 'render',
+	    value: function render() {
+	      return React.createElement('div', null);
+	    }
+	  }]);
+
+	  return LevelList;
+	}(React.Component);
+
+	var Level = function (_React$Component3) {
+	  _inherits(Level, _React$Component3);
+
+	  function Level() {
+	    _classCallCheck(this, Level);
+
+	    return _possibleConstructorReturn(this, Object.getPrototypeOf(Level).apply(this, arguments));
+	  }
+
+	  _createClass(Level, [{
+	    key: 'render',
+	    value: function render() {
+	      return React.createElement('div', null);
+	    }
+	  }]);
+
+	  return Level;
+	}(React.Component);
+
+	var SensorHealthOverviewV2 = function (_React$Component4) {
+	  _inherits(SensorHealthOverviewV2, _React$Component4);
+
+	  function SensorHealthOverviewV2(props) {
+	    _classCallCheck(this, SensorHealthOverviewV2);
+
+	    var _this4 = _possibleConstructorReturn(this, Object.getPrototypeOf(SensorHealthOverviewV2).call(this, props));
+
+	    _this4.state = {
+	      dataList: _this4.props.bfg
+	    };
+	    return _this4;
+	  }
+
+	  _createClass(SensorHealthOverviewV2, [{
+	    key: 'render',
+	    value: function render() {
+
+	      var rows = [];
+
+	      return React.createElement(
+	        'div',
+	        null,
+	        rows
+	      );
+	    }
+	  }]);
+
+	  return SensorHealthOverviewV2;
+	}(React.Component);
+
+	module.exports = SensorHealthOverviewV2;
+
+/***/ },
+/* 521 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	var React = __webpack_require__(14);
+	var SensorStatus = __webpack_require__(522);
 	var axios = __webpack_require__(128);
 	var Griddle = __webpack_require__(317);
-	var retrieveSensorDetails = __webpack_require__(522);
+	var retrieveSensorDetails = __webpack_require__(523);
 	var ReactDOM = __webpack_require__(172);
 
 	var dataList = [];
 
-	var SensorBlockComponent = function (_React$Component) {
-	    _inherits(SensorBlockComponent, _React$Component);
+	var RemoveComponent = function (_React$Component) {
+	    _inherits(RemoveComponent, _React$Component);
+
+	    function RemoveComponent() {
+	        _classCallCheck(this, RemoveComponent);
+
+	        return _possibleConstructorReturn(this, Object.getPrototypeOf(RemoveComponent).apply(this, arguments));
+	    }
+
+	    _createClass(RemoveComponent, [{
+	        key: 'render',
+	        value: function render() {
+	            return React.createElement(
+	                'a',
+	                { href: 'www.google.com.sg' },
+	                React.createElement(
+	                    'div',
+	                    { className: 'sensorBlock blue' },
+	                    'Remove'
+	                )
+	            );
+	        }
+	    }]);
+
+	    return RemoveComponent;
+	}(React.Component);
+
+	;
+
+	var SensorBlockComponent = function (_React$Component2) {
+	    _inherits(SensorBlockComponent, _React$Component2);
 
 	    function SensorBlockComponent() {
 	        _classCallCheck(this, SensorBlockComponent);
@@ -57027,8 +57166,8 @@
 
 	;
 
-	var LinkComponent = function (_React$Component2) {
-	    _inherits(LinkComponent, _React$Component2);
+	var LinkComponent = function (_React$Component3) {
+	    _inherits(LinkComponent, _React$Component3);
 
 	    function LinkComponent(props) {
 	        _classCallCheck(this, LinkComponent);
@@ -57045,12 +57184,12 @@
 	    }, {
 	        key: 'render',
 	        value: function render() {
-	            var _this3 = this;
+	            var _this4 = this;
 
 	            return React.createElement(
 	                'a',
 	                { onClick: function onClick() {
-	                        return _this3.handleClick(_this3.props.data);
+	                        return _this4.handleClick(_this4.props.data);
 	                    }, 'data-toggle': 'offCanvas' },
 	                this.props.data
 	            );
@@ -57094,10 +57233,17 @@
 	    "visible": true,
 	    "displayName": "Health",
 	    "customComponent": SensorBlockComponent
+	}, {
+	    "columnName": "remove",
+	    "order": 5,
+	    "locked": true,
+	    "visible": true,
+	    "displayName": "Remove?",
+	    "customComponent": RemoveComponent
 	}];
 
-	var NoDataComponent = function (_React$Component3) {
-	    _inherits(NoDataComponent, _React$Component3);
+	var NoDataComponent = function (_React$Component4) {
+	    _inherits(NoDataComponent, _React$Component4);
 
 	    function NoDataComponent(props) {
 	        _classCallCheck(this, NoDataComponent);
@@ -57125,18 +57271,18 @@
 
 	;
 
-	var GeneralMetrics = function (_React$Component4) {
-	    _inherits(GeneralMetrics, _React$Component4);
+	var GeneralMetrics = function (_React$Component5) {
+	    _inherits(GeneralMetrics, _React$Component5);
 
 	    function GeneralMetrics(props) {
 	        _classCallCheck(this, GeneralMetrics);
 
-	        var _this5 = _possibleConstructorReturn(this, Object.getPrototypeOf(GeneralMetrics).call(this, props));
+	        var _this6 = _possibleConstructorReturn(this, Object.getPrototypeOf(GeneralMetrics).call(this, props));
 
-	        _this5.state = {
+	        _this6.state = {
 	            dataList: []
 	        };
-	        return _this5;
+	        return _this6;
 	    }
 
 	    _createClass(GeneralMetrics, [{
@@ -57154,7 +57300,8 @@
 	                        "geo-region": allSensorData[sensor]["geo-region"],
 	                        "building": allSensorData[sensor]["building"],
 	                        "sensor-level-id": allSensorData[sensor]["sensor-location-level"] + allSensorData[sensor]["sensor-location-id"],
-	                        "sensor_status": allSensorData[sensor]["sensor_status"]
+	                        "sensor_status": allSensorData[sensor]["sensor_status"],
+	                        "remove": "test"
 	                    };
 
 	                    if (typeof allSensorData[sensor]["error"] !== "undefined") {
@@ -57179,7 +57326,7 @@
 	module.exports = GeneralMetrics;
 
 /***/ },
-/* 521 */
+/* 522 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -57301,7 +57448,7 @@
 	module.exports = SensorStatus;
 
 /***/ },
-/* 522 */
+/* 523 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -57326,7 +57473,7 @@
 	};
 
 /***/ },
-/* 523 */
+/* 524 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function($) {'use strict';
@@ -57373,7 +57520,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(9)))
 
 /***/ },
-/* 524 */
+/* 525 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function($) {'use strict';
@@ -57672,7 +57819,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(9)))
 
 /***/ },
-/* 525 */
+/* 526 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -57934,7 +58081,7 @@
 	module.exports = Notifications;
 
 /***/ },
-/* 526 */
+/* 527 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -58198,7 +58345,7 @@
 	module.exports = BuildingOverview;
 
 /***/ },
-/* 527 */
+/* 528 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -58253,7 +58400,7 @@
 	// }
 
 /***/ },
-/* 528 */
+/* 529 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -58307,7 +58454,7 @@
 	module.exports = About;
 
 /***/ },
-/* 529 */
+/* 530 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -58365,7 +58512,7 @@
 	module.exports = Examples;
 
 /***/ },
-/* 530 */
+/* 531 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -58624,7 +58771,7 @@
 	// export default Redux.connect()(AccountSettings);
 
 /***/ },
-/* 531 */
+/* 532 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -58638,11 +58785,11 @@
 
 	var redux = _interopRequireWildcard(_redux);
 
-	var _reduxThunk = __webpack_require__(532);
+	var _reduxThunk = __webpack_require__(533);
 
 	var _reduxThunk2 = _interopRequireDefault(_reduxThunk);
 
-	var _reducers = __webpack_require__(533);
+	var _reducers = __webpack_require__(534);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -58664,7 +58811,7 @@
 	};
 
 /***/ },
-/* 532 */
+/* 533 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -58687,7 +58834,7 @@
 	}
 
 /***/ },
-/* 533 */
+/* 534 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -58782,16 +58929,16 @@
 	// };
 
 /***/ },
-/* 534 */
+/* 535 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(535);
+	var content = __webpack_require__(536);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
-	var update = __webpack_require__(537)(content, {});
+	var update = __webpack_require__(538)(content, {});
 	if(content.locals) module.exports = content.locals;
 	// Hot Module Replacement
 	if(false) {
@@ -58808,10 +58955,10 @@
 	}
 
 /***/ },
-/* 535 */
+/* 536 */
 /***/ function(module, exports, __webpack_require__) {
 
-	exports = module.exports = __webpack_require__(536)();
+	exports = module.exports = __webpack_require__(537)();
 	// imports
 
 
@@ -58822,7 +58969,7 @@
 
 
 /***/ },
-/* 536 */
+/* 537 */
 /***/ function(module, exports) {
 
 	/*
@@ -58878,7 +59025,7 @@
 
 
 /***/ },
-/* 537 */
+/* 538 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*
@@ -59130,16 +59277,16 @@
 
 
 /***/ },
-/* 538 */
+/* 539 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(539);
+	var content = __webpack_require__(540);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
-	var update = __webpack_require__(537)(content, {});
+	var update = __webpack_require__(538)(content, {});
 	if(content.locals) module.exports = content.locals;
 	// Hot Module Replacement
 	if(false) {
@@ -59156,31 +59303,31 @@
 	}
 
 /***/ },
-/* 539 */
+/* 540 */
 /***/ function(module, exports, __webpack_require__) {
 
-	exports = module.exports = __webpack_require__(536)();
+	exports = module.exports = __webpack_require__(537)();
 	// imports
 	exports.push([module.id, "@import url(http://fonts.googleapis.com/css?family=Roboto:300,400);", ""]);
 	exports.push([module.id, "@import url(https://fonts.googleapis.com/css?family=Pathway+Gothic+One);", ""]);
 
 	// module
-	exports.push([module.id, "body,\nhtml {\n  background: #fff;\n  height: 100%;\n  font-family: roboto;\n  color: #f2f2f2; }\n\n.row {\n  max-width: 85rem; }\n\ndiv#offCanvas {\n  width: 350px;\n  height: 100%;\n  padding: 1.5rem;\n  background: #e8e8e8; }\n\n.is-open-right {\n  transform: translateX(-350px); }\n\n.off-canvas.position-right {\n  right: -350px; }\n\n.off-canvas-content {\n  background: #fff; }\n\na {\n  color: #6abedb; }\n\nhr {\n  border-color: #373837;\n  margin-top: 0.5rem; }\n\ntable thead {\n  background: #232f32;\n  color: white;\n  border: 1px solid #232f32; }\n\ntable tbody {\n  color: #1a1b1b;\n  border: 1px solid #232f32; }\n\n.margin-top-large {\n  margin-top: 4rem; }\n\n.margin-bottom-large {\n  margin-bottom: 4rem; }\n\n.margin-right-small {\n  margin-right: 2rem; }\n\n.margin-left-small {\n  margin-left: 2rem; }\n\n.margin-top-md {\n  margin-top: 2rem; }\n\n.margin-top-small {\n  margin-top: 1rem; }\n\n.margin-bottom-md {\n  margin-bottom: 2rem; }\n\n.margin-bottom-small {\n  margin-bottom: 1rem; }\n\n.textAlignCenter {\n  text-align: center; }\n\n.callout {\n  background-color: #f2f2f2; }\n\n.callout-dark {\n  padding: 1.5rem;\n  background-color: #f2f2f2;\n  border: 1px solid #373837;\n  border-bottom-left-radius: 4px;\n  border-bottom-right-radius: 4px;\n  margin-top: 0; }\n\n.callout-dark-header {\n  padding: 0.5rem;\n  background-color: #232f32;\n  border: 1px solid #373837;\n  border-top-left-radius: 4px;\n  border-top-right-radius: 4px;\n  margin-bottom: 0; }\n\n.callout-auth {\n  background-color: #fafafa;\n  border: 1px solid #fafafa;\n  padding: 2rem;\n  text-align: center; }\n  .callout-auth h3,\n  .callout-auth p {\n    margin-bottom: 2rem; }\n\n.icon-btn-text-small {\n  font-weight: bold;\n  font-family: 'Pathway Gothic One', sans-serif;\n  text-transform: uppercase;\n  top: 15px;\n  right: 15px;\n  position: absolute;\n  color: #f8f8f8;\n  font-size: 1.2rem; }\n\nlabel {\n  text-transform: capitalize;\n  color: #232f32; }\n\n.header {\n  color: #6abedb;\n  margin-bottom: 0;\n  font-size: 1.5rem;\n  text-transform: uppercase;\n  font-weight: bold;\n  font-family: 'Pathway Gothic One', sans-serif; }\n\n.sub-header {\n  color: #232f32;\n  font-size: 1.2rem;\n  text-transform: uppercase;\n  font-family: 'Pathway Gothic One', sans-serif; }\n\n.page-title {\n  color: #555;\n  font-family: 'Pathway Gothic One', sans-serif;\n  font-size: 1.5rem;\n  margin-top: 1.5rem;\n  margin-bottom: 1.5rem; }\n\ninput[type=search] {\n  box-shadow: none; }\n\n.top-bar-upper {\n  color: #333;\n  font-size: 0.5rem; }\n\n.app-header {\n  font-size: 1.3rem; }\n\ntable.overview-custom tbody,\ntable.overview-custom th,\ntable.overview-custom thead,\ntable.overview-custom tr {\n  text-align: center; }\n\ntable.sensor-details-table tbody {\n  text-align: left; }\n\ng text {\n  fill: #232f32;\n  stroke: #232f32;\n  display: none; }\n\npolyline {\n  stroke: #232f32;\n  display: none; }\n\n.statusText {\n  color: red;\n  margin-bottom: 1rem;\n  text-transform: uppercase;\n  font-size: 0.8em;\n  font-weight: bold; }\n\n.notificationHeader {\n  color: #fff;\n  text-transform: uppercase;\n  font-size: 0.5em;\n  font-weight: bold; }\n\n.sensorBlock {\n  height: 30px;\n  width: auto;\n  color: #fff;\n  text-align: center;\n  font-family: 'Pathway Gothic One', sans-serif;\n  text-transform: uppercase; }\n\n.green {\n  background-color: #006600; }\n\n.orange {\n  background-color: #cc7a00; }\n\n.red {\n  background-color: #990000; }\n\n.black {\n  background-color: #1a1b1b; }\n\n.grey {\n  background-color: #737373; }\n", ""]);
+	exports.push([module.id, "body,\nhtml {\n  background: #fff;\n  height: 100%;\n  font-family: roboto;\n  color: #f2f2f2; }\n\n.row {\n  max-width: 85rem; }\n\ndiv#offCanvas {\n  width: 350px;\n  height: 100%;\n  padding: 1.5rem;\n  background: #e8e8e8; }\n\n.is-open-right {\n  transform: translateX(-350px); }\n\n.off-canvas.position-right {\n  right: -350px; }\n\n.off-canvas-content {\n  background: #fff; }\n\na {\n  color: #6abedb; }\n\nhr {\n  border-color: #373837;\n  margin-top: 0.5rem; }\n\ntable thead {\n  background: #232f32;\n  color: white;\n  border: 1px solid #232f32; }\n\ntable tbody {\n  color: #1a1b1b;\n  border: 1px solid #232f32; }\n\n.margin-top-large {\n  margin-top: 4rem; }\n\n.margin-bottom-large {\n  margin-bottom: 4rem; }\n\n.margin-right-small {\n  margin-right: 2rem; }\n\n.margin-left-small {\n  margin-left: 2rem; }\n\n.margin-top-md {\n  margin-top: 2rem; }\n\n.margin-top-small {\n  margin-top: 1rem; }\n\n.margin-bottom-md {\n  margin-bottom: 2rem; }\n\n.margin-bottom-small {\n  margin-bottom: 1rem; }\n\n.textAlignCenter {\n  text-align: center; }\n\n.callout {\n  background-color: #f2f2f2; }\n\n.callout-dark {\n  padding: 1.5rem;\n  background-color: #f2f2f2;\n  border: 1px solid #373837;\n  border-bottom-left-radius: 4px;\n  border-bottom-right-radius: 4px;\n  margin-top: 0; }\n\n.callout-dark-header {\n  padding: 0.5rem;\n  background-color: #232f32;\n  border: 1px solid #373837;\n  border-top-left-radius: 4px;\n  border-top-right-radius: 4px;\n  margin-bottom: 0; }\n\n.callout-auth {\n  background-color: #fafafa;\n  border: 1px solid #fafafa;\n  padding: 2rem;\n  text-align: center; }\n  .callout-auth h3,\n  .callout-auth p {\n    margin-bottom: 2rem; }\n\n.icon-btn-text-small {\n  font-weight: bold;\n  font-family: 'Pathway Gothic One', sans-serif;\n  text-transform: uppercase;\n  top: 15px;\n  right: 15px;\n  position: absolute;\n  color: #f8f8f8;\n  font-size: 1.2rem; }\n\nlabel {\n  text-transform: capitalize;\n  color: #232f32; }\n\n.header {\n  color: #6abedb;\n  margin-bottom: 0;\n  font-size: 1.5rem;\n  text-transform: uppercase;\n  font-weight: bold;\n  font-family: 'Pathway Gothic One', sans-serif; }\n\n.sub-header {\n  color: #232f32;\n  font-size: 1.2rem;\n  text-transform: uppercase;\n  font-family: 'Pathway Gothic One', sans-serif; }\n\n.page-title {\n  color: #555;\n  font-family: 'Pathway Gothic One', sans-serif;\n  font-size: 1.5rem;\n  margin-top: 1.5rem;\n  margin-bottom: 1.5rem; }\n\ninput[type=search] {\n  box-shadow: none; }\n\n.top-bar-upper {\n  color: #333;\n  font-size: 0.5rem; }\n\n.app-header {\n  font-size: 1.3rem; }\n\ntable.overview-custom tbody,\ntable.overview-custom th,\ntable.overview-custom thead,\ntable.overview-custom tr {\n  text-align: center; }\n\ntable.sensor-details-table tbody {\n  text-align: left; }\n\ng text {\n  fill: #232f32;\n  stroke: #232f32;\n  display: none; }\n\npolyline {\n  stroke: #232f32;\n  display: none; }\n\n.statusText {\n  color: red;\n  margin-bottom: 1rem;\n  text-transform: uppercase;\n  font-size: 0.8em;\n  font-weight: bold; }\n\n.notificationHeader {\n  color: #fff;\n  text-transform: uppercase;\n  font-size: 0.5em;\n  font-weight: bold; }\n\n.sensorBlock {\n  height: 30px;\n  width: auto;\n  color: #fff;\n  text-align: center;\n  font-family: 'Pathway Gothic One', sans-serif;\n  text-transform: uppercase; }\n\n.button-custom {\n  height: 30px;\n  width: auto !important;\n  margin: 0px;\n  color: #fff !important;\n  text-align: center;\n  font-family: 'Pathway Gothic One', sans-serif;\n  text-transform: uppercase; }\n\n.blue {\n  background-color: #6abedb; }\n\n.green {\n  background-color: #006600; }\n\n.orange {\n  background-color: #cc7a00; }\n\n.red {\n  background-color: #990000; }\n\n.black {\n  background-color: #1a1b1b; }\n\n.grey {\n  background-color: #737373; }\n", ""]);
 
 	// exports
 
 
 /***/ },
-/* 540 */
+/* 541 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(541);
+	var content = __webpack_require__(542);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
-	var update = __webpack_require__(537)(content, {});
+	var update = __webpack_require__(538)(content, {});
 	if(content.locals) module.exports = content.locals;
 	// Hot Module Replacement
 	if(false) {
@@ -59197,31 +59344,31 @@
 	}
 
 /***/ },
-/* 541 */
+/* 542 */
 /***/ function(module, exports, __webpack_require__) {
 
-	exports = module.exports = __webpack_require__(536)();
+	exports = module.exports = __webpack_require__(537)();
 	// imports
 	exports.push([module.id, "@import url(http://fonts.googleapis.com/css?family=Roboto:300,400);", ""]);
 	exports.push([module.id, "@import url(https://fonts.googleapis.com/css?family=Pathway+Gothic+One);", ""]);
 
 	// module
-	exports.push([module.id, "body,\nhtml {\n  background: #fff;\n  height: 100%;\n  font-family: roboto;\n  color: #f2f2f2; }\n\n.row {\n  max-width: 85rem; }\n\ndiv#offCanvas {\n  width: 350px;\n  height: 100%;\n  padding: 1.5rem;\n  background: #e8e8e8; }\n\n.is-open-right {\n  transform: translateX(-350px); }\n\n.off-canvas.position-right {\n  right: -350px; }\n\n.off-canvas-content {\n  background: #fff; }\n\na {\n  color: #6abedb; }\n\nhr {\n  border-color: #373837;\n  margin-top: 0.5rem; }\n\ntable thead {\n  background: #232f32;\n  color: white;\n  border: 1px solid #232f32; }\n\ntable tbody {\n  color: #1a1b1b;\n  border: 1px solid #232f32; }\n\n.margin-top-large {\n  margin-top: 4rem; }\n\n.margin-bottom-large {\n  margin-bottom: 4rem; }\n\n.margin-right-small {\n  margin-right: 2rem; }\n\n.margin-left-small {\n  margin-left: 2rem; }\n\n.margin-top-md {\n  margin-top: 2rem; }\n\n.margin-top-small {\n  margin-top: 1rem; }\n\n.margin-bottom-md {\n  margin-bottom: 2rem; }\n\n.margin-bottom-small {\n  margin-bottom: 1rem; }\n\n.textAlignCenter {\n  text-align: center; }\n\n.callout {\n  background-color: #f2f2f2; }\n\n.callout-dark {\n  padding: 1.5rem;\n  background-color: #f2f2f2;\n  border: 1px solid #373837;\n  border-bottom-left-radius: 4px;\n  border-bottom-right-radius: 4px;\n  margin-top: 0; }\n\n.callout-dark-header {\n  padding: 0.5rem;\n  background-color: #232f32;\n  border: 1px solid #373837;\n  border-top-left-radius: 4px;\n  border-top-right-radius: 4px;\n  margin-bottom: 0; }\n\n.callout-auth {\n  background-color: #fafafa;\n  border: 1px solid #fafafa;\n  padding: 2rem;\n  text-align: center; }\n  .callout-auth h3,\n  .callout-auth p {\n    margin-bottom: 2rem; }\n\n.icon-btn-text-small {\n  font-weight: bold;\n  font-family: 'Pathway Gothic One', sans-serif;\n  text-transform: uppercase;\n  top: 15px;\n  right: 15px;\n  position: absolute;\n  color: #f8f8f8;\n  font-size: 1.2rem; }\n\nlabel {\n  text-transform: capitalize;\n  color: #232f32; }\n\n.header {\n  color: #6abedb;\n  margin-bottom: 0;\n  font-size: 1.5rem;\n  text-transform: uppercase;\n  font-weight: bold;\n  font-family: 'Pathway Gothic One', sans-serif; }\n\n.sub-header {\n  color: #232f32;\n  font-size: 1.2rem;\n  text-transform: uppercase;\n  font-family: 'Pathway Gothic One', sans-serif; }\n\n.page-title {\n  color: #555;\n  font-family: 'Pathway Gothic One', sans-serif;\n  font-size: 1.5rem;\n  margin-top: 1.5rem;\n  margin-bottom: 1.5rem; }\n\ninput[type=search] {\n  box-shadow: none; }\n\n.top-bar-upper {\n  color: #333;\n  font-size: 0.5rem; }\n\n.app-header {\n  font-size: 1.3rem; }\n\ntable.overview-custom tbody,\ntable.overview-custom th,\ntable.overview-custom thead,\ntable.overview-custom tr {\n  text-align: center; }\n\ntable.sensor-details-table tbody {\n  text-align: left; }\n\ng text {\n  fill: #232f32;\n  stroke: #232f32;\n  display: none; }\n\npolyline {\n  stroke: #232f32;\n  display: none; }\n\n.statusText {\n  color: red;\n  margin-bottom: 1rem;\n  text-transform: uppercase;\n  font-size: 0.8em;\n  font-weight: bold; }\n\n.notificationHeader {\n  color: #fff;\n  text-transform: uppercase;\n  font-size: 0.5em;\n  font-weight: bold; }\n\n.sensorBlock {\n  height: 30px;\n  width: auto;\n  color: #fff;\n  text-align: center;\n  font-family: 'Pathway Gothic One', sans-serif;\n  text-transform: uppercase; }\n\n.green {\n  background-color: #006600; }\n\n.orange {\n  background-color: #cc7a00; }\n\n.red {\n  background-color: #990000; }\n\n.black {\n  background-color: #1a1b1b; }\n\n.grey {\n  background-color: #737373; }\n\n.top-bar-left {\n  margin-top: 1.5rem; }\n\n.top-bar-right {\n  margin-top: 1.5rem; }\n\n.top-bar {\n  padding: 0rem 2rem 0rem 2rem;\n  background: #232f32;\n  height: 4rem;\n  box-shadow: 0.5px 0.5px 5px #373837; }\n\n.top-bar ul {\n  background: #232f32;\n  /* temporary fix */\n  position: absolute;\n  top: 15px;\n  right: 15px; }\n\n.top-bar.lower {\n  padding-top: 0px; }\n\n.top-bar-title {\n  font-size: 1.7rem;\n  text-transform: uppercase;\n  font-weight: bold;\n  font-family: 'Pathway Gothic One', sans-serif;\n  position: absolute;\n  top: 15px;\n  left: 15px; }\n\n.menu > li > a {\n  color: #fafafa;\n  font-weight: bold;\n  font-size: 1rem;\n  text-transform: uppercase; }\n\n.is-dropdown-submenu {\n  border: 1px solid #373737; }\n", ""]);
+	exports.push([module.id, "body,\nhtml {\n  background: #fff;\n  height: 100%;\n  font-family: roboto;\n  color: #f2f2f2; }\n\n.row {\n  max-width: 85rem; }\n\ndiv#offCanvas {\n  width: 350px;\n  height: 100%;\n  padding: 1.5rem;\n  background: #e8e8e8; }\n\n.is-open-right {\n  transform: translateX(-350px); }\n\n.off-canvas.position-right {\n  right: -350px; }\n\n.off-canvas-content {\n  background: #fff; }\n\na {\n  color: #6abedb; }\n\nhr {\n  border-color: #373837;\n  margin-top: 0.5rem; }\n\ntable thead {\n  background: #232f32;\n  color: white;\n  border: 1px solid #232f32; }\n\ntable tbody {\n  color: #1a1b1b;\n  border: 1px solid #232f32; }\n\n.margin-top-large {\n  margin-top: 4rem; }\n\n.margin-bottom-large {\n  margin-bottom: 4rem; }\n\n.margin-right-small {\n  margin-right: 2rem; }\n\n.margin-left-small {\n  margin-left: 2rem; }\n\n.margin-top-md {\n  margin-top: 2rem; }\n\n.margin-top-small {\n  margin-top: 1rem; }\n\n.margin-bottom-md {\n  margin-bottom: 2rem; }\n\n.margin-bottom-small {\n  margin-bottom: 1rem; }\n\n.textAlignCenter {\n  text-align: center; }\n\n.callout {\n  background-color: #f2f2f2; }\n\n.callout-dark {\n  padding: 1.5rem;\n  background-color: #f2f2f2;\n  border: 1px solid #373837;\n  border-bottom-left-radius: 4px;\n  border-bottom-right-radius: 4px;\n  margin-top: 0; }\n\n.callout-dark-header {\n  padding: 0.5rem;\n  background-color: #232f32;\n  border: 1px solid #373837;\n  border-top-left-radius: 4px;\n  border-top-right-radius: 4px;\n  margin-bottom: 0; }\n\n.callout-auth {\n  background-color: #fafafa;\n  border: 1px solid #fafafa;\n  padding: 2rem;\n  text-align: center; }\n  .callout-auth h3,\n  .callout-auth p {\n    margin-bottom: 2rem; }\n\n.icon-btn-text-small {\n  font-weight: bold;\n  font-family: 'Pathway Gothic One', sans-serif;\n  text-transform: uppercase;\n  top: 15px;\n  right: 15px;\n  position: absolute;\n  color: #f8f8f8;\n  font-size: 1.2rem; }\n\nlabel {\n  text-transform: capitalize;\n  color: #232f32; }\n\n.header {\n  color: #6abedb;\n  margin-bottom: 0;\n  font-size: 1.5rem;\n  text-transform: uppercase;\n  font-weight: bold;\n  font-family: 'Pathway Gothic One', sans-serif; }\n\n.sub-header {\n  color: #232f32;\n  font-size: 1.2rem;\n  text-transform: uppercase;\n  font-family: 'Pathway Gothic One', sans-serif; }\n\n.page-title {\n  color: #555;\n  font-family: 'Pathway Gothic One', sans-serif;\n  font-size: 1.5rem;\n  margin-top: 1.5rem;\n  margin-bottom: 1.5rem; }\n\ninput[type=search] {\n  box-shadow: none; }\n\n.top-bar-upper {\n  color: #333;\n  font-size: 0.5rem; }\n\n.app-header {\n  font-size: 1.3rem; }\n\ntable.overview-custom tbody,\ntable.overview-custom th,\ntable.overview-custom thead,\ntable.overview-custom tr {\n  text-align: center; }\n\ntable.sensor-details-table tbody {\n  text-align: left; }\n\ng text {\n  fill: #232f32;\n  stroke: #232f32;\n  display: none; }\n\npolyline {\n  stroke: #232f32;\n  display: none; }\n\n.statusText {\n  color: red;\n  margin-bottom: 1rem;\n  text-transform: uppercase;\n  font-size: 0.8em;\n  font-weight: bold; }\n\n.notificationHeader {\n  color: #fff;\n  text-transform: uppercase;\n  font-size: 0.5em;\n  font-weight: bold; }\n\n.sensorBlock {\n  height: 30px;\n  width: auto;\n  color: #fff;\n  text-align: center;\n  font-family: 'Pathway Gothic One', sans-serif;\n  text-transform: uppercase; }\n\n.button-custom {\n  height: 30px;\n  width: auto !important;\n  margin: 0px;\n  color: #fff !important;\n  text-align: center;\n  font-family: 'Pathway Gothic One', sans-serif;\n  text-transform: uppercase; }\n\n.blue {\n  background-color: #6abedb; }\n\n.green {\n  background-color: #006600; }\n\n.orange {\n  background-color: #cc7a00; }\n\n.red {\n  background-color: #990000; }\n\n.black {\n  background-color: #1a1b1b; }\n\n.grey {\n  background-color: #737373; }\n\n.top-bar-left {\n  margin-top: 1.5rem; }\n\n.top-bar-right {\n  margin-top: 1.5rem; }\n\n.top-bar {\n  padding: 0rem 2rem 0rem 2rem;\n  background: #232f32;\n  height: 4rem;\n  box-shadow: 0.5px 0.5px 5px #373837; }\n\n.top-bar ul {\n  background: #232f32;\n  /* temporary fix */\n  position: absolute;\n  top: 15px;\n  right: 15px; }\n\n.top-bar.lower {\n  padding-top: 0px; }\n\n.top-bar-title {\n  font-size: 1.7rem;\n  text-transform: uppercase;\n  font-weight: bold;\n  font-family: 'Pathway Gothic One', sans-serif;\n  position: absolute;\n  top: 15px;\n  left: 15px; }\n\n.menu > li > a {\n  color: #fafafa;\n  font-weight: bold;\n  font-size: 1rem;\n  text-transform: uppercase; }\n\n.is-dropdown-submenu {\n  border: 1px solid #373737; }\n", ""]);
 
 	// exports
 
 
 /***/ },
-/* 542 */
+/* 543 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(543);
+	var content = __webpack_require__(544);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
-	var update = __webpack_require__(537)(content, {});
+	var update = __webpack_require__(538)(content, {});
 	if(content.locals) module.exports = content.locals;
 	// Hot Module Replacement
 	if(false) {
@@ -59238,10 +59385,10 @@
 	}
 
 /***/ },
-/* 543 */
+/* 544 */
 /***/ function(module, exports, __webpack_require__) {
 
-	exports = module.exports = __webpack_require__(536)();
+	exports = module.exports = __webpack_require__(537)();
 	// imports
 
 
@@ -59252,16 +59399,16 @@
 
 
 /***/ },
-/* 544 */
+/* 545 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(545);
+	var content = __webpack_require__(546);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
-	var update = __webpack_require__(537)(content, {});
+	var update = __webpack_require__(538)(content, {});
 	if(content.locals) module.exports = content.locals;
 	// Hot Module Replacement
 	if(false) {
@@ -59278,16 +59425,16 @@
 	}
 
 /***/ },
-/* 545 */
+/* 546 */
 /***/ function(module, exports, __webpack_require__) {
 
-	exports = module.exports = __webpack_require__(536)();
+	exports = module.exports = __webpack_require__(537)();
 	// imports
 	exports.push([module.id, "@import url(http://fonts.googleapis.com/css?family=Roboto:300,400);", ""]);
 	exports.push([module.id, "@import url(https://fonts.googleapis.com/css?family=Pathway+Gothic+One);", ""]);
 
 	// module
-	exports.push([module.id, "body,\nhtml {\n  background: #fff;\n  height: 100%;\n  font-family: roboto;\n  color: #f2f2f2; }\n\n.row {\n  max-width: 85rem; }\n\ndiv#offCanvas {\n  width: 350px;\n  height: 100%;\n  padding: 1.5rem;\n  background: #e8e8e8; }\n\n.is-open-right {\n  transform: translateX(-350px); }\n\n.off-canvas.position-right {\n  right: -350px; }\n\n.off-canvas-content {\n  background: #fff; }\n\na {\n  color: #6abedb; }\n\nhr {\n  border-color: #373837;\n  margin-top: 0.5rem; }\n\ntable thead {\n  background: #232f32;\n  color: white;\n  border: 1px solid #232f32; }\n\ntable tbody {\n  color: #1a1b1b;\n  border: 1px solid #232f32; }\n\n.margin-top-large {\n  margin-top: 4rem; }\n\n.margin-bottom-large {\n  margin-bottom: 4rem; }\n\n.margin-right-small {\n  margin-right: 2rem; }\n\n.margin-left-small {\n  margin-left: 2rem; }\n\n.margin-top-md {\n  margin-top: 2rem; }\n\n.margin-top-small {\n  margin-top: 1rem; }\n\n.margin-bottom-md {\n  margin-bottom: 2rem; }\n\n.margin-bottom-small {\n  margin-bottom: 1rem; }\n\n.textAlignCenter {\n  text-align: center; }\n\n.callout {\n  background-color: #f2f2f2; }\n\n.callout-dark {\n  padding: 1.5rem;\n  background-color: #f2f2f2;\n  border: 1px solid #373837;\n  border-bottom-left-radius: 4px;\n  border-bottom-right-radius: 4px;\n  margin-top: 0; }\n\n.callout-dark-header {\n  padding: 0.5rem;\n  background-color: #232f32;\n  border: 1px solid #373837;\n  border-top-left-radius: 4px;\n  border-top-right-radius: 4px;\n  margin-bottom: 0; }\n\n.callout-auth {\n  background-color: #fafafa;\n  border: 1px solid #fafafa;\n  padding: 2rem;\n  text-align: center; }\n  .callout-auth h3,\n  .callout-auth p {\n    margin-bottom: 2rem; }\n\n.icon-btn-text-small {\n  font-weight: bold;\n  font-family: 'Pathway Gothic One', sans-serif;\n  text-transform: uppercase;\n  top: 15px;\n  right: 15px;\n  position: absolute;\n  color: #f8f8f8;\n  font-size: 1.2rem; }\n\nlabel {\n  text-transform: capitalize;\n  color: #232f32; }\n\n.header {\n  color: #6abedb;\n  margin-bottom: 0;\n  font-size: 1.5rem;\n  text-transform: uppercase;\n  font-weight: bold;\n  font-family: 'Pathway Gothic One', sans-serif; }\n\n.sub-header {\n  color: #232f32;\n  font-size: 1.2rem;\n  text-transform: uppercase;\n  font-family: 'Pathway Gothic One', sans-serif; }\n\n.page-title {\n  color: #555;\n  font-family: 'Pathway Gothic One', sans-serif;\n  font-size: 1.5rem;\n  margin-top: 1.5rem;\n  margin-bottom: 1.5rem; }\n\ninput[type=search] {\n  box-shadow: none; }\n\n.top-bar-upper {\n  color: #333;\n  font-size: 0.5rem; }\n\n.app-header {\n  font-size: 1.3rem; }\n\ntable.overview-custom tbody,\ntable.overview-custom th,\ntable.overview-custom thead,\ntable.overview-custom tr {\n  text-align: center; }\n\ntable.sensor-details-table tbody {\n  text-align: left; }\n\ng text {\n  fill: #232f32;\n  stroke: #232f32;\n  display: none; }\n\npolyline {\n  stroke: #232f32;\n  display: none; }\n\n.statusText {\n  color: red;\n  margin-bottom: 1rem;\n  text-transform: uppercase;\n  font-size: 0.8em;\n  font-weight: bold; }\n\n.notificationHeader {\n  color: #fff;\n  text-transform: uppercase;\n  font-size: 0.5em;\n  font-weight: bold; }\n\n.sensorBlock {\n  height: 30px;\n  width: auto;\n  color: #fff;\n  text-align: center;\n  font-family: 'Pathway Gothic One', sans-serif;\n  text-transform: uppercase; }\n\n.green {\n  background-color: #006600; }\n\n.orange {\n  background-color: #cc7a00; }\n\n.red {\n  background-color: #990000; }\n\n.black {\n  background-color: #1a1b1b; }\n\n.grey {\n  background-color: #737373; }\n\n.griddle-container {\n  border: none !important; }\n\n.griddle .top-section {\n  clear: both;\n  display: table;\n  width: 100%; }\n\n.griddle .griddle-filter {\n  float: left;\n  width: 50%;\n  text-align: left;\n  color: #222;\n  min-height: 1px; }\n\n.griddle-body {\n  font-size: 1em; }\n\n.griddle .griddle-settings-toggle {\n  float: left;\n  width: 50%;\n  text-align: right;\n  color: #f8f8f8; }\n\n.griddle .griddle-settings {\n  background-color: #FFF;\n  border: 1px solid #DDD;\n  color: #222;\n  padding: 10px;\n  margin-bottom: 10px; }\n\n.griddle .griddle-settings .settings {\n  color: #f8f8f8; }\n\n.griddle .griddle-settings .griddle-columns {\n  clear: both;\n  display: table;\n  width: 100%;\n  border-bottom: 1px solid #EDEDED;\n  margin-bottom: 10px; }\n\n.griddle .griddle-settings .griddle-column-selection {\n  float: left;\n  width: 20%; }\n\n.griddle table {\n  width: 100%;\n  table-layout: fixed; }\n\n.griddle th {\n  background-color: #EDEDEF;\n  border: 0px;\n  border-bottom: 1px solid #DDD;\n  color: #222;\n  padding: 5px; }\n\n.griddle td {\n  padding: 5px;\n  background-color: #FFF;\n  border-top-color: #DDD;\n  color: #222; }\n\n.griddle .footer-container {\n  padding: 0px;\n  background-color: #EDEDED;\n  border: 0px;\n  color: #222; }\n\n.griddle button {\n  color: transparent; }\n\n.griddle .griddle-previous, .griddle .griddle-page, .griddle .griddle-next {\n  float: left;\n  width: 33%;\n  min-height: 1px;\n  margin-top: 5px; }\n\n.griddle .griddle-page {\n  text-align: center; }\n\n.griddle .griddle-next {\n  text-align: right; }\n", ""]);
+	exports.push([module.id, "body,\nhtml {\n  background: #fff;\n  height: 100%;\n  font-family: roboto;\n  color: #f2f2f2; }\n\n.row {\n  max-width: 85rem; }\n\ndiv#offCanvas {\n  width: 350px;\n  height: 100%;\n  padding: 1.5rem;\n  background: #e8e8e8; }\n\n.is-open-right {\n  transform: translateX(-350px); }\n\n.off-canvas.position-right {\n  right: -350px; }\n\n.off-canvas-content {\n  background: #fff; }\n\na {\n  color: #6abedb; }\n\nhr {\n  border-color: #373837;\n  margin-top: 0.5rem; }\n\ntable thead {\n  background: #232f32;\n  color: white;\n  border: 1px solid #232f32; }\n\ntable tbody {\n  color: #1a1b1b;\n  border: 1px solid #232f32; }\n\n.margin-top-large {\n  margin-top: 4rem; }\n\n.margin-bottom-large {\n  margin-bottom: 4rem; }\n\n.margin-right-small {\n  margin-right: 2rem; }\n\n.margin-left-small {\n  margin-left: 2rem; }\n\n.margin-top-md {\n  margin-top: 2rem; }\n\n.margin-top-small {\n  margin-top: 1rem; }\n\n.margin-bottom-md {\n  margin-bottom: 2rem; }\n\n.margin-bottom-small {\n  margin-bottom: 1rem; }\n\n.textAlignCenter {\n  text-align: center; }\n\n.callout {\n  background-color: #f2f2f2; }\n\n.callout-dark {\n  padding: 1.5rem;\n  background-color: #f2f2f2;\n  border: 1px solid #373837;\n  border-bottom-left-radius: 4px;\n  border-bottom-right-radius: 4px;\n  margin-top: 0; }\n\n.callout-dark-header {\n  padding: 0.5rem;\n  background-color: #232f32;\n  border: 1px solid #373837;\n  border-top-left-radius: 4px;\n  border-top-right-radius: 4px;\n  margin-bottom: 0; }\n\n.callout-auth {\n  background-color: #fafafa;\n  border: 1px solid #fafafa;\n  padding: 2rem;\n  text-align: center; }\n  .callout-auth h3,\n  .callout-auth p {\n    margin-bottom: 2rem; }\n\n.icon-btn-text-small {\n  font-weight: bold;\n  font-family: 'Pathway Gothic One', sans-serif;\n  text-transform: uppercase;\n  top: 15px;\n  right: 15px;\n  position: absolute;\n  color: #f8f8f8;\n  font-size: 1.2rem; }\n\nlabel {\n  text-transform: capitalize;\n  color: #232f32; }\n\n.header {\n  color: #6abedb;\n  margin-bottom: 0;\n  font-size: 1.5rem;\n  text-transform: uppercase;\n  font-weight: bold;\n  font-family: 'Pathway Gothic One', sans-serif; }\n\n.sub-header {\n  color: #232f32;\n  font-size: 1.2rem;\n  text-transform: uppercase;\n  font-family: 'Pathway Gothic One', sans-serif; }\n\n.page-title {\n  color: #555;\n  font-family: 'Pathway Gothic One', sans-serif;\n  font-size: 1.5rem;\n  margin-top: 1.5rem;\n  margin-bottom: 1.5rem; }\n\ninput[type=search] {\n  box-shadow: none; }\n\n.top-bar-upper {\n  color: #333;\n  font-size: 0.5rem; }\n\n.app-header {\n  font-size: 1.3rem; }\n\ntable.overview-custom tbody,\ntable.overview-custom th,\ntable.overview-custom thead,\ntable.overview-custom tr {\n  text-align: center; }\n\ntable.sensor-details-table tbody {\n  text-align: left; }\n\ng text {\n  fill: #232f32;\n  stroke: #232f32;\n  display: none; }\n\npolyline {\n  stroke: #232f32;\n  display: none; }\n\n.statusText {\n  color: red;\n  margin-bottom: 1rem;\n  text-transform: uppercase;\n  font-size: 0.8em;\n  font-weight: bold; }\n\n.notificationHeader {\n  color: #fff;\n  text-transform: uppercase;\n  font-size: 0.5em;\n  font-weight: bold; }\n\n.sensorBlock {\n  height: 30px;\n  width: auto;\n  color: #fff;\n  text-align: center;\n  font-family: 'Pathway Gothic One', sans-serif;\n  text-transform: uppercase; }\n\n.button-custom {\n  height: 30px;\n  width: auto !important;\n  margin: 0px;\n  color: #fff !important;\n  text-align: center;\n  font-family: 'Pathway Gothic One', sans-serif;\n  text-transform: uppercase; }\n\n.blue {\n  background-color: #6abedb; }\n\n.green {\n  background-color: #006600; }\n\n.orange {\n  background-color: #cc7a00; }\n\n.red {\n  background-color: #990000; }\n\n.black {\n  background-color: #1a1b1b; }\n\n.grey {\n  background-color: #737373; }\n\n.griddle-container {\n  border: none !important; }\n\n.griddle .top-section {\n  clear: both;\n  display: table;\n  width: 100%; }\n\n.griddle .griddle-filter {\n  float: left;\n  width: 50%;\n  text-align: left;\n  color: #222;\n  min-height: 1px; }\n\n.griddle-body {\n  font-size: 1em; }\n\n.griddle .griddle-settings-toggle {\n  float: left;\n  width: 50%;\n  text-align: right;\n  color: #f8f8f8; }\n\n.griddle .griddle-settings {\n  background-color: #FFF;\n  border: 1px solid #DDD;\n  color: #222;\n  padding: 10px;\n  margin-bottom: 10px; }\n\n.griddle .griddle-settings .settings {\n  color: #f8f8f8; }\n\n.griddle .griddle-settings .griddle-columns {\n  clear: both;\n  display: table;\n  width: 100%;\n  border-bottom: 1px solid #EDEDED;\n  margin-bottom: 10px; }\n\n.griddle .griddle-settings .griddle-column-selection {\n  float: left;\n  width: 20%; }\n\n.griddle table {\n  width: 100%;\n  table-layout: fixed; }\n\n.griddle th {\n  background-color: #EDEDEF;\n  border: 0px;\n  border-bottom: 1px solid #DDD;\n  color: #222;\n  padding: 5px; }\n\n.griddle td {\n  padding: 5px;\n  background-color: #FFF;\n  border-top-color: #DDD;\n  color: #222; }\n\n.griddle .footer-container {\n  padding: 0px;\n  background-color: #EDEDED;\n  border: 0px;\n  color: #222; }\n\n.griddle button {\n  color: transparent; }\n\n.griddle .griddle-previous, .griddle .griddle-page, .griddle .griddle-next {\n  float: left;\n  width: 33%;\n  min-height: 1px;\n  margin-top: 5px; }\n\n.griddle .griddle-page {\n  text-align: center; }\n\n.griddle .griddle-next {\n  text-align: right; }\n", ""]);
 
 	// exports
 
