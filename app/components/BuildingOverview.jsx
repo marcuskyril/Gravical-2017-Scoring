@@ -96,12 +96,9 @@ class BuildingList extends React.Component {
     }
 
     render() {
-
-        //console.log("BuildingList now has: ", this.props.data);
-
+      
         var rows = [];
         var allBuildings = [];
-        //console.log("data.data!", this.props.data.data);
 
         var buildings = this.props.data.data;
 

@@ -11,6 +11,9 @@ $light-grey: #373837;
 $not-so-dark-grey: #e8e8e8;
 $crazy-light-grey: #f2f2f2;
 
+// proposed border color:
+// #a9a9a9, 3px solid
+
 // Chart colors
 $green: #006600;
 $orange: #cc7a00;
@@ -26,8 +29,9 @@ html {
     color: $crazy-light-grey;
 }
 .row {
-    max-width: 85rem;
+    max-width: 100rem;
 }
+
 div#offCanvas {
     width: 350px;
     height: 100%;
@@ -41,7 +45,7 @@ div#offCanvas {
     right: -350px;
 }
 .off-canvas-content {
-    background: #fff;
+    background: $crazy-light-grey;
 }
 a {
     color: $header-color;
@@ -88,43 +92,49 @@ table tbody {
 .textAlignCenter {
     text-align: center;
 }
+
+ul.header-list {
+  display: inline-block;
+  list-style: none;
+  margin-bottom: 0px;
+}
+
 .callout {
     background-color: $crazy-light-grey;
 }
+
 .callout-dark {
     padding: 1.5rem;
     background-color: $crazy-light-grey;
-    border: 1px solid $light-grey;
-    border-bottom-left-radius: 4px;
-    border-bottom-right-radius: 4px;
+    border: 3px solid #bdbdbd;
+    border-top: none;
+
+    // border-bottom-left-radius: 4px;
+    // border-bottom-right-radius: 4px;
     margin-top: 0;
 }
 .callout-dark-header {
     padding: 0.5rem;
-    background-color: $night-ocean;
-    border: 1px solid $light-grey;
-    border-top-left-radius: 4px;
-    border-top-right-radius: 4px;
+    background-color: #fff;
+    border: 3px solid #bdbdbd;
+    border-bottom: 1px solid #bdbdbd;
+    // border-top-left-radius: 4px;
+    // border-top-right-radius: 4px;
     margin-bottom: 0;
 }
-.callout-auth {
-    background-color: #fafafa;
-    border: 1px solid #fafafa;
-    padding: 2rem;
-    text-align: center;
-    h3,
-    p {
-        margin-bottom: 2rem;
-    }
+.callout-top-header {
+  padding: 1rem;
+  background-color: $crazy-light-grey;
+  border: 3px solid #bdbdbd;
 }
+
 .icon-btn-text-small {
-    font-weight: bold;
     font-family: 'Pathway Gothic One', sans-serif;
     text-transform: uppercase;
     top: 15px;
     right: 15px;
     position: absolute;
-    color: #f8f8f8;
+    color: $night-ocean;
     font-size: 1.2rem;
 }
 label {
@@ -133,12 +143,11 @@ label {
     color: $night-ocean;
 }
 .header {
-    color: $header-color;
+    color: $night-ocean;
     // margin-top: $space-large;
     margin-bottom: 0;
-    font-size: 1.5rem;
+    font-size: 1.2rem;
     text-transform: uppercase;
-    font-weight: bold;
     font-family: 'Pathway Gothic One', sans-serif;
 }
 .sub-header {
@@ -211,6 +220,16 @@ polyline {
   text-transform: uppercase;
 }
 
+.sensorBlockSquare {
+  height: 30px;
+  width: 30px;
+  margin: auto;
+}
+
+.sensorBlockSquare:hover {
+    opacity: 0.5;
+}
+
 .button-custom {
   height: 30px;
   width: auto !important;
@@ -221,8 +240,10 @@ polyline {
   text-transform: uppercase;
 }
 
-.blue {
-  background-color: $header-color;
+.remove {
+  border: 1px solid $red;
+  background-color: #fff;
+  color: $red !important;
 }
 
 .green {

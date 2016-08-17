@@ -11,7 +11,7 @@ class RemoveComponent extends React.Component {
     render() {
       return (
         <a href="www.google.com.sg">
-            <div className="sensorBlock blue">Remove</div>
+            <div className="sensorBlock remove">Remove</div>
         </a>
       );
 
@@ -19,6 +19,7 @@ class RemoveComponent extends React.Component {
 };
 
 class SensorBlockComponent extends React.Component {
+
     render() {
         // url ="speakers/" + this.props.rowData.state + "/" + this.props.data;
 
@@ -106,7 +107,7 @@ class NoDataComponent extends React.Component {
     render() {
         return (
             <div>
-                <h1>No data is available</h1>
+                <h1>You are not watching jack.</h1>
             </div>
         );
     }

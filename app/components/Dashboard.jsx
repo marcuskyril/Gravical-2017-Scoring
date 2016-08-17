@@ -135,26 +135,46 @@ var Dashboard = React.createClass({
 
         console.log("Dashboard's overall data is: ", this.props.overall);
         console.log("Dashboard's notifications data is: ", this.props.notifications);
-        console.log("Display name in dashboard:", this.props.userDisplayName);
+        console.log("sensorHealthOverviewV2 in dashboard:", this.props.sensorHealthOverviewV2);
 
         return (
 
             <div className="dashboard margin-top-md">
                 <div className="row">
                   <div className="columns large-12">
-                    <div className="sub-header">
-                      Welcome, {this.props.displayName}
-                    </div>
-                    <div className="sub-header">
-                       <Link to="/" activeClassName="active" activeStyle={{
-                          color: '#222'
-                      }}> View all notifications <FontAwesome name='caret-right'/></Link>
-                    </div>
-                    <div className="sub-header margin-bottom-small">
-                      Last sync at {this.props.timestamp}
-                      <FontAwesome name='refresh' spin style={{
-                          textShadow: '0 1px 0 rgba(0, 0, 0, 0.1)', marginLeft: '0.5rem'
-                      }}/>
+                    <div className="callout-top-header margin-bottom-small">
+                      <ul className="header-list">
+                        <li>
+                          <div className="sub-header">
+                            Welcome, {this.props.displayName}
+                          </div>
+                        </li>
+                        <li>
+                          <div className="sub-header margin-bottom-small">
+                            Last sync at {this.props.timestamp}
+                            <FontAwesome name='refresh' spin style={{
+                                textShadow: '0 1px 0 rgba(0, 0, 0, 0.1)', marginLeft: '0.5rem'
+                            }}/>
+                          </div>
+                        </li>
+                      </ul>
+
+                      <ul className="header-list">
+                        <li>
+                          <div className="sub-header">
+                             <Link to="/" activeClassName="active" activeStyle={{
+                                color: '#222'
+                            }}> View all notifications <FontAwesome name='caret-right'/></Link>
+                          </div>
+                        </li>
+                        <li>
+                          <div className="sub-header">
+                             <Link to="/examples" activeClassName="active" activeStyle={{
+                                color: '#222'
+                            }}> View Sensor Log <FontAwesome name='caret-right'/></Link>
+                          </div>
+                        </li>
+                      </ul>
                     </div>
                   </div>
                 </div>
@@ -178,7 +198,7 @@ var Dashboard = React.createClass({
                       <AddSensor/>
                       </div>
                       <div className="callout callout-dark">
-                        <SensorHealthOverviewV2 data={this.props.bfg}/>
+                        <SensorHealthOverviewV2 data={this.props.sensorHealthOverviewV2}/>
                       </div>
                     </div>
 

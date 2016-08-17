@@ -28,7 +28,7 @@ export var Login = React.createClass({
                   <div className="row">
                       <h3 className="page-title">LOG IN</h3>
                   </div>
-                  <div className="callout callout-dark">
+                  <div className="callout callout-top-header">
                         <div className="row">
                             <div className="row">
                                 <div className="large-12 columns">

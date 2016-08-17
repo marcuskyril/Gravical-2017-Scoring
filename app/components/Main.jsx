@@ -34,7 +34,7 @@ class NotificationBar extends React.Component {
     //console.log("hello from the other side: ", this.props.notificationData);
     //console.log("notification data", this.props.notificationData.mac, this.props.notificationData.problem);
     if(this.props.notificationData.mac) {
-      return this.setState({
+      this.setState({
         count: newCount,
         notifications: notifications.add({
           title: this.props.notificationData.mac,
@@ -69,6 +69,7 @@ constructor(props) {
         overall: [],
         bfg: [],
         notifications: [],
+        sensorHealthOverviewV2: [],
         currentTime: '-',
         userDisplayName: '',
         notificationData: {}
@@ -89,10 +90,10 @@ componentDidMount() {
 
     var conn1 = new ab.Session('ws://52.74.119.147:9000', function() {
         conn1.subscribe('', function(topic, data) {
-            console.log(data);
+            // console.log(data);
 
             var timestamp = new Date().toLocaleString();
-            console.log("now: ", timestamp);
+            // console.log("now: ", timestamp);
 
             that.setState({overall: data, currentTime: timestamp});
 
@@ -105,7 +106,7 @@ componentDidMount() {
         conn2.subscribe('', function(topic, data) {
 
             var timestamp = new Date().toLocaleString();
-            console.log("now: ", timestamp);
+            // console.log("now: ", timestamp);
 
             that.setState({bfg: data, currentTime: timestamp});
         });
@@ -116,7 +117,7 @@ componentDidMount() {
     var conn3 = new ab.Session('ws://52.74.119.147:9002', function() {
         conn3.subscribe('', function(topic, data) {
 
-            console.log("main notifications data: ", data);
+            // console.log("main notifications data: ", data);
 
             var timestamp = new Date().toLocaleString();
 
@@ -124,7 +125,7 @@ componentDidMount() {
 
             if(data.length > 0) {
               data.forEach(function(notificationData) {
-                console.log("notificationMessage", notificationData);
+                // console.log("notificationMessage", notificationData);
                   that.setState({
                     notificationData: notificationData
                   })
@@ -138,10 +139,25 @@ componentDidMount() {
         console.warn('WebSocket connection closed: Notification data not available');
     }, {'skipSubprotocolCheck': true});
 
+
+    var conn4 = new ab.Session('ws://52.74.119.147:9003', function() {
+        conn4.subscribe('', function(topic, data) {
+
+            console.log("SensorHealthOverviewV2 data: ", data);
+
+            var timestamp = new Date().toLocaleString();
+
+            that.setState({sensorHealthOverviewV2: data, currentTime: timestamp});
+
+        });
+    }, function() {
+        console.warn('WebSocket connection closed: sensorHealthOverviewV2 data not available');
+    }, {'skipSubprotocolCheck': true});
+
 }
 
 render() {
-    console.log("main render: ", this.state.notificationData);
+    console.log("render: sensorHealthOverviewV2: ", this.state.sensorHealthOverviewV2);
     var iframeLink = "./offCrepe.html?";
 
     return (
@@ -162,7 +178,12 @@ render() {
                         <Nav timestamp={this.state.currentTime}/>
                         <div className="row">
                             <div className="columns medium-12 large 12">
-                                <Dashboard timestamp={this.state.currentTime} displayName={this.state.userDisplayName} overall={this.state.overall} bfg={this.state.bfg} notificationData={this.state.notifcations}/>
+                              <Dashboard timestamp={this.state.currentTime}
+                                          displayName={this.state.userDisplayName}
+                                          overall={this.state.overall}
+                                          bfg={this.state.bfg}
+                                          notificationData={this.state.notifcations}
+                                          sensorHealthOverviewV2={this.state.sensorHealthOverviewV2}/>
                             </div>
                         </div>
                         <NotificationBar notificationData={this.state.notificationData}/>
@@ -175,3 +196,12 @@ render() {
 };
 
 module.exports = Main;
+
+// <Dashboard
+//   {{React.cloneElement(this.props.children), {
+//     timestamp: this.state.currentTime,
+//     displayName: this.state.userDisplayName,
+//     overall: this.state.overall,
+//     bfg: this.state.bfg,
+//     notificationData: this.state.notifications
+//   }}}/>
