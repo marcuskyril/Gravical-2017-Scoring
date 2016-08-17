@@ -197,7 +197,7 @@ var Dashboard = React.createClass({
                       </button>
                       <AddSensor/>
                       </div>
-                      <div className="callout callout-dark">
+                      <div className="callout callout-dark scroll">
                         <SensorHealthOverviewV2 data={this.props.sensorHealthOverviewV2}/>
                       </div>
                     </div>

@@ -31,8 +31,8 @@ class NotificationBar extends React.Component {
     const id = notifications.size + 1;
     const newCount = count + 1;
 
-    //console.log("hello from the other side: ", this.props.notificationData);
-    //console.log("notification data", this.props.notificationData.mac, this.props.notificationData.problem);
+    console.log("hello from the other side: ", this.props.notificationData[0]);
+    console.log("notification data", this.props.notificationData.mac, this.props.notificationData.problem);
     if(this.props.notificationData.mac) {
       this.setState({
         count: newCount,
@@ -115,22 +115,22 @@ componentDidMount() {
     }, {'skipSubprotocolCheck': true});
 
     var conn3 = new ab.Session('ws://52.74.119.147:9002', function() {
+        console.log("HELLO I'M MAKING A CONNNECTION");
+
         conn3.subscribe('', function(topic, data) {
 
-            // console.log("main notifications data: ", data);
+            console.log("main notifications data: ", data);
 
             var timestamp = new Date().toLocaleString();
 
-            console.log('this.refs', that.refs);
-
-            if(data.length > 0) {
-              data.forEach(function(notificationData) {
-                // console.log("notificationMessage", notificationData);
-                  that.setState({
-                    notificationData: notificationData
-                  })
-              });
-            }
+            // if(data.length > 0) {
+            //   data.forEach(function(notificationData) {
+            //     // console.log("notificationMessage", notificationData);
+            //       that.setState({
+            //         notificationData: notificationData
+            //       })
+            //   });
+            // }
 
             that.setState({notifications: data, currentTime: timestamp});
 
@@ -186,7 +186,7 @@ render() {
                                           sensorHealthOverviewV2={this.state.sensorHealthOverviewV2}/>
                             </div>
                         </div>
-                        <NotificationBar notificationData={this.state.notificationData}/>
+                        <NotificationBar notificationData={this.state.notifications}/>
                     </div>
                 </div>
             </div>
