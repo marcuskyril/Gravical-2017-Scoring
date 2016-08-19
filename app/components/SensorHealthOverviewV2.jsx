@@ -147,56 +147,49 @@ class LevelList extends React.Component {
             var macAdd = sensorsOnThisFloor[j]['mac'];
             console.log("macAdd", macAdd);
             var thePos = areaArray.indexOf(sensorId);
-            superTemp[thePos] = sensorsOnThisFloor[j]['status'];
+            superTemp[thePos] = [sensorsOnThisFloor[j]['mac'], sensorsOnThisFloor[j]['status']];
             console.log("thePos" + thePos + ", sensor: " + superTemp[thePos]);
           }
 
           // temp.push(superTemp);
-          superTemp.forEach(function(status) {
+          superTemp.forEach(function(sensorShizz) {
 
-            // console.log("status", status);
+            console.log("sensorShizz status", sensorShizz);
+            var macAdd = sensorShizz[0];
+            var status = sensorShizz[1];
 
             switch(status) {
               case "ok":
-                  temp.push(<td><div className="sensorBlockSquare green"></div > </td>);
+                  temp.push(<td>
+                    <a data-tip={macAdd} onClick={() => that.handleClick(macAdd)}  data-toggle="offCanvas">
+                    <div className="sensorBlockSquare green"></div > </a> < /td>);
                 break;
                 case "warning" : temp.push(
                     <td>
-                        <a data-tip={macAdd} data-toggle="offCanvas">
-                            <div className="sensorBlockSquare orange"></div>
-                        </a>
-                    </td>
+                        <a data-tip={macAdd} onClick={() => that.handleClick(macAdd)}  data-toggle="offCanvas">
+                            <div className="sensorBlockSquare orange"></div > </a> < /td>
                 );
                 break;
                 case "danger" : temp.push(
                     <td>
                         <a data-tip={macAdd} onClick={() => that.handleClick(macAdd)} data-toggle="offCanvas">
-                            <div className="sensorBlockSquare red"></div>
-                        </a>
-                    </td>
+                            <div className="sensorBlockSquare red"></div > </a> < /td>
                 );
                 break;
                 case "down" : temp.push(
                     <td>
-                        <a data-tip={macAdd} data-toggle="offCanvas">
-                            <div className="sensorBlockSquare black"></div>
-                        </a>
-
-                    </td>
+                        <a data-tip={macAdd} onClick={() => that.handleClick(macAdd)} data-toggle="offCanvas">
+                            <div className="sensorBlockSquare black"></div > </a> < /td>
                 );
                 break;
                 case "no data" : temp.push(
                     <td>
-                        <a data-tip={macAdd} data-toggle="offCanvas">
-                            <div className="sensorBlockSquare grey"></div>
-                        </a>
-
-                    </td>
+                        <a data-tip={macAdd} onClick={() => that.handleClick(macAdd)} data-toggle="offCanvas">
+                            <div className="sensorBlockSquare grey"></div > </a> < /td>
                 );
                 break;
                 default : temp.push(
-                    <td></td>
-                );
+                    <td></td >);
                 break;
             }
         });

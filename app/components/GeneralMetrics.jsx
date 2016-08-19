@@ -3,14 +3,25 @@ var SensorStatus = require('SensorStatus');
 var axios = require('axios');
 var Griddle = require('griddle-react');
 var retrieveSensorDetails = require('retrieveSensorDetails');
+var removeFromWatchlist = require('removeFromWatchlist');
 var ReactDOM = require('react-dom');
 
 var dataList = [];
 
 class RemoveComponent extends React.Component {
+
+    handleClick(macAddress) {
+
+      console.log("macAddress to be removed: ", macAddress);
+
+      removeFromWatchlist.removeFromWatchlist(macAddress).then(function (response) {
+        console.log("removed sensor?", response);
+      });
+    }
+
     render() {
       return (
-        <a href="www.google.com.sg">
+        <a onClick={() => this.handleClick(this.props.data)} >
             <div className="sensorBlock remove">Remove</div>
         </a>
       );
@@ -26,14 +37,19 @@ class SensorBlockComponent extends React.Component {
         switch (this.props.data) {
             case "ok":
                 return <div className="sensorBlock green">{this.props.data}</div>
+                break;
             case "warning":
                 return <div className="sensorBlock orange">{this.props.data}</div>
+                break;
             case "danger":
                 return <div className="sensorBlock red">{this.props.data}</div>
+                break;
             case "down":
                 return <div className="sensorBlock black">{this.props.data}</div>
+                break;
             default:
                 return <div className="sensorBlock grey">{this.props.data}</div>
+                break;
         }
     }
 };
@@ -49,8 +65,11 @@ class LinkComponent extends React.Component {
     }
 
     render() {
+
+      var macAddress = this.props.data;
+
         return (
-            <a onClick={() => this.handleClick(this.props.data)} data-toggle="offCanvas">{this.props.data}</a>
+            <a onClick={() => this.handleClick(macAddress)} data-toggle="offCanvas">{macAddress}</a>
         );
     }
 };
@@ -128,15 +147,15 @@ class GeneralMetrics extends React.Component {
         var dataList = [];
         for (var sensor in allSensorData) {
             if (allSensorData.hasOwnProperty(sensor)) {
+              if(allSensorData[sensor]["watchlist"]){
                 var mac = sensor;
-
                 var row = {
                     "mac_address": mac,
                     "geo-region": allSensorData[sensor]["geo-region"],
                     "building": allSensorData[sensor]["building"],
                     "sensor-level-id": allSensorData[sensor]["sensor-location-level"] + allSensorData[sensor]["sensor-location-id"],
                     "sensor_status": allSensorData[sensor]["sensor_status"],
-                    "remove" : "test"
+                    "remove" : mac
                 };
 
                 if (typeof allSensorData[sensor]["error"] !== "undefined") {
@@ -144,6 +163,7 @@ class GeneralMetrics extends React.Component {
                 }
 
                 dataList.push(row);
+              }
             }
         }
 

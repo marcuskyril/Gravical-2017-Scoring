@@ -25,37 +25,43 @@ class NotificationBar extends React.Component {
     })
   }
 
-  render () {
+  componentWillReceiveProps(nextProps) {
+
+    console.log("What the fuck i'm receiving: ", nextProps);
+
+    console.log("Time in receive props", this.props.timestamp);
+    console.log("Time in receive notification", nextProps.timestamp);
+    var currentTime = this.props.timestamp;
 
     const { notifications, count } = this.state;
     const id = notifications.size + 1;
     const newCount = count + 1;
 
-    console.log("hello from the other side: ", this.props.notificationData[0]);
-    console.log("notification data", this.props.notificationData.mac, this.props.notificationData.problem);
-    if(this.props.notificationData.mac) {
+    console.log("nextProps: ", nextProps.notificationData);
+
+    if(nextProps.notificationData !== this.props.notificationData && nextProps.notificationData.length > 0) {
       this.setState({
         count: newCount,
         notifications: notifications.add({
-          title: this.props.notificationData.mac,
-          message: ` | ${this.props.notificationData.problem.status} | ${this.props.notificationData.timestamp.date}`,
+          title: nextProps.notificationData[0].mac,
+          message: ` | ${nextProps.notificationData[0].problem.status} | ${nextProps.notificationData[0].timestamp.date}`,
           key: newCount,
           action: 'Dismiss',
-          dismissAfter: 3000,
+          dismissAfter: 100000,
           onClick: () => this.removeNotification(newCount),
         })
       });
     }
+  }
 
+  render () {
     return (
-      <div>
+
         <NotificationStack
           notifications={this.state.notifications.toArray()}
           onDismiss={notification => this.setState({
             notifications: this.state.notifications.delete(notification)
-          })}
-        />
-      </div>
+          })}/>
     );
   }
 }
@@ -127,12 +133,18 @@ componentDidMount() {
             //   data.forEach(function(notificationData) {
             //     // console.log("notificationMessage", notificationData);
             //       that.setState({
-            //         notificationData: notificationData
+            //         notificationData: notificationData`
             //       })
             //   });
             // }
 
-            that.setState({notifications: data, currentTime: timestamp});
+            if(data === undefined) {
+              that.setState({
+                notifications: {}
+              });
+            } else {
+              that.setState({notifications: data, currentTime: timestamp});
+            }
 
         });
     }, function() {
@@ -186,7 +198,7 @@ render() {
                                           sensorHealthOverviewV2={this.state.sensorHealthOverviewV2}/>
                             </div>
                         </div>
-                        <NotificationBar notificationData={this.state.notifications}/>
+                        <NotificationBar notificationData={this.state.notifications} timestamp={this.state.currentTime}/>
                     </div>
                 </div>
             </div>

@@ -173,8 +173,9 @@
             <span id="diagnosis"></span>
         </div>
         <div class="buttons margin-top-md">
+            <button onclick="removeSensor(macAddress)" class="button hollow expanded">Remove</button>
             <button class="button hollow expanded disabled">Reboot</button>
-            <button class="button hollow expanded disabled">Pin to watch list</button>
+            <button onclick="pinToWatchList(macAddress)" class="button hollow expanded">Pin to watch list</button>
         </div>
 
         <script src="https://use.fontawesome.com/67b81887ff.js"></script>
@@ -312,44 +313,6 @@
                             document.getElementById("last_reboot").innerHTML = "";
                         } else {
                             document.getElementById("itsDeadJim").innerHTML = "";
-                            // ctx = document.getElementById("myChart");
-                            //
-                            // var myChart = new Chart(ctx, {
-                            //     type: 'bar',
-                            //     data: {
-                            //         labels: data,
-                            //         datasets: [{
-                            //             label: 'CPU Usage',
-                            //             data: usage,
-                            //             backgroundColor: [
-                            //                 'rgba(255, 99, 132, 0.2)',
-                            //                 'rgba(54, 162, 235, 0.2)',
-                            //                 'rgba(255, 206, 86, 0.2)',
-                            //                 'rgba(75, 192, 192, 0.2)',
-                            //                 'rgba(153, 102, 255, 0.2)',
-                            //                 'rgba(255, 159, 64, 0.2)'
-                            //             ],
-                            //             borderColor: [
-                            //                 'rgba(255,99,132,1)',
-                            //                 'rgba(54, 162, 235, 1)',
-                            //                 'rgba(255, 206, 86, 1)',
-                            //                 'rgba(75, 192, 192, 1)',
-                            //                 'rgba(153, 102, 255, 1)',
-                            //                 'rgba(255, 159, 64, 1)'
-                            //             ],
-                            //             borderWidth: 1
-                            //         }]
-                            //     },
-                            //     options: {
-                            //         scales: {
-                            //             yAxes: [{
-                            //                 ticks: {
-                            //                     beginAtZero: true
-                            //                 }
-                            //             }]
-                            //         }
-                            //     }
-                            // });
                         }
 
                     } else {
@@ -372,14 +335,7 @@
                 console.log(ex);
             }
 
-
-
-
-
             document.getElementById("mac_address").innerHTML = macAddress;
-
-
-
 
             function send(msg) {
                 console.log("sent: " + msg);
@@ -397,6 +353,64 @@
                     socket.close();
                     socket = null;
                 }
+            }
+
+            function removeSensor(macAddress) {
+
+                var DELETE_SENSOR_URL = "http://52.74.119.147/PisaSchitt/delete-sensor.php";
+
+                var data = {
+                    "MAC": macAddress
+                }
+
+                $.ajax({
+                    type: "POST",
+                    beforeSend: function(request) {
+                        request.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+                    },
+                    url: DELETE_SENSOR_URL,
+                    data: data,
+                    success: function(msg) {
+                        console.log("Que pasar?", msg);
+                    },
+                    error: function(e) {
+                      console.log("Remove sensor", e);
+                    }
+                });
+            }
+
+            function pinToWatchList(macAddress) {
+                var PIN_TO_WATCHLIST_URL = "http://52.74.119.147/PisaSchitt/sensor-watchlist-pin.php";
+
+                var data = {
+                    "MAC": macAddress,
+                    "pin_status": true
+                }
+
+
+                $.ajax({
+                    type: "POST",
+                    beforeSend: function(request) {
+                        request.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+                    },
+                    url: PIN_TO_WATCHLIST_URL,
+                    data: data,
+                    success: function(msg) {
+                        console.log("Que pasar?", msg);
+                    },
+                    error: function(e) {
+                      console.log("Remove sensor", e);
+                    }
+                });
+
+                // axios.post(PIN_TO_WATCHLIST_URL,
+                // data, {
+                //   headers: {
+                //     "Content-Type": "application/x-www-form-urlencoded"
+                //   }
+                // }).then(function (response) {
+                //     console.log("Hello", response);
+                // });
             }
         </script>
 

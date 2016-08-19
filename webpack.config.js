@@ -65,6 +65,7 @@ module.exports = {
       SensorStatus: 'app/components/SensorStatus.jsx',
       Uptime: 'app/components/Uptime.jsx',
       AddSensorAPI: 'app/api/AddSensorAPI.jsx',
+      removeFromWatchlist: 'app/api/removeFromWatchlistAPI.jsx',
       piSensorOverview: 'app/api/piSensorOverview.jsx',
       Login: 'app/components/Login.jsx',
       Overview: 'app/components/Overview.jsx',
