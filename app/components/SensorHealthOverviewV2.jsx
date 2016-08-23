@@ -90,7 +90,9 @@ class BuildingHeader extends React.Component {
         var rows = [];
 
         rows.push(
-            <th></th>
+            <th style={{
+                textAlign: "center"
+            }}>Level</th>
         );
 
         this.props.areaArray.forEach(function(area) {
@@ -126,14 +128,14 @@ class LevelList extends React.Component {
         var levelArray = this.props.levelArray;
         var sensors = this.props.sensors;
 
-        console.log("le dta oeignall", sensors);
+        //console.log("le dta oeignall", sensors);
         for (var i = 0; i < levelArray.length; i++) {
             var sensorsOnThisFloor = sensors[levelArray[i]];
             var temp = [ < th > {
                     levelArray[i]
                 } < /th>];
 
-          console.log("current level", levelArray[i]);
+          //console.log("current level", levelArray[i]);
 
 
           var superTemp = [];
@@ -142,59 +144,75 @@ class LevelList extends React.Component {
           }
 
           for (var j = 0; j < sensorsOnThisFloor.length; j++) {
-            console.log("sensorsOnThisFloor", sensorsOnThisFloor[j]);
+            ////console.log("sensorsOnThisFloor", sensorsOnThisFloor[j]);
             var sensorId = sensorsOnThisFloor[j]['id'];
             var macAdd = sensorsOnThisFloor[j]['mac'];
-            console.log("macAdd", macAdd);
+            //console.log("macAdd", macAdd);
             var thePos = areaArray.indexOf(sensorId);
             superTemp[thePos] = [sensorsOnThisFloor[j]['mac'], sensorsOnThisFloor[j]['status']];
-            console.log("thePos" + thePos + ", sensor: " + superTemp[thePos]);
+            //console.log("thePos" + thePos + ", sensor: " + superTemp[thePos]);
           }
 
           // temp.push(superTemp);
           superTemp.forEach(function(sensorShizz) {
 
-            console.log("sensorShizz status", sensorShizz);
+            //console.log("sensorShizz status", sensorShizz);
             var macAdd = sensorShizz[0];
             var status = sensorShizz[1];
 
             switch(status) {
               case "ok":
-                  temp.push(<td>
-                    <a data-tip={macAdd} onClick={() => that.handleClick(macAdd)}  data-toggle="offCanvas">
-                    <div className="sensorBlockSquare green"></div > </a> < /td>);
+                  temp.push(
+                    <td>
+                      <a data-tip={macAdd} onClick={() => that.handleClick(macAdd)}  data-toggle="offCanvas">
+                        <div className="sensorBlockSquare green"></div>
+                      </a>
+                    </td>
+                  );
                 break;
-                case "warning" : temp.push(
+                case "warning" :
+                temp.push(
                     <td>
                         <a data-tip={macAdd} onClick={() => that.handleClick(macAdd)}  data-toggle="offCanvas">
-                            <div className="sensorBlockSquare orange"></div > </a> < /td>
+                            <div className="sensorBlockSquare orange"></div>
+                        </a>
+                    </td>
                 );
                 break;
-                case "danger" : temp.push(
+                case "danger" :
+                  temp.push(
                     <td>
                         <a data-tip={macAdd} onClick={() => that.handleClick(macAdd)} data-toggle="offCanvas">
-                            <div className="sensorBlockSquare red"></div > </a> < /td>
+                            <div className="sensorBlockSquare red"></div>
+                        </a>
+                    </td>
                 );
                 break;
-                case "down" : temp.push(
+                case "down" :
+                temp.push(
                     <td>
                         <a data-tip={macAdd} onClick={() => that.handleClick(macAdd)} data-toggle="offCanvas">
-                            <div className="sensorBlockSquare black"></div > </a> < /td>
+                            <div className="sensorBlockSquare black"></div>
+                        </a>
+                    </td>
                 );
                 break;
-                case "no data" : temp.push(
+                case "no data" :
+                  temp.push(
                     <td>
-                        <a data-tip={macAdd} onClick={() => that.handleClick(macAdd)} data-toggle="offCanvas">
-                            <div className="sensorBlockSquare grey"></div > </a> < /td>
-                );
+                      <a data-tip={macAdd} onClick={() => that.handleClick(macAdd)} data-toggle="offCanvas">
+                          <div className="sensorBlockSquare black"></div>
+                      </a>
+                    </td>
+                      );
                 break;
-                default : temp.push(
-                    <td></td >);
+                default :
+                temp.push(
+                    <td></td >
+                    );
                 break;
             }
         });
-
-        // console.log("temp water balloons", temp);
 
         tableRows.push(
             <tr>{temp}</tr>
@@ -202,10 +220,9 @@ class LevelList extends React.Component {
     }
 
     return (
-
-        <tbody>
-            <ReactTooltip/> {tableRows}
-        </tbody>
+          <tbody>
+                 {tableRows}
+          </tbody>
     );
 }
 }
@@ -217,6 +234,10 @@ constructor(props) {
     this.state = {
         filterText: ''
     };
+}
+
+componentDidMount() {
+  $(document).foundation();
 }
 
 handleUserInput(filterText) {

@@ -74,6 +74,8 @@ class LinkComponent extends React.Component {
     }
 };
 
+
+
 const tableMetaData = [
     {
         "columnName": "mac_address",
@@ -86,7 +88,7 @@ const tableMetaData = [
         "columnName": "geo-region",
         "order": 2,
         "locked": false,
-        "visible": true,
+        "visible": false,
         "displayName": "Region"
     }, {
         "columnName": "building",
@@ -118,6 +120,10 @@ const tableMetaData = [
 
 ];
 
+const rowMetaData = {
+  "bodyCssClassName": "customTableRow"
+}
+
 class NoDataComponent extends React.Component {
     constructor(props) {
         super(props);
@@ -139,6 +145,12 @@ class GeneralMetrics extends React.Component {
         this.state = {
             dataList: []
         };
+    }
+
+    tableClickHandler(gridRow) {
+      var macAddress = gridRow.props.data.mac_address
+      $('#offCanvas').foundation('open', event);
+      document.getElementById("sensorDetailsIFrame").src = "./offCrepe.html?offCanMac=" + macAddress;
     }
 
     render() {
@@ -169,7 +181,13 @@ class GeneralMetrics extends React.Component {
 
         return (
             <div>
-                <Griddle results={dataList} showFilter={true} initialSort="building_name" tableClassName="piOverviewTable" columnMetadata={tableMetaData}/>
+                <Griddle results={dataList}
+                          showFilter={true}
+                          initialSort="building_name"
+                          tableClassName="piOverviewTable"
+                          columnMetadata={tableMetaData}
+                          onRowClick={this.tableClickHandler.bind(this)}
+                          rowMetaData={rowMetaData}/>
             </div>
         );
     }
