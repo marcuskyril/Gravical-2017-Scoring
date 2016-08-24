@@ -229,6 +229,7 @@ polyline {
   height: 30px;
   width: 30px;
   margin: auto;
+  cursor: pointer;
 }
 
 .sensorBlockSquare:hover {
@@ -249,6 +250,31 @@ polyline {
   border: 1px solid $red;
   background-color: #fff;
   color: $red !important;
+}
+
+.tableOptions > li > a {
+  color: $dark-grey;
+  font-weight: normal;
+  font-size: 1rem;
+  padding: 0.5rem 0.7rem;
+}
+
+.tableOptions .menuHeader {
+  background-color: $night-ocean;
+  color: #fff;
+  padding: 0.3rem 0.7rem;
+}
+
+.tableOptions > li {
+  border-bottom: 1px solid $crazy-light-grey;
+}
+
+.tableOptions > li:hover {
+  background-color: $crazy-light-grey;
+}
+
+.dropdown-pane {
+  padding: 0px;
 }
 
 .green {

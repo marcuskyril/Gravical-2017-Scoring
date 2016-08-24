@@ -1,5 +1,6 @@
 var React = require('react');
 import ReactTooltip from 'react-tooltip'
+
 var dataList = [];
 
 class BuildingV2 extends React.Component {
@@ -113,9 +114,36 @@ class BuildingHeader extends React.Component {
 
 class LevelList extends React.Component {
 
-    handleClick(macAddress) {
-        // console.log("event", macAddress);
-        document.getElementById("sensorDetailsIFrame").src = "./offCrepe.html?offCanMac=" + macAddress;
+    handleClick(macAddress, action) {
+        console.log("event", macAddress, action);
+
+        switch(action){
+          case 'EDIT_ACTION':
+            var modal = new Foundation.Reveal($('#add-sensor-modal'));
+            modal.open();
+
+            break;
+          case 'DELETE_ACTION':
+            // call new API
+            var modal = new Foundation.Reveal($('#delete-sensor-modal'));
+            modal.open();
+
+            break;
+          case 'NO_ACTION':
+              if (document.getElementById(macAddress).style.visibility === "visible") {
+                  document.getElementById(macAddress).style.visibility = "hidden";
+              } else {
+                  document.getElementById(macAddress).style.visibility = "visible";
+              }
+              break;
+          case 'OPEN_CANVAS_ACTION':
+            document.getElementById("sensorDetailsIFrame").src = "./offCrepe.html?offCanMac=" + macAddress;
+            break;
+          default:
+            console.log('Invalid request.');
+            break;
+        }
+
     }
 
     render() {
@@ -164,45 +192,75 @@ class LevelList extends React.Component {
               case "ok":
                   temp.push(
                     <td>
-                      <a data-tip={macAdd} onClick={() => that.handleClick(macAdd)}  data-toggle="offCanvas">
-                        <div className="sensorBlockSquare green"></div>
-                      </a>
+                      <div className="sensorBlockSquare green" onClick={() => that.handleClick(macAdd, 'NO_ACTION')}></div>
+                      <div className="dropdown-pane" id={macAdd} data-dropdown data-options="data-hover:true; data-close-on-click:true">
+                          <ul className="vertical menu tableOptions">
+                            <li className="menuHeader">{macAdd}</li>
+                            <li><a onClick={() => that.handleClick(macAdd, 'OPEN_CANVAS_ACTION')} data-toggle="offCanvas">More details &raquo;</a></li>
+                            <li><a onClick={() => that.handleClick(macAdd, 'EDIT_ACTION')}>Edit</a></li>
+                            <li><a onClick={() => that.handleClick(macAdd, 'DELETE_ACTION')}>Delete</a></li>
+                          </ul>
+                        </div>
                     </td>
                   );
                 break;
                 case "warning" :
                 temp.push(
-                    <td>
-                        <a data-tip={macAdd} onClick={() => that.handleClick(macAdd)}  data-toggle="offCanvas">
-                            <div className="sensorBlockSquare orange"></div>
-                        </a>
-                    </td>
+                  <td>
+                    <div className="sensorBlockSquare orange" onClick={() => that.handleClick(macAdd, 'NO_ACTION')}></div>
+                    <div className="dropdown-pane" id={macAdd} data-dropdown data-options="data-hover:true; data-close-on-click:true">
+                        <ul className="vertical menu tableOptions">
+                          <li className="menuHeader">{macAdd}</li>
+                          <li><a onClick={() => that.handleClick(macAdd, 'OPEN_CANVAS_ACTION')} data-toggle="offCanvas">More details &raquo;</a></li>
+                          <li><a onClick={() => that.handleClick(macAdd, 'EDIT_ACTION')}>Edit sensor</a></li>
+                          <li><a onClick={() => that.handleClick(macAdd, 'DELETE_ACTION')}>Delete sensor</a></li>
+                        </ul>
+                      </div>
+                  </td>
                 );
                 break;
                 case "danger" :
                   temp.push(
                     <td>
-                        <a data-tip={macAdd} onClick={() => that.handleClick(macAdd)} data-toggle="offCanvas">
-                            <div className="sensorBlockSquare red"></div>
-                        </a>
+                      <div className="sensorBlockSquare red" onClick={() => that.handleClick(macAdd, 'NO_ACTION')}></div>
+                      <div className="dropdown-pane" id={macAdd} data-dropdown data-options="data-hover:true; data-close-on-click:true">
+                          <ul className="vertical menu tableOptions">
+                            <li className="menuHeader">{macAdd}</li>
+                            <li><a onClick={() => that.handleClick(macAdd, 'OPEN_CANVAS_ACTION')} data-toggle="offCanvas">More details  &raquo;&raquo;</a></li>
+                            <li><a onClick={() => that.handleClick(macAdd, 'EDIT_ACTION')}>Edit sensor</a></li>
+                            <li><a onClick={() => that.handleClick(macAdd, 'DELETE_ACTION')}>Delete sensor</a></li>
+                          </ul>
+                        </div>
                     </td>
                 );
                 break;
                 case "down" :
                 temp.push(
-                    <td>
-                        <a data-tip={macAdd} onClick={() => that.handleClick(macAdd)} data-toggle="offCanvas">
-                            <div className="sensorBlockSquare black"></div>
-                        </a>
-                    </td>
+                  <td>
+                    <div className="sensorBlockSquare black" onClick={() => that.handleClick(macAdd, 'NO_ACTION')}></div>
+                    <div className="dropdown-pane" id={macAdd} data-dropdown data-options="data-hover:true; data-close-on-click:true">
+                        <ul className="vertical menu tableOptions">
+                          <li className="menuHeader">{macAdd}</li>
+                          <li><a onClick={() => that.handleClick(macAdd, 'OPEN_CANVAS_ACTION')} data-toggle="offCanvas">More details</a></li>
+                          <li><a onClick={() => that.handleClick(macAdd, 'EDIT_ACTION')}>Edit sensor</a></li>
+                          <li><a onClick={() => that.handleClick(macAdd, 'DELETE_ACTION')}>Delete sensor</a></li>
+                        </ul>
+                      </div>
+                  </td>
                 );
                 break;
                 case "no data" :
                   temp.push(
                     <td>
-                      <a data-tip={macAdd} onClick={() => that.handleClick(macAdd)} data-toggle="offCanvas">
-                          <div className="sensorBlockSquare black"></div>
-                      </a>
+                      <div className="sensorBlockSquare grey" onClick={() => that.handleClick(macAdd, 'NO_ACTION')}></div>
+                      <div className="dropdown-pane" id={macAdd} data-dropdown data-options="data-hover:true; data-close-on-click:true">
+                          <ul className="vertical menu tableOptions">
+                            <li className="menuHeader">{macAdd}</li>
+                            <li><a onClick={() => that.handleClick(macAdd, 'OPEN_CANVAS_ACTION')} data-toggle="offCanvas">More details &raquo;</a></li>
+                            <li><a onClick={() => that.handleClick(macAdd, 'EDIT_ACTION')}>Edit sensor</a></li>
+                            <li><a onClick={() => that.handleClick(macAdd, 'DELETE_ACTION')}>Delete sensor</a></li>
+                          </ul>
+                        </div>
                     </td>
                       );
                 break;

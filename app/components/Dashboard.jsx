@@ -10,119 +10,9 @@ var Tableaux = require('Tableaux');
 var Notifications = require('Notifications');
 var FontAwesome = require('react-fontawesome');
 var BuildingOverview = require('BuildingOverview');
-var AddSensorAPI = require('AddSensorAPI');
+var AddSensor = require('AddSensor');
+var DeleteSensor = require('DeleteSensor');
 var {Link, IndexLink} = require('react-router');
-
-class AddSensor extends React.Component {
-
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      message: ''
-    }
-  }
-
-  onAddSensor(e) {
-    e.preventDefault();
-
-    var inputMac = this.refs.macAddress.value;
-    var inputRegion = this.refs.region.value;
-    var inputLocationLevel = this.refs.sensorLocationLevel.value;
-    var inputLocationID = this.refs.sensorLocationID.value;
-    var inputBuilding = this.refs.building.value;
-
-    var that = this;
-
-    AddSensorAPI.addSensor(inputMac, inputRegion, inputLocationLevel, inputLocationID, inputBuilding).then(function(response){
-
-      that.setState({
-        message: response
-      });
-
-      //console.log("message", that.state.message);
-
-      that.refs.macAddress.value = '';
-      that.refs.region.value = '';
-      that.refs.sensorLocationLevel.value = '';
-      that.refs.sensorLocationID.value = '';
-      that.refs.building.value = '';
-
-    }, function(error) {
-      alert(error);
-    });
-  }
-
-  render() {
-    var message = this.state.message;
-    var that = this;
-    //console.log("render", message);
-
-    // resets message to empty string on close
-    $('#add-sensor-modal').on('closed.zf.reveal', function() {
-        //console.log("close");
-        that.setState({
-          message: ''
-        });
-    });
-
-    return (
-      <div id="add-sensor-modal" className="reveal tiny text-center" data-reveal="">
-          <form>
-              <div className="row">
-                  <div className="large-12 columns">
-                      <div className="header">Add Sensor</div>
-
-                      <label>Mac Address
-                          <input type="text" name="macAddress" ref="macAddress" placeholder="Mac Address" novalidate/>
-                      </label>
-                      <label>Region
-                          <select ref="region" name="region" novalidate>
-                              <option value=""></option>
-                              <option value="north">North</option>
-                              <option value="south">South</option>
-                              <option value="east">East</option>
-                              <option value="west">West</option>
-                              <option value="central">Central</option>
-                          </select>
-                      </label>
-
-                      <label>Sensor Location level
-                          <input type="text" name="sensorLocationLevel" ref="sensorLocationLevel" placeholder="Sensor Location Level"/>
-                      </label>
-
-                      <label>Sensor Location ID
-                          <input type="text" name="sensorLocationID" ref="sensorLocationID" placeholder="Sensor Location ID"/>
-                      </label>
-
-                      <label>Building
-                          <input type="text" name="building" ref="building" placeholder="Building"/>
-                      </label>
-                      <div id="sensorMessage"><AddSensorMessage message={message}/></div>
-                      <button className="button hollow expanded" onClick={this.onAddSensor.bind(this)}>
-                          Add Sensor
-                      </button>
-                      <button className="button hollow expanded" data-close="">
-                          Cancel
-                      </button>
-                  </div>
-              </div>
-          </form>
-      </div>
-    );
-  }
-}
-
-class AddSensorMessage extends React.Component {
-  render() {
-    var message = this.props.message;
-    console.log("message from parent: ", message);
-
-    return (
-      <div className="statusText">{message}</div>
-    );
-  }
-}
 
 var Dashboard = React.createClass({
 
@@ -133,9 +23,9 @@ var Dashboard = React.createClass({
 
     render: function() {
 
-        console.log("Dashboard's overall data is: ", this.props.overall);
-        console.log("Dashboard's notifications data is: ", this.props.notifications);
-        console.log("sensorHealthOverviewV2 in dashboard:", this.props.sensorHealthOverviewV2);
+        // console.log("Dashboard's overall data is: ", this.props.overall);
+        // console.log("Dashboard's notifications data is: ", this.props.notifications);
+        // console.log("sensorHealthOverviewV2 in dashboard:", this.props.sensorHealthOverviewV2);
 
         return (
 
@@ -196,6 +86,7 @@ var Dashboard = React.createClass({
                         <FontAwesome name='plus-circle'/> ADD SENSOR
                       </button>
                       <AddSensor/>
+                      <DeleteSensor/>
                       </div>
                       <div className="callout callout-dark scroll">
                         <SensorHealthOverviewV2 data={this.props.sensorHealthOverviewV2}/>
@@ -224,9 +115,3 @@ var Dashboard = React.createClass({
 });
 
 module.exports = Dashboard;
-
-
-// <div className="columns medium-3">
-//   <div className="callout callout-dark-header"><h4 className="header">Notifications</h4></div>
-//     <Notifications data={this.props.notificationData}/>
-// </div>

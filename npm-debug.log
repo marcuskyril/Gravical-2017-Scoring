@@ -3,7 +3,7 @@
 1 verbose cli   '/usr/local/bin/npm',
 1 verbose cli   'install',
 1 verbose cli   '--save',
-1 verbose cli   'react-simple-dropdown' ]
+1 verbose cli   'react-dd-menu' ]
 2 info using npm@2.15.1
 3 info using node@v4.4.4
 4 verbose install initial load of /Users/marcuslim/is480-master/package.json
@@ -30,446 +30,435 @@
 25 verbose installManyTop reading scoped package data from /Users/marcuslim/is480-master/node_modules/jquery/package.json
 26 verbose installManyTop reading scoped package data from /Users/marcuslim/is480-master/node_modules/node-env-file/package.json
 27 verbose installManyTop reading scoped package data from /Users/marcuslim/is480-master/node_modules/node-sass/package.json
-28 verbose installManyTop reading scoped package data from /Users/marcuslim/is480-master/node_modules/object-assign/package.json
-29 verbose installManyTop reading scoped package data from /Users/marcuslim/is480-master/node_modules/path/package.json
-30 verbose installManyTop reading scoped package data from /Users/marcuslim/is480-master/node_modules/pubsub-js/package.json
-31 verbose installManyTop reading scoped package data from /Users/marcuslim/is480-master/node_modules/react/package.json
-32 verbose installManyTop reading scoped package data from /Users/marcuslim/is480-master/node_modules/react-addons-css-transition-group/package.json
-33 verbose installManyTop reading scoped package data from /Users/marcuslim/is480-master/node_modules/react-addons-pure-render-mixin/package.json
-34 verbose installManyTop reading scoped package data from /Users/marcuslim/is480-master/node_modules/react-addons-transition-group/package.json
-35 verbose installManyTop reading scoped package data from /Users/marcuslim/is480-master/node_modules/react-chartjs/package.json
-36 verbose installManyTop reading scoped package data from /Users/marcuslim/is480-master/node_modules/react-d3-components/package.json
-37 verbose installManyTop reading scoped package data from /Users/marcuslim/is480-master/node_modules/react-dd-menu/package.json
-38 verbose installManyTop reading scoped package data from /Users/marcuslim/is480-master/node_modules/react-dom/package.json
-39 verbose installManyTop reading scoped package data from /Users/marcuslim/is480-master/node_modules/react-fontawesome/package.json
-40 verbose installManyTop reading scoped package data from /Users/marcuslim/is480-master/node_modules/react-highcharts/package.json
-41 verbose installManyTop reading scoped package data from /Users/marcuslim/is480-master/node_modules/react-highlight/package.json
-42 verbose installManyTop reading scoped package data from /Users/marcuslim/is480-master/node_modules/react-notification/package.json
-43 verbose installManyTop reading scoped package data from /Users/marcuslim/is480-master/node_modules/react-redux/package.json
-44 verbose installManyTop reading scoped package data from /Users/marcuslim/is480-master/node_modules/react-responsive-mixin/package.json
-45 verbose installManyTop reading scoped package data from /Users/marcuslim/is480-master/node_modules/react-router/package.json
-46 verbose installManyTop reading scoped package data from /Users/marcuslim/is480-master/node_modules/react-tooltip/package.json
-47 verbose installManyTop reading scoped package data from /Users/marcuslim/is480-master/node_modules/react-websocket/package.json
-48 verbose installManyTop reading scoped package data from /Users/marcuslim/is480-master/node_modules/reactable/package.json
-49 verbose installManyTop reading scoped package data from /Users/marcuslim/is480-master/node_modules/recharts/package.json
-50 verbose installManyTop reading scoped package data from /Users/marcuslim/is480-master/node_modules/redis/package.json
-51 verbose installManyTop reading scoped package data from /Users/marcuslim/is480-master/node_modules/redux/package.json
-52 verbose installManyTop reading scoped package data from /Users/marcuslim/is480-master/node_modules/redux-thunk/package.json
-53 verbose installManyTop reading scoped package data from /Users/marcuslim/is480-master/node_modules/sass-loader/package.json
-54 verbose installManyTop reading scoped package data from /Users/marcuslim/is480-master/node_modules/script-loader/package.json
-55 verbose installManyTop reading scoped package data from /Users/marcuslim/is480-master/node_modules/socket.io-client/package.json
-56 verbose installManyTop reading scoped package data from /Users/marcuslim/is480-master/node_modules/style-loader/package.json
-57 verbose installManyTop reading scoped package data from /Users/marcuslim/is480-master/node_modules/webpack/package.json
-58 info package.json axios@0.12.0 No README data
-59 info package.json highcharts@4.2.5 license should be a valid SPDX license expression
-60 info package.json deep-freeze-strict@1.1.1 license should be a valid SPDX license expression
-61 info package.json firebase@3.0.2 No license field.
-62 info package.json node-env-file@0.1.8 No license field.
-63 info package.json path@0.12.7 path is also the name of a node core module.
-64 info package.json script-loader@0.6.1 No license field.
-65 verbose readDependencies loading dependencies from /Users/marcuslim/is480-master/package.json
-66 silly cache add args [ 'react-simple-dropdown', null ]
-67 verbose cache add spec react-simple-dropdown
-68 silly cache add parsed spec Result {
-68 silly cache add   raw: 'react-simple-dropdown',
-68 silly cache add   scope: null,
-68 silly cache add   name: 'react-simple-dropdown',
-68 silly cache add   rawSpec: '',
-68 silly cache add   spec: 'latest',
-68 silly cache add   type: 'tag' }
-69 silly addNamed react-simple-dropdown@latest
-70 verbose addNamed "latest" is being treated as a dist-tag for react-simple-dropdown
-71 info addNameTag [ 'react-simple-dropdown', 'latest' ]
-72 silly mapToRegistry name react-simple-dropdown
-73 silly mapToRegistry using default registry
-74 silly mapToRegistry registry https://registry.npmjs.org/
-75 silly mapToRegistry data Result {
-75 silly mapToRegistry   raw: 'react-simple-dropdown',
-75 silly mapToRegistry   scope: null,
-75 silly mapToRegistry   name: 'react-simple-dropdown',
-75 silly mapToRegistry   rawSpec: '',
-75 silly mapToRegistry   spec: 'latest',
-75 silly mapToRegistry   type: 'tag' }
-76 silly mapToRegistry uri https://registry.npmjs.org/react-simple-dropdown
-77 verbose addNameTag registry:https://registry.npmjs.org/react-simple-dropdown not in flight; fetching
-78 verbose request uri https://registry.npmjs.org/react-simple-dropdown
-79 verbose request no auth needed
-80 info attempt registry request try #1 at 3:43:02 PM
-81 verbose request id d60de891469250f8
-82 http request GET https://registry.npmjs.org/react-simple-dropdown
-83 http 200 https://registry.npmjs.org/react-simple-dropdown
-84 verbose headers { server: 'CouchDB/1.5.0 (Erlang OTP/R16B03)',
-84 verbose headers   etag: '"BWU2XY8RLAU8M3JQWWZBATWVL"',
-84 verbose headers   'content-type': 'application/json',
-84 verbose headers   'content-encoding': 'gzip',
-84 verbose headers   'cache-control': 'max-age=300',
-84 verbose headers   'content-length': '4307',
-84 verbose headers   'accept-ranges': 'bytes',
-84 verbose headers   date: 'Tue, 23 Aug 2016 07:42:57 GMT',
-84 verbose headers   via: '1.1 varnish',
-84 verbose headers   age: '0',
-84 verbose headers   connection: 'keep-alive',
-84 verbose headers   'x-served-by': 'cache-lax1428-LAX',
-84 verbose headers   'x-cache': 'MISS',
-84 verbose headers   'x-cache-hits': '0',
-84 verbose headers   'x-timer': 'S1471938177.385444,VS0,VE360',
-84 verbose headers   vary: 'Accept-Encoding' }
-85 silly get cb [ 200,
-85 silly get   { server: 'CouchDB/1.5.0 (Erlang OTP/R16B03)',
-85 silly get     etag: '"BWU2XY8RLAU8M3JQWWZBATWVL"',
-85 silly get     'content-type': 'application/json',
-85 silly get     'content-encoding': 'gzip',
-85 silly get     'cache-control': 'max-age=300',
-85 silly get     'content-length': '4307',
-85 silly get     'accept-ranges': 'bytes',
-85 silly get     date: 'Tue, 23 Aug 2016 07:42:57 GMT',
-85 silly get     via: '1.1 varnish',
-85 silly get     age: '0',
-85 silly get     connection: 'keep-alive',
-85 silly get     'x-served-by': 'cache-lax1428-LAX',
-85 silly get     'x-cache': 'MISS',
-85 silly get     'x-cache-hits': '0',
-85 silly get     'x-timer': 'S1471938177.385444,VS0,VE360',
-85 silly get     vary: 'Accept-Encoding' } ]
-86 verbose get saving react-simple-dropdown to /Users/marcuslim/.npm/registry.npmjs.org/react-simple-dropdown/.cache.json
-87 verbose correctMkdir /Users/marcuslim/.npm correctMkdir not in flight; initializing
-88 silly addNameTag next cb for react-simple-dropdown with tag latest
-89 silly addNamed react-simple-dropdown@1.1.4
-90 verbose addNamed "1.1.4" is a plain semver version for react-simple-dropdown
-91 silly mapToRegistry name react-simple-dropdown
-92 silly mapToRegistry using default registry
-93 silly mapToRegistry registry https://registry.npmjs.org/
-94 silly mapToRegistry data Result {
-94 silly mapToRegistry   raw: 'react-simple-dropdown',
-94 silly mapToRegistry   scope: null,
-94 silly mapToRegistry   name: 'react-simple-dropdown',
-94 silly mapToRegistry   rawSpec: '',
-94 silly mapToRegistry   spec: 'latest',
-94 silly mapToRegistry   type: 'tag' }
-95 silly mapToRegistry uri https://registry.npmjs.org/react-simple-dropdown
-96 verbose addRemoteTarball https://registry.npmjs.org/react-simple-dropdown/-/react-simple-dropdown-1.1.4.tgz not in flight; adding
-97 verbose addRemoteTarball [ 'https://registry.npmjs.org/react-simple-dropdown/-/react-simple-dropdown-1.1.4.tgz',
-97 verbose addRemoteTarball   '637738861128c6b5b04b62498d61446f388c5cd6' ]
-98 info retry fetch attempt 1 at 3:43:03 PM
-99 info attempt registry request try #1 at 3:43:03 PM
-100 http fetch GET https://registry.npmjs.org/react-simple-dropdown/-/react-simple-dropdown-1.1.4.tgz
-101 http fetch 200 https://registry.npmjs.org/react-simple-dropdown/-/react-simple-dropdown-1.1.4.tgz
-102 silly fetchAndShaCheck shasum 637738861128c6b5b04b62498d61446f388c5cd6
-103 verbose addTmpTarball /var/folders/bq/dmpphy3x0xs502qdjvlkcms40000gn/T/npm-82493-8f898cf6/registry.npmjs.org/react-simple-dropdown/-/react-simple-dropdown-1.1.4.tgz not in flight; adding
-104 verbose addTmpTarball already have metadata; skipping unpack for react-simple-dropdown@1.1.4
-105 verbose correctMkdir /Users/marcuslim/.npm correctMkdir not in flight; initializing
-106 silly cache afterAdd react-simple-dropdown@1.1.4
-107 verbose afterAdd /Users/marcuslim/.npm/react-simple-dropdown/1.1.4/package/package.json not in flight; writing
-108 verbose correctMkdir /Users/marcuslim/.npm correctMkdir not in flight; initializing
-109 verbose afterAdd /Users/marcuslim/.npm/react-simple-dropdown/1.1.4/package/package.json written
-110 silly install resolved [ { name: 'react-simple-dropdown',
-110 silly install resolved     version: '1.1.4',
-110 silly install resolved     description: 'Non-prescriptive React.js dropdown toolkit',
-110 silly install resolved     main: 'lib/components/Dropdown.js',
-110 silly install resolved     scripts:
-110 silly install resolved      { prepublish: 'npm run build',
-110 silly install resolved        postpublish: 'npm run clean',
-110 silly install resolved        test: 'npm run build && zuul -- test/**/*.{js,jsx}',
-110 silly install resolved        'test:browser': 'zuul --local 55555 -- test/**/*.{js,jsx}',
-110 silly install resolved        build: 'babel components/**/* --out-dir lib',
-110 silly install resolved        watch: 'npm run build -- -w',
-110 silly install resolved        dev: 'npm-run-all --parallel watch test:browser',
-110 silly install resolved        clean: 'trash lib' },
-110 silly install resolved     repository:
-110 silly install resolved      { type: 'git',
-110 silly install resolved        url: 'git+https://github.com/Fauntleroy/react-simple-dropdown.git' },
-110 silly install resolved     keywords: [ 'react', 'react-component', 'component', 'dropdown' ],
-110 silly install resolved     author:
-110 silly install resolved      { name: 'Timothy Kempf',
-110 silly install resolved        email: 'tim@kemp59f.info',
-110 silly install resolved        url: 'http://kempfffffffffffffffffffffffffffffffffffffffffffffffffffffffffff.info' },
-110 silly install resolved     license: 'ISC',
-110 silly install resolved     bugs: { url: 'https://github.com/Fauntleroy/react-simple-dropdown/issues' },
-110 silly install resolved     homepage: 'https://github.com/Fauntleroy/react-simple-dropdown',
-110 silly install resolved     dependencies: { classnames: '^2.1.2' },
-110 silly install resolved     devDependencies:
-110 silly install resolved      { babel: '6.5.2',
-110 silly install resolved        'babel-cli': '6.10.1',
-110 silly install resolved        'babel-preset-es2016': '6.0.11',
-110 silly install resolved        'babel-preset-react': '6.5.0',
-110 silly install resolved        'babel-preset-stage-0': '6.5.0',
-110 silly install resolved        babelify: '^7.3.0',
-110 silly install resolved        'dom-classes': '0.0.1',
-110 silly install resolved        mkdirp: '^0.5.1',
-110 silly install resolved        'npm-run-all': '^1.4.0',
-110 silly install resolved        react: '15.0.x',
-110 silly install resolved        'react-addons-test-utils': '15.0.x',
-110 silly install resolved        'react-dom': '15.0.x',
-110 silly install resolved        'simple-mock': '^0.3.1',
-110 silly install resolved        tape: '^4.0.0',
-110 silly install resolved        'trash-cli': '^1.2.0',
-110 silly install resolved        watchify: '^3.7.0',
-110 silly install resolved        zuul: '^3.10.1' },
-110 silly install resolved     peerDependencies:
-110 silly install resolved      { react: '^0.14.0 || ^15.0.0',
-110 silly install resolved        'react-dom': '^0.14.0 || ^15.0.0' },
-110 silly install resolved     gitHead: 'a63e64cf98b1d432be862f175e0928f6d6694cfb',
-110 silly install resolved     _id: 'react-simple-dropdown@1.1.4',
-110 silly install resolved     _shasum: '637738861128c6b5b04b62498d61446f388c5cd6',
-110 silly install resolved     _from: 'react-simple-dropdown@latest',
-110 silly install resolved     _npmVersion: '3.3.12',
-110 silly install resolved     _nodeVersion: '5.0.0',
-110 silly install resolved     _npmUser: { name: 'fauntleroy', email: 'the.kaempfer@gmail.com' },
-110 silly install resolved     dist:
-110 silly install resolved      { shasum: '637738861128c6b5b04b62498d61446f388c5cd6',
-110 silly install resolved        tarball: 'https://registry.npmjs.org/react-simple-dropdown/-/react-simple-dropdown-1.1.4.tgz' },
-110 silly install resolved     maintainers: [ [Object] ],
-110 silly install resolved     _npmOperationalInternal:
-110 silly install resolved      { host: 'packages-16-east.internal.npmjs.com',
-110 silly install resolved        tmp: 'tmp/react-simple-dropdown-1.1.4.tgz_1466712850559_0.4471023348160088' },
-110 silly install resolved     directories: {},
-110 silly install resolved     _resolved: 'https://registry.npmjs.org/react-simple-dropdown/-/react-simple-dropdown-1.1.4.tgz' } ]
-111 info install react-simple-dropdown@1.1.4 into /Users/marcuslim/is480-master
-112 info installOne react-simple-dropdown@1.1.4
-113 verbose installOne of react-simple-dropdown to /Users/marcuslim/is480-master not in flight; installing
-114 verbose correctMkdir /Users/marcuslim/.npm/_locks correctMkdir not in flight; initializing
-115 verbose lock using /Users/marcuslim/.npm/_locks/react-simple-dropdown-d5d1909e097acc8b.lock for /Users/marcuslim/is480-master/node_modules/react-simple-dropdown
-116 silly install write writing react-simple-dropdown 1.1.4 to /Users/marcuslim/is480-master/node_modules/react-simple-dropdown
-117 verbose unbuild node_modules/react-simple-dropdown
-118 silly gentlyRm /Users/marcuslim/is480-master/node_modules/react-simple-dropdown is being purged from base /Users/marcuslim/is480-master
-119 verbose gentlyRm don't care about contents; nuking /Users/marcuslim/is480-master/node_modules/react-simple-dropdown
-120 verbose tar unpack /Users/marcuslim/.npm/react-simple-dropdown/1.1.4/package.tgz
-121 verbose tar unpacking to /Users/marcuslim/is480-master/node_modules/react-simple-dropdown
-122 silly gentlyRm /Users/marcuslim/is480-master/node_modules/react-simple-dropdown is being purged
-123 verbose gentlyRm don't care about contents; nuking /Users/marcuslim/is480-master/node_modules/react-simple-dropdown
-124 silly gunzTarPerm modes [ '755', '644' ]
-125 silly gunzTarPerm extractEntry package.json
-126 silly gunzTarPerm extractEntry .npmignore
-127 silly gunzTarPerm extractEntry README.md
-128 silly gunzTarPerm extractEntry LICENSE
-129 silly gunzTarPerm extractEntry components/Dropdown.jsx
-130 silly gunzTarPerm extractEntry components/DropdownContent.jsx
-131 silly gunzTarPerm extractEntry components/DropdownTrigger.jsx
-132 silly gunzTarPerm extractEntry .zuul.yml
-133 silly gunzTarPerm extractEntry lib/components/Dropdown.js
-134 silly gunzTarPerm extractEntry lib/components/DropdownContent.js
-135 silly gunzTarPerm extractEntry lib/components/DropdownTrigger.js
-136 silly gunzTarPerm extractEntry styles/Dropdown.css
-137 silly gunzTarPerm extractEntry .babelrc
-138 silly gunzTarPerm extractEntry test/components/Dropdown.jsx
-139 silly gunzTarPerm extractEntry test/components/DropdownContent.jsx
-140 silly gunzTarPerm extractEntry test/components/DropdownTrigger.jsx
-141 verbose write writing to /Users/marcuslim/is480-master/node_modules/react-simple-dropdown/package.json
-142 info preinstall react-simple-dropdown@1.1.4
-143 verbose readDependencies loading dependencies from /Users/marcuslim/is480-master/node_modules/react-simple-dropdown/package.json
-144 silly prepareForInstallMany adding classnames@^2.1.2 from react-simple-dropdown dependencies
-145 verbose readDependencies loading dependencies from /Users/marcuslim/is480-master/node_modules/react-simple-dropdown/package.json
-146 silly cache add args [ 'classnames@^2.1.2', null ]
-147 verbose cache add spec classnames@^2.1.2
-148 silly cache add parsed spec Result {
-148 silly cache add   raw: 'classnames@^2.1.2',
-148 silly cache add   scope: null,
-148 silly cache add   name: 'classnames',
-148 silly cache add   rawSpec: '^2.1.2',
-148 silly cache add   spec: '>=2.1.2 <3.0.0',
-148 silly cache add   type: 'range' }
-149 silly addNamed classnames@>=2.1.2 <3.0.0
-150 verbose addNamed ">=2.1.2 <3.0.0" is a valid semver range for classnames
-151 silly addNameRange { name: 'classnames', range: '>=2.1.2 <3.0.0', hasData: false }
-152 silly mapToRegistry name classnames
-153 silly mapToRegistry using default registry
-154 silly mapToRegistry registry https://registry.npmjs.org/
-155 silly mapToRegistry data Result {
-155 silly mapToRegistry   raw: 'classnames',
-155 silly mapToRegistry   scope: null,
-155 silly mapToRegistry   name: 'classnames',
-155 silly mapToRegistry   rawSpec: '',
-155 silly mapToRegistry   spec: 'latest',
-155 silly mapToRegistry   type: 'tag' }
-156 silly mapToRegistry uri https://registry.npmjs.org/classnames
-157 verbose addNameRange registry:https://registry.npmjs.org/classnames not in flight; fetching
-158 verbose request uri https://registry.npmjs.org/classnames
-159 verbose request no auth needed
-160 info attempt registry request try #1 at 3:43:04 PM
-161 verbose etag "5KETFFGZGX5IMA74NEKW01MP"
-162 http request GET https://registry.npmjs.org/classnames
-163 http 304 https://registry.npmjs.org/classnames
-164 verbose headers { date: 'Tue, 23 Aug 2016 07:42:58 GMT',
-164 verbose headers   via: '1.1 varnish',
-164 verbose headers   'cache-control': 'max-age=300',
-164 verbose headers   etag: '"5KETFFGZGX5IMA74NEKW01MP"',
-164 verbose headers   age: '0',
-164 verbose headers   connection: 'keep-alive',
-164 verbose headers   'x-served-by': 'cache-lax1428-LAX',
-164 verbose headers   'x-cache': 'HIT',
-164 verbose headers   'x-cache-hits': '1',
-164 verbose headers   'x-timer': 'S1471938178.531607,VS0,VE366',
-164 verbose headers   vary: 'Accept-Encoding' }
-165 silly get cb [ 304,
-165 silly get   { date: 'Tue, 23 Aug 2016 07:42:58 GMT',
-165 silly get     via: '1.1 varnish',
-165 silly get     'cache-control': 'max-age=300',
-165 silly get     etag: '"5KETFFGZGX5IMA74NEKW01MP"',
-165 silly get     age: '0',
-165 silly get     connection: 'keep-alive',
-165 silly get     'x-served-by': 'cache-lax1428-LAX',
-165 silly get     'x-cache': 'HIT',
-165 silly get     'x-cache-hits': '1',
-165 silly get     'x-timer': 'S1471938178.531607,VS0,VE366',
-165 silly get     vary: 'Accept-Encoding' } ]
-166 verbose etag https://registry.npmjs.org/classnames from cache
-167 verbose get saving classnames to /Users/marcuslim/.npm/registry.npmjs.org/classnames/.cache.json
-168 verbose correctMkdir /Users/marcuslim/.npm correctMkdir not in flight; initializing
-169 silly addNameRange number 2 { name: 'classnames', range: '>=2.1.2 <3.0.0', hasData: true }
-170 silly addNameRange versions [ 'classnames',
-170 silly addNameRange   [ '1.0.0',
-170 silly addNameRange     '1.1.0',
-170 silly addNameRange     '1.1.1',
-170 silly addNameRange     '1.1.2',
-170 silly addNameRange     '1.1.3',
-170 silly addNameRange     '1.1.4',
-170 silly addNameRange     '1.2.0',
-170 silly addNameRange     '1.2.1',
-170 silly addNameRange     '1.2.2',
-170 silly addNameRange     '2.0.0',
-170 silly addNameRange     '2.1.0',
-170 silly addNameRange     '2.1.1',
-170 silly addNameRange     '2.1.2',
-170 silly addNameRange     '2.1.3',
-170 silly addNameRange     '2.1.4',
-170 silly addNameRange     '2.1.5',
-170 silly addNameRange     '2.2.0',
-170 silly addNameRange     '2.2.1',
-170 silly addNameRange     '2.2.2',
-170 silly addNameRange     '2.2.3',
-170 silly addNameRange     '2.2.4',
-170 silly addNameRange     '2.2.5' ] ]
-171 silly addNamed classnames@2.2.5
-172 verbose addNamed "2.2.5" is a plain semver version for classnames
-173 silly cache afterAdd classnames@2.2.5
-174 verbose afterAdd /Users/marcuslim/.npm/classnames/2.2.5/package/package.json not in flight; writing
+28 verbose installManyTop reading scoped package data from /Users/marcuslim/is480-master/node_modules/path/package.json
+29 verbose installManyTop reading scoped package data from /Users/marcuslim/is480-master/node_modules/react/package.json
+30 verbose installManyTop reading scoped package data from /Users/marcuslim/is480-master/node_modules/react-addons-css-transition-group/package.json
+31 verbose installManyTop reading scoped package data from /Users/marcuslim/is480-master/node_modules/react-addons-pure-render-mixin/package.json
+32 verbose installManyTop reading scoped package data from /Users/marcuslim/is480-master/node_modules/react-chartjs/package.json
+33 verbose installManyTop reading scoped package data from /Users/marcuslim/is480-master/node_modules/react-d3-components/package.json
+34 verbose installManyTop reading scoped package data from /Users/marcuslim/is480-master/node_modules/react-dd-menu/package.json
+35 verbose installManyTop reading scoped package data from /Users/marcuslim/is480-master/node_modules/react-dom/package.json
+36 verbose installManyTop reading scoped package data from /Users/marcuslim/is480-master/node_modules/react-fontawesome/package.json
+37 verbose installManyTop reading scoped package data from /Users/marcuslim/is480-master/node_modules/react-highcharts/package.json
+38 verbose installManyTop reading scoped package data from /Users/marcuslim/is480-master/node_modules/react-highlight/package.json
+39 verbose installManyTop reading scoped package data from /Users/marcuslim/is480-master/node_modules/react-notification/package.json
+40 verbose installManyTop reading scoped package data from /Users/marcuslim/is480-master/node_modules/react-redux/package.json
+41 verbose installManyTop reading scoped package data from /Users/marcuslim/is480-master/node_modules/react-router/package.json
+42 verbose installManyTop reading scoped package data from /Users/marcuslim/is480-master/node_modules/react-tooltip/package.json
+43 verbose installManyTop reading scoped package data from /Users/marcuslim/is480-master/node_modules/react-websocket/package.json
+44 verbose installManyTop reading scoped package data from /Users/marcuslim/is480-master/node_modules/reactable/package.json
+45 verbose installManyTop reading scoped package data from /Users/marcuslim/is480-master/node_modules/redis/package.json
+46 verbose installManyTop reading scoped package data from /Users/marcuslim/is480-master/node_modules/redux/package.json
+47 verbose installManyTop reading scoped package data from /Users/marcuslim/is480-master/node_modules/redux-thunk/package.json
+48 verbose installManyTop reading scoped package data from /Users/marcuslim/is480-master/node_modules/sass-loader/package.json
+49 verbose installManyTop reading scoped package data from /Users/marcuslim/is480-master/node_modules/script-loader/package.json
+50 verbose installManyTop reading scoped package data from /Users/marcuslim/is480-master/node_modules/style-loader/package.json
+51 verbose installManyTop reading scoped package data from /Users/marcuslim/is480-master/node_modules/webpack/package.json
+52 info package.json deep-freeze-strict@1.1.1 license should be a valid SPDX license expression
+53 info package.json firebase@3.3.0 No license field.
+54 info package.json highcharts@4.2.6 license should be a valid SPDX license expression
+55 info package.json path@0.12.7 path is also the name of a node core module.
+56 info package.json node-env-file@0.1.8 No license field.
+57 info package.json script-loader@0.6.1 No license field.
+58 verbose readDependencies loading dependencies from /Users/marcuslim/is480-master/package.json
+59 verbose install react-dd-menu is installed as 1.0.7
+60 silly cache add args [ 'react-dd-menu', null ]
+61 verbose cache add spec react-dd-menu
+62 silly cache add parsed spec Result {
+62 silly cache add   raw: 'react-dd-menu',
+62 silly cache add   scope: null,
+62 silly cache add   name: 'react-dd-menu',
+62 silly cache add   rawSpec: '',
+62 silly cache add   spec: 'latest',
+62 silly cache add   type: 'tag' }
+63 silly addNamed react-dd-menu@latest
+64 verbose addNamed "latest" is being treated as a dist-tag for react-dd-menu
+65 info addNameTag [ 'react-dd-menu', 'latest' ]
+66 silly mapToRegistry name react-dd-menu
+67 silly mapToRegistry using default registry
+68 silly mapToRegistry registry https://registry.npmjs.org/
+69 silly mapToRegistry data Result {
+69 silly mapToRegistry   raw: 'react-dd-menu',
+69 silly mapToRegistry   scope: null,
+69 silly mapToRegistry   name: 'react-dd-menu',
+69 silly mapToRegistry   rawSpec: '',
+69 silly mapToRegistry   spec: 'latest',
+69 silly mapToRegistry   type: 'tag' }
+70 silly mapToRegistry uri https://registry.npmjs.org/react-dd-menu
+71 verbose addNameTag registry:https://registry.npmjs.org/react-dd-menu not in flight; fetching
+72 verbose request uri https://registry.npmjs.org/react-dd-menu
+73 verbose request no auth needed
+74 info attempt registry request try #1 at 11:51:11 PM
+75 verbose request id a6e35631aaf6fad7
+76 verbose etag "ACCDK1BIKS3CNXUALD4VV41PC"
+77 http request GET https://registry.npmjs.org/react-dd-menu
+78 http 304 https://registry.npmjs.org/react-dd-menu
+79 verbose headers { date: 'Tue, 23 Aug 2016 15:51:12 GMT',
+79 verbose headers   via: '1.1 varnish',
+79 verbose headers   'cache-control': 'max-age=300',
+79 verbose headers   etag: '"ACCDK1BIKS3CNXUALD4VV41PC"',
+79 verbose headers   age: '0',
+79 verbose headers   connection: 'keep-alive',
+79 verbose headers   'x-served-by': 'cache-sjc3146-SJC',
+79 verbose headers   'x-cache': 'MISS',
+79 verbose headers   'x-cache-hits': '0',
+79 verbose headers   'x-timer': 'S1471967472.453608,VS0,VE97',
+79 verbose headers   vary: 'Accept-Encoding' }
+80 silly get cb [ 304,
+80 silly get   { date: 'Tue, 23 Aug 2016 15:51:12 GMT',
+80 silly get     via: '1.1 varnish',
+80 silly get     'cache-control': 'max-age=300',
+80 silly get     etag: '"ACCDK1BIKS3CNXUALD4VV41PC"',
+80 silly get     age: '0',
+80 silly get     connection: 'keep-alive',
+80 silly get     'x-served-by': 'cache-sjc3146-SJC',
+80 silly get     'x-cache': 'MISS',
+80 silly get     'x-cache-hits': '0',
+80 silly get     'x-timer': 'S1471967472.453608,VS0,VE97',
+80 silly get     vary: 'Accept-Encoding' } ]
+81 verbose etag https://registry.npmjs.org/react-dd-menu from cache
+82 verbose get saving react-dd-menu to /Users/marcuslim/.npm/registry.npmjs.org/react-dd-menu/.cache.json
+83 verbose correctMkdir /Users/marcuslim/.npm correctMkdir not in flight; initializing
+84 silly addNameTag next cb for react-dd-menu with tag latest
+85 silly addNamed react-dd-menu@1.0.7
+86 verbose addNamed "1.0.7" is a plain semver version for react-dd-menu
+87 silly cache afterAdd react-dd-menu@1.0.7
+88 verbose afterAdd /Users/marcuslim/.npm/react-dd-menu/1.0.7/package/package.json not in flight; writing
+89 verbose correctMkdir /Users/marcuslim/.npm correctMkdir not in flight; initializing
+90 verbose afterAdd /Users/marcuslim/.npm/react-dd-menu/1.0.7/package/package.json written
+91 silly install resolved [ { name: 'react-dd-menu',
+91 silly install resolved     version: '1.0.7',
+91 silly install resolved     description: 'A react dropdown menu.',
+91 silly install resolved     main: 'dist/index.js',
+91 silly install resolved     scripts:
+91 silly install resolved      { scripts: 'babel ./src/js --out-dir ./dist',
+91 silly install resolved        styles: 'sass --style expanded --line ./src/scss/react-dd-menu.scss ./dist/react-dd-menu.css && sass --style compressed ./src/scss/react-dd-menu.scss ./dist/react-dd-menu.min.css',
+91 silly install resolved        prebuild: 'rimraf dist',
+91 silly install resolved        build: 'npm run scripts && npm run styles',
+91 silly install resolved        postbuild: 'postcss --use autoprefixer ./dist/*.css -d ./dist' },
+91 silly install resolved     repository:
+91 silly install resolved      { type: 'git',
+91 silly install resolved        url: 'git+https://github.com/mlaursen/react-dd-menu.git' },
+91 silly install resolved     keywords:
+91 silly install resolved      [ 'react',
+91 silly install resolved        'react-component',
+91 silly install resolved        'dropown',
+91 silly install resolved        'dropdown-menu',
+91 silly install resolved        'component' ],
+91 silly install resolved     author: { name: 'mlaursen' },
+91 silly install resolved     license: 'MIT',
+91 silly install resolved     bugs: { url: 'https://github.com/mlaursen/react-dd-menu/issues' },
+91 silly install resolved     homepage: 'https://github.com/mlaursen/react-dd-menu#readme',
+91 silly install resolved     dependencies: { classnames: '^2.1.3' },
+91 silly install resolved     peerDependencies:
+91 silly install resolved      { react: '>= 0.14.0',
+91 silly install resolved        'react-dom': '>= 0.14.0',
+91 silly install resolved        'react-addons-css-transition-group': '>= 0.14.0',
+91 silly install resolved        'react-addons-pure-render-mixin': '>= 0.14.0' },
+91 silly install resolved     devDependencies:
+91 silly install resolved      { autoprefixer: '^6.0.3',
+91 silly install resolved        'babel-core': '^6.4.5',
+91 silly install resolved        'babel-eslint': '^6.0.2',
+91 silly install resolved        'babel-plugin-add-module-exports': '^0.1.2',
+91 silly install resolved        'babel-preset-es2015': '^6.3.13',
+91 silly install resolved        'babel-preset-react': '^6.3.13',
+91 silly install resolved        'babel-preset-stage-0': '^6.3.13',
+91 silly install resolved        eslint: '^2.7.0',
+91 silly install resolved        'eslint-loader': '^1.3.0',
+91 silly install resolved        'eslint-plugin-react': '^4.3.0',
+91 silly install resolved        'postcss-cli': '^2.5.0',
+91 silly install resolved        react: '^15.0.1',
+91 silly install resolved        'react-addons-css-transition-group': '^15.0.1',
+91 silly install resolved        'react-addons-pure-render-mixin': '^15.0.1',
+91 silly install resolved        'react-dom': '^15.0.1',
+91 silly install resolved        rimraf: '^2.5.1' },
+91 silly install resolved     gitHead: 'a339e64c6cad0a40eae82a8aaa9a9111636c91c2',
+91 silly install resolved     _id: 'react-dd-menu@1.0.7',
+91 silly install resolved     _shasum: '6195a0f1f6514d7dd4dcc87a3054fb5e44d4de7a',
+91 silly install resolved     _from: 'react-dd-menu@latest',
+91 silly install resolved     _npmVersion: '3.7.3',
+91 silly install resolved     _nodeVersion: '5.9.0',
+91 silly install resolved     _npmUser: { name: 'mlaursen', email: 'mlaursen03@gmail.com' },
+91 silly install resolved     dist:
+91 silly install resolved      { shasum: '6195a0f1f6514d7dd4dcc87a3054fb5e44d4de7a',
+91 silly install resolved        tarball: 'https://registry.npmjs.org/react-dd-menu/-/react-dd-menu-1.0.7.tgz' },
+91 silly install resolved     maintainers: [ [Object] ],
+91 silly install resolved     _npmOperationalInternal:
+91 silly install resolved      { host: 'packages-12-west.internal.npmjs.com',
+91 silly install resolved        tmp: 'tmp/react-dd-menu-1.0.7.tgz_1460298326391_0.9832641743123531' },
+91 silly install resolved     directories: {},
+91 silly install resolved     _resolved: 'https://registry.npmjs.org/react-dd-menu/-/react-dd-menu-1.0.7.tgz',
+91 silly install resolved     readme: 'ERROR: No README data found!' } ]
+92 info install react-dd-menu@1.0.7 into /Users/marcuslim/is480-master
+93 info installOne react-dd-menu@1.0.7
+94 verbose installOne of react-dd-menu to /Users/marcuslim/is480-master not in flight; installing
+95 verbose correctMkdir /Users/marcuslim/.npm/_locks correctMkdir not in flight; initializing
+96 verbose lock using /Users/marcuslim/.npm/_locks/react-dd-menu-c79cb4bfc8a1e2c4.lock for /Users/marcuslim/is480-master/node_modules/react-dd-menu
+97 silly install write writing react-dd-menu 1.0.7 to /Users/marcuslim/is480-master/node_modules/react-dd-menu
+98 verbose unbuild node_modules/react-dd-menu
+99 info preuninstall react-dd-menu@1.0.7
+100 info uninstall react-dd-menu@1.0.7
+101 verbose unbuild rmStuff react-dd-menu@1.0.7 from /Users/marcuslim/is480-master/node_modules
+102 info postuninstall react-dd-menu@1.0.7
+103 silly gentlyRm /Users/marcuslim/is480-master/node_modules/react-dd-menu is being purged from base /Users/marcuslim/is480-master
+104 verbose gentlyRm don't care about contents; nuking /Users/marcuslim/is480-master/node_modules/react-dd-menu
+105 silly vacuum-fs purging /Users/marcuslim/is480-master/node_modules/react-dd-menu
+106 silly vacuum-fs quitting because other entries in /Users/marcuslim/is480-master/node_modules
+107 verbose tar unpack /Users/marcuslim/.npm/react-dd-menu/1.0.7/package.tgz
+108 verbose tar unpacking to /Users/marcuslim/is480-master/node_modules/react-dd-menu
+109 silly gentlyRm /Users/marcuslim/is480-master/node_modules/react-dd-menu is being purged
+110 verbose gentlyRm don't care about contents; nuking /Users/marcuslim/is480-master/node_modules/react-dd-menu
+111 silly gunzTarPerm modes [ '755', '644' ]
+112 silly gunzTarPerm extractEntry package.json
+113 silly gunzTarPerm extractEntry .npmignore
+114 silly gunzTarPerm extractEntry README.md
+115 silly gunzTarPerm extractEntry LICENSE
+116 silly gunzTarPerm extractEntry .eslintrc
+117 silly gunzTarPerm extractEntry bower.json
+118 silly gunzTarPerm extractEntry dist/DropdownMenu.js
+119 silly gunzTarPerm extractEntry dist/NestedDropdownMenu.js
+120 silly gunzTarPerm extractEntry dist/index.js
+121 silly gunzTarPerm extractEntry dist/react-dd-menu.css
+122 silly gunzTarPerm extractEntry dist/react-dd-menu.css.map
+123 silly gunzTarPerm extractEntry dist/react-dd-menu.min.css
+124 silly gunzTarPerm extractEntry dist/react-dd-menu.min.css.map
+125 silly gunzTarPerm extractEntry example/package.json
+126 silly gunzTarPerm extractEntry example/README.md
+127 silly gunzTarPerm extractEntry example/webpack.config.js
+128 silly gunzTarPerm extractEntry example/.babelrc
+129 silly gunzTarPerm extractEntry example/src/js/Example.jsx
+130 silly gunzTarPerm extractEntry example/src/js/Options.jsx
+131 silly gunzTarPerm extractEntry example/src/js/index.jsx
+132 silly gunzTarPerm extractEntry example/src/scss/main.scss
+133 silly gunzTarPerm extractEntry example/www/bundle.min.js
+134 silly gunzTarPerm extractEntry example/www/bundle.min.js.map
+135 silly gunzTarPerm extractEntry example/www/index.html
+136 silly gunzTarPerm extractEntry example/www/indexTemplate.html
+137 silly gunzTarPerm extractEntry example/www/main.min.css
+138 silly gunzTarPerm extractEntry example/www/main.min.css.map
+139 silly gunzTarPerm extractEntry .babelrc
+140 silly gunzTarPerm extractEntry src/js/DropdownMenu.js
+141 silly gunzTarPerm extractEntry src/js/NestedDropdownMenu.js
+142 silly gunzTarPerm extractEntry src/js/index.js
+143 silly gunzTarPerm extractEntry src/scss/_animations.scss
+144 silly gunzTarPerm extractEntry src/scss/_dd-menu.scss
+145 silly gunzTarPerm extractEntry src/scss/_mixins.scss
+146 silly gunzTarPerm extractEntry src/scss/_variables.scss
+147 silly gunzTarPerm extractEntry src/scss/react-dd-menu.scss
+148 verbose write writing to /Users/marcuslim/is480-master/node_modules/react-dd-menu/package.json
+149 info preinstall react-dd-menu@1.0.7
+150 verbose readDependencies loading dependencies from /Users/marcuslim/is480-master/node_modules/react-dd-menu/package.json
+151 silly prepareForInstallMany adding classnames@^2.1.3 from react-dd-menu dependencies
+152 verbose readDependencies loading dependencies from /Users/marcuslim/is480-master/node_modules/react-dd-menu/package.json
+153 silly cache add args [ 'classnames@^2.1.3', null ]
+154 verbose cache add spec classnames@^2.1.3
+155 silly cache add parsed spec Result {
+155 silly cache add   raw: 'classnames@^2.1.3',
+155 silly cache add   scope: null,
+155 silly cache add   name: 'classnames',
+155 silly cache add   rawSpec: '^2.1.3',
+155 silly cache add   spec: '>=2.1.3 <3.0.0',
+155 silly cache add   type: 'range' }
+156 silly addNamed classnames@>=2.1.3 <3.0.0
+157 verbose addNamed ">=2.1.3 <3.0.0" is a valid semver range for classnames
+158 silly addNameRange { name: 'classnames', range: '>=2.1.3 <3.0.0', hasData: false }
+159 silly mapToRegistry name classnames
+160 silly mapToRegistry using default registry
+161 silly mapToRegistry registry https://registry.npmjs.org/
+162 silly mapToRegistry data Result {
+162 silly mapToRegistry   raw: 'classnames',
+162 silly mapToRegistry   scope: null,
+162 silly mapToRegistry   name: 'classnames',
+162 silly mapToRegistry   rawSpec: '',
+162 silly mapToRegistry   spec: 'latest',
+162 silly mapToRegistry   type: 'tag' }
+163 silly mapToRegistry uri https://registry.npmjs.org/classnames
+164 verbose addNameRange registry:https://registry.npmjs.org/classnames not in flight; fetching
+165 verbose request uri https://registry.npmjs.org/classnames
+166 verbose request no auth needed
+167 info attempt registry request try #1 at 11:51:13 PM
+168 verbose etag "5KETFFGZGX5IMA74NEKW01MP"
+169 http request GET https://registry.npmjs.org/classnames
+170 http 304 https://registry.npmjs.org/classnames
+171 verbose headers { date: 'Tue, 23 Aug 2016 15:51:13 GMT',
+171 verbose headers   via: '1.1 varnish',
+171 verbose headers   'cache-control': 'max-age=300',
+171 verbose headers   etag: '"5KETFFGZGX5IMA74NEKW01MP"',
+171 verbose headers   age: '130',
+171 verbose headers   connection: 'keep-alive',
+171 verbose headers   'x-served-by': 'cache-sjc3146-SJC',
+171 verbose headers   'x-cache': 'HIT',
+171 verbose headers   'x-cache-hits': '1',
+171 verbose headers   'x-timer': 'S1471967473.043460,VS0,VE0',
+171 verbose headers   vary: 'Accept-Encoding' }
+172 silly get cb [ 304,
+172 silly get   { date: 'Tue, 23 Aug 2016 15:51:13 GMT',
+172 silly get     via: '1.1 varnish',
+172 silly get     'cache-control': 'max-age=300',
+172 silly get     etag: '"5KETFFGZGX5IMA74NEKW01MP"',
+172 silly get     age: '130',
+172 silly get     connection: 'keep-alive',
+172 silly get     'x-served-by': 'cache-sjc3146-SJC',
+172 silly get     'x-cache': 'HIT',
+172 silly get     'x-cache-hits': '1',
+172 silly get     'x-timer': 'S1471967473.043460,VS0,VE0',
+172 silly get     vary: 'Accept-Encoding' } ]
+173 verbose etag https://registry.npmjs.org/classnames from cache
+174 verbose get saving classnames to /Users/marcuslim/.npm/registry.npmjs.org/classnames/.cache.json
 175 verbose correctMkdir /Users/marcuslim/.npm correctMkdir not in flight; initializing
-176 verbose afterAdd /Users/marcuslim/.npm/classnames/2.2.5/package/package.json written
-177 silly install resolved [ { name: 'classnames',
-177 silly install resolved     version: '2.2.5',
-177 silly install resolved     description: 'A simple utility for conditionally joining classNames together',
-177 silly install resolved     main: 'index.js',
-177 silly install resolved     author: { name: 'Jed Watson' },
-177 silly install resolved     license: 'MIT',
-177 silly install resolved     repository:
-177 silly install resolved      { type: 'git',
-177 silly install resolved        url: 'git+https://github.com/JedWatson/classnames.git' },
-177 silly install resolved     scripts:
-177 silly install resolved      { benchmarks: 'node ./benchmarks/run',
-177 silly install resolved        unit: 'mocha tests/*.js',
-177 silly install resolved        test: 'npm run unit' },
-177 silly install resolved     keywords:
-177 silly install resolved      [ 'react',
-177 silly install resolved        'css',
-177 silly install resolved        'classes',
-177 silly install resolved        'classname',
-177 silly install resolved        'classnames',
-177 silly install resolved        'util',
-177 silly install resolved        'utility' ],
-177 silly install resolved     devDependencies: { benchmark: '^1.0.0', mocha: '^2.1.0' },
-177 silly install resolved     gitHead: '1fc62c0490bfc7d67a1178bbb60897cfa0580c7b',
-177 silly install resolved     bugs: { url: 'https://github.com/JedWatson/classnames/issues' },
-177 silly install resolved     homepage: 'https://github.com/JedWatson/classnames#readme',
-177 silly install resolved     _id: 'classnames@2.2.5',
-177 silly install resolved     _shasum: 'fb3801d453467649ef3603c7d61a02bd129bde6d',
-177 silly install resolved     _from: 'classnames@>=2.1.2 <3.0.0',
-177 silly install resolved     _npmVersion: '3.3.6',
-177 silly install resolved     _nodeVersion: '5.0.0',
-177 silly install resolved     _npmUser: { name: 'jedwatson', email: 'jed.watson@me.com' },
-177 silly install resolved     maintainers: [ [Object] ],
-177 silly install resolved     dist:
-177 silly install resolved      { shasum: 'fb3801d453467649ef3603c7d61a02bd129bde6d',
-177 silly install resolved        tarball: 'https://registry.npmjs.org/classnames/-/classnames-2.2.5.tgz' },
-177 silly install resolved     _npmOperationalInternal:
-177 silly install resolved      { host: 'packages-12-west.internal.npmjs.com',
-177 silly install resolved        tmp: 'tmp/classnames-2.2.5.tgz_1462195436082_0.17347457958385348' },
-177 silly install resolved     directories: {},
-177 silly install resolved     _resolved: 'https://registry.npmjs.org/classnames/-/classnames-2.2.5.tgz',
-177 silly install resolved     readme: 'ERROR: No README data found!' } ]
-178 info install classnames@2.2.5 into /Users/marcuslim/is480-master/node_modules/react-simple-dropdown
-179 info installOne classnames@2.2.5
-180 verbose installOne of classnames to /Users/marcuslim/is480-master/node_modules/react-simple-dropdown not in flight; installing
-181 verbose correctMkdir /Users/marcuslim/.npm/_locks correctMkdir not in flight; initializing
-182 verbose lock using /Users/marcuslim/.npm/_locks/classnames-a8ef51d3b75b780f.lock for /Users/marcuslim/is480-master/node_modules/react-simple-dropdown/node_modules/classnames
-183 silly install write writing classnames 2.2.5 to /Users/marcuslim/is480-master/node_modules/react-simple-dropdown/node_modules/classnames
-184 verbose unbuild node_modules/react-simple-dropdown/node_modules/classnames
-185 silly gentlyRm /Users/marcuslim/is480-master/node_modules/react-simple-dropdown/node_modules/classnames is being purged from base /Users/marcuslim/is480-master
-186 verbose gentlyRm don't care about contents; nuking /Users/marcuslim/is480-master/node_modules/react-simple-dropdown/node_modules/classnames
-187 verbose tar unpack /Users/marcuslim/.npm/classnames/2.2.5/package.tgz
-188 verbose tar unpacking to /Users/marcuslim/is480-master/node_modules/react-simple-dropdown/node_modules/classnames
-189 silly gentlyRm /Users/marcuslim/is480-master/node_modules/react-simple-dropdown/node_modules/classnames is being purged
-190 verbose gentlyRm don't care about contents; nuking /Users/marcuslim/is480-master/node_modules/react-simple-dropdown/node_modules/classnames
-191 silly gunzTarPerm modes [ '755', '644' ]
-192 silly gunzTarPerm extractEntry package.json
-193 silly gunzTarPerm extractEntry README.md
-194 silly gunzTarPerm extractEntry LICENSE
-195 silly gunzTarPerm extractEntry bind.js
-196 silly gunzTarPerm extractEntry dedupe.js
-197 silly gunzTarPerm extractEntry index.js
-198 silly gunzTarPerm extractEntry CONTRIBUTING.md
-199 silly gunzTarPerm extractEntry bower.json
-200 silly gunzTarPerm extractEntry HISTORY.md
-201 verbose write writing to /Users/marcuslim/is480-master/node_modules/react-simple-dropdown/node_modules/classnames/package.json
-202 info preinstall classnames@2.2.5
-203 verbose readDependencies loading dependencies from /Users/marcuslim/is480-master/node_modules/react-simple-dropdown/node_modules/classnames/package.json
-204 verbose readDependencies loading dependencies from /Users/marcuslim/is480-master/node_modules/react-simple-dropdown/node_modules/classnames/package.json
-205 silly install resolved []
-206 verbose about to build /Users/marcuslim/is480-master/node_modules/react-simple-dropdown/node_modules/classnames
-207 info build /Users/marcuslim/is480-master/node_modules/react-simple-dropdown/node_modules/classnames
-208 info linkStuff classnames@2.2.5
-209 silly linkStuff classnames@2.2.5 has /Users/marcuslim/is480-master/node_modules/react-simple-dropdown/node_modules as its parent node_modules
-210 verbose linkBins classnames@2.2.5
-211 verbose linkMans classnames@2.2.5
-212 verbose rebuildBundles classnames@2.2.5
-213 info install classnames@2.2.5
-214 info postinstall classnames@2.2.5
-215 verbose unlock done using /Users/marcuslim/.npm/_locks/classnames-a8ef51d3b75b780f.lock for /Users/marcuslim/is480-master/node_modules/react-simple-dropdown/node_modules/classnames
-216 verbose about to build /Users/marcuslim/is480-master/node_modules/react-simple-dropdown
-217 info build /Users/marcuslim/is480-master/node_modules/react-simple-dropdown
-218 info linkStuff react-simple-dropdown@1.1.4
-219 silly linkStuff react-simple-dropdown@1.1.4 has /Users/marcuslim/is480-master/node_modules as its parent node_modules
-220 verbose linkBins react-simple-dropdown@1.1.4
-221 verbose linkMans react-simple-dropdown@1.1.4
-222 verbose rebuildBundles react-simple-dropdown@1.1.4
-223 verbose rebuildBundles [ 'classnames' ]
-224 info install react-simple-dropdown@1.1.4
-225 info postinstall react-simple-dropdown@1.1.4
-226 verbose unlock done using /Users/marcuslim/.npm/_locks/react-simple-dropdown-d5d1909e097acc8b.lock for /Users/marcuslim/is480-master/node_modules/react-simple-dropdown
-227 verbose validateInstall loading /Users/marcuslim/is480-master/package.json for validation
-228 verbose stack Error: The package react@15.0.2 does not satisfy its siblings' peerDependencies requirements!
-228 verbose stack     at /usr/local/lib/node_modules/npm/lib/install.js:125:32
-228 verbose stack     at /usr/local/lib/node_modules/npm/lib/install.js:268:7
-228 verbose stack     at /usr/local/lib/node_modules/npm/node_modules/read-installed/read-installed.js:142:5
-228 verbose stack     at /usr/local/lib/node_modules/npm/node_modules/read-installed/read-installed.js:263:14
-228 verbose stack     at cb (/usr/local/lib/node_modules/npm/node_modules/slide/lib/async-map.js:47:24)
-228 verbose stack     at /usr/local/lib/node_modules/npm/node_modules/read-installed/read-installed.js:263:14
-228 verbose stack     at cb (/usr/local/lib/node_modules/npm/node_modules/slide/lib/async-map.js:47:24)
-228 verbose stack     at /usr/local/lib/node_modules/npm/node_modules/read-installed/read-installed.js:263:14
-228 verbose stack     at cb (/usr/local/lib/node_modules/npm/node_modules/slide/lib/async-map.js:47:24)
-228 verbose stack     at /usr/local/lib/node_modules/npm/node_modules/read-installed/read-installed.js:263:14
-229 verbose cwd /Users/marcuslim/is480-master
-230 error Darwin 15.4.0
-231 error argv "/usr/local/bin/node" "/usr/local/bin/npm" "install" "--save" "react-simple-dropdown"
-232 error node v4.4.4
-233 error npm  v2.15.1
-234 error code EPEERINVALID
-235 error peerinvalid The package react@15.0.2 does not satisfy its siblings' peerDependencies requirements!
-235 error peerinvalid Peer fixed-data-table@0.6.2 wants react@^0.14.0 || ^15.0.0
-235 error peerinvalid Peer fixed-data-table-2@0.7.1 wants react@>=0.13.0 || ^0.14.0-beta3
-235 error peerinvalid Peer griddle-react@0.6.1 wants react@^0.14.3 || ^15.0.1
-235 error peerinvalid Peer react-chartjs@0.7.3 wants react@*
-235 error peerinvalid Peer react-d3-components@0.6.4 wants react@^0.14.0 || ^15.0.0
-235 error peerinvalid Peer react-dom@15.0.2 wants react@^15.0.2
-235 error peerinvalid Peer react-fontawesome@1.1.0 wants react@>=0.12.0
-235 error peerinvalid Peer react-highcharts@9.0.0 wants react@~0.14 || ^15.0.0
-235 error peerinvalid Peer react-tooltip@3.1.5 wants react@^0.14.0 || ^15.0.0
-235 error peerinvalid Peer react-websocket@1.1.3 wants react@~15.0.2
-235 error peerinvalid Peer reactable@0.13.2 wants react@* || ^0.14.0
-235 error peerinvalid Peer react-addons-transition-group@15.3.1 wants react@^15.3.1
-235 error peerinvalid Peer react-addons-css-transition-group@15.3.1 wants react@^15.3.1
-235 error peerinvalid Peer react-addons-pure-render-mixin@15.3.1 wants react@^15.3.1
-235 error peerinvalid Peer react-dd-menu@1.0.7 wants react@>= 0.14.0
-235 error peerinvalid Peer react-simple-dropdown@1.1.4 wants react@^0.14.0 || ^15.0.0
-235 error peerinvalid Peer react-redux@4.4.1 wants react@^0.14.0 || ^15.0.0-rc.1
-235 error peerinvalid Peer recharts@0.13.3 wants react@^0.14.0 || ^15.0.0
-236 verbose exit [ 1, true ]
+176 silly addNameRange number 2 { name: 'classnames', range: '>=2.1.3 <3.0.0', hasData: true }
+177 silly addNameRange versions [ 'classnames',
+177 silly addNameRange   [ '1.0.0',
+177 silly addNameRange     '1.1.0',
+177 silly addNameRange     '1.1.1',
+177 silly addNameRange     '1.1.2',
+177 silly addNameRange     '1.1.3',
+177 silly addNameRange     '1.1.4',
+177 silly addNameRange     '1.2.0',
+177 silly addNameRange     '1.2.1',
+177 silly addNameRange     '1.2.2',
+177 silly addNameRange     '2.0.0',
+177 silly addNameRange     '2.1.0',
+177 silly addNameRange     '2.1.1',
+177 silly addNameRange     '2.1.2',
+177 silly addNameRange     '2.1.3',
+177 silly addNameRange     '2.1.4',
+177 silly addNameRange     '2.1.5',
+177 silly addNameRange     '2.2.0',
+177 silly addNameRange     '2.2.1',
+177 silly addNameRange     '2.2.2',
+177 silly addNameRange     '2.2.3',
+177 silly addNameRange     '2.2.4',
+177 silly addNameRange     '2.2.5' ] ]
+178 silly addNamed classnames@2.2.5
+179 verbose addNamed "2.2.5" is a plain semver version for classnames
+180 silly cache afterAdd classnames@2.2.5
+181 verbose afterAdd /Users/marcuslim/.npm/classnames/2.2.5/package/package.json not in flight; writing
+182 verbose correctMkdir /Users/marcuslim/.npm correctMkdir not in flight; initializing
+183 verbose afterAdd /Users/marcuslim/.npm/classnames/2.2.5/package/package.json written
+184 silly install resolved [ { name: 'classnames',
+184 silly install resolved     version: '2.2.5',
+184 silly install resolved     description: 'A simple utility for conditionally joining classNames together',
+184 silly install resolved     main: 'index.js',
+184 silly install resolved     author: { name: 'Jed Watson' },
+184 silly install resolved     license: 'MIT',
+184 silly install resolved     repository:
+184 silly install resolved      { type: 'git',
+184 silly install resolved        url: 'git+https://github.com/JedWatson/classnames.git' },
+184 silly install resolved     scripts:
+184 silly install resolved      { benchmarks: 'node ./benchmarks/run',
+184 silly install resolved        unit: 'mocha tests/*.js',
+184 silly install resolved        test: 'npm run unit' },
+184 silly install resolved     keywords:
+184 silly install resolved      [ 'react',
+184 silly install resolved        'css',
+184 silly install resolved        'classes',
+184 silly install resolved        'classname',
+184 silly install resolved        'classnames',
+184 silly install resolved        'util',
+184 silly install resolved        'utility' ],
+184 silly install resolved     devDependencies: { benchmark: '^1.0.0', mocha: '^2.1.0' },
+184 silly install resolved     gitHead: '1fc62c0490bfc7d67a1178bbb60897cfa0580c7b',
+184 silly install resolved     bugs: { url: 'https://github.com/JedWatson/classnames/issues' },
+184 silly install resolved     homepage: 'https://github.com/JedWatson/classnames#readme',
+184 silly install resolved     _id: 'classnames@2.2.5',
+184 silly install resolved     _shasum: 'fb3801d453467649ef3603c7d61a02bd129bde6d',
+184 silly install resolved     _from: 'classnames@>=2.1.3 <3.0.0',
+184 silly install resolved     _npmVersion: '3.3.6',
+184 silly install resolved     _nodeVersion: '5.0.0',
+184 silly install resolved     _npmUser: { name: 'jedwatson', email: 'jed.watson@me.com' },
+184 silly install resolved     maintainers: [ [Object] ],
+184 silly install resolved     dist:
+184 silly install resolved      { shasum: 'fb3801d453467649ef3603c7d61a02bd129bde6d',
+184 silly install resolved        tarball: 'https://registry.npmjs.org/classnames/-/classnames-2.2.5.tgz' },
+184 silly install resolved     _npmOperationalInternal:
+184 silly install resolved      { host: 'packages-12-west.internal.npmjs.com',
+184 silly install resolved        tmp: 'tmp/classnames-2.2.5.tgz_1462195436082_0.17347457958385348' },
+184 silly install resolved     directories: {},
+184 silly install resolved     _resolved: 'https://registry.npmjs.org/classnames/-/classnames-2.2.5.tgz',
+184 silly install resolved     readme: 'ERROR: No README data found!' } ]
+185 info install classnames@2.2.5 into /Users/marcuslim/is480-master/node_modules/react-dd-menu
+186 info installOne classnames@2.2.5
+187 verbose installOne of classnames to /Users/marcuslim/is480-master/node_modules/react-dd-menu not in flight; installing
+188 verbose correctMkdir /Users/marcuslim/.npm/_locks correctMkdir not in flight; initializing
+189 verbose lock using /Users/marcuslim/.npm/_locks/classnames-d444852e9b165a8d.lock for /Users/marcuslim/is480-master/node_modules/react-dd-menu/node_modules/classnames
+190 silly install write writing classnames 2.2.5 to /Users/marcuslim/is480-master/node_modules/react-dd-menu/node_modules/classnames
+191 verbose unbuild node_modules/react-dd-menu/node_modules/classnames
+192 silly gentlyRm /Users/marcuslim/is480-master/node_modules/react-dd-menu/node_modules/classnames is being purged from base /Users/marcuslim/is480-master
+193 verbose gentlyRm don't care about contents; nuking /Users/marcuslim/is480-master/node_modules/react-dd-menu/node_modules/classnames
+194 verbose tar unpack /Users/marcuslim/.npm/classnames/2.2.5/package.tgz
+195 verbose tar unpacking to /Users/marcuslim/is480-master/node_modules/react-dd-menu/node_modules/classnames
+196 silly gentlyRm /Users/marcuslim/is480-master/node_modules/react-dd-menu/node_modules/classnames is being purged
+197 verbose gentlyRm don't care about contents; nuking /Users/marcuslim/is480-master/node_modules/react-dd-menu/node_modules/classnames
+198 silly gunzTarPerm modes [ '755', '644' ]
+199 silly gunzTarPerm extractEntry package.json
+200 silly gunzTarPerm extractEntry README.md
+201 silly gunzTarPerm extractEntry LICENSE
+202 silly gunzTarPerm extractEntry bind.js
+203 silly gunzTarPerm extractEntry dedupe.js
+204 silly gunzTarPerm extractEntry index.js
+205 silly gunzTarPerm extractEntry CONTRIBUTING.md
+206 silly gunzTarPerm extractEntry bower.json
+207 silly gunzTarPerm extractEntry HISTORY.md
+208 verbose write writing to /Users/marcuslim/is480-master/node_modules/react-dd-menu/node_modules/classnames/package.json
+209 info preinstall classnames@2.2.5
+210 verbose readDependencies loading dependencies from /Users/marcuslim/is480-master/node_modules/react-dd-menu/node_modules/classnames/package.json
+211 verbose readDependencies loading dependencies from /Users/marcuslim/is480-master/node_modules/react-dd-menu/node_modules/classnames/package.json
+212 silly install resolved []
+213 verbose about to build /Users/marcuslim/is480-master/node_modules/react-dd-menu/node_modules/classnames
+214 info build /Users/marcuslim/is480-master/node_modules/react-dd-menu/node_modules/classnames
+215 info linkStuff classnames@2.2.5
+216 silly linkStuff classnames@2.2.5 has /Users/marcuslim/is480-master/node_modules/react-dd-menu/node_modules as its parent node_modules
+217 verbose linkBins classnames@2.2.5
+218 verbose linkMans classnames@2.2.5
+219 verbose rebuildBundles classnames@2.2.5
+220 info install classnames@2.2.5
+221 info postinstall classnames@2.2.5
+222 verbose unlock done using /Users/marcuslim/.npm/_locks/classnames-d444852e9b165a8d.lock for /Users/marcuslim/is480-master/node_modules/react-dd-menu/node_modules/classnames
+223 verbose about to build /Users/marcuslim/is480-master/node_modules/react-dd-menu
+224 info build /Users/marcuslim/is480-master/node_modules/react-dd-menu
+225 info linkStuff react-dd-menu@1.0.7
+226 silly linkStuff react-dd-menu@1.0.7 has /Users/marcuslim/is480-master/node_modules as its parent node_modules
+227 verbose linkBins react-dd-menu@1.0.7
+228 verbose linkMans react-dd-menu@1.0.7
+229 verbose rebuildBundles react-dd-menu@1.0.7
+230 verbose rebuildBundles [ 'classnames' ]
+231 info install react-dd-menu@1.0.7
+232 info postinstall react-dd-menu@1.0.7
+233 verbose unlock done using /Users/marcuslim/.npm/_locks/react-dd-menu-c79cb4bfc8a1e2c4.lock for /Users/marcuslim/is480-master/node_modules/react-dd-menu
+234 verbose validateInstall loading /Users/marcuslim/is480-master/package.json for validation
+235 verbose stack Error: The package react@15.3.1 does not satisfy its siblings' peerDependencies requirements!
+235 verbose stack     at /usr/local/lib/node_modules/npm/lib/install.js:125:32
+235 verbose stack     at /usr/local/lib/node_modules/npm/lib/install.js:268:7
+235 verbose stack     at /usr/local/lib/node_modules/npm/node_modules/read-installed/read-installed.js:142:5
+235 verbose stack     at /usr/local/lib/node_modules/npm/node_modules/read-installed/read-installed.js:263:14
+235 verbose stack     at cb (/usr/local/lib/node_modules/npm/node_modules/slide/lib/async-map.js:47:24)
+235 verbose stack     at /usr/local/lib/node_modules/npm/node_modules/read-installed/read-installed.js:263:14
+235 verbose stack     at cb (/usr/local/lib/node_modules/npm/node_modules/slide/lib/async-map.js:47:24)
+235 verbose stack     at /usr/local/lib/node_modules/npm/node_modules/read-installed/read-installed.js:263:14
+235 verbose stack     at cb (/usr/local/lib/node_modules/npm/node_modules/slide/lib/async-map.js:47:24)
+235 verbose stack     at /usr/local/lib/node_modules/npm/node_modules/read-installed/read-installed.js:263:14
+236 verbose cwd /Users/marcuslim/is480-master
+237 error Darwin 15.4.0
+238 error argv "/usr/local/bin/node" "/usr/local/bin/npm" "install" "--save" "react-dd-menu"
+239 error node v4.4.4
+240 error npm  v2.15.1
+241 error code EPEERINVALID
+242 error peerinvalid The package react@15.3.1 does not satisfy its siblings' peerDependencies requirements!
+242 error peerinvalid Peer fixed-data-table@0.6.3 wants react@^0.14.0 || ^15.0.0
+242 error peerinvalid Peer fixed-data-table-2@0.7.2 wants react@>=0.13.0 || ^0.14.0-beta3
+242 error peerinvalid Peer griddle-react@0.6.1 wants react@^0.14.3 || ^15.0.1
+242 error peerinvalid Peer react-chartjs@0.7.3 wants react@*
+242 error peerinvalid Peer react-d3-components@0.6.4 wants react@^0.14.0 || ^15.0.0
+242 error peerinvalid Peer react-dom@15.0.2 wants react@^15.0.2
+242 error peerinvalid Peer react-fontawesome@1.1.0 wants react@>=0.12.0
+242 error peerinvalid Peer react-highcharts@9.0.0 wants react@~0.14 || ^15.0.0
+242 error peerinvalid Peer react-router@2.7.0 wants react@^0.14.0 || ^15.0.0
+242 error peerinvalid Peer react-tooltip@3.1.6 wants react@^0.14.0 || ^15.0.0
+242 error peerinvalid Peer react-websocket@1.1.5 wants react@~0.14.5
+242 error peerinvalid Peer reactable@0.13.2 wants react@* || ^0.14.0
+242 error peerinvalid Peer react-addons-css-transition-group@15.3.1 wants react@^15.3.1
+242 error peerinvalid Peer react-addons-pure-render-mixin@15.3.1 wants react@^15.3.1
+242 error peerinvalid Peer react-dd-menu@1.0.7 wants react@>= 0.14.0
+242 error peerinvalid Peer react-redux@4.4.5 wants react@^0.14.0 || ^15.0.0-0
+243 verbose exit [ 1, true ]
