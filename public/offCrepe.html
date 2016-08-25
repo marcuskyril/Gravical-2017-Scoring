@@ -219,7 +219,7 @@
             macAddress = QueryString["offCanMac"];
 
             //connect to WebSocket
-            var host = "ws://52.74.119.147:9010/SensorStatus";
+            var host = "ws://devfour.sence.io:9010/SensorStatus";
             try {
                 socket = new WebSocket(host);
                 // log('WebSocket - status ' + socket.readyState);
@@ -357,7 +357,7 @@
 
             function removeSensor(macAddress) {
 
-                var DELETE_SENSOR_URL = "http://52.74.119.147/PisaSchitt/delete-sensor.php";
+                var DELETE_SENSOR_URL = "http://devfour.sence.io/backend/delete-sensor.php";
 
                 var data = {
                     "MAC": macAddress
@@ -380,7 +380,7 @@
             }
 
             function pinToWatchList(macAddress) {
-                var PIN_TO_WATCHLIST_URL = "http://52.74.119.147/PisaSchitt/sensor-watchlist-pin.php";
+                var PIN_TO_WATCHLIST_URL = "http://devfour.sence.io/backend/sensor-watchlist-pin.php";
 
                 var data = {
                     "MAC": macAddress,
@@ -402,15 +402,6 @@
                       console.log("Remove sensor", e);
                     }
                 });
-
-                // axios.post(PIN_TO_WATCHLIST_URL,
-                // data, {
-                //   headers: {
-                //     "Content-Type": "application/x-www-form-urlencoded"
-                //   }
-                // }).then(function (response) {
-                //     console.log("Hello", response);
-                // });
             }
         </script>
 

@@ -96,11 +96,11 @@ class BuildingList extends React.Component {
     }
 
     render() {
-      
+
         var rows = [];
         var allBuildings = [];
 
-        var buildings = this.props.data.data;
+        var buildings = this.props.data;
 
         for (var property in buildings) {
             if (buildings.hasOwnProperty(property)) {
@@ -151,7 +151,7 @@ class BuildingOverview extends React.Component {
     }
 
     render() {
-        // console.log("BuildingOverview says hi", this.props.data);
+        console.log("BuildingOverview says hi", this.props.data);
         return (
             <div>
                 <div className="callout-dark-header">

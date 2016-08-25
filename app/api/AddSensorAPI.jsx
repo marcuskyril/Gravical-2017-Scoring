@@ -1,6 +1,6 @@
 var axios = require('axios');
 
-const ADD_SENSOR_URL = 'http://52.74.119.147/PisaSchitt/insert-new-sensor.php';
+const ADD_SENSOR_URL = 'http://devfour.sence.io/backend/insert-new-sensor.php';
 
 module.exports = {
 

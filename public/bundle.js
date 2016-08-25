@@ -13993,78 +13993,104 @@
 	                console.warn(error);
 	            });
 
-	            var conn1 = new ab.Session('ws://52.74.119.147:9000', function () {
-	                conn1.subscribe('', function (topic, data) {
-	                    // console.log(data);
-
-	                    var timestamp = new Date().toLocaleString();
-	                    // console.log("now: ", timestamp);
-
-	                    that.setState({ overall: data, currentTime: timestamp });
-	                });
-	            }, function () {
-	                console.warn('WebSocket connection closed: Building data not available');
-	            }, { 'skipSubprotocolCheck': true });
-
-	            var conn2 = new ab.Session('ws://52.74.119.147:9001', function () {
-	                conn2.subscribe('', function (topic, data) {
-
-	                    var timestamp = new Date().toLocaleString();
-	                    // console.log("now: ", timestamp);
-
-	                    that.setState({ bfg: data, currentTime: timestamp });
-	                });
-	            }, function () {
-	                console.warn('WebSocket connection closed: BFG data not available');
-	            }, { 'skipSubprotocolCheck': true });
-
-	            var conn3 = new ab.Session('ws://52.74.119.147:9002', function () {
-	                console.log("HELLO I'M MAKING A CONNNECTION");
-
-	                conn3.subscribe('', function (topic, data) {
-
-	                    console.log("main notifications data: ", data);
+	            var connection = new ab.Session('ws://devfour.sence.io:9000', function () {
+	                connection.subscribe('', function (topic, data) {
+	                    console.log("Fresh data: ", data);
 
 	                    var timestamp = new Date().toLocaleString();
 
-	                    // if(data.length > 0) {
-	                    //   data.forEach(function(notificationData) {
-	                    //     // console.log("notificationMessage", notificationData);
-	                    //       that.setState({
-	                    //         notificationData: notificationData`
-	                    //       })
-	                    //   });
-	                    // }
+	                    that.setState({
+	                        overall: data.overall,
+	                        sensorHealthOverviewV2: data.overview,
+	                        bfg: data.BFG,
+	                        currentTime: timestamp
+	                    });
 
-	                    if (data === undefined) {
+	                    if (data.notifications === undefined) {
 	                        that.setState({
 	                            notifications: {}
 	                        });
 	                    } else {
-	                        that.setState({ notifications: data, currentTime: timestamp });
+	                        that.setState({
+	                            notifications: data.notifications
+	                        });
 	                    }
 	                });
 	            }, function () {
-	                console.warn('WebSocket connection closed: Notification data not available');
+	                console.warn('WebSocket connection closed: all data unavailable');
 	            }, { 'skipSubprotocolCheck': true });
 
-	            var conn4 = new ab.Session('ws://52.74.119.147:9003', function () {
-	                conn4.subscribe('', function (topic, data) {
-
-	                    console.log("SensorHealthOverviewV2 data: ", data);
-
-	                    var timestamp = new Date().toLocaleString();
-
-	                    that.setState({ sensorHealthOverviewV2: data, currentTime: timestamp });
-	                });
-	            }, function () {
-	                console.warn('WebSocket connection closed: sensorHealthOverviewV2 data not available');
-	            }, { 'skipSubprotocolCheck': true });
+	            // var conn1 = new ab.Session('ws://52.74.119.147:9000', function() {
+	            //     conn1.subscribe('', function(topic, data) {
+	            //         // console.log(data);
+	            //
+	            //         var timestamp = new Date().toLocaleString();
+	            //         // console.log("now: ", timestamp);
+	            //
+	            //         that.setState({overall: data, currentTime: timestamp});
+	            //
+	            //     });
+	            // }, function() {
+	            //     console.warn('WebSocket connection closed: Building data not available');
+	            // }, {'skipSubprotocolCheck': true});
+	            //
+	            // var conn2 = new ab.Session('ws://52.74.119.147:9001', function() {
+	            //     conn2.subscribe('', function(topic, data) {
+	            //
+	            //         var timestamp = new Date().toLocaleString();
+	            //         // console.log("now: ", timestamp);
+	            //
+	            //         that.setState({bfg: data, currentTime: timestamp});
+	            //     });
+	            // }, function() {
+	            //     console.warn('WebSocket connection closed: BFG data not available');
+	            // }, {'skipSubprotocolCheck': true});
+	            //
+	            // var conn3 = new ab.Session('ws://52.74.119.147:9002', function() {
+	            //     console.log("HELLO I'M MAKING A CONNNECTION");
+	            //
+	            //     conn3.subscribe('', function(topic, data) {
+	            //
+	            //         console.log("main notifications data: ", data);
+	            //
+	            //         var timestamp = new Date().toLocaleString();
+	            //
+	            //         if(data === undefined) {
+	            //           that.setState({
+	            //             notifications: {}
+	            //           });
+	            //         } else {
+	            //           that.setState({notifications: data, currentTime: timestamp});
+	            //         }
+	            //
+	            //     });
+	            // }, function() {
+	            //     console.warn('WebSocket connection closed: Notification data not available');
+	            // }, {'skipSubprotocolCheck': true});
+	            //
+	            //
+	            // var conn4 = new ab.Session('ws://52.74.119.147:9003', function() {
+	            //     conn4.subscribe('', function(topic, data) {
+	            //
+	            //         console.log("SensorHealthOverviewV2 data: ", data);
+	            //
+	            //         var timestamp = new Date().toLocaleString();
+	            //
+	            //         that.setState({sensorHealthOverviewV2: data, currentTime: timestamp});
+	            //
+	            //     });
+	            // }, function() {
+	            //     console.warn('WebSocket connection closed: sensorHealthOverviewV2 data not available');
+	            // }, {'skipSubprotocolCheck': true});
 	        }
 	    }, {
 	        key: 'render',
 	        value: function render() {
-	            console.log("render: sensorHealthOverviewV2: ", this.state.sensorHealthOverviewV2);
+	            console.log("overall: ", this.state.overall);
+	            console.log("bfg: ", this.state.bfg);
+	            console.log("notifications: ", this.state.notifications);
+	            console.log("sensorHealthOverviewV2: ", this.state.sensorHealthOverviewV2);
+
 	            var iframeLink = "./offCrepe.html?";
 
 	            return React.createElement(
@@ -49522,9 +49548,10 @@
 
 	  render: function render() {
 
-	    // console.log("Dashboard's overall data is: ", this.props.overall);
-	    // console.log("Dashboard's notifications data is: ", this.props.notifications);
-	    // console.log("sensorHealthOverviewV2 in dashboard:", this.props.sensorHealthOverviewV2);
+	    console.log("overall dashboard: ", this.props.overall);
+	    console.log("bfg dashboard: ", this.props.bfg);
+	    console.log("notifications dashboard: ", this.props.notifications);
+	    console.log("sensorHealthOverviewV2 dashboard: ", this.props.sensorHealthOverviewV2);
 
 	    return React.createElement(
 	      'div',
@@ -61010,7 +61037,7 @@
 
 	var axios = __webpack_require__(141);
 
-	var RETRIEVE_SENSOR_DETAILS_URL = 'http://52.74.119.147/PisaSchitt/get-sensor-info.php';
+	var RETRIEVE_SENSOR_DETAILS_URL = 'http://devfour.sence.io/backend/get-sensor-info.php';
 
 	module.exports = {
 
@@ -61035,7 +61062,7 @@
 
 	var axios = __webpack_require__(141);
 
-	var REMOVE_FROM_WATCHLIST_URL = 'http://52.74.119.147/PisaSchitt/sensor-watchlist-pin.php';
+	var REMOVE_FROM_WATCHLIST_URL = 'http://devfour.sence.io/backend/sensor-watchlist-pin.php';
 
 	module.exports = {
 
@@ -61844,7 +61871,7 @@
 	            var rows = [];
 	            var allBuildings = [];
 
-	            var buildings = this.props.data.data;
+	            var buildings = this.props.data;
 
 	            for (var property in buildings) {
 	                if (buildings.hasOwnProperty(property)) {
@@ -61906,7 +61933,7 @@
 	    }, {
 	        key: 'render',
 	        value: function render() {
-	            // console.log("BuildingOverview says hi", this.props.data);
+	            console.log("BuildingOverview says hi", this.props.data);
 	            return React.createElement(
 	                'div',
 	                null,
@@ -62148,7 +62175,7 @@
 
 	var axios = __webpack_require__(141);
 
-	var ADD_SENSOR_URL = 'http://52.74.119.147/PisaSchitt/insert-new-sensor.php';
+	var ADD_SENSOR_URL = 'http://devfour.sence.io/backend/insert-new-sensor.php';
 
 	module.exports = {
 

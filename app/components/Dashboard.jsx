@@ -23,9 +23,10 @@ var Dashboard = React.createClass({
 
     render: function() {
 
-        // console.log("Dashboard's overall data is: ", this.props.overall);
-        // console.log("Dashboard's notifications data is: ", this.props.notifications);
-        // console.log("sensorHealthOverviewV2 in dashboard:", this.props.sensorHealthOverviewV2);
+      console.log("overall dashboard: ", this.props.overall);
+      console.log("bfg dashboard: ", this.props.bfg);
+      console.log("notifications dashboard: ", this.props.notifications);
+      console.log("sensorHealthOverviewV2 dashboard: ", this.props.sensorHealthOverviewV2);
 
         return (
 

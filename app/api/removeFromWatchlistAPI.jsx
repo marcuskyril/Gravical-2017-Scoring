@@ -1,6 +1,6 @@
 var axios = require('axios');
 
-const REMOVE_FROM_WATCHLIST_URL = 'http://52.74.119.147/PisaSchitt/sensor-watchlist-pin.php';
+const REMOVE_FROM_WATCHLIST_URL = 'http://devfour.sence.io/backend/sensor-watchlist-pin.php';
 
 module.exports = {
 

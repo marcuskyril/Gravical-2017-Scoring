@@ -1,6 +1,6 @@
 var axios = require('axios');
 
-const RETRIEVE_SENSOR_DETAILS_URL = 'http://52.74.119.147/PisaSchitt/get-sensor-info.php';
+const RETRIEVE_SENSOR_DETAILS_URL = 'http://devfour.sence.io/backend/get-sensor-info.php';
 
 module.exports = {
 
