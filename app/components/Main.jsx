@@ -95,6 +95,8 @@ componentDidMount() {
 
             var timestamp = new Date().toLocaleString();
 
+            console.log("hua la la la la", data);
+
             that.setState({
               overall: data.overall,
               sensorHealthOverviewV2: data.overview,
@@ -121,7 +123,7 @@ componentDidMount() {
 
 render() {
     // console.log("overall: ", this.state.overall);
-    // console.log("bfg: ", this.state.bfg);
+    console.log("bfg: ", this.state.bfg);
     // console.log("notifications: ", this.state.notifications);
     // console.log("sensorHealthOverviewV2: ", this.state.sensorHealthOverviewV2);
 

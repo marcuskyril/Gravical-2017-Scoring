@@ -26,14 +26,13 @@ class AddSensor extends React.Component {
 
     addSensorAPI.addSensor(inputMac, inputRegion, inputLocationLevel, inputLocationID, inputBuilding).then(function(response){
 
-      // console.log("lajdga", this.props);
       if(response.error) {
         that.setState({
           message: response.error
         });
       } else {
         that.setState({
-          message: response.msg
+          message: response.success
         });
       }
       //console.log("message", that.state.message);

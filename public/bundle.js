@@ -14254,6 +14254,8 @@
 
 	                    var timestamp = new Date().toLocaleString();
 
+	                    console.log("hua la la la la", data);
+
 	                    that.setState({
 	                        overall: data.overall,
 	                        sensorHealthOverviewV2: data.overview,
@@ -14279,7 +14281,7 @@
 	        key: 'render',
 	        value: function render() {
 	            // console.log("overall: ", this.state.overall);
-	            // console.log("bfg: ", this.state.bfg);
+	            console.log("bfg: ", this.state.bfg);
 	            // console.log("notifications: ", this.state.notifications);
 	            // console.log("sensorHealthOverviewV2: ", this.state.sensorHealthOverviewV2);
 
@@ -49749,18 +49751,33 @@
 	  }
 
 	  // initiate websocket here
-	  // componentDidMount() {
-	  //
-	  // }
+
 
 	  _createClass(Dashboard, [{
+	    key: 'componentDidMount',
+	    value: function componentDidMount() {
+
+	      window.addEventListener('click', function (e) {
+
+	        var pane = e.srcElement;
+	        console.log("pane: ", pane);
+	        if (!$(e.target).hasClass("sensorBlockSquare")) {
+	          var dropdowns = document.getElementsByClassName("dropdown-pane");
+
+	          var i;
+
+	          for (i = 0; i < dropdowns.length; i++) {
+	            var openDropdown = dropdowns[i];
+	            if (openDropdown.style.visibility === "visible") {
+	              openDropdown.style.visibility = "hidden";
+	            }
+	          }
+	        }
+	      });
+	    }
+	  }, {
 	    key: 'launchAddSensor',
 	    value: function launchAddSensor() {
-	      // console.log("this.state.title", this.state.type);
-
-	      // this.setState({
-	      //     type: "ADD_SENSOR"
-	      // });
 
 	      var modal = new Foundation.Reveal($('#add-sensor-modal'));
 	      modal.open();
@@ -49770,7 +49787,7 @@
 	    value: function render() {
 
 	      // console.log("overall dashboard: ", this.props.overall);
-	      // console.log("bfg dashboard: ", this.props.bfg);
+	      console.log("bfg dashboard: ", this.props.bfg);
 	      // console.log("notifications dashboard: ", this.props.notifications);
 	      // console.log("sensorHealthOverviewV2 dashboard: ", this.props.sensorHealthOverviewV2);
 
@@ -50056,7 +50073,7 @@
 	                        var row = {
 	                            "mac_address": mac,
 	                            "sensor_status": allSensorData[sensor]["sensor_status"],
-	                            "flapping": allSensorData[sensor]["flapping"],
+	                            "flapping": allSensorData[sensor]["flapping"] ? "true" : "false",
 	                            "network_router": allSensorData[sensor]["network_router"]
 	                        };
 
@@ -61320,265 +61337,135 @@
 
 /***/ },
 /* 548 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ function(module, exports) {
 
-	'use strict';
-
-	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-	var React = __webpack_require__(14);
-	var FontAwesome = __webpack_require__(169);
-
-	var Notification = function (_React$Component) {
-	    _inherits(Notification, _React$Component);
-
-	    function Notification() {
-	        _classCallCheck(this, Notification);
-
-	        return _possibleConstructorReturn(this, Object.getPrototypeOf(Notification).apply(this, arguments));
-	    }
-
-	    _createClass(Notification, [{
-	        key: 'render',
-	        value: function render() {
-	            return React.createElement('tr', null);
-	        }
-	    }]);
-
-	    return Notification;
-	}(React.Component);
-
-	var Notifications = function (_React$Component2) {
-	    _inherits(Notifications, _React$Component2);
-
-	    function Notifications() {
-	        _classCallCheck(this, Notifications);
-
-	        return _possibleConstructorReturn(this, Object.getPrototypeOf(Notifications).apply(this, arguments));
-	    }
-
-	    _createClass(Notifications, [{
-	        key: 'render',
-	        value: function render() {
-	            var notificationsList = this.props.data;
-
-	            console.log("notificationsList", notificationsList);
-
-	            return React.createElement(
-	                'table',
-	                { className: 'notificationsTable' },
-	                React.createElement(
-	                    'tbody',
-	                    null,
-	                    React.createElement(
-	                        'tr',
-	                        null,
-	                        React.createElement(
-	                            'td',
-	                            { className: 'textAlignCenter' },
-	                            React.createElement(FontAwesome, { name: 'exclamation-triangle', size: '2x' })
-	                        ),
-	                        React.createElement(
-	                            'td',
-	                            null,
-	                            React.createElement(
-	                                'div',
-	                                null,
-	                                React.createElement(
-	                                    'b',
-	                                    null,
-	                                    'Problem on Sensor007'
-	                                )
-	                            ),
-	                            React.createElement(
-	                                'div',
-	                                null,
-	                                'CPU load too high (95%)'
-	                            ),
-	                            React.createElement(
-	                                'div',
-	                                null,
-	                                '2 minutes ago'
-	                            )
-	                        )
-	                    ),
-	                    React.createElement(
-	                        'tr',
-	                        null,
-	                        React.createElement(
-	                            'td',
-	                            { className: 'textAlignCenter' },
-	                            React.createElement(FontAwesome, { name: 'exclamation-triangle', size: '2x' })
-	                        ),
-	                        React.createElement(
-	                            'td',
-	                            null,
-	                            React.createElement(
-	                                'div',
-	                                null,
-	                                React.createElement(
-	                                    'b',
-	                                    null,
-	                                    'Sensor003 is Down'
-	                                )
-	                            ),
-	                            React.createElement(
-	                                'div',
-	                                null,
-	                                'Connection Lost'
-	                            ),
-	                            React.createElement(
-	                                'div',
-	                                null,
-	                                '2 minutes ago'
-	                            )
-	                        )
-	                    ),
-	                    React.createElement(
-	                        'tr',
-	                        null,
-	                        React.createElement(
-	                            'td',
-	                            { className: 'textAlignCenter' },
-	                            React.createElement(FontAwesome, { name: 'thumbs-up', size: '2x' })
-	                        ),
-	                        React.createElement(
-	                            'td',
-	                            null,
-	                            React.createElement(
-	                                'div',
-	                                null,
-	                                React.createElement(
-	                                    'b',
-	                                    null,
-	                                    'Sensor 12 is Ok'
-	                                )
-	                            ),
-	                            React.createElement(
-	                                'div',
-	                                null,
-	                                'Flapping stopped at 14:21'
-	                            ),
-	                            React.createElement(
-	                                'div',
-	                                null,
-	                                '1 hour ago'
-	                            )
-	                        )
-	                    ),
-	                    React.createElement(
-	                        'tr',
-	                        null,
-	                        React.createElement(
-	                            'td',
-	                            { className: 'textAlignCenter' },
-	                            React.createElement(FontAwesome, { name: 'thumbs-up', size: '2x' })
-	                        ),
-	                        React.createElement(
-	                            'td',
-	                            null,
-	                            React.createElement(
-	                                'div',
-	                                null,
-	                                React.createElement(
-	                                    'b',
-	                                    null,
-	                                    'Sensor 3 is Ok'
-	                                )
-	                            ),
-	                            React.createElement(
-	                                'div',
-	                                null,
-	                                'Flapping stopped at 14:21'
-	                            ),
-	                            React.createElement(
-	                                'div',
-	                                null,
-	                                '1 hour ago'
-	                            )
-	                        )
-	                    ),
-	                    React.createElement(
-	                        'tr',
-	                        null,
-	                        React.createElement(
-	                            'td',
-	                            { className: 'textAlignCenter' },
-	                            React.createElement(FontAwesome, { name: 'thumbs-up', size: '2x' })
-	                        ),
-	                        React.createElement(
-	                            'td',
-	                            null,
-	                            React.createElement(
-	                                'div',
-	                                null,
-	                                React.createElement(
-	                                    'b',
-	                                    null,
-	                                    'Sensor 2 is Ok'
-	                                )
-	                            ),
-	                            React.createElement(
-	                                'div',
-	                                null,
-	                                'Flapping stopped at 14:21'
-	                            ),
-	                            React.createElement(
-	                                'div',
-	                                null,
-	                                '1 hour ago'
-	                            )
-	                        )
-	                    ),
-	                    React.createElement(
-	                        'tr',
-	                        null,
-	                        React.createElement(
-	                            'td',
-	                            { className: 'textAlignCenter' },
-	                            React.createElement(FontAwesome, { name: 'exclamation-triangle', size: '2x' })
-	                        ),
-	                        React.createElement(
-	                            'td',
-	                            null,
-	                            React.createElement(
-	                                'div',
-	                                null,
-	                                React.createElement(
-	                                    'b',
-	                                    null,
-	                                    'Problem on Sensor002'
-	                                )
-	                            ),
-	                            React.createElement(
-	                                'div',
-	                                null,
-	                                'CPU load too high (91%)'
-	                            ),
-	                            React.createElement(
-	                                'div',
-	                                null,
-	                                '1 hour ago'
-	                            )
-	                        )
-	                    )
-	                )
-	            );
-	        }
-	    }]);
-
-	    return Notifications;
-	}(React.Component);
-
-	;
-
-	module.exports = Notifications;
+	// var React = require('react');
+	// var FontAwesome = require('react-fontawesome');
+	//
+	// class Notification extends React.Component {
+	//   render() {
+	//     return (
+	//       <tr>
+	//
+	//       </tr>
+	//     );
+	//   }
+	// }
+	//
+	// class Notifications extends React.Component {
+	//     render() {
+	//        var notificationsList = this.props.data;
+	//
+	//        console.log("notificationsList", notificationsList);
+	//
+	//         return (
+	//             <table className="notificationsTable">
+	//
+	//                 <tbody>
+	//                     <tr>
+	//                         <td className="textAlignCenter">
+	//                             <FontAwesome name='exclamation-triangle' size='2x'/>
+	//                         </td>
+	//                         <td>
+	//                             <div>
+	//                                 <b>Problem on Sensor007</b>
+	//                             </div>
+	//                             <div>
+	//                                 CPU load too high (95%)
+	//                             </div>
+	//                             <div>
+	//                                 2 minutes ago
+	//                             </div>
+	//                         </td>
+	//                     </tr>
+	//                     <tr>
+	//                         <td className="textAlignCenter">
+	//                             <FontAwesome name='exclamation-triangle' size='2x'/>
+	//                         </td>
+	//                         <td>
+	//                             <div>
+	//                                 <b>Sensor003 is Down</b>
+	//                             </div>
+	//                             <div>
+	//                                 Connection Lost
+	//                             </div>
+	//                             <div>
+	//                                 2 minutes ago
+	//                             </div>
+	//                         </td>
+	//                     </tr>
+	//                     <tr>
+	//                         <td className="textAlignCenter">
+	//                             <FontAwesome name='thumbs-up' size='2x'/>
+	//                         </td>
+	//                         <td>
+	//                             <div>
+	//                                 <b>Sensor 12 is Ok</b>
+	//                             </div>
+	//                             <div>
+	//                                 Flapping stopped at 14:21
+	//                             </div>
+	//                             <div>
+	//                                 1 hour ago
+	//                             </div>
+	//                         </td>
+	//                     </tr>
+	//                     <tr>
+	//                         <td className="textAlignCenter">
+	//                             <FontAwesome name='thumbs-up' size='2x'/>
+	//                         </td>
+	//                         <td>
+	//                             <div>
+	//                                 <b>Sensor 3 is Ok</b>
+	//                             </div>
+	//                             <div>
+	//                                 Flapping stopped at 14:21
+	//                             </div>
+	//                             <div>
+	//                                 1 hour ago
+	//                             </div>
+	//                         </td>
+	//                     </tr>
+	//                     <tr>
+	//                         <td className="textAlignCenter">
+	//                             <FontAwesome name='thumbs-up' size='2x'/>
+	//                         </td>
+	//                         <td>
+	//                             <div>
+	//                                 <b>Sensor 2 is Ok</b>
+	//                             </div>
+	//                             <div>
+	//                                 Flapping stopped at 14:21
+	//                             </div>
+	//                             <div>
+	//                                 1 hour ago
+	//                             </div>
+	//                         </td>
+	//                     </tr>
+	//                     <tr>
+	//                         <td className="textAlignCenter">
+	//                             <FontAwesome name='exclamation-triangle' size='2x'/>
+	//                         </td>
+	//                         <td>
+	//                             <div>
+	//                                 <b>Problem on Sensor002</b>
+	//                             </div>
+	//                             <div>
+	//                                 CPU load too high (91%)
+	//                             </div>
+	//                             <div>
+	//                                 1 hour ago
+	//                             </div>
+	//                         </td>
+	//                     </tr>
+	//                 </tbody>
+	//             </table>
+	//         );
+	//     }
+	// };
+	//
+	// module.exports = Notifications;
+	"use strict";
 
 /***/ },
 /* 549 */
@@ -61889,14 +61776,13 @@
 
 	      addSensorAPI.addSensor(inputMac, inputRegion, inputLocationLevel, inputLocationID, inputBuilding).then(function (response) {
 
-	        // console.log("lajdga", this.props);
 	        if (response.error) {
 	          that.setState({
 	            message: response.error
 	          });
 	        } else {
 	          that.setState({
-	            message: response.msg
+	            message: response.success
 	          });
 	        }
 	        //console.log("message", that.state.message);

@@ -23,16 +23,29 @@ class Dashboard extends React.Component {
     }
 
     // initiate websocket here
-    // componentDidMount() {
-    //
-    // }
+    componentDidMount() {
+
+      window.addEventListener('click', function(e) {
+
+        var pane = e.srcElement;
+        console.log("pane: ", pane);
+        if(!($(e.target).hasClass("sensorBlockSquare"))){
+          var dropdowns = document.getElementsByClassName("dropdown-pane");
+
+          var i;
+
+          for (i = 0; i < dropdowns.length; i++) {
+            var openDropdown = dropdowns[i];
+            if (openDropdown.style.visibility === "visible") {
+              openDropdown.style.visibility = "hidden";
+            }
+          }
+        }
+
+      });
+    }
 
     launchAddSensor() {
-        // console.log("this.state.title", this.state.type);
-
-        // this.setState({
-        //     type: "ADD_SENSOR"
-        // });
 
         var modal = new Foundation.Reveal($('#add-sensor-modal'));
         modal.open();
@@ -41,7 +54,7 @@ class Dashboard extends React.Component {
     render() {
 
       // console.log("overall dashboard: ", this.props.overall);
-      // console.log("bfg dashboard: ", this.props.bfg);
+      console.log("bfg dashboard: ", this.props.bfg);
       // console.log("notifications dashboard: ", this.props.notifications);
       // console.log("sensorHealthOverviewV2 dashboard: ", this.props.sensorHealthOverviewV2);
 
