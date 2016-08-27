@@ -1,5 +1,5 @@
 var React = require('react');
-var AddSensorAPI = require('AddSensorAPI');
+var addSensorAPI = require('addSensorAPI');
 
 class AddSensor extends React.Component {
 
@@ -12,6 +12,8 @@ class AddSensor extends React.Component {
   }
 
   onAddSensor(e) {
+    console.log("test type: ", this.props.type);
+
     e.preventDefault();
 
     var inputMac = this.refs.macAddress.value;
@@ -22,12 +24,18 @@ class AddSensor extends React.Component {
 
     var that = this;
 
-    AddSensorAPI.addSensor(inputMac, inputRegion, inputLocationLevel, inputLocationID, inputBuilding).then(function(response){
+    addSensorAPI.addSensor(inputMac, inputRegion, inputLocationLevel, inputLocationID, inputBuilding).then(function(response){
 
-      that.setState({
-        message: response
-      });
-
+      // console.log("lajdga", this.props);
+      if(response.error) {
+        that.setState({
+          message: response.error
+        });
+      } else {
+        that.setState({
+          message: response.msg
+        });
+      }
       //console.log("message", that.state.message);
 
       that.refs.macAddress.value = '';
@@ -36,8 +44,6 @@ class AddSensor extends React.Component {
       that.refs.sensorLocationID.value = '';
       that.refs.building.value = '';
 
-    }, function(error) {
-      alert(error);
     });
   }
 

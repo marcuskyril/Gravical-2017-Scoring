@@ -1,11 +1,8 @@
 var React = require('react');
 var Abnormal = require('Abnormal');
-var piSensorOverview = require('piSensorOverview');
 var Uptime = require('Uptime');
-var SensorHealthOverview = require('SensorHealthOverview');
 var SensorHealthOverviewV2 = require('SensorHealthOverviewV2');
-var GeneralMetrics = require('GeneralMetrics');
-var ErrorModal = require('ErrorModal');
+var WatchList = require('WatchList');
 var Tableaux = require('Tableaux');
 var Notifications = require('Notifications');
 var FontAwesome = require('react-fontawesome');
@@ -14,19 +11,39 @@ var AddSensor = require('AddSensor');
 var DeleteSensor = require('DeleteSensor');
 var {Link, IndexLink} = require('react-router');
 
-var Dashboard = React.createClass({
+class Dashboard extends React.Component {
 
-    launchAddSensor: function() {
+    constructor(props) {
+        super(props);
+
+        this.state = {
+          type: "-",
+          deleteMac: ""
+        }
+    }
+
+    // initiate websocket here
+    // componentDidMount() {
+    //
+    // }
+
+    launchAddSensor() {
+        console.log("this.state.title", this.state.title);
+
+        this.setState({
+            type: "ADD_SENSOR"
+        });
+
         var modal = new Foundation.Reveal($('#add-sensor-modal'));
         modal.open();
-    },
+    }
 
-    render: function() {
+    render() {
 
-      console.log("overall dashboard: ", this.props.overall);
-      console.log("bfg dashboard: ", this.props.bfg);
-      console.log("notifications dashboard: ", this.props.notifications);
-      console.log("sensorHealthOverviewV2 dashboard: ", this.props.sensorHealthOverviewV2);
+      // console.log("overall dashboard: ", this.props.overall);
+      // console.log("bfg dashboard: ", this.props.bfg);
+      // console.log("notifications dashboard: ", this.props.notifications);
+      // console.log("sensorHealthOverviewV2 dashboard: ", this.props.sensorHealthOverviewV2);
 
         return (
 
@@ -77,7 +94,7 @@ var Dashboard = React.createClass({
                     <div>
                       <div className="callout callout-dark-header"><h4 className="header">Watch List</h4></div>
                       <div className="callout callout-dark">
-                        <GeneralMetrics data={this.props.bfg}/>
+                        <WatchList data={this.props.bfg}/>
                       </div>
                     </div>
 
@@ -86,8 +103,8 @@ var Dashboard = React.createClass({
                       <button onClick={this.launchAddSensor} className="icon-btn-text-small">
                         <FontAwesome name='plus-circle'/> ADD SENSOR
                       </button>
-                      <AddSensor/>
-                      <DeleteSensor/>
+                      <AddSensor type={this.state.type}/>
+                      <DeleteSensor deleteMac={this.state.deleteMac}/>
                       </div>
                       <div className="callout callout-dark scroll">
                         <SensorHealthOverviewV2 data={this.props.sensorHealthOverviewV2}/>
@@ -113,6 +130,6 @@ var Dashboard = React.createClass({
             </div>
         );
     }
-});
+};
 
 module.exports = Dashboard;

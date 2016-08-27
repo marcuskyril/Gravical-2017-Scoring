@@ -51,8 +51,8 @@ class BuildingListV2 extends React.Component {
             if (buildings.hasOwnProperty(property)) {
                 var buildingName = property;
 
-                console.log("buildingName", buildingName);
-                console.log("areaNames", buildings[property]["area_names"]);
+                // console.log("buildingName", buildingName);
+                // console.log("areaNames", buildings[property]["area_names"]);
 
                 var temp = {
                     buildingName: buildingName,
@@ -120,16 +120,33 @@ class LevelList extends React.Component {
         switch(action){
           case 'EDIT_ACTION':
             var modal = new Foundation.Reveal($('#add-sensor-modal'));
+
+            // set state of type
+
             modal.open();
 
             break;
           case 'DELETE_ACTION':
             // call new API
             var modal = new Foundation.Reveal($('#delete-sensor-modal'));
+
+            // set state of deleteMac
+
             modal.open();
 
             break;
           case 'NO_ACTION':
+              var dropdowns = document.getElementsByClassName("dropdown-pane");
+
+              var i;
+
+              for (i = 0; i < dropdowns.length; i++) {
+                var openDropdown = dropdowns[i];
+                if (openDropdown.style.visibility === "visible") {
+                  openDropdown.style.visibility = "hidden";
+                }
+              }
+
               if (document.getElementById(macAddress).style.visibility === "visible") {
                   document.getElementById(macAddress).style.visibility = "hidden";
               } else {
@@ -140,7 +157,7 @@ class LevelList extends React.Component {
             document.getElementById("sensorDetailsIFrame").src = "./offCrepe.html?offCanMac=" + macAddress;
             break;
           default:
-            console.log('Invalid request.');
+            console.warn('Invalid request.');
             break;
         }
 
@@ -226,7 +243,7 @@ class LevelList extends React.Component {
                       <div className="dropdown-pane" id={macAdd} data-dropdown data-options="data-hover:true; data-close-on-click:true">
                           <ul className="vertical menu tableOptions">
                             <li className="menuHeader">{macAdd}</li>
-                            <li><a onClick={() => that.handleClick(macAdd, 'OPEN_CANVAS_ACTION')} data-toggle="offCanvas">More details  &raquo;&raquo;</a></li>
+                            <li><a onClick={() => that.handleClick(macAdd, 'OPEN_CANVAS_ACTION')} data-toggle="offCanvas">More details &raquo;</a></li>
                             <li><a onClick={() => that.handleClick(macAdd, 'EDIT_ACTION')}>Edit sensor</a></li>
                             <li><a onClick={() => that.handleClick(macAdd, 'DELETE_ACTION')}>Delete sensor</a></li>
                           </ul>
@@ -241,7 +258,7 @@ class LevelList extends React.Component {
                     <div className="dropdown-pane" id={macAdd} data-dropdown data-options="data-hover:true; data-close-on-click:true">
                         <ul className="vertical menu tableOptions">
                           <li className="menuHeader">{macAdd}</li>
-                          <li><a onClick={() => that.handleClick(macAdd, 'OPEN_CANVAS_ACTION')} data-toggle="offCanvas">More details</a></li>
+                          <li><a onClick={() => that.handleClick(macAdd, 'OPEN_CANVAS_ACTION')} data-toggle="offCanvas">More details &raquo;</a></li>
                           <li><a onClick={() => that.handleClick(macAdd, 'EDIT_ACTION')}>Edit sensor</a></li>
                           <li><a onClick={() => that.handleClick(macAdd, 'DELETE_ACTION')}>Delete sensor</a></li>
                         </ul>
@@ -253,7 +270,7 @@ class LevelList extends React.Component {
                   temp.push(
                     <td>
                       <div className="sensorBlockSquare grey" onClick={() => that.handleClick(macAdd, 'NO_ACTION')}></div>
-                      <div className="dropdown-pane" id={macAdd} data-dropdown data-options="data-hover:true; data-close-on-click:true">
+                      <div className="dropdown-pane" id={macAdd} data-dropdown data-close-on-click="true">
                           <ul className="vertical menu tableOptions">
                             <li className="menuHeader">{macAdd}</li>
                             <li><a onClick={() => that.handleClick(macAdd, 'OPEN_CANVAS_ACTION')} data-toggle="offCanvas">More details &raquo;</a></li>

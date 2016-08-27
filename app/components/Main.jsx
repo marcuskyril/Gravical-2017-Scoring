@@ -27,17 +27,13 @@ class NotificationBar extends React.Component {
 
   componentWillReceiveProps(nextProps) {
 
-    console.log("What the fuck i'm receiving: ", nextProps);
-
-    console.log("Time in receive props", this.props.timestamp);
-    console.log("Time in receive notification", nextProps.timestamp);
     var currentTime = this.props.timestamp;
 
     const { notifications, count } = this.state;
     const id = notifications.size + 1;
     const newCount = count + 1;
 
-    console.log("nextProps: ", nextProps.notificationData);
+    // console.log("nextProps: ", nextProps.notificationData);
 
     if(nextProps.notificationData !== this.props.notificationData && nextProps.notificationData.length > 0) {
       this.setState({
@@ -96,7 +92,6 @@ componentDidMount() {
 
     var connection = new ab.Session('ws://devfour.sence.io:9000', function() {
         connection.subscribe('', function(topic, data) {
-            console.log("Fresh data: ", data);
 
             var timestamp = new Date().toLocaleString();
 
@@ -122,76 +117,13 @@ componentDidMount() {
         console.warn('WebSocket connection closed: all data unavailable');
     }, {'skipSubprotocolCheck': true});
 
-    // var conn1 = new ab.Session('ws://52.74.119.147:9000', function() {
-    //     conn1.subscribe('', function(topic, data) {
-    //         // console.log(data);
-    //
-    //         var timestamp = new Date().toLocaleString();
-    //         // console.log("now: ", timestamp);
-    //
-    //         that.setState({overall: data, currentTime: timestamp});
-    //
-    //     });
-    // }, function() {
-    //     console.warn('WebSocket connection closed: Building data not available');
-    // }, {'skipSubprotocolCheck': true});
-    //
-    // var conn2 = new ab.Session('ws://52.74.119.147:9001', function() {
-    //     conn2.subscribe('', function(topic, data) {
-    //
-    //         var timestamp = new Date().toLocaleString();
-    //         // console.log("now: ", timestamp);
-    //
-    //         that.setState({bfg: data, currentTime: timestamp});
-    //     });
-    // }, function() {
-    //     console.warn('WebSocket connection closed: BFG data not available');
-    // }, {'skipSubprotocolCheck': true});
-    //
-    // var conn3 = new ab.Session('ws://52.74.119.147:9002', function() {
-    //     console.log("HELLO I'M MAKING A CONNNECTION");
-    //
-    //     conn3.subscribe('', function(topic, data) {
-    //
-    //         console.log("main notifications data: ", data);
-    //
-    //         var timestamp = new Date().toLocaleString();
-    //
-    //         if(data === undefined) {
-    //           that.setState({
-    //             notifications: {}
-    //           });
-    //         } else {
-    //           that.setState({notifications: data, currentTime: timestamp});
-    //         }
-    //
-    //     });
-    // }, function() {
-    //     console.warn('WebSocket connection closed: Notification data not available');
-    // }, {'skipSubprotocolCheck': true});
-    //
-    //
-    // var conn4 = new ab.Session('ws://52.74.119.147:9003', function() {
-    //     conn4.subscribe('', function(topic, data) {
-    //
-    //         console.log("SensorHealthOverviewV2 data: ", data);
-    //
-    //         var timestamp = new Date().toLocaleString();
-    //
-    //         that.setState({sensorHealthOverviewV2: data, currentTime: timestamp});
-    //
-    //     });
-    // }, function() {
-    //     console.warn('WebSocket connection closed: sensorHealthOverviewV2 data not available');
-    // }, {'skipSubprotocolCheck': true});
-
 }
 
 render() {
-    console.log("overall: ", this.state.overall);
-    console.log("bfg: ", this.state.bfg);
-    console.log("notifications: ", this.state.notifications);
-    console.log("sensorHealthOverviewV2: ", this.state.sensorHealthOverviewV2);
+    // console.log("overall: ", this.state.overall);
+    // console.log("bfg: ", this.state.bfg);
+    // console.log("notifications: ", this.state.notifications);
+    // console.log("sensorHealthOverviewV2: ", this.state.sensorHealthOverviewV2);
 
     var iframeLink = "./offCrepe.html?";
 

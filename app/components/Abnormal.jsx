@@ -72,7 +72,6 @@ class Abnormal extends React.Component {
                     dataList.push(row);
                 }
             }
-
         }
 
         return (

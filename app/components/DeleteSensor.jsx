@@ -1,11 +1,13 @@
 var React = require('react');
+var deleteSensorAPI = require('deleteSensorAPI');
 
 class DeleteSensor extends React.Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      message: ''
+      message: '',
+      macAddress: this.props.deleteMac
     }
   }
 
@@ -13,21 +15,24 @@ class DeleteSensor extends React.Component {
     e.preventDefault();
     var that = this;
 
-    DeleteSensorAPI.deleteSensor(macAddress).then(function(response){
+    deleteSensorAPI.deleteSensor(macAddress).then(function(response){
 
-      that.setState({
-        message: response
-      });
+      if(response.error) {
+        that.setState({
+          message: response.error
+        });
+      } else {
+        that.setState({
+          message: response.msg
+        });
+      }
 
-    }, function(error) {
-      alert(error);
     });
   }
 
   render() {
     var message = this.state.message;
     var that = this;
-    //console.log("render", message);
 
     // resets message to empty string on close
     $('#delete-sensor-modal').on('closed.zf.reveal', function() {
@@ -44,7 +49,7 @@ class DeleteSensor extends React.Component {
                   <div className="large-12 columns">
                       <div className="header">Delete Sensor</div>
 
-                      <div className="header" style={{color: '#990000'}}>Nigga, do you really wanna delete this mah'fucker?</div>
+                      <div className="header" style={{color: '#990000'}}>Hold up. You really wanna delete this bad boy?</div>
 
                       <button className="button hollow expanded" onClick={this.onDeleteSensor.bind(this)}>
                           Yes I do
