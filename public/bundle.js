@@ -59007,11 +59007,9 @@
 
 	                    break;
 	                case 'DELETE_ACTION':
-	                    // call new API
+
+	                    $('#deleteMac').val(macAddress);
 	                    var modal = new Foundation.Reveal($('#delete-sensor-modal'));
-
-	                    // set state of deleteMac
-
 	                    modal.open();
 
 	                    break;
@@ -62013,8 +62011,12 @@
 
 	  _createClass(DeleteSensor, [{
 	    key: 'onDeleteSensor',
-	    value: function onDeleteSensor(macAddress) {
-	      e.preventDefault();
+	    value: function onDeleteSensor(event) {
+	      event.preventDefault();
+	      console.log("onDeleteSensor, ", $('#deleteMac').val());
+	      var macAddress = $('#deleteMac').val();
+	      console.log("To be deleted: ", macAddress);
+
 	      var that = this;
 
 	      deleteSensorAPI.deleteSensor(macAddress).then(function (response) {
@@ -62027,6 +62029,8 @@
 	          that.setState({
 	            message: response.msg
 	          });
+
+	          $('#closeDelete').click();
 	        }
 	      });
 	    }
@@ -62066,6 +62070,7 @@
 	                { className: 'header', style: { color: '#990000' } },
 	                'Hold up. You really wanna delete this bad boy?'
 	              ),
+	              React.createElement('input', { type: 'hidden', id: 'deleteMac', value: '' }),
 	              React.createElement(
 	                'button',
 	                { className: 'button hollow expanded', onClick: this.onDeleteSensor.bind(this) },
@@ -62073,7 +62078,7 @@
 	              ),
 	              React.createElement(
 	                'button',
-	                { className: 'button hollow expanded', 'data-close': '' },
+	                { id: 'closeDelete', className: 'button hollow expanded', 'data-close': '' },
 	                'Slow down, cowboy'
 	              )
 	            )
@@ -62095,8 +62100,6 @@
 
 	/* WEBPACK VAR INJECTION */(function($) {"use strict";
 
-	var axios = __webpack_require__(140);
-
 	var DELETE_SENSOR_URL = "http://devfour.sence.io/backend/delete-sensor.php";
 
 	module.exports = {
@@ -62110,7 +62113,9 @@
 	                request.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
 	            },
 	            url: DELETE_SENSOR_URL,
-	            data: data,
+	            data: {
+	                "MAC": macAddress
+	            },
 	            success: function success(response) {
 	                console.log("Que pasar?", response);
 	            }

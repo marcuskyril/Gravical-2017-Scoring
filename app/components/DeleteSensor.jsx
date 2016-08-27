@@ -11,8 +11,12 @@ class DeleteSensor extends React.Component {
     }
   }
 
-  onDeleteSensor(macAddress) {
-    e.preventDefault();
+  onDeleteSensor(event) {
+    event.preventDefault();
+    console.log("onDeleteSensor, ", $('#deleteMac').val());
+    var macAddress = $('#deleteMac').val();
+    console.log("To be deleted: ", macAddress);
+
     var that = this;
 
     deleteSensorAPI.deleteSensor(macAddress).then(function(response){
@@ -25,6 +29,8 @@ class DeleteSensor extends React.Component {
         that.setState({
           message: response.msg
         });
+
+        $('#closeDelete').click();
       }
 
     });
@@ -50,11 +56,11 @@ class DeleteSensor extends React.Component {
                       <div className="header">Delete Sensor</div>
 
                       <div className="header" style={{color: '#990000'}}>Hold up. You really wanna delete this bad boy?</div>
-
+                      <input type="hidden" id="deleteMac" value=""></input>
                       <button className="button hollow expanded" onClick={this.onDeleteSensor.bind(this)}>
                           Yes I do
                       </button>
-                      <button className="button hollow expanded" data-close="">
+                      <button id="closeDelete" className="button hollow expanded" data-close="">
                           Slow down, cowboy
                       </button>
                   </div>
