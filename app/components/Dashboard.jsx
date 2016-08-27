@@ -28,11 +28,11 @@ class Dashboard extends React.Component {
     // }
 
     launchAddSensor() {
-        console.log("this.state.title", this.state.title);
+        // console.log("this.state.title", this.state.type);
 
-        this.setState({
-            type: "ADD_SENSOR"
-        });
+        // this.setState({
+        //     type: "ADD_SENSOR"
+        // });
 
         var modal = new Foundation.Reveal($('#add-sensor-modal'));
         modal.open();
