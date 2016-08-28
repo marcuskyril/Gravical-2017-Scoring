@@ -51,6 +51,7 @@ module.exports = {
       BuildingOverview: 'app/components/BuildingOverview.jsx',
       Dashboard: 'app/components/Dashboard.jsx',
       DeleteSensor: 'app/components/DeleteSensor.jsx',
+      EditSensor: 'app/components/EditSensor.jsx',
       WatchList: 'app/components/WatchList.jsx',
       Login: 'app/components/Login.jsx',
       Main: 'app/components/Main.jsx',
@@ -63,6 +64,7 @@ module.exports = {
       Uptime: 'app/components/Uptime.jsx',
 
       addSensorAPI: 'app/api/addSensorAPI.jsx',
+      editSensorAPI: 'app/api/editSensorAPI.jsx',
       deleteSensorAPI: 'app/api/deleteSensorAPI.jsx',
       applicationStyles: 'app/styles/app.scss',
       griddleStyles: 'app/styles/griddle.scss',

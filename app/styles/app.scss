@@ -259,10 +259,11 @@ polyline {
   padding: 0.5rem 0.7rem;
 }
 
-.tableOptions .menuHeader {
-  background-color: $night-ocean;
+.tableOptions .menuHeader, .menuHeader:hover {
+  background-color: $night-ocean !important;
   color: #fff;
   padding: 0.3rem 0.7rem;
+  text-transform: uppercase;
 }
 
 .tableOptions > li {

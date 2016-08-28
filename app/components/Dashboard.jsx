@@ -8,6 +8,7 @@ var Notifications = require('Notifications');
 var FontAwesome = require('react-fontawesome');
 var BuildingOverview = require('BuildingOverview');
 var AddSensor = require('AddSensor');
+var EditSensor = require('EditSensor');
 var DeleteSensor = require('DeleteSensor');
 var {Link, IndexLink} = require('react-router');
 
@@ -51,10 +52,17 @@ class Dashboard extends React.Component {
         modal.open();
     }
 
+    launchEditSensor() {
+
+        var modal = new Foundation.Reveal($('#add-sensor-modal'));
+        modal.open();
+        //alert("Fuck yeah, it worked.");
+    }
+
     render() {
 
       // console.log("overall dashboard: ", this.props.overall);
-      console.log("bfg dashboard: ", this.props.bfg);
+      // console.log("bfg dashboard: ", this.props.bfg);
       // console.log("notifications dashboard: ", this.props.notifications);
       // console.log("sensorHealthOverviewV2 dashboard: ", this.props.sensorHealthOverviewV2);
 
@@ -117,10 +125,11 @@ class Dashboard extends React.Component {
                         <FontAwesome name='plus-circle'/> ADD SENSOR
                       </button>
                       <AddSensor type={this.state.type}/>
+                      <EditSensor/>
                       <DeleteSensor deleteMac={this.state.deleteMac}/>
                       </div>
                       <div className="callout callout-dark scroll">
-                        <SensorHealthOverviewV2 data={this.props.sensorHealthOverviewV2}/>
+                        <SensorHealthOverviewV2 launchEditSensor={this.launchEditSensor.bind(this)} data={this.props.sensorHealthOverviewV2}/>
                       </div>
                     </div>
 

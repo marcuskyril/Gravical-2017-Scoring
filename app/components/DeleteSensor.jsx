@@ -57,6 +57,9 @@ class DeleteSensor extends React.Component {
 
                       <div className="header" style={{color: '#990000'}}>Hold up. You really wanna delete this bad boy?</div>
                       <input type="hidden" id="deleteMac" value=""></input>
+
+                      <div id="deleteSensorMessage"><DeleteSensorMessage message={message}/></div>
+
                       <button className="button hollow expanded" onClick={this.onDeleteSensor.bind(this)}>
                           Yes I do
                       </button>
@@ -67,6 +70,17 @@ class DeleteSensor extends React.Component {
               </div>
           </form>
       </div>
+    );
+  }
+}
+
+class DeleteSensorMessage extends React.Component {
+  render() {
+    var message = this.props.message;
+    console.log("message from parent: ", message);
+
+    return (
+      <div className="statusText">{message}</div>
     );
   }
 }

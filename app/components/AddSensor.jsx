@@ -49,11 +49,8 @@ class AddSensor extends React.Component {
   render() {
     var message = this.state.message;
     var that = this;
-    //console.log("render", message);
 
-    // resets message to empty string on close
     $('#add-sensor-modal').on('closed.zf.reveal', function() {
-        //console.log("close");
         that.setState({
           message: ''
         });

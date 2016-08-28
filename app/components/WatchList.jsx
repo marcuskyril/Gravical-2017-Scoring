@@ -11,7 +11,8 @@ class RemoveComponent extends React.Component {
 
     handleClick(macAddress) {
 
-      console.log("macAddress to be removed: ", macAddress);
+      // console.log("macAddress to be removed: ", macAddress);
+      event.stopPropagation();
 
       removeFromWatchlist.removeFromWatchlist(macAddress).then(function (response) {
         console.log("removed sensor?", response);
