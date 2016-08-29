@@ -22,7 +22,7 @@ class RemoveComponent extends React.Component {
     render() {
       return (
         <a onClick={() => this.handleClick(this.props.data)} >
-            <div className="sensorBlock remove">Remove</div>
+            <div className="sensorBlock remove">Un-Pin</div>
         </a>
       );
 
@@ -114,7 +114,7 @@ const tableMetaData = [
         "order": 5,
         "locked": true,
         "visible": true,
-        "displayName": "Remove?",
+        "displayName": "Un-pin?",
         "customComponent": RemoveComponent
     }
 

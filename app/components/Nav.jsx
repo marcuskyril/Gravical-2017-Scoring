@@ -18,7 +18,9 @@ class Nav extends React.Component {
         console.log("currentTime:", this.props.timestamp);
         console.log("displayName:", this.props.displayName);
         return (
-            <div className="top-bar">
+          <div data-sticky-container>
+
+            <div className="top-bar" data-sticky data-options="marginTop:0;" data-top-anchor="1" style={{"width" : "100%", "marginTop": 0}}>
                 <div className="top-bar-title">
                       <IndexLink to="/" activeClassName="active" activeStyle={{
                           color: '#f8f8f8'
@@ -72,6 +74,7 @@ class Nav extends React.Component {
                     </ul>
                 </div>
             </div>
+          </div>
         );
     }
 };

@@ -19813,133 +19813,137 @@
 	            console.log("displayName:", this.props.displayName);
 	            return _react2.default.createElement(
 	                'div',
-	                { className: 'top-bar' },
+	                { 'data-sticky-container': true },
 	                _react2.default.createElement(
 	                    'div',
-	                    { className: 'top-bar-title' },
+	                    { className: 'top-bar', 'data-sticky': true, 'data-options': 'marginTop:0;', 'data-top-anchor': '1', style: { "width": "100%", "marginTop": 0 } },
 	                    _react2.default.createElement(
-	                        IndexLink,
-	                        { to: '/', activeClassName: 'active', activeStyle: {
-	                                color: '#f8f8f8'
-	                            } },
-	                        'sence | mitos'
-	                    )
-	                ),
-	                _react2.default.createElement(
-	                    'div',
-	                    { className: 'top-bar-right' },
-	                    _react2.default.createElement(
-	                        'ul',
-	                        { className: 'dropdown menu', 'data-dropdown-menu': true },
+	                        'div',
+	                        { className: 'top-bar-title' },
 	                        _react2.default.createElement(
-	                            'li',
-	                            null,
+	                            IndexLink,
+	                            { to: '/', activeClassName: 'active', activeStyle: {
+	                                    color: '#f8f8f8'
+	                                } },
+	                            'sence | mitos'
+	                        )
+	                    ),
+	                    _react2.default.createElement(
+	                        'div',
+	                        { className: 'top-bar-right' },
+	                        _react2.default.createElement(
+	                            'ul',
+	                            { className: 'dropdown menu', 'data-dropdown-menu': true },
 	                            _react2.default.createElement(
-	                                Link,
-	                                { to: '/', activeClassName: 'active', activeStyle: {
-	                                        color: '#222'
-	                                    } },
-	                                _react2.default.createElement(FontAwesome, { name: 'bar-chart' })
-	                            ),
-	                            _react2.default.createElement(
-	                                'ul',
-	                                { className: 'menu vertical' },
+	                                'li',
+	                                null,
 	                                _react2.default.createElement(
-	                                    'li',
-	                                    null,
-	                                    _react2.default.createElement(
-	                                        'a',
-	                                        { href: '#' },
-	                                        'Uptime'
-	                                    )
+	                                    Link,
+	                                    { to: '/', activeClassName: 'active', activeStyle: {
+	                                            color: '#222'
+	                                        } },
+	                                    _react2.default.createElement(FontAwesome, { name: 'bar-chart' })
 	                                ),
 	                                _react2.default.createElement(
-	                                    'li',
-	                                    null,
+	                                    'ul',
+	                                    { className: 'menu vertical' },
 	                                    _react2.default.createElement(
-	                                        'a',
-	                                        { href: '#' },
-	                                        'CPU Usage'
-	                                    )
-	                                ),
-	                                _react2.default.createElement(
-	                                    'li',
-	                                    null,
+	                                        'li',
+	                                        null,
+	                                        _react2.default.createElement(
+	                                            'a',
+	                                            { href: '#' },
+	                                            'Uptime'
+	                                        )
+	                                    ),
 	                                    _react2.default.createElement(
-	                                        'a',
-	                                        { href: '#' },
-	                                        'Temperature'
-	                                    )
-	                                ),
-	                                _react2.default.createElement(
-	                                    'li',
-	                                    null,
+	                                        'li',
+	                                        null,
+	                                        _react2.default.createElement(
+	                                            'a',
+	                                            { href: '#' },
+	                                            'CPU Usage'
+	                                        )
+	                                    ),
 	                                    _react2.default.createElement(
-	                                        'a',
-	                                        { href: '#' },
-	                                        'RAM Usage'
-	                                    )
-	                                ),
-	                                _react2.default.createElement(
-	                                    'li',
-	                                    null,
+	                                        'li',
+	                                        null,
+	                                        _react2.default.createElement(
+	                                            'a',
+	                                            { href: '#' },
+	                                            'Temperature'
+	                                        )
+	                                    ),
 	                                    _react2.default.createElement(
-	                                        'a',
-	                                        { href: '#' },
-	                                        'Storage'
-	                                    )
-	                                ),
-	                                _react2.default.createElement(
-	                                    'li',
-	                                    null,
+	                                        'li',
+	                                        null,
+	                                        _react2.default.createElement(
+	                                            'a',
+	                                            { href: '#' },
+	                                            'RAM Usage'
+	                                        )
+	                                    ),
 	                                    _react2.default.createElement(
-	                                        'a',
-	                                        { href: '#' },
-	                                        'Network Speed'
+	                                        'li',
+	                                        null,
+	                                        _react2.default.createElement(
+	                                            'a',
+	                                            { href: '#' },
+	                                            'Storage'
+	                                        )
+	                                    ),
+	                                    _react2.default.createElement(
+	                                        'li',
+	                                        null,
+	                                        _react2.default.createElement(
+	                                            'a',
+	                                            { href: '#' },
+	                                            'Network Speed'
+	                                        )
 	                                    )
 	                                )
-	                            )
-	                        ),
-	                        _react2.default.createElement(
-	                            'li',
-	                            null,
-	                            _react2.default.createElement(
-	                                Link,
-	                                { to: '/', activeClassName: 'active', activeStyle: {
-	                                        color: 'blue'
-	                                    } },
-	                                _react2.default.createElement(FontAwesome, { name: 'cog' })
 	                            ),
 	                            _react2.default.createElement(
-	                                'ul',
-	                                { className: 'menu vertical' },
+	                                'li',
+	                                null,
 	                                _react2.default.createElement(
-	                                    'li',
-	                                    null,
-	                                    _react2.default.createElement(
-	                                        Link,
-	                                        { to: '/accountSettings', activeClassName: 'active', activeStyle: {
-	                                                color: '#222`'
-	                                            } },
-	                                        'Update Profile'
-	                                    )
+	                                    Link,
+	                                    { to: '/', activeClassName: 'active', activeStyle: {
+	                                            color: 'blue'
+	                                        } },
+	                                    _react2.default.createElement(FontAwesome, { name: 'cog' })
 	                                ),
 	                                _react2.default.createElement(
-	                                    'li',
-	                                    null,
+	                                    'ul',
+	                                    { className: 'menu vertical' },
 	                                    _react2.default.createElement(
-	                                        'a',
-	                                        { href: '#' },
-	                                        'Configure Settings'
-	                                    )
-	                                ),
-	                                _react2.default.createElement(
-	                                    'li',
-	                                    null,
+	                                        'li',
+	                                        null,
+	                                        _react2.default.createElement(
+	                                            Link,
+	                                            { to: '/accountSettings', activeClassName: 'active', activeStyle: {
+	                                                    color: '#222`'
+	                                                } },
+	                                            'Update Profile'
+	                                        )
+	                                    ),
 	                                    _react2.default.createElement(
-	                                        'a',
-	                                        { onClick: this.onLogout },
-	                                        'Log Out'
+	                                        'li',
+	                                        null,
+	                                        _react2.default.createElement(
+	                                            'a',
+	                                            { href: '#' },
+	                                            'Configure Settings'
+	                                        )
+	                                    ),
+	                                    _react2.default.createElement(
+	                                        'li',
+	                                        null,
+	                                        _react2.default.createElement(
+	                                            'a',
+	                                            { onClick: this.onLogout },
+	                                            'Log Out'
+	                                        )
 	                                    )
 	                                )
 	                            )
@@ -58682,107 +58686,27 @@
 	var React = __webpack_require__(14);
 
 	var Uptime = function (_React$Component) {
-	    _inherits(Uptime, _React$Component);
+	  _inherits(Uptime, _React$Component);
 
-	    function Uptime(props) {
-	        _classCallCheck(this, Uptime);
+	  function Uptime(props) {
+	    _classCallCheck(this, Uptime);
 
-	        return _possibleConstructorReturn(this, Object.getPrototypeOf(Uptime).call(this, props));
+	    return _possibleConstructorReturn(this, Object.getPrototypeOf(Uptime).call(this, props));
+	  }
+
+	  _createClass(Uptime, [{
+	    key: "componentDidMount",
+	    value: function componentDidMount() {
+	      $(document).foundation();
 	    }
+	  }, {
+	    key: "render",
+	    value: function render() {
+	      return React.createElement("div", { className: "uptime-wrapper" });
+	    }
+	  }]);
 
-	    _createClass(Uptime, [{
-	        key: "componentDidMount",
-	        value: function componentDidMount() {
-	            $(document).foundation();
-	        }
-	    }, {
-	        key: "render",
-	        value: function render() {
-	            return React.createElement(
-	                "div",
-	                { className: "uptime-wrapper" },
-	                React.createElement(
-	                    "div",
-	                    { className: "app-header" },
-	                    "Uptime"
-	                ),
-	                React.createElement("hr", null),
-	                React.createElement(
-	                    "ul",
-	                    { className: "tabs", "data-tabs": true, id: "example-tabs" },
-	                    React.createElement(
-	                        "li",
-	                        { className: "tabs-title is-active" },
-	                        React.createElement(
-	                            "a",
-	                            { href: "#panel1", "aria-selected": "true" },
-	                            "Central"
-	                        )
-	                    ),
-	                    React.createElement(
-	                        "li",
-	                        { className: "tabs-title" },
-	                        React.createElement(
-	                            "a",
-	                            { href: "#panel2" },
-	                            "North"
-	                        )
-	                    ),
-	                    React.createElement(
-	                        "li",
-	                        { className: "tabs-title" },
-	                        React.createElement(
-	                            "a",
-	                            { href: "#panel2" },
-	                            "South"
-	                        )
-	                    ),
-	                    React.createElement(
-	                        "li",
-	                        { className: "tabs-title" },
-	                        React.createElement(
-	                            "a",
-	                            { href: "#panel2" },
-	                            "East"
-	                        )
-	                    ),
-	                    React.createElement(
-	                        "li",
-	                        { className: "tabs-title" },
-	                        React.createElement(
-	                            "a",
-	                            { href: "#panel2" },
-	                            "West"
-	                        )
-	                    )
-	                ),
-	                React.createElement(
-	                    "div",
-	                    { className: "tabs-content", "data-tabs-content": "example-tabs" },
-	                    React.createElement(
-	                        "div",
-	                        { "class": "tabs-panel is-active", id: "panel1" },
-	                        React.createElement(
-	                            "p",
-	                            null,
-	                            "Vivamus hendrerit arcu sed erat molestie vehicula. Sed auctor neque eu tellus rhoncus ut eleifend nibh porttitor. Ut in nulla enim. Phasellus molestie magna non est bibendum non venenatis nisl tempor. Suspendisse dictum feugiat nisl ut dapibus."
-	                        )
-	                    ),
-	                    React.createElement(
-	                        "div",
-	                        { className: "tabs-panel", id: "panel2" },
-	                        React.createElement(
-	                            "p",
-	                            null,
-	                            "Suspendisse dictum feugiat nisl ut dapibus. Vivamus hendrerit arcu sed erat molestie vehicula. Ut in nulla enim. Phasellus molestie magna non est bibendum non venenatis nisl tempor. Sed auctor neque eu tellus rhoncus ut eleifend nibh porttitor."
-	                        )
-	                    )
-	                )
-	            );
-	        }
-	    }]);
-
-	    return Uptime;
+	  return Uptime;
 	}(React.Component);
 
 	module.exports = Uptime;
@@ -59011,6 +58935,7 @@
 	                case 'DELETE_ACTION':
 
 	                    $('#deleteMac').val(macAddress);
+
 	                    var modal = new Foundation.Reveal($('#delete-sensor-modal'));
 	                    modal.open();
 
@@ -60724,7 +60649,7 @@
 	                React.createElement(
 	                    'div',
 	                    { className: 'sensorBlock remove' },
-	                    'Remove'
+	                    'Un-Pin'
 	                )
 	            );
 	        }
@@ -60868,7 +60793,7 @@
 	    "order": 5,
 	    "locked": true,
 	    "visible": true,
-	    "displayName": "Remove?",
+	    "displayName": "Un-pin?",
 	    "customComponent": RemoveComponent
 	}];
 

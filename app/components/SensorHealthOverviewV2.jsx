@@ -133,6 +133,7 @@ class LevelList extends React.Component {
           case 'DELETE_ACTION':
 
             $('#deleteMac').val(macAddress);
+            
             var modal = new Foundation.Reveal($('#delete-sensor-modal'));
             modal.open();
 
