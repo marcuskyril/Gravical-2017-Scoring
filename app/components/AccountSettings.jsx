@@ -5,160 +5,123 @@ import firebase, {firebaseRef} from 'app/firebase/';
 
 var user = null;
 
-var AccountSettings = React.createClass({
+class AccountSettings extends React.Component {
 
-  onUpdateDisplayName(e) {
+    constructor(props) {
+        super(props);
 
-    e.preventDefault();
+        this.state = {
+            userDisplayName: '-',
+            email: '-',
+            emailVerified: '-'
+        }
+    }
 
-    var displayName = this.refs.displayName.value;
-    var {dispatch} = this.props;
+    componentDidMount() {
+        var that = this;
 
-    console.log("start login", displayName);
+        firebase.auth().onAuthStateChanged(function(user) {
 
-    user = firebase.auth().currentUser;
-
-    if (user != null) {
-        user.updateProfile({
-            displayName: displayName
-        }).then(function() {
-            alert('New display name: ' +user.displayName);
+            if (user) {
+                that.setState({userDisplayName: user.displayName, email: user.email, emailVerified: user.emailVerified});
+            }
         }, function(error) {
-            alert('Alamak ' +error);
+            console.warn(error);
         });
     }
 
-  },
+    onUpdateDisplayName(e) {
 
-  onUpdateEmail(e) {
+        e.preventDefault();
 
-    e.preventDefault();
+        var displayName = this.refs.displayName.value;
+        var {dispatch} = this.props;
 
-    var newEmail = this.refs.newEmail.value;
-    var {dispatch} = this.props;
+        console.log("start login", displayName);
 
-    console.log("start update email", newEmail);
+        user = firebase.auth().currentUser;
 
-    user = firebase.auth().currentUser;
+        if (user != null) {
+            user.updateProfile({displayName: displayName}).then(function() {
+                alert('New display name: ' + user.displayName);
+            }, function(error) {
+                alert('Alamak ' + error);
+            });
+        }
 
-    if (user != null) {
-        user.updateEmail(inputEmail).then(function() {
-            alert('Email updated!');
-        }, function(error) {
-            alert('Alamak ' +error);
-        });
     }
-  },
 
-  onUpdatePassword(e) {
-    e.preventDefault();
+    onUpdateEmail(e) {
 
-    var newPassword = this.refs.newPassword.value;
-    var confirmPassword = this.refs.confirmPassword.value;
+        e.preventDefault();
 
-    console.log("start update password");
+        var newEmail = this.refs.newEmail.value;
+        var {dispatch} = this.props;
 
-    user = firebase.auth().currentUser;
+        console.log("start update email", newEmail);
 
-    if (user != null && user) {
+        user = firebase.auth().currentUser;
 
-      if(newPassword === confirmPassword) {
-        user.updatePassword(confirmPassword).then(function() {
-            alert('Password changed!');
-        }, function(error) {
-            alert('Alamak! '+error);
-        });
-      } else {
-        alert('Passwords do not match');
-      }
+        if (user != null) {
+            user.updateEmail(inputEmail).then(function() {
+                alert('Email updated!');
+            }, function(error) {
+                alert('Alamak ' + error);
+            });
+        }
     }
-  },
 
-  render: function() {
-    return (
-      <div className="large-5 large-centered columns" id="updateForm">
-            <div className="row">
-                <h3 className="header textAlignCenter">Update Profile</h3>
+    onUpdatePassword(e) {
+        e.preventDefault();
+
+        var newPassword = this.refs.newPassword.value;
+        var confirmPassword = this.refs.confirmPassword.value;
+
+        console.log("start update password");
+
+        user = firebase.auth().currentUser;
+
+        if (user != null && user) {
+
+            if (newPassword === confirmPassword) {
+                user.updatePassword(confirmPassword).then(function() {
+                    alert('Password changed!');
+                }, function(error) {
+                    alert('Alamak! ' + error);
+                });
+            } else {
+                alert('Passwords do not match');
+            }
+        }
+    }
+
+    render() {
+        return (
+            <div className="margin-top-md">
+                <div className="large-8 columns large-centered">
+                    <div className="header">General Account Settings</div>
+                    <hr/>
+                    <div className="profile wrapper" style={{'color':'#000'}}>
+                      <div className="row">
+                          <div className="columns large-2">Name</div>
+                          <div className="columns large-5">{this.state.userDisplayName}</div>
+                          <div className="columns large-5">Edit</div>
+                      </div>
+                      <div className="row">
+                          <div className="columns large-2">Email</div>
+                          <div className="columns large-5">{this.state.email}</div>
+                          <div className="columns large-5">Edit</div>
+                      </div>
+                      <div className="row">
+                          <div className="columns large-2">Email Verified?</div>
+                          <div className="columns large-5">{this.state.emailVerified}</div>
+                          <div className="columns large-5">Verify email</div>
+                      </div>
+                    </div>
+                </div>
             </div>
-            <div className="row">
-                <div className="row">
-                    <br/>
-                    <h3 className="header">Personal Particulars</h3>
-                    <hr/>
-                </div>
-
-                <form>
-                  <div className="row">
-                      <div className="small-4 large-4 columns">
-                          Display name:
-                      </div>
-                      <div className="large-8 small-8 columns">
-                          <input type="text" ref="displayName" name="displayName" />
-                      </div>
-                  </div>
-                  <div className="row">
-                      <div className="large-4 small-4 columns"></div>
-                      <div className="large-8 small-8 columns">
-                          <button className="expanded button" onClick={this.onUpdateDisplayName}>Update</button>
-                      </div>
-                  </div>
-                </form>
-
-
-                <div className="row">
-                    <br/>
-                    <h3 className="header">Email</h3>
-                    <hr/>
-                </div>
-                <div className="row">
-                    <div className="small-4 large-4 columns">
-                        New Email:
-                    </div>
-                    <div className="large-8 small-8 columns">
-                        <input type="text" ref="newEmail" name="newemail" />
-                    </div>
-                </div>
-                <div className="row">
-                    <div className="large-4 small-4 columns"></div>
-                    <div className="large-8 small-8 columns">
-                        <button className="expanded button" onClick={this.onUpdateEmail}>Update</button>
-                    </div>
-                </div>
-
-                <div className="row">
-                    <br/>
-                    <h3 className="header">Password</h3>
-                    <hr/>
-                </div>
-                <form>
-                  <div className="row">
-                      <div className="small-4 large-4 columns">
-                          New Password:
-                      </div>
-                      <div className="large-8 small-8 columns">
-                          <input type="password" ref="newPassword" name="newpassword1" />
-                      </div>
-                  </div>
-                  <div className="row">
-                      <div className="small-4 large-4 columns">
-                          Confirm Password:
-                      </div>
-                      <div className="large-8 small-8 columns">
-                          <input type="password" ref="confirmPassword" name="newpassword2" />
-                      </div>
-                  </div>
-                  <div className="row">
-                      <div className="large-4 small-4 columns"></div>
-                      <div className="large-8 small-8 columns">
-                          <button className="expanded button" onClick={this.onUpdatePassword}>Update</button>
-                      </div>
-                  </div>
-                </form>
-            </div>
-        </div>
-    );
-  }
-});
+        );
+    }
+};
 
 module.exports = AccountSettings;
-// export default Redux.connect()(AccountSettings);

@@ -6,21 +6,28 @@ var FontAwesome = require('react-fontawesome');
 var {Link, IndexLink} = require('react-router');
 
 class Nav extends React.Component {
+
+    constructor(props) {
+      super(props);
+    }
+
     componentDidMount() {
         $(document).foundation();
     }
+    
     onLogout() {
         console.log("attempting logout");
         var {dispatch} = this.props;
         dispatch(actions.startLogout());
     }
+
     render() {
         console.log("currentTime:", this.props.timestamp);
         console.log("displayName:", this.props.displayName);
         return (
           <div data-sticky-container>
 
-            <div className="top-bar" data-sticky data-options="marginTop:0;" data-top-anchor="1" style={{"width" : "100%", "marginTop": 0}}>
+            <div className="top-bar" data-sticky data-options="marginTop:0;" style={{"width" : "100%", "marginTop": 0}}>
                 <div className="top-bar-title">
                       <IndexLink to="/" activeClassName="active" activeStyle={{
                           color: '#f8f8f8'

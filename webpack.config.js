@@ -57,6 +57,7 @@ module.exports = {
       Main: 'app/components/Main.jsx',
       Nav: 'app/components/Nav.jsx',
       Notifications: 'app/components/Notifications.jsx',
+      NotificationLog: 'app/components/NotificationLog.jsx',
       PageNotFound: 'app/components/PageNotFound.jsx',
       SensorDetails: 'app/components/SensorDetails.jsx',
       SensorHealthOverviewV2: 'app/components/SensorHealthOverviewV2.jsx',
@@ -66,6 +67,10 @@ module.exports = {
       addSensorAPI: 'app/api/addSensorAPI.jsx',
       editSensorAPI: 'app/api/editSensorAPI.jsx',
       deleteSensorAPI: 'app/api/deleteSensorAPI.jsx',
+      notificationLogAPI: 'app/api/notificationLogAPI.jsx',
+      removeFromWatchlist: 'app/api/removeFromWatchlistAPI.jsx',
+      retrieveSensorDetails: 'app/api/retrieveSensorDetails.jsx',
+
       applicationStyles: 'app/styles/app.scss',
       griddleStyles: 'app/styles/griddle.scss',
       loginStyles: 'app/styles/login.scss',
@@ -73,10 +78,7 @@ module.exports = {
 
       actions: 'app/actions/actions.jsx',
       configureStore: 'app/store/configureStore.jsx',
-      reducers: 'app/reducers/reducers.jsx',
-
-      removeFromWatchlist: 'app/api/removeFromWatchlistAPI.jsx',
-      retrieveSensorDetails: 'app/api/retrieveSensorDetails.jsx'
+      reducers: 'app/reducers/reducers.jsx'
 
     },
     extensions: ['', '.js', '.jsx']

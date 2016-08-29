@@ -10,7 +10,67 @@ var BuildingOverview = require('BuildingOverview');
 var AddSensor = require('AddSensor');
 var EditSensor = require('EditSensor');
 var DeleteSensor = require('DeleteSensor');
+var NotificationLog = require('NotificationLog');
 var {Link, IndexLink} = require('react-router');
+import { NotificationStack, Notification } from 'react-notification';
+import { OrderedSet } from 'immutable';
+
+class NotificationBar extends React.Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      notifications: OrderedSet(),
+      count: 0
+    };
+
+    this.removeNotification = this.removeNotification.bind(this);
+  }
+
+  removeNotification (count) {
+    const { notifications } = this.state;
+    this.setState({
+      notifications: notifications.filter(n => n.key !== count)
+    })
+  }
+
+  componentWillReceiveProps(nextProps) {
+
+    var currentTime = this.props.timestamp;
+
+    const { notifications, count } = this.state;
+    const id = notifications.size + 1;
+    const newCount = count + 1;
+
+    // console.log("nextProps: ", nextProps.notificationData);
+    if(nextProps.notificationData){
+      if(nextProps.notificationData !== this.props.notificationData && nextProps.notificationData.length > 0) {
+        this.setState({
+          count: newCount,
+          notifications: notifications.add({
+            title: nextProps.notificationData[0].mac,
+            message: ` | ${nextProps.notificationData[0].problem.status} | ${nextProps.notificationData[0].timestamp.date}`,
+            key: newCount,
+            action: 'Dismiss',
+            dismissAfter: 100000,
+            onClick: () => this.removeNotification(newCount),
+          })
+        });
+      }
+    }
+  }
+
+  render () {
+    return (
+
+        <NotificationStack
+          notifications={this.state.notifications.toArray()}
+          onDismiss={notification => this.setState({
+            notifications: this.state.notifications.delete(notification)
+          })}/>
+    );
+  }
+}
 
 class Dashboard extends React.Component {
 
@@ -19,12 +79,59 @@ class Dashboard extends React.Component {
 
         this.state = {
           type: "-",
-          deleteMac: ""
+          deleteMac: "",
+          overall: [],
+          bfg: [],
+          notifications: [],
+          sensorHealthOverviewV2: [],
+          currentTime: '-',
+          userDisplayName: '',
+          notificationData: {}
         }
     }
 
-    // initiate websocket here
     componentDidMount() {
+      // initiate websocket
+
+      var that = this;
+
+      firebase.auth().onAuthStateChanged(function(user) {
+          if (user) {
+              that.setState({userDisplayName: user.displayName});
+          }
+      }, function(error) {
+          console.warn(error);
+      });
+
+      var connection = new ab.Session('ws://devfour.sence.io:9000', function() {
+          connection.subscribe('', function(topic, data) {
+
+              var timestamp = new Date().toLocaleString();
+
+              that.setState({
+                overall: data.overall,
+                sensorHealthOverviewV2: data.overview,
+                bfg: data.BFG,
+                currentTime: timestamp,
+                notifications: data.notifications
+              });
+
+              // if (data.notifications === undefined) {
+              //   that.setState({
+              //     notifications: {}
+              //   });
+              // } else {
+              //   that.setState({
+              //     notifications: data.notifications
+              //   });
+              // }
+          });
+
+      }, function() {
+          console.warn('WebSocket connection closed: all data unavailable');
+      }, {'skipSubprotocolCheck': true});
+
+      // close dropdowns
 
       window.addEventListener('click', function(e) {
 
@@ -54,10 +161,10 @@ class Dashboard extends React.Component {
 
     render() {
 
-      // console.log("overall dashboard: ", this.props.overall);
-      // console.log("bfg dashboard: ", this.props.bfg);
-      // console.log("notifications dashboard: ", this.props.notifications);
-      // console.log("sensorHealthOverviewV2 dashboard: ", this.props.sensorHealthOverviewV2);
+      // console.log("overall dashboard: ", this.state.overall);
+      // console.log("bfg dashboard: ", this.state.bfg);
+      // console.log("notifications dashboard: ", this.state.notifications);
+      // console.log("sensorHealthOverviewV2 dashboard: ", this.state.sensorHealthOverviewV2);
 
         return (
 
@@ -68,12 +175,12 @@ class Dashboard extends React.Component {
                       <ul className="header-list">
                         <li>
                           <div className="sub-header">
-                            Welcome, {this.props.displayName}
+                            Welcome, {this.state.userDisplayName}
                           </div>
                         </li>
                         <li>
                           <div className="sub-header margin-bottom-small">
-                            Last sync at {this.props.timestamp}
+                            Last sync at {this.state.currentTime}
                             <FontAwesome name='refresh' spin style={{
                                 textShadow: '0 1px 0 rgba(0, 0, 0, 0.1)', marginLeft: '0.5rem'
                             }}/>
@@ -84,7 +191,7 @@ class Dashboard extends React.Component {
                       <ul className="header-list">
                         <li>
                           <div className="sub-header">
-                             <Link to="/" activeClassName="active" activeStyle={{
+                             <Link to="/notificationLog" activeClassName="active" activeStyle={{
                                 color: '#222'
                             }}> View all notifications <FontAwesome name='caret-right'/></Link>
                           </div>
@@ -102,13 +209,13 @@ class Dashboard extends React.Component {
                 </div>
                 <div className="row">
                   <div className="columns medium-3 large 3 margin-bottom-small">
-                      <BuildingOverview data={this.props.overall} />
+                      <BuildingOverview data={this.state.overall} />
                   </div>
                   <div className="columns medium-9 large 9">
                     <div>
                       <div className="callout callout-dark-header"><h4 className="header">Watch List</h4></div>
                       <div className="callout callout-dark">
-                        <WatchList data={this.props.bfg}/>
+                        <WatchList data={this.state.bfg}/>
                       </div>
                     </div>
 
@@ -122,14 +229,14 @@ class Dashboard extends React.Component {
                       <DeleteSensor deleteMac={this.state.deleteMac}/>
                       </div>
                       <div className="callout callout-dark scroll">
-                        <SensorHealthOverviewV2 data={this.props.sensorHealthOverviewV2}/>
+                        <SensorHealthOverviewV2 data={this.state.sensorHealthOverviewV2}/>
                       </div>
                     </div>
 
                     <div>
                       <div className="callout callout-dark-header"><h4 className="header">Abnormal Behaviour</h4></div>
                       <div className="callout callout-dark">
-                      <Abnormal data={this.props.bfg}/>
+                      <Abnormal data={this.state.bfg}/>
                       </div>
                     </div>
 
@@ -138,10 +245,11 @@ class Dashboard extends React.Component {
                   <div className = "columns large-9">
                     <div className="callout callout-dark-header"><h4 className="header">All Sensors</h4></div>
                     <div className="callout callout-dark" id="bfg">
-                      <Tableaux data={this.props.bfg}/>
+                      <Tableaux data={this.state.bfg}/>
                     </div>
                   </div>
                 </div>
+                <NotificationBar notificationData={this.state.notifications} timestamp={this.state.currentTime}/>
             </div>
         );
     }
