@@ -19822,7 +19822,7 @@
 	                        { to: '/', activeClassName: 'active', activeStyle: {
 	                                color: '#f8f8f8'
 	                            } },
-	                        'sence | Uptime Robert'
+	                        'sence | mitos'
 	                    )
 	                ),
 	                _react2.default.createElement(
@@ -49784,14 +49784,6 @@
 	      modal.open();
 	    }
 	  }, {
-	    key: 'launchEditSensor',
-	    value: function launchEditSensor() {
-
-	      var modal = new Foundation.Reveal($('#add-sensor-modal'));
-	      modal.open();
-	      //alert("Fuck yeah, it worked.");
-	    }
-	  }, {
 	    key: 'render',
 	    value: function render() {
 
@@ -49931,7 +49923,7 @@
 	              React.createElement(
 	                'div',
 	                { className: 'callout callout-dark scroll' },
-	                React.createElement(SensorHealthOverviewV2, { launchEditSensor: this.launchEditSensor.bind(this), data: this.props.sensorHealthOverviewV2 })
+	                React.createElement(SensorHealthOverviewV2, { data: this.props.sensorHealthOverviewV2 })
 	              )
 	            ),
 	            React.createElement(

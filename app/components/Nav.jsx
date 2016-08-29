@@ -22,7 +22,7 @@ class Nav extends React.Component {
                 <div className="top-bar-title">
                       <IndexLink to="/" activeClassName="active" activeStyle={{
                           color: '#f8f8f8'
-                      }}>sence | Uptime Robert</IndexLink>
+                      }}>sence | mitos</IndexLink>
                 </div>
                 <div className="top-bar-right">
                     <ul className="dropdown menu" data-dropdown-menu>

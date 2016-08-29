@@ -52,13 +52,6 @@ class Dashboard extends React.Component {
         modal.open();
     }
 
-    launchEditSensor() {
-
-        var modal = new Foundation.Reveal($('#add-sensor-modal'));
-        modal.open();
-        //alert("Fuck yeah, it worked.");
-    }
-
     render() {
 
       // console.log("overall dashboard: ", this.props.overall);
@@ -129,7 +122,7 @@ class Dashboard extends React.Component {
                       <DeleteSensor deleteMac={this.state.deleteMac}/>
                       </div>
                       <div className="callout callout-dark scroll">
-                        <SensorHealthOverviewV2 launchEditSensor={this.launchEditSensor.bind(this)} data={this.props.sensorHealthOverviewV2}/>
+                        <SensorHealthOverviewV2 data={this.props.sensorHealthOverviewV2}/>
                       </div>
                     </div>
 
