@@ -25,10 +25,10 @@ $grey: #737373;
 
 body,
 html {
-    background: #fff;
+    background: $crazy-light-grey;
     height: 100%;
     font-family: roboto;
-    color: $crazy-light-grey;
+    color: $body-color;
 }
 .row {
     max-width: 100rem;
@@ -157,9 +157,12 @@ label {
 }
 .sub-header {
     color: $night-ocean;
-    font-size: 1.2rem;
-    text-transform: uppercase;
+    font-size: 1.3rem;
     font-family: 'Pathway Gothic One', sans-serif;
+
+    a {
+      text-transform: capitalize;
+    }
 }
 .page-title {
     color: $title-color;

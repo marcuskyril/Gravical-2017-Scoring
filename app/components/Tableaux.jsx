@@ -196,7 +196,7 @@ class Tableaux extends React.Component {
 
     var currentlySelected = ["mac_address", "latest_timestamp", "sensor_status"];
     var findStuff = $('#bfg').find('table > thead > tr > th > span');
-    console.log(findStuff);
+    // console.log(findStuff);
     if (findStuff.length > 0) {
         currentlySelected = [];
         for (var i = 0; i < findStuff.length; i++) {
@@ -260,7 +260,7 @@ class Tableaux extends React.Component {
         }
     }
 
-    console.log("currentlySelected", currentlySelected);
+    // console.log("currentlySelected", currentlySelected);
 
     return (
         <Griddle

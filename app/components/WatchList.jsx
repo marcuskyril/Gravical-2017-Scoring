@@ -163,7 +163,7 @@ class WatchList extends React.Component {
                 var mac = sensor;
                 var row = {
                     "mac_address": mac,
-                    "geo-region": allSensorData[sensor]["geo-region"],
+                    // "geo-region": allSensorData[sensor]["geo-region"],
                     "building": allSensorData[sensor]["building"],
                     "sensor-level-id": allSensorData[sensor]["sensor-location-level"] + allSensorData[sensor]["sensor-location-id"],
                     "sensor_status": allSensorData[sensor]["sensor_status"],

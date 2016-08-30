@@ -14,7 +14,7 @@ class Nav extends React.Component {
     componentDidMount() {
         $(document).foundation();
     }
-    
+
     onLogout() {
         console.log("attempting logout");
         var {dispatch} = this.props;
@@ -22,8 +22,7 @@ class Nav extends React.Component {
     }
 
     render() {
-        console.log("currentTime:", this.props.timestamp);
-        console.log("displayName:", this.props.displayName);
+        
         return (
           <div data-sticky-container>
 

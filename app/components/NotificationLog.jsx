@@ -51,39 +51,64 @@ const tableMetaData = [
 class NotificationLog extends React.Component {
     constructor(props) {
         super(props);
+
+        this.state = {
+            data: {}
+        }
     }
 
     componentDidMount() {
         //call API
-        notificationLogAPI.retrieveNotifications(100).then(function () {
-            this.setState({
-                data: response.data
-            });
+
+        var that = this;
+
+        notificationLogAPI.retrieveNotifications(100).then(function(response) {
+
+            // console.log("response.data", response);
+
+            that.setState({data: response});
         })
     }
 
     render() {
-        var notificationData = this.props.data;
+        var notificationData = this.state.data;
         var dataList = [];
 
-        for (var logEntry in notificationData) {
+        for (var i = 0; i < notificationData.length; i++) {
+            var logEntry = notificationData[i];
 
             var row = {
                 "mac_address": logEntry["mac"],
                 "building": logEntry["building"],
                 "sensor-level-id": logEntry["level"] + logEntry["id"],
-                "sensor_status": logEntry["problem"]["status"],
-                "diagnosis" : logEntry["problem"]["diagnosis"].join(", "),
-                "timestamp" : logEntry["timestamp"]["date"]
+                "sensor_status": "logEntry['problem']['status']",
+                "diagnosis": "logEntry['problem']['diagnosis']",
+                "timestamp": logEntry["timestamp"]["date"]
             };
 
             dataList.push(row);
+
         }
 
         return (
             <div>
-                <Griddle results={dataList} columnMetadata={tableMetaData} tableClassName="table" columns={["mac_address", "building", "sensor-level-id", "sensor_status", "diagnosis", "timestamp"]}/>
+                <div className="notificationWrapper" style={{paddingTop: '2rem', paddingBottom: '2rem'}}>
+                    <div className="callout-dark-header">
+                        <div className="header">Your Notifications</div>
+                    </div>
+                    <div className="callout-dark">
+                        <Griddle results={dataList} resultsPerPage={100} columnMetadata={tableMetaData} tableClassName="table" columns={[
+                            "mac_address",
+                            "building",
+                            "sensor-level-id",
+                            "sensor_status",
+                            "diagnosis",
+                            "timestamp"
+                        ]}/>
+                    </div>
+                </div>
             </div>
+
         );
     }
 

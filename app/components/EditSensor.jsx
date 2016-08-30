@@ -12,7 +12,7 @@ class EditSensor extends React.Component {
   }
 
   onEditSensor(e) {
-    console.log("test type: ", this.props.type);
+    // console.log("test type: ", this.props.type);
 
     e.preventDefault();
 
@@ -106,7 +106,7 @@ class EditSensor extends React.Component {
 class EditSensorMessage extends React.Component {
   render() {
     var message = this.props.message;
-    console.log("message from parent: ", message);
+    // console.log("message from parent: ", message);
 
     return (
       <div className="statusText">{message}</div>

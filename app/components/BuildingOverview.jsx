@@ -126,7 +126,7 @@ class BuildingList extends React.Component {
           if((buildingName.toLowerCase()).indexOf((this.props.filterText.toLowerCase())) === -1) {
             return <div></div>
           }
-          rows.push(<Building buildingName={buildingName} ok={building.ok} warning={building.warning} danger={building.danger} down={building.down} noData={building.noData}/>);
+          rows.push(<Building key={buildingName} buildingName={buildingName} ok={building.ok} warning={building.warning} danger={building.danger} down={building.down} noData={building.noData}/>);
         }.bind(this));
 
         return (
@@ -151,7 +151,7 @@ class BuildingOverview extends React.Component {
     }
 
     render() {
-        console.log("BuildingOverview says hi", this.props.data);
+        // console.log("BuildingOverview says hi", this.props.data);
         return (
             <div>
                 <div className="callout-dark-header">

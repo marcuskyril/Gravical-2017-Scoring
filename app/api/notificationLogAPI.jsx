@@ -18,7 +18,7 @@ module.exports = {
             url: NOTIFICATIONS_LOG_URL,
             data: data,
             success: function(response) {
-                console.log("El API no quieren lo que has dado", response);
+                // console.log("El API no quieren lo que has dado", response);
             }
         });
     }

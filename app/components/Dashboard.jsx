@@ -78,6 +78,7 @@ class Dashboard extends React.Component {
         super(props);
 
         this.state = {
+          connection: null,
           type: "-",
           deleteMac: "",
           overall: [],
@@ -109,22 +110,13 @@ class Dashboard extends React.Component {
               var timestamp = new Date().toLocaleString();
 
               that.setState({
+                connection: connection,
                 overall: data.overall,
                 sensorHealthOverviewV2: data.overview,
                 bfg: data.BFG,
                 currentTime: timestamp,
                 notifications: data.notifications
               });
-
-              // if (data.notifications === undefined) {
-              //   that.setState({
-              //     notifications: {}
-              //   });
-              // } else {
-              //   that.setState({
-              //     notifications: data.notifications
-              //   });
-              // }
           });
 
       }, function() {
@@ -136,7 +128,7 @@ class Dashboard extends React.Component {
       window.addEventListener('click', function(e) {
 
         var pane = e.srcElement;
-        console.log("pane: ", pane);
+        // console.log("pane: ", pane);
         if(!($(e.target).hasClass("sensorBlockSquare"))){
           var dropdowns = document.getElementsByClassName("dropdown-pane");
 
@@ -151,6 +143,11 @@ class Dashboard extends React.Component {
         }
 
       });
+    }
+
+    componentWillUnmount(){
+      // close websocket
+      this.state.connection.close();
     }
 
     launchAddSensor() {
@@ -198,7 +195,7 @@ class Dashboard extends React.Component {
                         </li>
                         <li>
                           <div className="sub-header">
-                             <Link to="/examples" activeClassName="active" activeStyle={{
+                             <Link to="/" activeClassName="active" activeStyle={{
                                 color: '#222'
                             }}> View Sensor Log <FontAwesome name='caret-right'/></Link>
                           </div>

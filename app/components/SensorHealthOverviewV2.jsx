@@ -73,7 +73,7 @@ class BuildingListV2 extends React.Component {
             if ((buildingName.toLowerCase()).indexOf((this.props.filterText.toLowerCase())) === -1) {
                 return <div></div>
             }
-            rows.push(<BuildingV2 buildingName={buildingName} areaNames={areaNames} levelNames={levelNames} sensors={sensors}/>);
+            rows.push(<BuildingV2 key={buildingName} buildingName={buildingName} areaNames={areaNames} levelNames={levelNames} sensors={sensors}/>);
         }.bind(this));
 
         return (
@@ -133,7 +133,7 @@ class LevelList extends React.Component {
           case 'DELETE_ACTION':
 
             $('#deleteMac').val(macAddress);
-            
+
             var modal = new Foundation.Reveal($('#delete-sensor-modal'));
             modal.open();
 

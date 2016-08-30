@@ -34,7 +34,7 @@ render() {
                     <div className="off-canvas-content" data-off-canvas-content>
                         <Nav/>
                         <div className="row">
-                            <div className="columns medium-12 large 12">
+                            <div className="columns large-12 large 12">
                               {this.props.children}
                             </div>
                         </div>
