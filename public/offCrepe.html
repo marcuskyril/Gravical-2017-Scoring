@@ -301,6 +301,10 @@
 
                         console.log("fields to color: ", response["diagnosis"]["fields"]);
                         var fields = response["diagnosis"]["fields"];
+
+                        //uncolor table rows
+                        $("#tableaux-mini").find(".table-row-highlight").removeClass("table-row-highlight");
+
                         for (var i = 0; i < fields.length; i++) {
                             console.log("field: ", fields[i]);
                             console.log("painting the walls red");
@@ -324,7 +328,7 @@
 
                     setTimeout(function() {
                         send(macAddress);
-                    }, 10000);
+                    }, 5000);
 
                 };
                 socket.onclose = function(msg) {

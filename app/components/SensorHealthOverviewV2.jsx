@@ -118,13 +118,20 @@ class LevelList extends React.Component {
       super(props);
     }
 
-    handleClick(macAddress, action) {
+    handleClick(sensorShizz, action) {
+        var macAddress = sensorShizz[0];
         console.log("event", macAddress, action);
 
         switch(action){
           case 'EDIT_ACTION':
 
+            console.log("sensorShizz", sensorShizz);
+
             $('#inputMac').val(macAddress);
+            $('#inputRegion').val(sensorShizz[3].toLowerCase());
+            $('#inputLocationLevel').val(sensorShizz[5]);
+            $('#inputSensorLocationID').val(sensorShizz[2]);
+            $('#inputBuildingName').val(sensorShizz[4]);
 
             var modal = new Foundation.Reveal($('#edit-sensor-modal'));
             modal.open();
@@ -194,31 +201,41 @@ class LevelList extends React.Component {
           for (var j = 0; j < sensorsOnThisFloor.length; j++) {
             ////console.log("sensorsOnThisFloor", sensorsOnThisFloor[j]);
             var sensorId = sensorsOnThisFloor[j]['id'];
+            var status = sensorsOnThisFloor[j]['status'];
             var macAdd = sensorsOnThisFloor[j]['mac'];
+            var region = sensorsOnThisFloor[j]['region'];
+            var building = sensorsOnThisFloor[j]['building'];
+            var level = sensorsOnThisFloor[j]['level'];
             //console.log("macAdd", macAdd);
             var thePos = areaArray.indexOf(sensorId);
-            superTemp[thePos] = [sensorsOnThisFloor[j]['mac'], sensorsOnThisFloor[j]['status']];
+            superTemp[thePos] = [macAdd, status, sensorId, region, building, level];
             //console.log("thePos" + thePos + ", sensor: " + superTemp[thePos]);
           }
 
           // temp.push(superTemp);
+          console.log("woah", superTemp);
+
           superTemp.forEach(function(sensorShizz) {
 
-            //console.log("sensorShizz status", sensorShizz);
+            console.log("sensorShizz status", sensorShizz);
             var macAdd = sensorShizz[0];
             var status = sensorShizz[1];
+            var id = sensorShizz[2];
+            var region = sensorShizz[3];
+            var building = sensorShizz[4];
+            var level = sensorShizz[5];
 
             switch(status) {
               case "ok":
                   temp.push(
                     <td>
-                      <div className="sensorBlockSquare green" onClick={() => that.handleClick(macAdd, 'NO_ACTION')}></div>
+                      <div className="sensorBlockSquare green" onClick={() => that.handleClick(sensorShizz, 'NO_ACTION')}></div>
                       <div className="dropdown-pane" id={macAdd} data-dropdown data-options="data-hover:true; data-close-on-click:true">
                           <ul className="vertical menu tableOptions">
                             <li className="menuHeader">{macAdd}</li>
-                            <li><a onClick={() => that.handleClick(macAdd, 'OPEN_CANVAS_ACTION')} data-toggle="offCanvas">More details &raquo;</a></li>
-                            <li><a onClick={() => that.handleClick(macAdd, 'EDIT_ACTION')}>Edit</a></li>
-                            <li><a onClick={() => that.handleClick(macAdd, 'DELETE_ACTION')}>Delete</a></li>
+                            <li><a onClick={() => that.handleClick(sensorShizz, 'OPEN_CANVAS_ACTION')} data-toggle="offCanvas">More details &raquo;</a></li>
+                            <li><a onClick={() => that.handleClick(sensorShizz, 'EDIT_ACTION')}>Edit</a></li>
+                            <li><a onClick={() => that.handleClick(sensorShizz, 'DELETE_ACTION')}>Delete</a></li>
                           </ul>
                         </div>
                     </td>
@@ -226,14 +243,14 @@ class LevelList extends React.Component {
                 break;
                 case "warning" :
                 temp.push(
-                  <td>
-                    <div className="sensorBlockSquare orange" onClick={() => that.handleClick(macAdd, 'NO_ACTION')}></div>
+                  <td>sensorShizz
+                    <div className="sensorBlockSquare orange" onClick={() => that.handleClick(sensorShizz, 'NO_ACTION')}></div>
                     <div className="dropdown-pane" id={macAdd} data-dropdown data-options="data-hover:true; data-close-on-click:true">
                         <ul className="vertical menu tableOptions">
                           <li className="menuHeader">{macAdd}</li>
-                          <li><a onClick={() => that.handleClick(macAdd, 'OPEN_CANVAS_ACTION')} data-toggle="offCanvas">More details &raquo;</a></li>
-                          <li><a onClick={() => that.handleClick(macAdd, 'EDIT_ACTION')}>Edit sensor</a></li>
-                          <li><a onClick={() => that.handleClick(macAdd, 'DELETE_ACTION')}>Delete sensor</a></li>
+                          <li><a onClick={() => that.handleClick(sensorShizz, 'OPEN_CANVAS_ACTION')} data-toggle="offCanvas">More details &raquo;</a></li>
+                          <li><a onClick={() => that.handleClick(sensorShizz, 'EDIT_ACTION')}>Edit sensor</a></li>
+                          <li><a onClick={() => that.handleClick(sensorShizz, 'DELETE_ACTION')}>Delete sensor</a></li>
                         </ul>
                       </div>
                   </td>
@@ -242,13 +259,13 @@ class LevelList extends React.Component {
                 case "danger" :
                   temp.push(
                     <td>
-                      <div className="sensorBlockSquare red" onClick={() => that.handleClick(macAdd, 'NO_ACTION')}></div>
+                      <div className="sensorBlockSquare red" onClick={() => that.handleClick(sensorShizz, 'NO_ACTION')}></div>
                       <div className="dropdown-pane" id={macAdd} data-dropdown data-options="data-hover:true; data-close-on-click:true">
                           <ul className="vertical menu tableOptions">
                             <li className="menuHeader">{macAdd}</li>
-                            <li><a onClick={() => that.handleClick(macAdd, 'OPEN_CANVAS_ACTION')} data-toggle="offCanvas">More details &raquo;</a></li>
-                            <li><a onClick={() => that.handleClick(macAdd, 'EDIT_ACTION')}>Edit sensor</a></li>
-                            <li><a onClick={() => that.handleClick(macAdd, 'DELETE_ACTION')}>Delete sensor</a></li>
+                            <li><a onClick={() => that.handleClick(sensorShizz, 'OPEN_CANVAS_ACTION')} data-toggle="offCanvas">More details &raquo;</a></li>
+                            <li><a onClick={() => that.handleClick(sensorShizz, 'EDIT_ACTION')}>Edit sensor</a></li>
+                            <li><a onClick={() => that.handleClick(sensorShizz, 'DELETE_ACTION')}>Delete sensor</a></li>
                           </ul>
                         </div>
                     </td>
@@ -257,13 +274,13 @@ class LevelList extends React.Component {
                 case "down" :
                 temp.push(
                   <td>
-                    <div className="sensorBlockSquare black" onClick={() => that.handleClick(macAdd, 'NO_ACTION')}></div>
+                    <div className="sensorBlockSquare black" onClick={() => that.handleClick(sensorShizz, 'NO_ACTION')}></div>
                     <div className="dropdown-pane" id={macAdd} data-dropdown data-options="data-hover:true; data-close-on-click:true">
                         <ul className="vertical menu tableOptions">
                           <li className="menuHeader">{macAdd}</li>
-                          <li><a onClick={() => that.handleClick(macAdd, 'OPEN_CANVAS_ACTION')} data-toggle="offCanvas">More details &raquo;</a></li>
-                          <li><a onClick={() => that.handleClick(macAdd, 'EDIT_ACTION')}>Edit sensor</a></li>
-                          <li><a onClick={() => that.handleClick(macAdd, 'DELETE_ACTION')}>Delete sensor</a></li>
+                          <li><a onClick={() => that.handleClick(sensorShizz, 'OPEN_CANVAS_ACTION')} data-toggle="offCanvas">More details &raquo;</a></li>
+                          <li><a onClick={() => that.handleClick(sensorShizz, 'EDIT_ACTION')}>Edit sensor</a></li>
+                          <li><a onClick={() => that.handleClick(sensorShizz, 'DELETE_ACTION')}>Delete sensor</a></li>
                         </ul>
                       </div>
                   </td>
@@ -272,13 +289,13 @@ class LevelList extends React.Component {
                 case "no data" :
                   temp.push(
                     <td>
-                      <div className="sensorBlockSquare grey" onClick={() => that.handleClick(macAdd, 'NO_ACTION')}></div>
+                      <div className="sensorBlockSquare grey" onClick={() => that.handleClick(sensorShizz, 'NO_ACTION')}></div>
                       <div className="dropdown-pane" id={macAdd} data-dropdown data-options="data-hover:true; data-close-on-click:true">
                           <ul className="vertical menu tableOptions">
                             <li className="menuHeader">{macAdd}</li>
-                            <li><a onClick={() => that.handleClick(macAdd, 'OPEN_CANVAS_ACTION')} data-toggle="offCanvas">More details &raquo;</a></li>
-                            <li><a onClick={() => that.handleClick(macAdd, 'EDIT_ACTION')}>Edit sensor</a></li>
-                            <li><a onClick={() => that.handleClick(macAdd, 'DELETE_ACTION')}>Delete sensor</a></li>
+                            <li><a onClick={() => that.handleClick(sensorShizz, 'OPEN_CANVAS_ACTION')} data-toggle="offCanvas">More details &raquo;</a></li>
+                            <li><a onClick={() => that.handleClick(sensorShizz, 'EDIT_ACTION')}>Edit sensor</a></li>
+                            <li><a onClick={() => that.handleClick(sensorShizz, 'DELETE_ACTION')}>Delete sensor</a></li>
                           </ul>
                         </div>
                     </td>

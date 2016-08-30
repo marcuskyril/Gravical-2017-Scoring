@@ -30,6 +30,13 @@ class AccountSettings extends React.Component {
         });
     }
 
+    reveal(clickTarget, revealTarget) {
+
+      $('#' +clickTarget).click(function(){
+        $('#' +revealTarget).slideDown("slow");
+      });
+    }
+
     onUpdateDisplayName(e) {
 
         e.preventDefault();
@@ -101,22 +108,57 @@ class AccountSettings extends React.Component {
                 <div className="large-8 columns large-centered">
                     <div className="header">General Account Settings</div>
                     <hr/>
-                    <div className="profile wrapper" style={{'color':'#000'}}>
-                      <div className="row">
-                          <div className="columns large-2">Name</div>
-                          <div className="columns large-5">{this.state.userDisplayName}</div>
-                          <div className="columns large-5">Edit</div>
-                      </div>
-                      <div className="row">
-                          <div className="columns large-2">Email</div>
-                          <div className="columns large-5">{this.state.email}</div>
-                          <div className="columns large-5">Edit</div>
-                      </div>
-                      <div className="row">
-                          <div className="columns large-2">Email Verified?</div>
-                          <div className="columns large-5">{this.state.emailVerified}</div>
-                          <div className="columns large-5">Verify email</div>
-                      </div>
+                    <div className="profile wrapper" style={{
+                        'color': '#000'
+                    }}>
+                        <div className="row">
+                            <div className="columns large-2">Name</div>
+                            <div className="columns large-5">{this.state.userDisplayName}</div>
+                            <div className="columns large-5">
+                                <a id="triggerNamePanel" onClick={this.reveal('triggerNamePanel', 'namePanel')}>Edit</a>
+                            </div>
+                        </div>
+
+                        <div className="row" id="namePanel">
+                            <div className="input-group">
+                                <span className="input-group-label">Display Name</span>
+                                <input className="input-group-field" type="text"/>
+                                <div className="input-group-button">
+                                    <input type="submit" onClick={this.onUpdateDisplayName} className="button hollow" value="Submit"/>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className="row">
+                            <div className="columns large-2">Email</div>
+                            <div className="columns large-5">{this.state.email}</div>
+                            <div className="columns large-5">
+                                <a id="triggerEmailPanel" onClick={this.reveal('triggerEmailPanel', 'emailPanel')}>Edit</a>
+                            </div>
+                        </div>
+                        <div className="row" id="emailPanel">
+                            <form>
+                                <div className="row">
+                                    <div className="medium-6 columns">
+                                        <label>Input Label
+                                            <input type="text" placeholder=".medium-6.columns"/>
+                                        </label>
+                                    </div>
+                                    <div className="medium-6 columns">
+                                        <label>Input Label
+                                            <input type="text" placeholder=".medium-6.columns"/>
+                                        </label>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                        <div className="row">
+                            <div className="columns large-2">Email Verified?</div>
+                            <div className="columns large-5">{this.state.emailVerified}</div>
+                            <div className="columns large-5">
+                                <a href="" onClick={this.verifyEmail}>Verify email</a>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

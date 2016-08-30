@@ -10652,7 +10652,7 @@
 /* 110 */
 /***/ function(module, exports, __webpack_require__) {
 
-	'use strict';
+	/* WEBPACK VAR INJECTION */(function($) {'use strict';
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
@@ -10711,6 +10711,14 @@
 	                }
 	            }, function (error) {
 	                console.warn(error);
+	            });
+	        }
+	    }, {
+	        key: 'reveal',
+	        value: function reveal(clickTarget, revealTarget) {
+
+	            $('#' + clickTarget).click(function () {
+	                $('#' + revealTarget).slideDown("slow");
 	            });
 	        }
 	    }, {
@@ -10799,7 +10807,9 @@
 	                    React.createElement('hr', null),
 	                    React.createElement(
 	                        'div',
-	                        { className: 'profile wrapper', style: { 'color': '#000' } },
+	                        { className: 'profile wrapper', style: {
+	                                'color': '#000'
+	                            } },
 	                        React.createElement(
 	                            'div',
 	                            { className: 'row' },
@@ -10816,7 +10826,30 @@
 	                            React.createElement(
 	                                'div',
 	                                { className: 'columns large-5' },
-	                                'Edit'
+	                                React.createElement(
+	                                    'a',
+	                                    { id: 'triggerNamePanel', onClick: this.reveal('triggerNamePanel', 'namePanel') },
+	                                    'Edit'
+	                                )
+	                            )
+	                        ),
+	                        React.createElement(
+	                            'div',
+	                            { className: 'row', id: 'namePanel' },
+	                            React.createElement(
+	                                'div',
+	                                { className: 'input-group' },
+	                                React.createElement(
+	                                    'span',
+	                                    { className: 'input-group-label' },
+	                                    'Display Name'
+	                                ),
+	                                React.createElement('input', { className: 'input-group-field', type: 'text' }),
+	                                React.createElement(
+	                                    'div',
+	                                    { className: 'input-group-button' },
+	                                    React.createElement('input', { type: 'submit', onClick: this.onUpdateDisplayName, className: 'button hollow', value: 'Submit' })
+	                                )
 	                            )
 	                        ),
 	                        React.createElement(
@@ -10835,7 +10868,43 @@
 	                            React.createElement(
 	                                'div',
 	                                { className: 'columns large-5' },
-	                                'Edit'
+	                                React.createElement(
+	                                    'a',
+	                                    { id: 'triggerEmailPanel', onClick: this.reveal('triggerEmailPanel', 'emailPanel') },
+	                                    'Edit'
+	                                )
+	                            )
+	                        ),
+	                        React.createElement(
+	                            'div',
+	                            { className: 'row', id: 'emailPanel' },
+	                            React.createElement(
+	                                'form',
+	                                null,
+	                                React.createElement(
+	                                    'div',
+	                                    { className: 'row' },
+	                                    React.createElement(
+	                                        'div',
+	                                        { className: 'medium-6 columns' },
+	                                        React.createElement(
+	                                            'label',
+	                                            null,
+	                                            'Input Label',
+	                                            React.createElement('input', { type: 'text', placeholder: '.medium-6.columns' })
+	                                        )
+	                                    ),
+	                                    React.createElement(
+	                                        'div',
+	                                        { className: 'medium-6 columns' },
+	                                        React.createElement(
+	                                            'label',
+	                                            null,
+	                                            'Input Label',
+	                                            React.createElement('input', { type: 'text', placeholder: '.medium-6.columns' })
+	                                        )
+	                                    )
+	                                )
 	                            )
 	                        ),
 	                        React.createElement(
@@ -10854,7 +10923,11 @@
 	                            React.createElement(
 	                                'div',
 	                                { className: 'columns large-5' },
-	                                'Verify email'
+	                                React.createElement(
+	                                    'a',
+	                                    { href: '', onClick: this.verifyEmail },
+	                                    'Verify email'
+	                                )
 	                            )
 	                        )
 	                    )
@@ -10869,6 +10942,7 @@
 	;
 
 	module.exports = AccountSettings;
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(9)))
 
 /***/ },
 /* 111 */
@@ -13924,7 +13998,9 @@
 /* 159 */
 /***/ function(module, exports, __webpack_require__) {
 
-	'use strict';
+	/* WEBPACK VAR INJECTION */(function($) {'use strict';
+
+	var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
@@ -14013,18 +14089,31 @@
 	    }, {
 	        key: 'render',
 	        value: function render() {
+	            console.log("eres mi amigo?", this.state.data);
 	            var notificationData = this.state.data;
 	            var dataList = [];
 
 	            for (var i = 0; i < notificationData.length; i++) {
 	                var logEntry = notificationData[i];
 
+	                var diagnosis = logEntry['problem']['diagnosis'];
+
+	                //console.log("diagnosis", typeof diagnosis);
+	                if ((typeof diagnosis === 'undefined' ? 'undefined' : _typeof(diagnosis)) == "object") {
+	                    diagnosis = $.map(diagnosis, function (value, index) {
+	                        return [value];
+	                    });
+	                    diagnosis = diagnosis.join(", ");
+	                } else {
+	                    diagnosis = " - ";
+	                }
+
 	                var row = {
 	                    "mac_address": logEntry["mac"],
 	                    "building": logEntry["building"],
 	                    "sensor-level-id": logEntry["level"] + logEntry["id"],
-	                    "sensor_status": "logEntry['problem']['status']",
-	                    "diagnosis": "logEntry['problem']['diagnosis']",
+	                    "sensor_status": logEntry['problem']['status'],
+	                    "diagnosis": diagnosis,
 	                    "timestamp": logEntry["timestamp"]["date"]
 	                };
 
@@ -14062,6 +14151,7 @@
 	;
 
 	module.exports = NotificationLog;
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(9)))
 
 /***/ },
 /* 160 */
@@ -23251,10 +23341,6 @@
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-	var _reactNotification = __webpack_require__(365);
-
-	var _immutable = __webpack_require__(370);
-
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
@@ -23267,7 +23353,7 @@
 	var SensorHealthOverviewV2 = __webpack_require__(373);
 	var WatchList = __webpack_require__(523);
 	var Tableaux = __webpack_require__(526);
-	var Notifications = __webpack_require__(527);
+	var NotificationBar = __webpack_require__(527);
 	var FontAwesome = __webpack_require__(363);
 	var BuildingOverview = __webpack_require__(528);
 	var AddSensor = __webpack_require__(551);
@@ -23280,94 +23366,15 @@
 	var Link = _require.Link;
 	var IndexLink = _require.IndexLink;
 
-	var NotificationBar = function (_React$Component) {
-	  _inherits(NotificationBar, _React$Component);
-
-	  function NotificationBar(props) {
-	    _classCallCheck(this, NotificationBar);
-
-	    var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(NotificationBar).call(this, props));
-
-	    _this.state = {
-	      notifications: (0, _immutable.OrderedSet)(),
-	      count: 0
-	    };
-
-	    _this.removeNotification = _this.removeNotification.bind(_this);
-	    return _this;
-	  }
-
-	  _createClass(NotificationBar, [{
-	    key: 'removeNotification',
-	    value: function removeNotification(count) {
-	      var notifications = this.state.notifications;
-
-	      this.setState({
-	        notifications: notifications.filter(function (n) {
-	          return n.key !== count;
-	        })
-	      });
-	    }
-	  }, {
-	    key: 'componentWillReceiveProps',
-	    value: function componentWillReceiveProps(nextProps) {
-	      var _this2 = this;
-
-	      var currentTime = this.props.timestamp;
-
-	      var _state = this.state;
-	      var notifications = _state.notifications;
-	      var count = _state.count;
-
-	      var id = notifications.size + 1;
-	      var newCount = count + 1;
-
-	      // console.log("nextProps: ", nextProps.notificationData);
-	      if (nextProps.notificationData) {
-	        if (nextProps.notificationData !== this.props.notificationData && nextProps.notificationData.length > 0) {
-	          this.setState({
-	            count: newCount,
-	            notifications: notifications.add({
-	              title: nextProps.notificationData[0].mac,
-	              message: ' | ' + nextProps.notificationData[0].problem.status + ' | ' + nextProps.notificationData[0].timestamp.date,
-	              key: newCount,
-	              action: 'Dismiss',
-	              dismissAfter: 100000,
-	              onClick: function onClick() {
-	                return _this2.removeNotification(newCount);
-	              }
-	            })
-	          });
-	        }
-	      }
-	    }
-	  }, {
-	    key: 'render',
-	    value: function render() {
-	      var _this3 = this;
-
-	      return React.createElement(_reactNotification.NotificationStack, {
-	        notifications: this.state.notifications.toArray(),
-	        onDismiss: function onDismiss(notification) {
-	          return _this3.setState({
-	            notifications: _this3.state.notifications.delete(notification)
-	          });
-	        } });
-	    }
-	  }]);
-
-	  return NotificationBar;
-	}(React.Component);
-
-	var Dashboard = function (_React$Component2) {
-	  _inherits(Dashboard, _React$Component2);
+	var Dashboard = function (_React$Component) {
+	  _inherits(Dashboard, _React$Component);
 
 	  function Dashboard(props) {
 	    _classCallCheck(this, Dashboard);
 
-	    var _this4 = _possibleConstructorReturn(this, Object.getPrototypeOf(Dashboard).call(this, props));
+	    var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(Dashboard).call(this, props));
 
-	    _this4.state = {
+	    _this.state = {
 	      connection: null,
 	      type: "-",
 	      deleteMac: "",
@@ -23379,7 +23386,7 @@
 	      userDisplayName: '',
 	      notificationData: {}
 	    };
-	    return _this4;
+	    return _this;
 	  }
 
 	  _createClass(Dashboard, [{
@@ -29423,13 +29430,20 @@
 
 	    _createClass(LevelList, [{
 	        key: 'handleClick',
-	        value: function handleClick(macAddress, action) {
+	        value: function handleClick(sensorShizz, action) {
+	            var macAddress = sensorShizz[0];
 	            console.log("event", macAddress, action);
 
 	            switch (action) {
 	                case 'EDIT_ACTION':
 
+	                    console.log("sensorShizz", sensorShizz);
+
 	                    $('#inputMac').val(macAddress);
+	                    $('#inputRegion').val(sensorShizz[3].toLowerCase());
+	                    $('#inputLocationLevel').val(sensorShizz[5]);
+	                    $('#inputSensorLocationID').val(sensorShizz[2]);
+	                    $('#inputBuildingName').val(sensorShizz[4]);
 
 	                    var modal = new Foundation.Reveal($('#edit-sensor-modal'));
 	                    modal.open();
@@ -29503,19 +29517,29 @@
 	                for (var j = 0; j < sensorsOnThisFloor.length; j++) {
 	                    ////console.log("sensorsOnThisFloor", sensorsOnThisFloor[j]);
 	                    var sensorId = sensorsOnThisFloor[j]['id'];
+	                    var status = sensorsOnThisFloor[j]['status'];
 	                    var macAdd = sensorsOnThisFloor[j]['mac'];
+	                    var region = sensorsOnThisFloor[j]['region'];
+	                    var building = sensorsOnThisFloor[j]['building'];
+	                    var level = sensorsOnThisFloor[j]['level'];
 	                    //console.log("macAdd", macAdd);
 	                    var thePos = areaArray.indexOf(sensorId);
-	                    superTemp[thePos] = [sensorsOnThisFloor[j]['mac'], sensorsOnThisFloor[j]['status']];
+	                    superTemp[thePos] = [macAdd, status, sensorId, region, building, level];
 	                    //console.log("thePos" + thePos + ", sensor: " + superTemp[thePos]);
 	                }
 
 	                // temp.push(superTemp);
+	                console.log("woah", superTemp);
+
 	                superTemp.forEach(function (sensorShizz) {
 
-	                    //console.log("sensorShizz status", sensorShizz);
+	                    console.log("sensorShizz status", sensorShizz);
 	                    var macAdd = sensorShizz[0];
 	                    var status = sensorShizz[1];
+	                    var id = sensorShizz[2];
+	                    var region = sensorShizz[3];
+	                    var building = sensorShizz[4];
+	                    var level = sensorShizz[5];
 
 	                    switch (status) {
 	                        case "ok":
@@ -29523,7 +29547,7 @@
 	                                'td',
 	                                null,
 	                                React.createElement('div', { className: 'sensorBlockSquare green', onClick: function onClick() {
-	                                        return that.handleClick(macAdd, 'NO_ACTION');
+	                                        return that.handleClick(sensorShizz, 'NO_ACTION');
 	                                    } }),
 	                                React.createElement(
 	                                    'div',
@@ -29542,7 +29566,7 @@
 	                                            React.createElement(
 	                                                'a',
 	                                                { onClick: function onClick() {
-	                                                        return that.handleClick(macAdd, 'OPEN_CANVAS_ACTION');
+	                                                        return that.handleClick(sensorShizz, 'OPEN_CANVAS_ACTION');
 	                                                    }, 'data-toggle': 'offCanvas' },
 	                                                'More details »'
 	                                            )
@@ -29553,7 +29577,7 @@
 	                                            React.createElement(
 	                                                'a',
 	                                                { onClick: function onClick() {
-	                                                        return that.handleClick(macAdd, 'EDIT_ACTION');
+	                                                        return that.handleClick(sensorShizz, 'EDIT_ACTION');
 	                                                    } },
 	                                                'Edit'
 	                                            )
@@ -29564,7 +29588,7 @@
 	                                            React.createElement(
 	                                                'a',
 	                                                { onClick: function onClick() {
-	                                                        return that.handleClick(macAdd, 'DELETE_ACTION');
+	                                                        return that.handleClick(sensorShizz, 'DELETE_ACTION');
 	                                                    } },
 	                                                'Delete'
 	                                            )
@@ -29577,8 +29601,9 @@
 	                            temp.push(React.createElement(
 	                                'td',
 	                                null,
+	                                'sensorShizz',
 	                                React.createElement('div', { className: 'sensorBlockSquare orange', onClick: function onClick() {
-	                                        return that.handleClick(macAdd, 'NO_ACTION');
+	                                        return that.handleClick(sensorShizz, 'NO_ACTION');
 	                                    } }),
 	                                React.createElement(
 	                                    'div',
@@ -29597,7 +29622,7 @@
 	                                            React.createElement(
 	                                                'a',
 	                                                { onClick: function onClick() {
-	                                                        return that.handleClick(macAdd, 'OPEN_CANVAS_ACTION');
+	                                                        return that.handleClick(sensorShizz, 'OPEN_CANVAS_ACTION');
 	                                                    }, 'data-toggle': 'offCanvas' },
 	                                                'More details »'
 	                                            )
@@ -29608,7 +29633,7 @@
 	                                            React.createElement(
 	                                                'a',
 	                                                { onClick: function onClick() {
-	                                                        return that.handleClick(macAdd, 'EDIT_ACTION');
+	                                                        return that.handleClick(sensorShizz, 'EDIT_ACTION');
 	                                                    } },
 	                                                'Edit sensor'
 	                                            )
@@ -29619,7 +29644,7 @@
 	                                            React.createElement(
 	                                                'a',
 	                                                { onClick: function onClick() {
-	                                                        return that.handleClick(macAdd, 'DELETE_ACTION');
+	                                                        return that.handleClick(sensorShizz, 'DELETE_ACTION');
 	                                                    } },
 	                                                'Delete sensor'
 	                                            )
@@ -29633,7 +29658,7 @@
 	                                'td',
 	                                null,
 	                                React.createElement('div', { className: 'sensorBlockSquare red', onClick: function onClick() {
-	                                        return that.handleClick(macAdd, 'NO_ACTION');
+	                                        return that.handleClick(sensorShizz, 'NO_ACTION');
 	                                    } }),
 	                                React.createElement(
 	                                    'div',
@@ -29652,7 +29677,7 @@
 	                                            React.createElement(
 	                                                'a',
 	                                                { onClick: function onClick() {
-	                                                        return that.handleClick(macAdd, 'OPEN_CANVAS_ACTION');
+	                                                        return that.handleClick(sensorShizz, 'OPEN_CANVAS_ACTION');
 	                                                    }, 'data-toggle': 'offCanvas' },
 	                                                'More details »'
 	                                            )
@@ -29663,7 +29688,7 @@
 	                                            React.createElement(
 	                                                'a',
 	                                                { onClick: function onClick() {
-	                                                        return that.handleClick(macAdd, 'EDIT_ACTION');
+	                                                        return that.handleClick(sensorShizz, 'EDIT_ACTION');
 	                                                    } },
 	                                                'Edit sensor'
 	                                            )
@@ -29674,7 +29699,7 @@
 	                                            React.createElement(
 	                                                'a',
 	                                                { onClick: function onClick() {
-	                                                        return that.handleClick(macAdd, 'DELETE_ACTION');
+	                                                        return that.handleClick(sensorShizz, 'DELETE_ACTION');
 	                                                    } },
 	                                                'Delete sensor'
 	                                            )
@@ -29688,7 +29713,7 @@
 	                                'td',
 	                                null,
 	                                React.createElement('div', { className: 'sensorBlockSquare black', onClick: function onClick() {
-	                                        return that.handleClick(macAdd, 'NO_ACTION');
+	                                        return that.handleClick(sensorShizz, 'NO_ACTION');
 	                                    } }),
 	                                React.createElement(
 	                                    'div',
@@ -29707,7 +29732,7 @@
 	                                            React.createElement(
 	                                                'a',
 	                                                { onClick: function onClick() {
-	                                                        return that.handleClick(macAdd, 'OPEN_CANVAS_ACTION');
+	                                                        return that.handleClick(sensorShizz, 'OPEN_CANVAS_ACTION');
 	                                                    }, 'data-toggle': 'offCanvas' },
 	                                                'More details »'
 	                                            )
@@ -29718,7 +29743,7 @@
 	                                            React.createElement(
 	                                                'a',
 	                                                { onClick: function onClick() {
-	                                                        return that.handleClick(macAdd, 'EDIT_ACTION');
+	                                                        return that.handleClick(sensorShizz, 'EDIT_ACTION');
 	                                                    } },
 	                                                'Edit sensor'
 	                                            )
@@ -29729,7 +29754,7 @@
 	                                            React.createElement(
 	                                                'a',
 	                                                { onClick: function onClick() {
-	                                                        return that.handleClick(macAdd, 'DELETE_ACTION');
+	                                                        return that.handleClick(sensorShizz, 'DELETE_ACTION');
 	                                                    } },
 	                                                'Delete sensor'
 	                                            )
@@ -29743,7 +29768,7 @@
 	                                'td',
 	                                null,
 	                                React.createElement('div', { className: 'sensorBlockSquare grey', onClick: function onClick() {
-	                                        return that.handleClick(macAdd, 'NO_ACTION');
+	                                        return that.handleClick(sensorShizz, 'NO_ACTION');
 	                                    } }),
 	                                React.createElement(
 	                                    'div',
@@ -29762,7 +29787,7 @@
 	                                            React.createElement(
 	                                                'a',
 	                                                { onClick: function onClick() {
-	                                                        return that.handleClick(macAdd, 'OPEN_CANVAS_ACTION');
+	                                                        return that.handleClick(sensorShizz, 'OPEN_CANVAS_ACTION');
 	                                                    }, 'data-toggle': 'offCanvas' },
 	                                                'More details »'
 	                                            )
@@ -29773,7 +29798,7 @@
 	                                            React.createElement(
 	                                                'a',
 	                                                { onClick: function onClick() {
-	                                                        return that.handleClick(macAdd, 'EDIT_ACTION');
+	                                                        return that.handleClick(sensorShizz, 'EDIT_ACTION');
 	                                                    } },
 	                                                'Edit sensor'
 	                                            )
@@ -29784,7 +29809,7 @@
 	                                            React.createElement(
 	                                                'a',
 	                                                { onClick: function onClick() {
-	                                                        return that.handleClick(macAdd, 'DELETE_ACTION');
+	                                                        return that.handleClick(sensorShizz, 'DELETE_ACTION');
 	                                                    } },
 	                                                'Delete sensor'
 	                                            )
@@ -48892,135 +48917,104 @@
 
 /***/ },
 /* 527 */
-/***/ function(module, exports) {
+/***/ function(module, exports, __webpack_require__) {
 
-	// var React = require('react');
-	// var FontAwesome = require('react-fontawesome');
-	//
-	// class Notification extends React.Component {
-	//   render() {
-	//     return (
-	//       <tr>
-	//
-	//       </tr>
-	//     );
-	//   }
-	// }
-	//
-	// class Notifications extends React.Component {
-	//     render() {
-	//        var notificationsList = this.props.data;
-	//
-	//        console.log("notificationsList", notificationsList);
-	//
-	//         return (
-	//             <table className="notificationsTable">
-	//
-	//                 <tbody>
-	//                     <tr>
-	//                         <td className="textAlignCenter">
-	//                             <FontAwesome name='exclamation-triangle' size='2x'/>
-	//                         </td>
-	//                         <td>
-	//                             <div>
-	//                                 <b>Problem on Sensor007</b>
-	//                             </div>
-	//                             <div>
-	//                                 CPU load too high (95%)
-	//                             </div>
-	//                             <div>
-	//                                 2 minutes ago
-	//                             </div>
-	//                         </td>
-	//                     </tr>
-	//                     <tr>
-	//                         <td className="textAlignCenter">
-	//                             <FontAwesome name='exclamation-triangle' size='2x'/>
-	//                         </td>
-	//                         <td>
-	//                             <div>
-	//                                 <b>Sensor003 is Down</b>
-	//                             </div>
-	//                             <div>
-	//                                 Connection Lost
-	//                             </div>
-	//                             <div>
-	//                                 2 minutes ago
-	//                             </div>
-	//                         </td>
-	//                     </tr>
-	//                     <tr>
-	//                         <td className="textAlignCenter">
-	//                             <FontAwesome name='thumbs-up' size='2x'/>
-	//                         </td>
-	//                         <td>
-	//                             <div>
-	//                                 <b>Sensor 12 is Ok</b>
-	//                             </div>
-	//                             <div>
-	//                                 Flapping stopped at 14:21
-	//                             </div>
-	//                             <div>
-	//                                 1 hour ago
-	//                             </div>
-	//                         </td>
-	//                     </tr>
-	//                     <tr>
-	//                         <td className="textAlignCenter">
-	//                             <FontAwesome name='thumbs-up' size='2x'/>
-	//                         </td>
-	//                         <td>
-	//                             <div>
-	//                                 <b>Sensor 3 is Ok</b>
-	//                             </div>
-	//                             <div>
-	//                                 Flapping stopped at 14:21
-	//                             </div>
-	//                             <div>
-	//                                 1 hour ago
-	//                             </div>
-	//                         </td>
-	//                     </tr>
-	//                     <tr>
-	//                         <td className="textAlignCenter">
-	//                             <FontAwesome name='thumbs-up' size='2x'/>
-	//                         </td>
-	//                         <td>
-	//                             <div>
-	//                                 <b>Sensor 2 is Ok</b>
-	//                             </div>
-	//                             <div>
-	//                                 Flapping stopped at 14:21
-	//                             </div>
-	//                             <div>
-	//                                 1 hour ago
-	//                             </div>
-	//                         </td>
-	//                     </tr>
-	//                     <tr>
-	//                         <td className="textAlignCenter">
-	//                             <FontAwesome name='exclamation-triangle' size='2x'/>
-	//                         </td>
-	//                         <td>
-	//                             <div>
-	//                                 <b>Problem on Sensor002</b>
-	//                             </div>
-	//                             <div>
-	//                                 CPU load too high (91%)
-	//                             </div>
-	//                             <div>
-	//                                 1 hour ago
-	//                             </div>
-	//                         </td>
-	//                     </tr>
-	//                 </tbody>
-	//             </table>
-	//         );
-	//     }
-	// };
-	//
-	// module.exports = Notifications;
-	"use strict";
+	'use strict';
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	var _reactNotification = __webpack_require__(365);
+
+	var _immutable = __webpack_require__(370);
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	var React = __webpack_require__(14);
+
+	var NotificationBar = function (_React$Component) {
+	  _inherits(NotificationBar, _React$Component);
+
+	  function NotificationBar(props) {
+	    _classCallCheck(this, NotificationBar);
+
+	    var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(NotificationBar).call(this, props));
+
+	    _this.state = {
+	      notifications: (0, _immutable.OrderedSet)(),
+	      count: 0
+	    };
+
+	    _this.removeNotification = _this.removeNotification.bind(_this);
+	    return _this;
+	  }
+
+	  _createClass(NotificationBar, [{
+	    key: 'removeNotification',
+	    value: function removeNotification(count) {
+	      var notifications = this.state.notifications;
+
+	      this.setState({
+	        notifications: notifications.filter(function (n) {
+	          return n.key !== count;
+	        })
+	      });
+	    }
+	  }, {
+	    key: 'componentWillReceiveProps',
+	    value: function componentWillReceiveProps(nextProps) {
+	      var _this2 = this;
+
+	      var currentTime = this.props.timestamp;
+
+	      var _state = this.state;
+	      var notifications = _state.notifications;
+	      var count = _state.count;
+
+	      var id = notifications.size + 1;
+	      var newCount = count + 1;
+
+	      console.log("nextProps: ", nextProps.notificationData);
+	      if (nextProps.notificationData) {
+	        if (nextProps.notificationData !== this.props.notificationData && nextProps.notificationData.length > 0) {
+	          this.setState({
+	            count: newCount,
+	            notifications: notifications.add({
+	              title: nextProps.notificationData[0].building + ' (' + nextProps.notificationData[0].level + nextProps.notificationData[0].id + ')',
+	              message: ' | ' + nextProps.notificationData[0].problem.status + ' | ' + nextProps.notificationData[0].timestamp.date,
+	              key: newCount,
+	              action: 'Dismiss',
+	              dismissAfter: 100000,
+	              onClick: function onClick() {
+	                return _this2.removeNotification(newCount);
+	              }
+	            })
+	          });
+	        }
+	      }
+	    }
+	  }, {
+	    key: 'render',
+	    value: function render() {
+	      var _this3 = this;
+
+	      return React.createElement(_reactNotification.NotificationStack, {
+	        notifications: this.state.notifications.toArray(),
+	        onDismiss: function onDismiss(notification) {
+	          return _this3.setState({
+	            notifications: _this3.state.notifications.delete(notification)
+	          });
+	        } });
+	    }
+	  }]);
+
+	  return NotificationBar;
+	}(React.Component);
+
+	module.exports = NotificationBar;
 
 /***/ },
 /* 528 */
@@ -62721,7 +62715,7 @@
 	exports.push([module.id, "@import url(https://fonts.googleapis.com/css?family=Lato:400,900i);", ""]);
 
 	// module
-	exports.push([module.id, "body,\nhtml {\n  background: #f2f2f2;\n  height: 100%;\n  font-family: roboto;\n  color: #1a1b1b; }\n\n.row {\n  max-width: 100rem; }\n\ndiv#offCanvas {\n  width: 350px;\n  height: 100%;\n  padding: 1.5rem;\n  background: #e8e8e8; }\n\n.is-open-right {\n  transform: translateX(-350px); }\n\n.off-canvas.position-right {\n  right: -350px; }\n\n.off-canvas-content {\n  background: #f2f2f2; }\n\na {\n  color: #6abedb; }\n\nhr {\n  border-color: #373837;\n  margin-top: 0.5rem; }\n\ntable thead {\n  background: #232f32;\n  color: white;\n  border: 1px solid #232f32; }\n\ntable tbody {\n  color: #1a1b1b;\n  border: 1px solid #232f32; }\n\n.margin-top-large {\n  margin-top: 4rem; }\n\n.margin-bottom-large {\n  margin-bottom: 4rem; }\n\n.margin-right-small {\n  margin-right: 2rem; }\n\n.margin-left-small {\n  margin-left: 2rem; }\n\n.margin-top-md {\n  margin-top: 2rem; }\n\n.margin-top-small {\n  margin-top: 1rem; }\n\n.margin-bottom-md {\n  margin-bottom: 2rem; }\n\n.margin-bottom-small {\n  margin-bottom: 1rem; }\n\n.textAlignCenter {\n  text-align: center; }\n\nul.header-list {\n  display: inline-block;\n  list-style: none;\n  margin-bottom: 0px; }\n\n.callout {\n  background-color: #f2f2f2; }\n\n.callout-dark {\n  padding: 1.5rem;\n  background-color: #f2f2f2;\n  border: 3px solid #bdbdbd;\n  border-top: none;\n  margin-top: 0; }\n\n.scroll {\n  max-height: 100vh;\n  overflow-y: scroll; }\n\n.callout-dark-header {\n  padding: 0.5rem;\n  background-color: #fff;\n  border: 3px solid #bdbdbd;\n  border-bottom: 1px solid #bdbdbd;\n  margin-bottom: 0; }\n\n.callout-top-header {\n  padding: 1rem;\n  background-color: #f2f2f2;\n  border: 3px solid #bdbdbd; }\n\n.icon-btn-text-small {\n  font-family: 'Pathway Gothic One', sans-serif;\n  text-transform: uppercase;\n  top: 15px;\n  right: 15px;\n  position: absolute;\n  color: #232f32;\n  font-size: 1.2rem; }\n\nlabel {\n  text-transform: capitalize;\n  color: #232f32; }\n\n.header {\n  color: #232f32;\n  margin-bottom: 0;\n  font-size: 1.2rem;\n  text-transform: uppercase;\n  font-family: 'Pathway Gothic One', sans-serif; }\n\n.sub-header {\n  color: #232f32;\n  font-size: 1.3rem;\n  font-family: 'Pathway Gothic One', sans-serif; }\n  .sub-header a {\n    text-transform: capitalize; }\n\n.page-title {\n  color: #555;\n  font-family: 'Pathway Gothic One', sans-serif;\n  font-size: 1.5rem;\n  margin-top: 1.5rem;\n  margin-bottom: 1.5rem; }\n\ninput[type=search] {\n  box-shadow: none; }\n\n.top-bar-upper {\n  color: #333;\n  font-size: 0.5rem; }\n\n.app-header {\n  font-size: 1.3rem; }\n\ntable.overview-custom tbody,\ntable.overview-custom th,\ntable.overview-custom thead,\ntable.overview-custom tr {\n  text-align: center; }\n\ntable.sensor-details-table tbody {\n  text-align: left; }\n\ng text {\n  fill: #232f32;\n  stroke: #232f32;\n  display: none; }\n\npolyline {\n  stroke: #232f32;\n  display: none; }\n\n.statusText {\n  color: red;\n  margin-bottom: 1rem;\n  text-transform: uppercase;\n  font-size: 0.8em;\n  font-weight: bold; }\n\n.notificationHeader {\n  color: #fff;\n  text-transform: uppercase;\n  font-size: 0.5em;\n  font-weight: bold; }\n\n.sensorBlock {\n  height: 30px;\n  width: auto;\n  color: #fff;\n  text-align: center;\n  font-family: 'Pathway Gothic One', sans-serif;\n  text-transform: uppercase; }\n\n.sensorBlockSquare {\n  height: 30px;\n  width: 30px;\n  margin: auto;\n  cursor: pointer; }\n\n.sensorBlockSquare:hover {\n  opacity: 0.5; }\n\n.button-custom {\n  height: 30px;\n  width: auto !important;\n  margin: 0px;\n  color: #fff !important;\n  text-align: center;\n  font-family: 'Pathway Gothic One', sans-serif;\n  text-transform: uppercase; }\n\n.remove {\n  border: 1px solid #990000;\n  background-color: #fff;\n  color: #990000 !important; }\n\n.tableOptions > li > a {\n  color: #323232;\n  font-weight: normal;\n  font-size: 1rem;\n  padding: 0.5rem 0.7rem; }\n\n.tableOptions .menuHeader, .menuHeader:hover {\n  background-color: #232f32 !important;\n  color: #fff;\n  padding: 0.3rem 0.7rem;\n  text-transform: uppercase; }\n\n.tableOptions > li {\n  border-bottom: 1px solid #f2f2f2; }\n\n.tableOptions > li:hover {\n  background-color: #f2f2f2; }\n\n.dropdown-pane {\n  padding: 0px; }\n\n.green {\n  background-color: #006600; }\n\n.orange {\n  background-color: #cc7a00; }\n\n.red {\n  background-color: #990000; }\n\n.black {\n  background-color: #1a1b1b; }\n\n.grey {\n  background-color: #737373; }\n", ""]);
+	exports.push([module.id, "body,\nhtml {\n  background: #f2f2f2;\n  height: 100%;\n  font-family: roboto;\n  color: #1a1b1b; }\n\n.row {\n  max-width: 100rem; }\n\ndiv#offCanvas {\n  width: 350px;\n  height: 100%;\n  padding: 1.5rem;\n  background: #e8e8e8; }\n\n.is-open-right {\n  transform: translateX(-350px); }\n\n.off-canvas.position-right {\n  right: -350px; }\n\n.off-canvas-content {\n  background: #f2f2f2; }\n\na {\n  color: #6abedb; }\n\nhr {\n  border-color: #373837;\n  margin-top: 0.5rem; }\n\ntable thead {\n  background: #232f32;\n  color: white;\n  border: 1px solid #232f32; }\n\ntable tbody {\n  color: #1a1b1b;\n  border: 1px solid #232f32; }\n\n.margin-top-large {\n  margin-top: 4rem; }\n\n.margin-bottom-large {\n  margin-bottom: 4rem; }\n\n.margin-right-small {\n  margin-right: 2rem; }\n\n.margin-left-small {\n  margin-left: 2rem; }\n\n.margin-top-md {\n  margin-top: 2rem; }\n\n.margin-top-small {\n  margin-top: 1rem; }\n\n.margin-bottom-md {\n  margin-bottom: 2rem; }\n\n.margin-bottom-small {\n  margin-bottom: 1rem; }\n\n.textAlignCenter {\n  text-align: center; }\n\nul.header-list {\n  display: inline-block;\n  list-style: none;\n  margin-bottom: 0px; }\n\n.callout {\n  background-color: #f2f2f2; }\n\n.callout-dark {\n  padding: 1.5rem;\n  background-color: #f2f2f2;\n  border: 3px solid #bdbdbd;\n  border-top: none;\n  margin-top: 0; }\n\n.scroll {\n  max-height: 100vh;\n  overflow-y: scroll; }\n\n.callout-dark-header {\n  padding: 0.5rem;\n  background-color: #fff;\n  border: 3px solid #bdbdbd;\n  border-bottom: 1px solid #bdbdbd;\n  margin-bottom: 0; }\n\n.callout-top-header {\n  padding: 1rem;\n  background-color: #f2f2f2;\n  border: 3px solid #bdbdbd; }\n\n.icon-btn-text-small {\n  font-family: 'Pathway Gothic One', sans-serif;\n  text-transform: uppercase;\n  top: 15px;\n  right: 15px;\n  position: absolute;\n  color: #232f32;\n  font-size: 1.2rem; }\n\nlabel {\n  text-transform: capitalize;\n  color: #232f32; }\n\n.header {\n  color: #232f32;\n  margin-bottom: 0;\n  font-size: 1.2rem;\n  text-transform: uppercase;\n  font-family: 'Pathway Gothic One', sans-serif; }\n\n.sub-header {\n  color: #232f32;\n  font-size: 1.3rem;\n  font-family: 'Pathway Gothic One', sans-serif; }\n  .sub-header a {\n    text-transform: capitalize; }\n\n.page-title {\n  color: #555;\n  font-family: 'Pathway Gothic One', sans-serif;\n  font-size: 1.5rem;\n  margin-top: 1.5rem;\n  margin-bottom: 1.5rem; }\n\ninput[type=search] {\n  box-shadow: none; }\n\n.top-bar-upper {\n  color: #333;\n  font-size: 0.5rem; }\n\n.app-header {\n  font-size: 1.3rem; }\n\ntable.overview-custom tbody,\ntable.overview-custom th,\ntable.overview-custom thead,\ntable.overview-custom tr {\n  text-align: center; }\n\ntable.sensor-details-table tbody {\n  text-align: left; }\n\ng text {\n  fill: #232f32;\n  stroke: #232f32;\n  display: none; }\n\npolyline {\n  stroke: #232f32;\n  display: none; }\n\n.statusText {\n  color: red;\n  margin-bottom: 1rem;\n  text-transform: uppercase;\n  font-size: 0.8em;\n  font-weight: bold; }\n\n.notificationHeader {\n  color: #fff;\n  text-transform: uppercase;\n  font-size: 0.5em;\n  font-weight: bold; }\n\n.sensorBlock {\n  height: 30px;\n  width: auto;\n  color: #fff;\n  text-align: center;\n  font-family: 'Pathway Gothic One', sans-serif;\n  text-transform: uppercase; }\n\n.sensorBlockSquare {\n  height: 30px;\n  width: 30px;\n  margin: auto;\n  cursor: pointer; }\n\n.sensorBlockSquare:hover {\n  opacity: 0.5; }\n\n.button-custom {\n  height: 30px;\n  width: auto !important;\n  margin: 0px;\n  color: #fff !important;\n  text-align: center;\n  font-family: 'Pathway Gothic One', sans-serif;\n  text-transform: uppercase; }\n\n.remove {\n  border: 1px solid #990000;\n  background-color: #fff;\n  color: #990000 !important; }\n\n.tableOptions > li > a {\n  color: #323232;\n  font-weight: normal;\n  font-size: 1rem;\n  padding: 0.5rem 0.7rem; }\n\n.tableOptions .menuHeader, .menuHeader:hover {\n  background-color: #232f32 !important;\n  color: #fff;\n  padding: 0.3rem 0.7rem;\n  text-transform: uppercase; }\n\n.tableOptions > li {\n  border-bottom: 1px solid #f2f2f2; }\n\n.tableOptions > li:hover {\n  background-color: #f2f2f2; }\n\n.dropdown-pane {\n  padding: 0px; }\n\n#emailPanel, #namePanel {\n  display: none; }\n\n.green {\n  background-color: #006600; }\n\n.orange {\n  background-color: #cc7a00; }\n\n.red {\n  background-color: #990000; }\n\n.black {\n  background-color: #1a1b1b; }\n\n.grey {\n  background-color: #737373; }\n", ""]);
 
 	// exports
 
@@ -62763,7 +62757,7 @@
 	exports.push([module.id, "@import url(https://fonts.googleapis.com/css?family=Lato:400,900i);", ""]);
 
 	// module
-	exports.push([module.id, "body,\nhtml {\n  background: #f2f2f2;\n  height: 100%;\n  font-family: roboto;\n  color: #1a1b1b; }\n\n.row {\n  max-width: 100rem; }\n\ndiv#offCanvas {\n  width: 350px;\n  height: 100%;\n  padding: 1.5rem;\n  background: #e8e8e8; }\n\n.is-open-right {\n  transform: translateX(-350px); }\n\n.off-canvas.position-right {\n  right: -350px; }\n\n.off-canvas-content {\n  background: #f2f2f2; }\n\na {\n  color: #6abedb; }\n\nhr {\n  border-color: #373837;\n  margin-top: 0.5rem; }\n\ntable thead {\n  background: #232f32;\n  color: white;\n  border: 1px solid #232f32; }\n\ntable tbody {\n  color: #1a1b1b;\n  border: 1px solid #232f32; }\n\n.margin-top-large {\n  margin-top: 4rem; }\n\n.margin-bottom-large {\n  margin-bottom: 4rem; }\n\n.margin-right-small {\n  margin-right: 2rem; }\n\n.margin-left-small {\n  margin-left: 2rem; }\n\n.margin-top-md {\n  margin-top: 2rem; }\n\n.margin-top-small {\n  margin-top: 1rem; }\n\n.margin-bottom-md {\n  margin-bottom: 2rem; }\n\n.margin-bottom-small {\n  margin-bottom: 1rem; }\n\n.textAlignCenter {\n  text-align: center; }\n\nul.header-list {\n  display: inline-block;\n  list-style: none;\n  margin-bottom: 0px; }\n\n.callout {\n  background-color: #f2f2f2; }\n\n.callout-dark {\n  padding: 1.5rem;\n  background-color: #f2f2f2;\n  border: 3px solid #bdbdbd;\n  border-top: none;\n  margin-top: 0; }\n\n.scroll {\n  max-height: 100vh;\n  overflow-y: scroll; }\n\n.callout-dark-header {\n  padding: 0.5rem;\n  background-color: #fff;\n  border: 3px solid #bdbdbd;\n  border-bottom: 1px solid #bdbdbd;\n  margin-bottom: 0; }\n\n.callout-top-header {\n  padding: 1rem;\n  background-color: #f2f2f2;\n  border: 3px solid #bdbdbd; }\n\n.icon-btn-text-small {\n  font-family: 'Pathway Gothic One', sans-serif;\n  text-transform: uppercase;\n  top: 15px;\n  right: 15px;\n  position: absolute;\n  color: #232f32;\n  font-size: 1.2rem; }\n\nlabel {\n  text-transform: capitalize;\n  color: #232f32; }\n\n.header {\n  color: #232f32;\n  margin-bottom: 0;\n  font-size: 1.2rem;\n  text-transform: uppercase;\n  font-family: 'Pathway Gothic One', sans-serif; }\n\n.sub-header {\n  color: #232f32;\n  font-size: 1.3rem;\n  font-family: 'Pathway Gothic One', sans-serif; }\n  .sub-header a {\n    text-transform: capitalize; }\n\n.page-title {\n  color: #555;\n  font-family: 'Pathway Gothic One', sans-serif;\n  font-size: 1.5rem;\n  margin-top: 1.5rem;\n  margin-bottom: 1.5rem; }\n\ninput[type=search] {\n  box-shadow: none; }\n\n.top-bar-upper {\n  color: #333;\n  font-size: 0.5rem; }\n\n.app-header {\n  font-size: 1.3rem; }\n\ntable.overview-custom tbody,\ntable.overview-custom th,\ntable.overview-custom thead,\ntable.overview-custom tr {\n  text-align: center; }\n\ntable.sensor-details-table tbody {\n  text-align: left; }\n\ng text {\n  fill: #232f32;\n  stroke: #232f32;\n  display: none; }\n\npolyline {\n  stroke: #232f32;\n  display: none; }\n\n.statusText {\n  color: red;\n  margin-bottom: 1rem;\n  text-transform: uppercase;\n  font-size: 0.8em;\n  font-weight: bold; }\n\n.notificationHeader {\n  color: #fff;\n  text-transform: uppercase;\n  font-size: 0.5em;\n  font-weight: bold; }\n\n.sensorBlock {\n  height: 30px;\n  width: auto;\n  color: #fff;\n  text-align: center;\n  font-family: 'Pathway Gothic One', sans-serif;\n  text-transform: uppercase; }\n\n.sensorBlockSquare {\n  height: 30px;\n  width: 30px;\n  margin: auto;\n  cursor: pointer; }\n\n.sensorBlockSquare:hover {\n  opacity: 0.5; }\n\n.button-custom {\n  height: 30px;\n  width: auto !important;\n  margin: 0px;\n  color: #fff !important;\n  text-align: center;\n  font-family: 'Pathway Gothic One', sans-serif;\n  text-transform: uppercase; }\n\n.remove {\n  border: 1px solid #990000;\n  background-color: #fff;\n  color: #990000 !important; }\n\n.tableOptions > li > a {\n  color: #323232;\n  font-weight: normal;\n  font-size: 1rem;\n  padding: 0.5rem 0.7rem; }\n\n.tableOptions .menuHeader, .menuHeader:hover {\n  background-color: #232f32 !important;\n  color: #fff;\n  padding: 0.3rem 0.7rem;\n  text-transform: uppercase; }\n\n.tableOptions > li {\n  border-bottom: 1px solid #f2f2f2; }\n\n.tableOptions > li:hover {\n  background-color: #f2f2f2; }\n\n.dropdown-pane {\n  padding: 0px; }\n\n.green {\n  background-color: #006600; }\n\n.orange {\n  background-color: #cc7a00; }\n\n.red {\n  background-color: #990000; }\n\n.black {\n  background-color: #1a1b1b; }\n\n.grey {\n  background-color: #737373; }\n\n.top-bar-left {\n  margin-top: 1.5rem; }\n\n.top-bar-right {\n  margin-top: 1.5rem; }\n\n.top-bar {\n  padding: 0rem 2rem 0rem 2rem;\n  background: #232f32;\n  height: 4rem;\n  box-shadow: 0.5px 0.5px 5px #373837; }\n\n.top-bar ul {\n  background: #232f32;\n  /* temporary fix */\n  position: absolute;\n  top: 15px;\n  right: 15px; }\n\n.top-bar.lower {\n  padding-top: 0px; }\n\n.top-bar-title {\n  font-size: 1.5rem;\n  font-family: 'Lato', sans-serif;\n  font-weight: bold;\n  position: absolute;\n  top: 15px;\n  left: 15px; }\n\n.menu > li > a {\n  color: #fafafa;\n  font-weight: bold;\n  font-size: 0.9rem;\n  text-transform: capitalize; }\n\n.is-dropdown-submenu {\n  border: 1px solid #373737; }\n", ""]);
+	exports.push([module.id, "body,\nhtml {\n  background: #f2f2f2;\n  height: 100%;\n  font-family: roboto;\n  color: #1a1b1b; }\n\n.row {\n  max-width: 100rem; }\n\ndiv#offCanvas {\n  width: 350px;\n  height: 100%;\n  padding: 1.5rem;\n  background: #e8e8e8; }\n\n.is-open-right {\n  transform: translateX(-350px); }\n\n.off-canvas.position-right {\n  right: -350px; }\n\n.off-canvas-content {\n  background: #f2f2f2; }\n\na {\n  color: #6abedb; }\n\nhr {\n  border-color: #373837;\n  margin-top: 0.5rem; }\n\ntable thead {\n  background: #232f32;\n  color: white;\n  border: 1px solid #232f32; }\n\ntable tbody {\n  color: #1a1b1b;\n  border: 1px solid #232f32; }\n\n.margin-top-large {\n  margin-top: 4rem; }\n\n.margin-bottom-large {\n  margin-bottom: 4rem; }\n\n.margin-right-small {\n  margin-right: 2rem; }\n\n.margin-left-small {\n  margin-left: 2rem; }\n\n.margin-top-md {\n  margin-top: 2rem; }\n\n.margin-top-small {\n  margin-top: 1rem; }\n\n.margin-bottom-md {\n  margin-bottom: 2rem; }\n\n.margin-bottom-small {\n  margin-bottom: 1rem; }\n\n.textAlignCenter {\n  text-align: center; }\n\nul.header-list {\n  display: inline-block;\n  list-style: none;\n  margin-bottom: 0px; }\n\n.callout {\n  background-color: #f2f2f2; }\n\n.callout-dark {\n  padding: 1.5rem;\n  background-color: #f2f2f2;\n  border: 3px solid #bdbdbd;\n  border-top: none;\n  margin-top: 0; }\n\n.scroll {\n  max-height: 100vh;\n  overflow-y: scroll; }\n\n.callout-dark-header {\n  padding: 0.5rem;\n  background-color: #fff;\n  border: 3px solid #bdbdbd;\n  border-bottom: 1px solid #bdbdbd;\n  margin-bottom: 0; }\n\n.callout-top-header {\n  padding: 1rem;\n  background-color: #f2f2f2;\n  border: 3px solid #bdbdbd; }\n\n.icon-btn-text-small {\n  font-family: 'Pathway Gothic One', sans-serif;\n  text-transform: uppercase;\n  top: 15px;\n  right: 15px;\n  position: absolute;\n  color: #232f32;\n  font-size: 1.2rem; }\n\nlabel {\n  text-transform: capitalize;\n  color: #232f32; }\n\n.header {\n  color: #232f32;\n  margin-bottom: 0;\n  font-size: 1.2rem;\n  text-transform: uppercase;\n  font-family: 'Pathway Gothic One', sans-serif; }\n\n.sub-header {\n  color: #232f32;\n  font-size: 1.3rem;\n  font-family: 'Pathway Gothic One', sans-serif; }\n  .sub-header a {\n    text-transform: capitalize; }\n\n.page-title {\n  color: #555;\n  font-family: 'Pathway Gothic One', sans-serif;\n  font-size: 1.5rem;\n  margin-top: 1.5rem;\n  margin-bottom: 1.5rem; }\n\ninput[type=search] {\n  box-shadow: none; }\n\n.top-bar-upper {\n  color: #333;\n  font-size: 0.5rem; }\n\n.app-header {\n  font-size: 1.3rem; }\n\ntable.overview-custom tbody,\ntable.overview-custom th,\ntable.overview-custom thead,\ntable.overview-custom tr {\n  text-align: center; }\n\ntable.sensor-details-table tbody {\n  text-align: left; }\n\ng text {\n  fill: #232f32;\n  stroke: #232f32;\n  display: none; }\n\npolyline {\n  stroke: #232f32;\n  display: none; }\n\n.statusText {\n  color: red;\n  margin-bottom: 1rem;\n  text-transform: uppercase;\n  font-size: 0.8em;\n  font-weight: bold; }\n\n.notificationHeader {\n  color: #fff;\n  text-transform: uppercase;\n  font-size: 0.5em;\n  font-weight: bold; }\n\n.sensorBlock {\n  height: 30px;\n  width: auto;\n  color: #fff;\n  text-align: center;\n  font-family: 'Pathway Gothic One', sans-serif;\n  text-transform: uppercase; }\n\n.sensorBlockSquare {\n  height: 30px;\n  width: 30px;\n  margin: auto;\n  cursor: pointer; }\n\n.sensorBlockSquare:hover {\n  opacity: 0.5; }\n\n.button-custom {\n  height: 30px;\n  width: auto !important;\n  margin: 0px;\n  color: #fff !important;\n  text-align: center;\n  font-family: 'Pathway Gothic One', sans-serif;\n  text-transform: uppercase; }\n\n.remove {\n  border: 1px solid #990000;\n  background-color: #fff;\n  color: #990000 !important; }\n\n.tableOptions > li > a {\n  color: #323232;\n  font-weight: normal;\n  font-size: 1rem;\n  padding: 0.5rem 0.7rem; }\n\n.tableOptions .menuHeader, .menuHeader:hover {\n  background-color: #232f32 !important;\n  color: #fff;\n  padding: 0.3rem 0.7rem;\n  text-transform: uppercase; }\n\n.tableOptions > li {\n  border-bottom: 1px solid #f2f2f2; }\n\n.tableOptions > li:hover {\n  background-color: #f2f2f2; }\n\n.dropdown-pane {\n  padding: 0px; }\n\n#emailPanel, #namePanel {\n  display: none; }\n\n.green {\n  background-color: #006600; }\n\n.orange {\n  background-color: #cc7a00; }\n\n.red {\n  background-color: #990000; }\n\n.black {\n  background-color: #1a1b1b; }\n\n.grey {\n  background-color: #737373; }\n\n.top-bar-left {\n  margin-top: 1.5rem; }\n\n.top-bar-right {\n  margin-top: 1.5rem; }\n\n.top-bar {\n  padding: 0rem 2rem 0rem 2rem;\n  background: #232f32;\n  height: 4rem;\n  box-shadow: 0.5px 0.5px 5px #373837; }\n\n.top-bar ul {\n  background: #232f32;\n  /* temporary fix */\n  position: absolute;\n  top: 15px;\n  right: 15px; }\n\n.top-bar.lower {\n  padding-top: 0px; }\n\n.top-bar-title {\n  font-size: 1.5rem;\n  font-family: 'Lato', sans-serif;\n  font-weight: bold;\n  position: absolute;\n  top: 15px;\n  left: 15px; }\n\n.menu > li > a {\n  color: #fafafa;\n  font-weight: bold;\n  font-size: 0.9rem;\n  text-transform: capitalize; }\n\n.is-dropdown-submenu {\n  border: 1px solid #373737; }\n", ""]);
 
 	// exports
 
@@ -62845,7 +62839,7 @@
 	exports.push([module.id, "@import url(https://fonts.googleapis.com/css?family=Lato:400,900i);", ""]);
 
 	// module
-	exports.push([module.id, "body,\nhtml {\n  background: #f2f2f2;\n  height: 100%;\n  font-family: roboto;\n  color: #1a1b1b; }\n\n.row {\n  max-width: 100rem; }\n\ndiv#offCanvas {\n  width: 350px;\n  height: 100%;\n  padding: 1.5rem;\n  background: #e8e8e8; }\n\n.is-open-right {\n  transform: translateX(-350px); }\n\n.off-canvas.position-right {\n  right: -350px; }\n\n.off-canvas-content {\n  background: #f2f2f2; }\n\na {\n  color: #6abedb; }\n\nhr {\n  border-color: #373837;\n  margin-top: 0.5rem; }\n\ntable thead {\n  background: #232f32;\n  color: white;\n  border: 1px solid #232f32; }\n\ntable tbody {\n  color: #1a1b1b;\n  border: 1px solid #232f32; }\n\n.margin-top-large {\n  margin-top: 4rem; }\n\n.margin-bottom-large {\n  margin-bottom: 4rem; }\n\n.margin-right-small {\n  margin-right: 2rem; }\n\n.margin-left-small {\n  margin-left: 2rem; }\n\n.margin-top-md {\n  margin-top: 2rem; }\n\n.margin-top-small {\n  margin-top: 1rem; }\n\n.margin-bottom-md {\n  margin-bottom: 2rem; }\n\n.margin-bottom-small {\n  margin-bottom: 1rem; }\n\n.textAlignCenter {\n  text-align: center; }\n\nul.header-list {\n  display: inline-block;\n  list-style: none;\n  margin-bottom: 0px; }\n\n.callout {\n  background-color: #f2f2f2; }\n\n.callout-dark {\n  padding: 1.5rem;\n  background-color: #f2f2f2;\n  border: 3px solid #bdbdbd;\n  border-top: none;\n  margin-top: 0; }\n\n.scroll {\n  max-height: 100vh;\n  overflow-y: scroll; }\n\n.callout-dark-header {\n  padding: 0.5rem;\n  background-color: #fff;\n  border: 3px solid #bdbdbd;\n  border-bottom: 1px solid #bdbdbd;\n  margin-bottom: 0; }\n\n.callout-top-header {\n  padding: 1rem;\n  background-color: #f2f2f2;\n  border: 3px solid #bdbdbd; }\n\n.icon-btn-text-small {\n  font-family: 'Pathway Gothic One', sans-serif;\n  text-transform: uppercase;\n  top: 15px;\n  right: 15px;\n  position: absolute;\n  color: #232f32;\n  font-size: 1.2rem; }\n\nlabel {\n  text-transform: capitalize;\n  color: #232f32; }\n\n.header {\n  color: #232f32;\n  margin-bottom: 0;\n  font-size: 1.2rem;\n  text-transform: uppercase;\n  font-family: 'Pathway Gothic One', sans-serif; }\n\n.sub-header {\n  color: #232f32;\n  font-size: 1.3rem;\n  font-family: 'Pathway Gothic One', sans-serif; }\n  .sub-header a {\n    text-transform: capitalize; }\n\n.page-title {\n  color: #555;\n  font-family: 'Pathway Gothic One', sans-serif;\n  font-size: 1.5rem;\n  margin-top: 1.5rem;\n  margin-bottom: 1.5rem; }\n\ninput[type=search] {\n  box-shadow: none; }\n\n.top-bar-upper {\n  color: #333;\n  font-size: 0.5rem; }\n\n.app-header {\n  font-size: 1.3rem; }\n\ntable.overview-custom tbody,\ntable.overview-custom th,\ntable.overview-custom thead,\ntable.overview-custom tr {\n  text-align: center; }\n\ntable.sensor-details-table tbody {\n  text-align: left; }\n\ng text {\n  fill: #232f32;\n  stroke: #232f32;\n  display: none; }\n\npolyline {\n  stroke: #232f32;\n  display: none; }\n\n.statusText {\n  color: red;\n  margin-bottom: 1rem;\n  text-transform: uppercase;\n  font-size: 0.8em;\n  font-weight: bold; }\n\n.notificationHeader {\n  color: #fff;\n  text-transform: uppercase;\n  font-size: 0.5em;\n  font-weight: bold; }\n\n.sensorBlock {\n  height: 30px;\n  width: auto;\n  color: #fff;\n  text-align: center;\n  font-family: 'Pathway Gothic One', sans-serif;\n  text-transform: uppercase; }\n\n.sensorBlockSquare {\n  height: 30px;\n  width: 30px;\n  margin: auto;\n  cursor: pointer; }\n\n.sensorBlockSquare:hover {\n  opacity: 0.5; }\n\n.button-custom {\n  height: 30px;\n  width: auto !important;\n  margin: 0px;\n  color: #fff !important;\n  text-align: center;\n  font-family: 'Pathway Gothic One', sans-serif;\n  text-transform: uppercase; }\n\n.remove {\n  border: 1px solid #990000;\n  background-color: #fff;\n  color: #990000 !important; }\n\n.tableOptions > li > a {\n  color: #323232;\n  font-weight: normal;\n  font-size: 1rem;\n  padding: 0.5rem 0.7rem; }\n\n.tableOptions .menuHeader, .menuHeader:hover {\n  background-color: #232f32 !important;\n  color: #fff;\n  padding: 0.3rem 0.7rem;\n  text-transform: uppercase; }\n\n.tableOptions > li {\n  border-bottom: 1px solid #f2f2f2; }\n\n.tableOptions > li:hover {\n  background-color: #f2f2f2; }\n\n.dropdown-pane {\n  padding: 0px; }\n\n.green {\n  background-color: #006600; }\n\n.orange {\n  background-color: #cc7a00; }\n\n.red {\n  background-color: #990000; }\n\n.black {\n  background-color: #1a1b1b; }\n\n.grey {\n  background-color: #737373; }\n\n.griddle-container {\n  border: none !important; }\n\n.griddle .top-section {\n  clear: both;\n  display: table;\n  width: 100%; }\n\n.griddle .griddle-filter {\n  float: left;\n  width: 50%;\n  text-align: left;\n  color: #222;\n  min-height: 1px; }\n\n.griddle-body {\n  font-size: 1em; }\n\n.griddle .griddle-settings-toggle {\n  float: left;\n  width: 50%;\n  text-align: right;\n  color: #f8f8f8; }\n\n.griddle .griddle-settings {\n  background-color: #FFF;\n  border: 1px solid #DDD;\n  color: #222;\n  padding: 10px;\n  margin-bottom: 10px; }\n\n.griddle .griddle-settings .settings {\n  color: #f8f8f8; }\n\n.griddle .griddle-settings .griddle-columns {\n  clear: both;\n  display: table;\n  width: 100%;\n  border-bottom: 1px solid #EDEDED;\n  margin-bottom: 10px; }\n\n.griddle .griddle-settings .griddle-column-selection {\n  float: left;\n  width: 20%; }\n\n.griddle table {\n  width: 100%;\n  table-layout: fixed; }\n\n.griddle th {\n  background-color: #EDEDEF;\n  border: 0px;\n  border-bottom: 1px solid #DDD;\n  color: #222;\n  padding: 5px; }\n\n.griddle td {\n  padding: 5px;\n  background-color: #FFF;\n  border-top-color: #DDD;\n  color: #222; }\n\n.griddle .footer-container {\n  padding: 0px;\n  background-color: #EDEDED;\n  border: 0px;\n  color: #222; }\n\n.griddle button {\n  color: transparent; }\n\n.griddle .griddle-previous, .griddle .griddle-page, .griddle .griddle-next {\n  float: left;\n  width: 33%;\n  min-height: 1px;\n  margin-top: 5px; }\n\n.griddle .griddle-page {\n  text-align: center; }\n\n.griddle .griddle-next {\n  text-align: right; }\n", ""]);
+	exports.push([module.id, "body,\nhtml {\n  background: #f2f2f2;\n  height: 100%;\n  font-family: roboto;\n  color: #1a1b1b; }\n\n.row {\n  max-width: 100rem; }\n\ndiv#offCanvas {\n  width: 350px;\n  height: 100%;\n  padding: 1.5rem;\n  background: #e8e8e8; }\n\n.is-open-right {\n  transform: translateX(-350px); }\n\n.off-canvas.position-right {\n  right: -350px; }\n\n.off-canvas-content {\n  background: #f2f2f2; }\n\na {\n  color: #6abedb; }\n\nhr {\n  border-color: #373837;\n  margin-top: 0.5rem; }\n\ntable thead {\n  background: #232f32;\n  color: white;\n  border: 1px solid #232f32; }\n\ntable tbody {\n  color: #1a1b1b;\n  border: 1px solid #232f32; }\n\n.margin-top-large {\n  margin-top: 4rem; }\n\n.margin-bottom-large {\n  margin-bottom: 4rem; }\n\n.margin-right-small {\n  margin-right: 2rem; }\n\n.margin-left-small {\n  margin-left: 2rem; }\n\n.margin-top-md {\n  margin-top: 2rem; }\n\n.margin-top-small {\n  margin-top: 1rem; }\n\n.margin-bottom-md {\n  margin-bottom: 2rem; }\n\n.margin-bottom-small {\n  margin-bottom: 1rem; }\n\n.textAlignCenter {\n  text-align: center; }\n\nul.header-list {\n  display: inline-block;\n  list-style: none;\n  margin-bottom: 0px; }\n\n.callout {\n  background-color: #f2f2f2; }\n\n.callout-dark {\n  padding: 1.5rem;\n  background-color: #f2f2f2;\n  border: 3px solid #bdbdbd;\n  border-top: none;\n  margin-top: 0; }\n\n.scroll {\n  max-height: 100vh;\n  overflow-y: scroll; }\n\n.callout-dark-header {\n  padding: 0.5rem;\n  background-color: #fff;\n  border: 3px solid #bdbdbd;\n  border-bottom: 1px solid #bdbdbd;\n  margin-bottom: 0; }\n\n.callout-top-header {\n  padding: 1rem;\n  background-color: #f2f2f2;\n  border: 3px solid #bdbdbd; }\n\n.icon-btn-text-small {\n  font-family: 'Pathway Gothic One', sans-serif;\n  text-transform: uppercase;\n  top: 15px;\n  right: 15px;\n  position: absolute;\n  color: #232f32;\n  font-size: 1.2rem; }\n\nlabel {\n  text-transform: capitalize;\n  color: #232f32; }\n\n.header {\n  color: #232f32;\n  margin-bottom: 0;\n  font-size: 1.2rem;\n  text-transform: uppercase;\n  font-family: 'Pathway Gothic One', sans-serif; }\n\n.sub-header {\n  color: #232f32;\n  font-size: 1.3rem;\n  font-family: 'Pathway Gothic One', sans-serif; }\n  .sub-header a {\n    text-transform: capitalize; }\n\n.page-title {\n  color: #555;\n  font-family: 'Pathway Gothic One', sans-serif;\n  font-size: 1.5rem;\n  margin-top: 1.5rem;\n  margin-bottom: 1.5rem; }\n\ninput[type=search] {\n  box-shadow: none; }\n\n.top-bar-upper {\n  color: #333;\n  font-size: 0.5rem; }\n\n.app-header {\n  font-size: 1.3rem; }\n\ntable.overview-custom tbody,\ntable.overview-custom th,\ntable.overview-custom thead,\ntable.overview-custom tr {\n  text-align: center; }\n\ntable.sensor-details-table tbody {\n  text-align: left; }\n\ng text {\n  fill: #232f32;\n  stroke: #232f32;\n  display: none; }\n\npolyline {\n  stroke: #232f32;\n  display: none; }\n\n.statusText {\n  color: red;\n  margin-bottom: 1rem;\n  text-transform: uppercase;\n  font-size: 0.8em;\n  font-weight: bold; }\n\n.notificationHeader {\n  color: #fff;\n  text-transform: uppercase;\n  font-size: 0.5em;\n  font-weight: bold; }\n\n.sensorBlock {\n  height: 30px;\n  width: auto;\n  color: #fff;\n  text-align: center;\n  font-family: 'Pathway Gothic One', sans-serif;\n  text-transform: uppercase; }\n\n.sensorBlockSquare {\n  height: 30px;\n  width: 30px;\n  margin: auto;\n  cursor: pointer; }\n\n.sensorBlockSquare:hover {\n  opacity: 0.5; }\n\n.button-custom {\n  height: 30px;\n  width: auto !important;\n  margin: 0px;\n  color: #fff !important;\n  text-align: center;\n  font-family: 'Pathway Gothic One', sans-serif;\n  text-transform: uppercase; }\n\n.remove {\n  border: 1px solid #990000;\n  background-color: #fff;\n  color: #990000 !important; }\n\n.tableOptions > li > a {\n  color: #323232;\n  font-weight: normal;\n  font-size: 1rem;\n  padding: 0.5rem 0.7rem; }\n\n.tableOptions .menuHeader, .menuHeader:hover {\n  background-color: #232f32 !important;\n  color: #fff;\n  padding: 0.3rem 0.7rem;\n  text-transform: uppercase; }\n\n.tableOptions > li {\n  border-bottom: 1px solid #f2f2f2; }\n\n.tableOptions > li:hover {\n  background-color: #f2f2f2; }\n\n.dropdown-pane {\n  padding: 0px; }\n\n#emailPanel, #namePanel {\n  display: none; }\n\n.green {\n  background-color: #006600; }\n\n.orange {\n  background-color: #cc7a00; }\n\n.red {\n  background-color: #990000; }\n\n.black {\n  background-color: #1a1b1b; }\n\n.grey {\n  background-color: #737373; }\n\n.griddle-container {\n  border: none !important; }\n\n.griddle .top-section {\n  clear: both;\n  display: table;\n  width: 100%; }\n\n.griddle .griddle-filter {\n  float: left;\n  width: 50%;\n  text-align: left;\n  color: #222;\n  min-height: 1px; }\n\n.griddle-body {\n  font-size: 1em; }\n\n.griddle .griddle-settings-toggle {\n  float: left;\n  width: 50%;\n  text-align: right;\n  color: #f8f8f8; }\n\n.griddle .griddle-settings {\n  background-color: #FFF;\n  border: 1px solid #DDD;\n  color: #222;\n  padding: 10px;\n  margin-bottom: 10px; }\n\n.griddle .griddle-settings .settings {\n  color: #f8f8f8; }\n\n.griddle .griddle-settings .griddle-columns {\n  clear: both;\n  display: table;\n  width: 100%;\n  border-bottom: 1px solid #EDEDED;\n  margin-bottom: 10px; }\n\n.griddle .griddle-settings .griddle-column-selection {\n  float: left;\n  width: 20%; }\n\n.griddle table {\n  width: 100%;\n  table-layout: fixed; }\n\n.griddle th {\n  background-color: #EDEDEF;\n  border: 0px;\n  border-bottom: 1px solid #DDD;\n  color: #222;\n  padding: 5px; }\n\n.griddle td {\n  padding: 5px;\n  background-color: #FFF;\n  border-top-color: #DDD;\n  color: #222; }\n\n.griddle .footer-container {\n  padding: 0px;\n  background-color: #EDEDED;\n  border: 0px;\n  color: #222; }\n\n.griddle button {\n  color: transparent; }\n\n.griddle .griddle-previous, .griddle .griddle-page, .griddle .griddle-next {\n  float: left;\n  width: 33%;\n  min-height: 1px;\n  margin-top: 5px; }\n\n.griddle .griddle-page {\n  text-align: center; }\n\n.griddle .griddle-next {\n  text-align: right; }\n", ""]);
 
 	// exports
 

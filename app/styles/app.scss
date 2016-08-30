@@ -281,6 +281,10 @@ polyline {
   padding: 0px;
 }
 
+#emailPanel, #namePanel {
+  display: none;
+}
+
 .green {
   background-color: $green;
 }

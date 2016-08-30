@@ -71,18 +71,31 @@ class NotificationLog extends React.Component {
     }
 
     render() {
+        console.log("eres mi amigo?", this.state.data);
         var notificationData = this.state.data;
         var dataList = [];
 
         for (var i = 0; i < notificationData.length; i++) {
             var logEntry = notificationData[i];
 
+            var diagnosis = logEntry['problem']['diagnosis'];
+
+            //console.log("diagnosis", typeof diagnosis);
+            if (typeof diagnosis == "object") {
+                diagnosis = $.map(diagnosis, function(value, index) {
+                    return [value];
+                });
+                diagnosis = diagnosis.join(", ");
+            }  else {
+                diagnosis = " - ";
+            }
+
             var row = {
                 "mac_address": logEntry["mac"],
                 "building": logEntry["building"],
                 "sensor-level-id": logEntry["level"] + logEntry["id"],
-                "sensor_status": "logEntry['problem']['status']",
-                "diagnosis": "logEntry['problem']['diagnosis']",
+                "sensor_status": logEntry['problem']['status'],
+                "diagnosis": diagnosis,
                 "timestamp": logEntry["timestamp"]["date"]
             };
 

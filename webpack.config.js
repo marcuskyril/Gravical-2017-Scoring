@@ -56,7 +56,7 @@ module.exports = {
       Login: 'app/components/Login.jsx',
       Main: 'app/components/Main.jsx',
       Nav: 'app/components/Nav.jsx',
-      Notifications: 'app/components/Notifications.jsx',
+      NotificationBar: 'app/components/NotificationBar.jsx',
       NotificationLog: 'app/components/NotificationLog.jsx',
       PageNotFound: 'app/components/PageNotFound.jsx',
       SensorDetails: 'app/components/SensorDetails.jsx',
