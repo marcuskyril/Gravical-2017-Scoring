@@ -2,8 +2,63 @@ var React = require('react');
 import * as Redux from 'react-redux';
 import * as actions from 'actions';
 import firebase, {firebaseRef} from 'app/firebase/';
-
 var user = null;
+
+class ConfirmationModal extends React.Component {
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            'action': this.props.action
+        }
+    }
+
+    launchConfirmationModal() {
+        var assocArr = {
+            'updateEmail': 'Update Email',
+            'updateDisplayName': 'Update Display Name',
+            'updatePassword': 'Update Password'
+        }
+
+        this.setState({
+            'action': assoArr[this.props.action]
+        });
+        var modal = new Foundation.Reveal($('#confirmation-modal'));
+        modal.open();
+    }
+
+    render() {
+
+        // TO DO
+        // update on click event
+        // update error message on failure
+
+        return (
+            <div id="confirmation-modal" className="reveal tiny text-center" data-reveal="">
+                <form>
+                    <div className="row">
+                        <div className="large-12 columns">
+                            <div className="header">{this.state.action}</div>
+
+                            <div className="header" style={{
+                                color: '#990000'
+                            }}>Do you want to proceed?</div>
+
+                            <div id="deleteSensorMessage"><DeleteSensorMessage message={message}/></div>
+
+                            <button className="button expanded">
+                                Yes I do
+                            </button>
+                            <button id="closeDelete" className="button hollow expanded" data-close="">
+                                Slow down, cowboy
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        );
+    }
+}
 
 class AccountSettings extends React.Component {
 
@@ -18,6 +73,7 @@ class AccountSettings extends React.Component {
     }
 
     componentDidMount() {
+
         var that = this;
 
         firebase.auth().onAuthStateChanged(function(user) {
@@ -32,9 +88,28 @@ class AccountSettings extends React.Component {
 
     reveal(clickTarget, revealTarget) {
 
-      $('#' +clickTarget).click(function(){
-        $('#' +revealTarget).slideDown("slow");
-      });
+        $('#' + clickTarget).click(function() {
+
+            switch(revealTarget) {
+              case "emailPanel":
+                $('#namePanel').slideUp("slow");
+                $('#passwordPanel').slideUp("slow");
+                break;
+              case "namePanel":
+                $('#emailPanel').slideUp("slow");
+                $('#passwordPanel').slideUp("slow");
+                break;
+              case "passwordPanel":
+                $('#emailPanel').slideUp("slow");
+                $('#namePanel').slideUp("slow");
+                break;
+              default:
+                console.warn("Oh snap. Something went wrong.");
+              break;
+            }
+
+            $('#' + revealTarget).slideDown("slow");
+        });
     }
 
     onUpdateDisplayName(e) {
@@ -44,15 +119,13 @@ class AccountSettings extends React.Component {
         var displayName = this.refs.displayName.value;
         var {dispatch} = this.props;
 
-        console.log("start login", displayName);
-
         user = firebase.auth().currentUser;
 
         if (user != null) {
             user.updateProfile({displayName: displayName}).then(function() {
                 alert('New display name: ' + user.displayName);
             }, function(error) {
-                alert('Alamak ' + error);
+                alert('Oh snap. ' + error);
             });
         }
 
@@ -73,7 +146,7 @@ class AccountSettings extends React.Component {
             user.updateEmail(inputEmail).then(function() {
                 alert('Email updated!');
             }, function(error) {
-                alert('Alamak ' + error);
+                alert('Oh snap. ' + error);
             });
         }
     }
@@ -94,7 +167,7 @@ class AccountSettings extends React.Component {
                 user.updatePassword(confirmPassword).then(function() {
                     alert('Password changed!');
                 }, function(error) {
-                    alert('Alamak! ' + error);
+                    alert('Oh snap. ' + error);
                 });
             } else {
                 alert('Passwords do not match');
@@ -102,17 +175,28 @@ class AccountSettings extends React.Component {
         }
     }
 
+    onVerifyEmail(e) {
+        e.preventDefault();
+
+        alert("Oh snap. I haven't done this yet.");
+
+    }
+
     render() {
+
+        // TO DO
+        // set padding for forms
+
         return (
             <div className="margin-top-md">
                 <div className="large-8 columns large-centered">
-                    <div className="header">General Account Settings</div>
-                    <hr/>
+                    <div className="page-title">General Account Settings</div>
                     <div className="profile wrapper" style={{
                         'color': '#000'
                     }}>
+
                         <div className="row">
-                            <div className="columns large-2">Name</div>
+                            <div className="columns large-2"><b>Name</b></div>
                             <div className="columns large-5">{this.state.userDisplayName}</div>
                             <div className="columns large-5">
                                 <a id="triggerNamePanel" onClick={this.reveal('triggerNamePanel', 'namePanel')}>Edit</a>
@@ -120,44 +204,68 @@ class AccountSettings extends React.Component {
                         </div>
 
                         <div className="row" id="namePanel">
-                            <div className="input-group">
-                                <span className="input-group-label">Display Name</span>
-                                <input className="input-group-field" type="text"/>
-                                <div className="input-group-button">
-                                    <input type="submit" onClick={this.onUpdateDisplayName} className="button hollow" value="Submit"/>
+                            <div className="header">Update display name</div>
+                            <hr/>
+                            <form>
+                                <div className="row">
+                                    <div className="medium-6 columns">
+                                        <input type="text" ref="displayName" placeholder={this.state.userDisplayName}/>
+                                    </div>
+                                    <button className="button" type="button" onClick={this.onUpdateDisplayName.bind(this)}>Update</button>
                                 </div>
-                            </div>
+                            </form>
                         </div>
 
                         <div className="row">
-                            <div className="columns large-2">Email</div>
+                            <div className="columns large-2"><b>Email</b></div>
                             <div className="columns large-5">{this.state.email}</div>
                             <div className="columns large-5">
                                 <a id="triggerEmailPanel" onClick={this.reveal('triggerEmailPanel', 'emailPanel')}>Edit</a>
                             </div>
                         </div>
+
                         <div className="row" id="emailPanel">
-                            <form>
-                                <div className="row">
-                                    <div className="medium-6 columns">
-                                        <label>Input Label
-                                            <input type="text" placeholder=".medium-6.columns"/>
-                                        </label>
-                                    </div>
-                                    <div className="medium-6 columns">
-                                        <label>Input Label
-                                            <input type="text" placeholder=".medium-6.columns"/>
-                                        </label>
-                                    </div>
-                                </div>
-                            </form>
+                            <div className="header">Update email</div>
+                              <hr/>
+                              <form>
+                                  <div className="row">
+                                      <div className="medium-6 columns">
+                                          <input type="text" ref="newEmail" placeholder={this.state.email}/>
+                                      </div>
+                                      <button className="button" type="button" onClick={this.onUpdateEmail.bind(this)}>Update</button>
+                                  </div>
+                              </form>
                         </div>
+
                         <div className="row">
-                            <div className="columns large-2">Email Verified?</div>
-                            <div className="columns large-5">{this.state.emailVerified}</div>
+                            <div className="columns large-2"><b>Email Verified?</b></div>
+                            <div className="columns large-5">{this.state.emailVerified ? "true":"false" }</div>
                             <div className="columns large-5">
-                                <a href="" onClick={this.verifyEmail}>Verify email</a>
+                                <a onClick={this.onVerifyEmail}>Verify Email</a>
                             </div>
+                        </div>
+
+                        <div className="row">
+                            <div className="columns large-2"><b>Password</b></div>
+                            <div className="columns large-5">
+                                <a id="triggerPasswordPanel" onClick={this.reveal('triggerPasswordPanel', 'passwordPanel')}>Update Password</a>
+                            </div>
+                        </div>
+
+                        <div className="row" id="passwordPanel">
+                            <div className="header">Update password</div>
+                              <hr/>
+                              <form>
+                                  <div className="row">
+                                      <div className="medium-5 columns">
+                                          <input type="password" ref="newPassword" placeholder="*******"/>
+                                      </div>
+                                      <div className="medium-5 columns">
+                                          <input type="password" ref="confirmPassword" placeholder="*******"/>
+                                      </div>
+                                      <button className="button" type="button" onClick={this.onUpdatePassword.bind(this)}>Update</button>
+                                  </div>
+                              </form>
                         </div>
                     </div>
                 </div>

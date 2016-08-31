@@ -70,6 +70,17 @@ class NotificationLog extends React.Component {
         })
     }
 
+    handleClick(){
+        var that = this;
+
+        notificationLogAPI.retrieveNotifications(100).then(function(response) {
+            that.setState({data: response});
+        })
+
+        that.forceUpdate();
+
+    }
+
     render() {
         console.log("eres mi amigo?", this.state.data);
         var notificationData = this.state.data;
@@ -103,11 +114,14 @@ class NotificationLog extends React.Component {
 
         }
 
+        var that = this;
+
         return (
             <div>
                 <div className="notificationWrapper" style={{paddingTop: '2rem', paddingBottom: '2rem'}}>
-                    <div className="callout-dark-header">
+                    <div className="callout callout-dark-header">
                         <div className="header">Your Notifications</div>
+                        <button className="icon-btn-text-small" onClick={() => that.handleClick()}>REFRESH</button>
                     </div>
                     <div className="callout-dark">
                         <Griddle results={dataList} resultsPerPage={100} columnMetadata={tableMetaData} tableClassName="table" columns={[

@@ -108,9 +108,11 @@ ul.header-list {
 .callout-dark {
     padding: 1.5rem;
     background-color: $crazy-light-grey;
-    border: 3px solid #bdbdbd;
+    border: 2px solid #bdbdbd;
     border-top: none;
     margin-top: 0;
+    border-bottom-right-radius: 4px;
+    border-bottom-left-radius: 4px;
 }
 
 .scroll {
@@ -121,16 +123,17 @@ ul.header-list {
 .callout-dark-header {
     padding: 0.5rem;
     background-color: #fff;
-    border: 3px solid #bdbdbd;
+    border: 2px solid #bdbdbd;
     border-bottom: 1px solid #bdbdbd;
-    // border-top-left-radius: 4px;
-    // border-top-right-radius: 4px;
+    border-top-left-radius: 4px;
+    border-top-right-radius: 4px;
     margin-bottom: 0;
 }
 .callout-top-header {
   padding: 1rem;
   background-color: $crazy-light-grey;
-  border: 3px solid #bdbdbd;
+  border: 2px solid #bdbdbd;
+  border-radius: 4px;
 }
 
 .icon-btn-text-small {
@@ -165,12 +168,14 @@ label {
     }
 }
 .page-title {
-    color: $title-color;
-    font-family: 'Pathway Gothic One', sans-serif;
+    color: $header-color;
+    font-family: 'Lato', sans-serif;
     font-size: 1.5rem;
+    font-weight: bold;
     margin-top: $space-large;
     margin-bottom: $space-large;
 }
+
 input[type=search] {
     box-shadow: none;
 }
@@ -281,8 +286,11 @@ polyline {
   padding: 0px;
 }
 
-#emailPanel, #namePanel {
+#emailPanel, #namePanel, #passwordPanel {
   display: none;
+  padding: 1rem;
+  margin: 1rem 0;
+  background: #e4e4e4;
 }
 
 .green {

@@ -26,7 +26,7 @@ export var Login = React.createClass({
             <div className="login-wrapper">
                 <div className="large-5 large-centered columns">
                   <div className="row">
-                      <h3 className="page-title">LOG IN</h3>
+                      <div className="page-title">Log In</div>
                   </div>
                   <div className="callout callout-top-header">
                         <div className="row">
