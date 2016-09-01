@@ -201,8 +201,16 @@ class AccountSettings extends React.Component {
     onVerifyEmail(e) {
         e.preventDefault();
 
-        alert("Oh snap. I haven't done this yet.");
+        user = firebase.auth().currentUser;
 
+        if (user != null) {
+            user.sendEmailVerification().then(function() {
+                alert('Email sent!');
+
+            }, function(error) {
+                alert('Oh snap. ' + error);
+            });
+        }
     }
 
     render() {

@@ -10918,7 +10918,15 @@
 	        value: function onVerifyEmail(e) {
 	            e.preventDefault();
 
-	            alert("Oh snap. I haven't done this yet.");
+	            user = _firebase2.default.auth().currentUser;
+
+	            if (user != null) {
+	                user.sendEmailVerification().then(function () {
+	                    alert('Email sent!');
+	                }, function (error) {
+	                    alert('Oh snap. ' + error);
+	                });
+	            }
 	        }
 	    }, {
 	        key: 'render',
@@ -23253,6 +23261,10 @@
 
 	var actions = _interopRequireWildcard(_actions);
 
+	var _firebase = __webpack_require__(10);
+
+	var _firebase2 = _interopRequireDefault(_firebase);
+
 	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
@@ -23288,9 +23300,11 @@
 	        key: 'onLogout',
 	        value: function onLogout() {
 	            console.log("attempting logout");
-	            var dispatch = this.props.dispatch;
-
-	            dispatch(actions.startLogout());
+	            // var {dispatch} = this.props;
+	            // dispatch(actions.startLogout());
+	            _firebase2.default.auth().signOut().then(function () {
+	                console.log('Logged out!');
+	            });
 	        }
 	    }, {
 	        key: 'render',

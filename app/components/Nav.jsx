@@ -2,6 +2,7 @@ import React from 'react';
 import * as Redux from 'react-redux';
 import * as actions from 'actions';
 var FontAwesome = require('react-fontawesome');
+import firebase, {firebaseRef} from 'app/firebase/';
 
 var {Link, IndexLink} = require('react-router');
 
@@ -17,8 +18,11 @@ class Nav extends React.Component {
 
     onLogout() {
         console.log("attempting logout");
-        var {dispatch} = this.props;
-        dispatch(actions.startLogout());
+        // var {dispatch} = this.props;
+        // dispatch(actions.startLogout());
+        firebase.auth().signOut().then(() => {
+            console.log('Logged out!');
+        });
     }
 
     render() {
