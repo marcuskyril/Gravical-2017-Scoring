@@ -1,5 +1,4 @@
 var React = require('react');
-import ReactTooltip from 'react-tooltip'
 
 var dataList = [];
 
@@ -243,7 +242,7 @@ class LevelList extends React.Component {
                 break;
                 case "warning" :
                 temp.push(
-                  <td>sensorShizz
+                  <td>
                     <div className="sensorBlockSquare orange" onClick={() => that.handleClick(sensorShizz, 'NO_ACTION')}></div>
                     <div className="dropdown-pane" id={macAdd} data-dropdown data-options="data-hover:true; data-close-on-click:true">
                         <ul className="vertical menu tableOptions">

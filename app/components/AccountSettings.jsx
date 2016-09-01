@@ -192,7 +192,7 @@ class AccountSettings extends React.Component {
                 <div className="large-8 columns large-centered">
                     <div className="page-title">General Account Settings</div>
                     <div className="profile wrapper" style={{
-                        'color': '#000'
+                        'color': '#000', 'minHeight': '500px'
                     }}>
 
                         <div className="row">

@@ -381,6 +381,10 @@
                       console.log("Remove sensor", e);
                     }
                 });
+
+                oEvent = document.createEvent("HTMLEvents");
+                oEvent.initEvent("click", true, true);
+                parent.document.getElementsByClassName("js-off-canvas-exit")[0].dispatchEvent(oEvent);
             }
 
             function pinToWatchList(macAddress) {

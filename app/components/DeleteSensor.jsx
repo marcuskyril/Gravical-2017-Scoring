@@ -1,5 +1,6 @@
 var React = require('react');
 var deleteSensorAPI = require('deleteSensorAPI');
+var deleteMac = "";
 
 class DeleteSensor extends React.Component {
   constructor(props) {
@@ -12,14 +13,15 @@ class DeleteSensor extends React.Component {
   }
 
   onDeleteSensor(event) {
+
     event.preventDefault();
     console.log("onDeleteSensor, ", $('#deleteMac').val());
-    var macAddress = $('#deleteMac').val();
-    console.log("To be deleted: ", macAddress);
+    // var macAddress = $('#deleteMac').val();
+    // console.log("To be deleted: ", macAddress);
 
     var that = this;
 
-    deleteSensorAPI.deleteSensor(macAddress).then(function(response){
+    deleteSensorAPI.deleteSensor(deleteMac).then(function(response){
 
       if(response.error) {
         that.setState({
@@ -37,8 +39,13 @@ class DeleteSensor extends React.Component {
   }
 
   render() {
+    console.log("delete sensor state ", this.state);
     var message = this.state.message;
     var that = this;
+
+    if ($('#deleteMac').val() !== "") {
+        deleteMac = $('#deleteMac').val();
+    }
 
     // resets message to empty string on close
     $('#delete-sensor-modal').on('closed.zf.reveal', function() {
@@ -56,7 +63,7 @@ class DeleteSensor extends React.Component {
                       <div className="header">Delete Sensor</div>
 
                       <div className="header" style={{color: '#990000'}}>Hold up. You really wanna delete this bad boy?</div>
-                      <input type="hidden" id="deleteMac" value=""></input>
+                      <input id="deleteMac" value="" hidden></input>
 
                       <div id="deleteSensorMessage"><DeleteSensorMessage message={message}/></div>
 

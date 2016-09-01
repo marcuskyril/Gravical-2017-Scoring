@@ -22,11 +22,11 @@ class Nav extends React.Component {
     }
 
     render() {
-        
+
         return (
           <div data-sticky-container>
 
-            <div className="top-bar" data-sticky data-options="marginTop:0;" style={{"width" : "100%", "marginTop": 0}}>
+            <div className="top-bar" data-sticky data-sticky-on="small" data-options="marginTop:0;" style={{"top": 0, "width" : "100%", "marginTop": 1}}>
                 <div className="top-bar-title">
                       <IndexLink to="/" activeClassName="active" activeStyle={{
                           color: '#f8f8f8'
