@@ -126,7 +126,11 @@ class NotificationLog extends React.Component {
                         <button className="icon-btn-text-small" onClick={() => that.handleClick()}>REFRESH</button>
                     </div>
                     <div className="callout-dark">
-                        <Griddle results={dataList} resultsPerPage={100} columnMetadata={tableMetaData} tableClassName="table" columns={[
+                        <Griddle results={dataList}
+                                  resultsPerPage={100}
+                                  columnMetadata={tableMetaData}
+                                  showFilter={true}
+                                  tableClassName="table" columns={[
                             "mac_address",
                             "building",
                             "sensor-level-id",

@@ -77,6 +77,11 @@ table tbody {
 .margin-left-small {
     margin-left: 2rem;
 }
+
+.margin-left-tiny {
+  margin-left: 0.5rem;
+}
+
 .margin-top-md {
     margin-top: 2rem;
 }
@@ -286,11 +291,20 @@ polyline {
   padding: 0px;
 }
 
+.panel-grey {
+  background-color: #e4e4e4;
+  padding-top: 1rem;
+}
+
 #emailPanel, #namePanel, #passwordPanel {
   display: none;
   padding: 1rem;
-  margin: 1rem 0;
   background: #e4e4e4;
+}
+
+.button-cancel {
+  border-color: $red !important;
+  color: $red !important;
 }
 
 .green {

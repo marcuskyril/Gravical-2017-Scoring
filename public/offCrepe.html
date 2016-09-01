@@ -227,10 +227,10 @@
                     console.log("connected");
 
                     send(macAddress);
-                    console.log("1st send");
+                    // console.log("1st send");
                 };
                 socket.onmessage = function(msg) {
-                    console.log("here's ur response mada dawg", msg);
+                    //console.log("here's ur response mada dawg", msg);
 
                     var response = JSON.parse(msg.data);
 
@@ -299,15 +299,15 @@
 
                         document.getElementById("diagnosis").innerHTML = response["diagnosis"]["result"];
 
-                        console.log("fields to color: ", response["diagnosis"]["fields"]);
+                        //console.log("fields to color: ", response["diagnosis"]["fields"]);
                         var fields = response["diagnosis"]["fields"];
 
                         //uncolor table rows
                         $("#tableaux-mini").find(".table-row-highlight").removeClass("table-row-highlight");
 
                         for (var i = 0; i < fields.length; i++) {
-                            console.log("field: ", fields[i]);
-                            console.log("painting the walls red");
+                            // console.log("field: ", fields[i]);
+                            // console.log("painting the walls red");
                             document.getElementById(fields[i]).parentNode.className = "table-row-highlight";
                         }
 
@@ -336,18 +336,18 @@
                 };
 
             } catch (ex) {
-                console.log(ex);
+                console.warn(ex);
             }
 
             document.getElementById("mac_address").innerHTML = macAddress;
 
             function send(msg) {
-                console.log("sent: " + msg);
+                // console.log("sent: " + msg);
                 try {
                     socket.send(msg);
-                    console.log('Sent');
+                    // console.log('Sent');
                 } catch (ex) {
-                    console.log(ex);
+                    console.warn(ex);
                 }
             }
 
@@ -375,10 +375,10 @@
                     url: DELETE_SENSOR_URL,
                     data: data,
                     success: function(msg) {
-                        console.log("Que pasar?", msg);
+                        //console.log("Que pasar?", msg);
                     },
                     error: function(e) {
-                      console.log("Remove sensor", e);
+                      console.warn("Remove sensor", e);
                     }
                 });
 
@@ -404,10 +404,10 @@
                     url: PIN_TO_WATCHLIST_URL,
                     data: data,
                     success: function(msg) {
-                        console.log("Que pasar?", msg);
+                        //console.log("Que pasar?", msg);
                     },
                     error: function(e) {
-                      console.log("Remove sensor", e);
+                      console.warn("Remove sensor", e);
                     }
                 });
             }

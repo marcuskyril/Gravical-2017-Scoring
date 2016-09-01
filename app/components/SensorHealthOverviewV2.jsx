@@ -119,12 +119,12 @@ class LevelList extends React.Component {
 
     handleClick(sensorShizz, action) {
         var macAddress = sensorShizz[0];
-        console.log("event", macAddress, action);
+        // console.log("event", macAddress, action);
 
         switch(action){
           case 'EDIT_ACTION':
 
-            console.log("sensorShizz", sensorShizz);
+            // console.log("sensorShizz", sensorShizz);
 
             $('#inputMac').val(macAddress);
             $('#inputRegion').val(sensorShizz[3].toLowerCase());
@@ -212,11 +212,11 @@ class LevelList extends React.Component {
           }
 
           // temp.push(superTemp);
-          console.log("woah", superTemp);
+          // console.log("woah", superTemp);
 
           superTemp.forEach(function(sensorShizz) {
 
-            console.log("sensorShizz status", sensorShizz);
+            // console.log("sensorShizz status", sensorShizz);
             var macAdd = sensorShizz[0];
             var status = sensorShizz[1];
             var id = sensorShizz[2];

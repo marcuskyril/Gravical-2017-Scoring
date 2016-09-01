@@ -88,7 +88,9 @@ class Dashboard extends React.Component {
 
     componentWillUnmount(){
       // close websocket
-      this.state.connection.close();
+      if(this.state.connection) {
+        this.state.connection.close();
+      }
     }
 
     launchAddSensor() {
@@ -166,7 +168,7 @@ class Dashboard extends React.Component {
                       <EditSensor/>
                       <DeleteSensor deleteMac={this.state.deleteMac}/>
                       </div>
-                      <div className="callout callout-dark scroll">
+                      <div className="callout callout-dark">
                         <SensorHealthOverviewV2 data={this.state.sensorHealthOverviewV2}/>
                       </div>
                     </div>
