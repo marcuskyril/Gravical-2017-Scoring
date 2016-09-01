@@ -10810,16 +10810,19 @@
 	                        $('.emailHeader').addClass('panel-grey');
 	                        $('#namePanel').slideUp("slow");
 	                        $('#passwordPanel').slideUp("slow");
+	                        $('.nameHeader, .passwordHeader').removeClass('panel-grey');
 	                        break;
 	                    case "namePanel":
 	                        $('.nameHeader').addClass('panel-grey');
 	                        $('#emailPanel').slideUp("slow");
 	                        $('#passwordPanel').slideUp("slow");
+	                        $('.emailHeader, .passwordHeader').removeClass('panel-grey');
 	                        break;
 	                    case "passwordPanel":
 	                        $('.passwordHeader').addClass('panel-grey');
 	                        $('#emailPanel').slideUp("slow");
 	                        $('#namePanel').slideUp("slow");
+	                        $('.emailHeader, .nameHeader').removeClass('panel-grey');
 	                        break;
 	                    default:
 	                        console.warn("Oh snap. Something went wrong.");
@@ -14316,7 +14319,7 @@
 	    }, {
 	        key: 'render',
 	        value: function render() {
-	            console.log("eres mi amigo?", this.state.data);
+	            // console.log("eres mi amigo?", this.state.data);
 	            var notificationData = this.state.data;
 	            var dataList = [];
 
@@ -24233,7 +24236,7 @@
 	            this.props.areaArray.forEach(function (area) {
 	                rows.push(React.createElement(
 	                    "th",
-	                    { style: {
+	                    { key: area, style: {
 	                            textAlign: "center"
 	                        } },
 	                    area
@@ -42577,7 +42580,6 @@
 	      var id = notifications.size + 1;
 	      var newCount = count + 1;
 
-	      console.log("nextProps: ", nextProps.notificationData);
 	      if (nextProps.notificationData) {
 	        if (nextProps.notificationData !== this.props.notificationData && nextProps.notificationData.length > 0) {
 	          this.setState({
@@ -61034,7 +61036,7 @@
 	    value: function onDeleteSensor(event) {
 
 	      event.preventDefault();
-	      console.log("onDeleteSensor, ", $('#deleteMac').val());
+	      // console.log("onDeleteSensor, ", $('#deleteMac').val());
 	      // var macAddress = $('#deleteMac').val();
 	      // console.log("To be deleted: ", macAddress);
 
@@ -61058,7 +61060,7 @@
 	  }, {
 	    key: 'render',
 	    value: function render() {
-	      console.log("delete sensor state ", this.state);
+	      // console.log("delete sensor state ", this.state);
 	      var message = this.state.message;
 	      var that = this;
 

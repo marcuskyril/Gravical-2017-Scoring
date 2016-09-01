@@ -97,7 +97,7 @@ class BuildingHeader extends React.Component {
 
         this.props.areaArray.forEach(function(area) {
             rows.push(
-                <th style={{
+                <th key={area} style={{
                     textAlign: "center"
                 }}>{area}</th>
             )
@@ -185,7 +185,7 @@ class LevelList extends React.Component {
         //console.log("le dta oeignall", sensors);
         for (var i = 0; i < levelArray.length; i++) {
             var sensorsOnThisFloor = sensors[levelArray[i]];
-            var temp = [ < th > {
+            var temp = [ < th> {
                     levelArray[i]
                 } < /th>];
 

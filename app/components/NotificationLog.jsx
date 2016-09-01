@@ -82,7 +82,7 @@ class NotificationLog extends React.Component {
     }
 
     render() {
-        console.log("eres mi amigo?", this.state.data);
+        // console.log("eres mi amigo?", this.state.data);
         var notificationData = this.state.data;
         var dataList = [];
 

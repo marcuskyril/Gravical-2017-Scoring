@@ -29,7 +29,6 @@ class NotificationBar extends React.Component {
     const id = notifications.size + 1;
     const newCount = count + 1;
 
-    console.log("nextProps: ", nextProps.notificationData);
     if(nextProps.notificationData){
       if(nextProps.notificationData !== this.props.notificationData && nextProps.notificationData.length > 0) {
         this.setState({

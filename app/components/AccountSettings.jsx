@@ -95,16 +95,19 @@ class AccountSettings extends React.Component {
                 $('.emailHeader').addClass('panel-grey');
                 $('#namePanel').slideUp("slow");
                 $('#passwordPanel').slideUp("slow");
+                $('.nameHeader, .passwordHeader').removeClass('panel-grey');
                 break;
               case "namePanel":
                 $('.nameHeader').addClass('panel-grey');
                 $('#emailPanel').slideUp("slow");
                 $('#passwordPanel').slideUp("slow");
+                $('.emailHeader, .passwordHeader').removeClass('panel-grey');
                 break;
               case "passwordPanel":
                 $('.passwordHeader').addClass('panel-grey');
                 $('#emailPanel').slideUp("slow");
                 $('#namePanel').slideUp("slow");
+                $('.emailHeader, .nameHeader').removeClass('panel-grey');
                 break;
               default:
                 console.warn("Oh snap. Something went wrong.");

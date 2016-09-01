@@ -15,7 +15,7 @@ class DeleteSensor extends React.Component {
   onDeleteSensor(event) {
 
     event.preventDefault();
-    console.log("onDeleteSensor, ", $('#deleteMac').val());
+    // console.log("onDeleteSensor, ", $('#deleteMac').val());
     // var macAddress = $('#deleteMac').val();
     // console.log("To be deleted: ", macAddress);
 
@@ -39,7 +39,7 @@ class DeleteSensor extends React.Component {
   }
 
   render() {
-    console.log("delete sensor state ", this.state);
+    // console.log("delete sensor state ", this.state);
     var message = this.state.message;
     var that = this;
 
