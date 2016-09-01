@@ -10855,6 +10855,7 @@
 	                    });
 
 	                    $('#namePanel').slideUp();
+	                    $('.nameHeader').removeClass('panel-grey');
 	                }, function (error) {
 	                    alert('Oh snap. ' + error);
 	                });
@@ -10880,6 +10881,7 @@
 	                    alert('Email updated!');
 
 	                    $('#emailPanel').slideUp();
+	                    $('.emailHeader').removeClass('panel-grey');
 
 	                    that.setState({
 	                        email: inputEmail
@@ -10908,6 +10910,7 @@
 	                        alert('Password changed!');
 
 	                        $('#passwordPanel').slideUp();
+	                        $('.passwordHeader').removeClass('panel-grey');
 	                    }, function (error) {
 	                        alert('Oh snap. ' + error);
 	                    });

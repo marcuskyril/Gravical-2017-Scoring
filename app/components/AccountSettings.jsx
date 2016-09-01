@@ -138,6 +138,7 @@ class AccountSettings extends React.Component {
                 })
 
                 $('#namePanel').slideUp();
+                $('.nameHeader').removeClass('panel-grey');
 
             }, function(error) {
                 alert('Oh snap. ' + error);
@@ -163,6 +164,7 @@ class AccountSettings extends React.Component {
                 alert('Email updated!');
 
                 $('#emailPanel').slideUp();
+                $('.emailHeader').removeClass('panel-grey');
 
                 that.setState({
                   email: inputEmail
@@ -191,6 +193,8 @@ class AccountSettings extends React.Component {
                     alert('Password changed!');
 
                     $('#passwordPanel').slideUp();
+                    $('.passwordHeader').removeClass('panel-grey');
+
 
                 }, function(error) {
                     alert('Oh snap. ' + error);
