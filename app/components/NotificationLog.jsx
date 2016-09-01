@@ -90,15 +90,17 @@ class NotificationLog extends React.Component {
             var logEntry = notificationData[i];
 
             var diagnosis = logEntry['problem']['diagnosis'];
+            var diagnosisStr = " - ";
 
             //console.log("diagnosis", typeof diagnosis);
             if (typeof diagnosis == "object") {
                 diagnosis = $.map(diagnosis, function(value, index) {
                     return [value];
                 });
-                diagnosis = diagnosis.join(", ");
-            }  else {
-                diagnosis = " - ";
+
+                if (diagnosis.length > 0) {
+                    diagnosisStr = diagnosis.join(", ");
+                }
             }
 
             var row = {
@@ -106,7 +108,7 @@ class NotificationLog extends React.Component {
                 "building": logEntry["building"],
                 "sensor-level-id": logEntry["level"] + logEntry["id"],
                 "sensor_status": logEntry['problem']['status'],
-                "diagnosis": diagnosis,
+                "diagnosis": diagnosisStr,
                 "timestamp": logEntry["timestamp"]["date"]
             };
 
