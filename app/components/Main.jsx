@@ -1,6 +1,7 @@
 var React = require('react');
 var Nav = require('Nav');
 var Dashboard = require('Dashboard');
+import {StickyContainer, Sticky} from 'react-sticky';
 import firebase from 'app/firebase/';
 
 class Main extends React.Component {
@@ -32,12 +33,16 @@ render() {
                     </div>
 
                     <div className="off-canvas-content" data-off-canvas-content>
-                        <Nav/>
+                        <StickyContainer>
+                          <Sticky>
+                            <Nav/>
+                        </Sticky>
                         <div className="row">
                             <div className="columns large-12 large 12">
                               {this.props.children}
                             </div>
                         </div>
+                      </StickyContainer>
                     </div>
                 </div>
             </div>

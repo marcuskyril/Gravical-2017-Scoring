@@ -1,10 +1,8 @@
 var React = require('react');
-var PieChart = require('react-d3-components').PieChart;
+var Recharts = require('recharts');
+const {ResponsiveContainer, PieChart, Pie, Legend, Tooltip} = Recharts;
 
 var myColors = ["#006600", "#cc7a00", "#990000", "#1a1b1b", "#737373"];
-var tooltipPie = function(x, y) {
-    return x.toString() +": " +y.toString();
-};
 
 class Building extends React.Component {
     constructor(props) {
@@ -16,33 +14,26 @@ class Building extends React.Component {
         return (
             <div className="column row">
                 <div className="header">{this.props.buildingName}</div>
+                  <div style={{height: '250px', width: '100%'}}>
+                  <ResponsiveContainer>
+                    <PieChart width={400} height={400}>
+                      <Pie
+                          isAnimationActive={false}
+                          outerRadius={80}
+                          innerRadius={40}
+                        data={[
+                          {name: 'OK', value: this.props.ok, fill:"#006600"},
+                          {name: 'Warning', value: this.props.warning, fill:"#cc7a00"},
+                          {name: 'Danger', value: this.props.danger, fill:"#990000"},
+                          {name: 'Down', value: this.props.down, fill:"#1a1b1b"},
+                          {name: 'No Data', value: this.props.noData, fill:"#737373"}
+                        ]}
+                        />
+                        <Tooltip/>
+                    </PieChart>
+                   </ResponsiveContainer>
+                   </div>
 
-                    <PieChart colorScale={d3.scale.ordinal().range(myColors)} data={{
-                        label: 'Chart',
-                        values: [
-                            {
-                                x: "OK",
-                                y: this.props.ok
-                            }, {
-                                x: "Warning",
-                                y: this.props.warning
-                            }, {
-                                x: "Danger",
-                                y: this.props.danger
-                            }, {
-                                x: "Down",
-                                y: this.props.down
-                            }, {
-                                x: "No Data",
-                                y: this.props.noData
-                            }
-                        ]
-                    }} width={400} height={250} tooltipHtml={tooltipPie} margin={{
-                        top: 10,
-                        bottom: 50,
-                        left: 0,
-                        right: 140
-                    }}/>
                   <table style={{textAlign: "center"}}>
                     <tbody>
                       <tr>

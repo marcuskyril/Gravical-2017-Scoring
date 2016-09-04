@@ -58,7 +58,7 @@ class AddSensor extends React.Component {
 
     return (
       <div id="add-sensor-modal" className="reveal tiny text-center" data-reveal="">
-          <form>
+          <form method="POST">
               <div className="row">
                   <div className="large-12 columns">
                       <div className="header">Add Sensor</div>

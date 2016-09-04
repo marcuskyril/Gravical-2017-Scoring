@@ -110,7 +110,7 @@ class Dashboard extends React.Component {
 
             <div className="dashboard margin-top-md">
                 <div className="row">
-                  <div className="columns large-12">
+                  <div className="columns large-6">
                     <div className="callout-top-header margin-bottom-small">
                       <ul className="header-list">
                         <li>
@@ -126,9 +126,6 @@ class Dashboard extends React.Component {
                             }}/>
                           </div>
                         </li>
-                      </ul>
-
-                      <ul className="header-list">
                         <li>
                           <div className="sub-header">
                              <Link to="/notificationLog" activeClassName="active" activeStyle={{
@@ -141,6 +138,17 @@ class Dashboard extends React.Component {
                              <Link to="/" activeClassName="active" activeStyle={{
                                 color: '#222'
                             }}> View Sensor Log <FontAwesome name='caret-right'/></Link>
+                          </div>
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
+                  <div className="columns large-6">
+                    <div className="callout-top-header margin-bottom-small">
+                      <ul className="header-list">
+                        <li>
+                          <div className="sub-header">
+                            Server Status
                           </div>
                         </li>
                       </ul>

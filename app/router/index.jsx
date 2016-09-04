@@ -3,6 +3,7 @@ import {Route, Router, IndexRoute, hashHistory} from 'react-router';
 var Main = require('Main');
 var Dashboard = require('Dashboard');
 import AccountSettings from 'AccountSettings';
+import Uptime from 'Uptime';
 import NotificationLog from 'NotificationLog';
 import PageNotFound from 'PageNotFound';
 import Login from 'Login';
@@ -29,6 +30,7 @@ export default(
       <Route path="/dashboard" component={Main} >
           <Route path="/accountSettings" component={AccountSettings} onEnter={requireLogin}/>
           <Route path="/notificationLog" component={NotificationLog} onEnter={requireLogin}/>
+          <Route path="/uptime" component={Uptime} onEnter={requireLogin}/>
           <IndexRoute component={Dashboard}/>
       </Route>
       <Route path="/" component={Login} onEnter={redirectIfLoggedIn}/>

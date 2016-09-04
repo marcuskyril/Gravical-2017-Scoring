@@ -3,18 +3,17 @@ import * as Redux from 'react-redux';
 import * as actions from 'actions';
 var FontAwesome = require('react-fontawesome');
 import firebase, {firebaseRef} from 'app/firebase/';
-
 var {Link, IndexLink} = require('react-router');
 
 class Nav extends React.Component {
 
     constructor(props) {
-      super(props);
+        super(props);
     }
 
-    componentDidMount() {
-        $(document).foundation();
-    }
+    // componentDidMount() {
+    //     $(document).foundation();
+    // }
 
     onLogout() {
         console.log("attempting logout");
@@ -28,63 +27,65 @@ class Nav extends React.Component {
     render() {
 
         return (
-          <div data-sticky-container>
 
-            <div className="top-bar" data-sticky data-sticky-on="small" data-options="marginTop:0;" style={{"top": 0, "width" : "100%", "marginTop": 1}}>
-                <div className="top-bar-title">
-                      <IndexLink to="/" activeClassName="active" activeStyle={{
-                          color: '#f8f8f8'
-                      }}>sence | mitos</IndexLink>
-                </div>
-                <div className="top-bar-right">
-                    <ul className="dropdown menu" data-dropdown-menu>
-                        <li>
-                            <Link to="/" activeClassName="active" activeStyle={{
-                                color: '#222'
-                            }}><FontAwesome name='bar-chart'/></Link>
-                            <ul className="menu vertical">
+                    <div className="top-bar">
+                        <div className="top-bar-title">
+                            <IndexLink to="/" activeClassName="active" activeStyle={{
+                                color: '#f8f8f8'
+                            }}>sence | mitos</IndexLink>
+                        </div>
+                        <div className="top-bar-right">
+                            <ul className="dropdown menu" data-dropdown-menu>
                                 <li>
-                                    <a href="#">Uptime</a>
+                                    <Link to="/" activeClassName="active" activeStyle={{
+                                        color: '#222'
+                                    }}><FontAwesome name='bar-chart'/></Link>
+                                    <ul className="menu vertical">
+                                        <li>
+                                            <Link to="/uptime" activeClassName="active" activeStyle={{
+                                                color: '#222`'
+                                            }}>Uptime</Link>
+                                        </li>
+                                        <li>
+                                            <a href="#">CPU Usage</a>
+                                        </li>
+                                        <li>
+                                            <a href="#">Temperature</a>
+                                        </li>
+                                        <li>
+                                            <a href="#">RAM Usage</a>
+                                        </li>
+                                        <li>
+                                            <a href="#">Storage</a>
+                                        </li>
+                                        <li>
+                                            <a href="#">Network Speed</a>
+                                        </li>
+                                    </ul>
                                 </li>
                                 <li>
-                                    <a href="#">CPU Usage</a>
-                                </li>
-                                <li>
-                                    <a href="#">Temperature</a>
-                                </li>
-                                <li>
-                                    <a href="#">RAM Usage</a>
-                                </li>
-                                <li>
-                                    <a href="#">Storage</a>
-                                </li>
-                                <li>
-                                    <a href="#">Network Speed</a>
+                                    <Link to="/" activeClassName="active" activeStyle={{
+                                        color: 'blue'
+                                    }}><FontAwesome name='cog'/></Link>
+                                    <ul className="menu vertical">
+
+                                        <li>
+                                            <Link to="/accountSettings" activeClassName="active" activeStyle={{
+                                                color: '#222`'
+                                            }}>Update Profile</Link>
+                                        </li>
+                                        <li>
+                                            <a href="#">Configure Settings</a>
+                                        </li>
+                                        <li>
+                                            <a onClick={this.onLogout}>Log Out</a>
+                                        </li>
+                                    </ul>
                                 </li>
                             </ul>
-                        </li>
-                        <li>
-                            <Link to="/" activeClassName="active" activeStyle={{
-                                color: 'blue'
-                            }}><FontAwesome name='cog'/></Link>
-                            <ul className="menu vertical">
+                        </div>
+                    </div>
 
-                                <li><Link to="/accountSettings" activeClassName="active" activeStyle={{
-                                    color: '#222`'
-                                }}>Update Profile</Link>
-                                </li>
-                                <li>
-                                    <a href="#">Configure Settings</a>
-                                </li>
-                                <li>
-                                    <a onClick={this.onLogout}>Log Out</a>
-                                </li>
-                            </ul>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-          </div>
         );
     }
 };

@@ -57,13 +57,13 @@ hr {
     margin-top: 0.5rem;
 }
 table thead {
-    background: $night-ocean;
-    color: white;
-    border: 1px solid $night-ocean;
+    background: #d3d3d3;
+    color: $body-color;
+    border: 1px solid #e4e4e4;
 }
 table tbody {
     color: $body-color;
-    border: 1px solid $night-ocean;
+    border: 1px solid #e4e4e4;
 }
 .margin-top-large {
     margin-top: 4rem;
@@ -104,6 +104,10 @@ ul.header-list {
   display: inline-block;
   list-style: none;
   margin-bottom: 0px;
+}
+
+.sticky {
+  z-index: 10000;
 }
 
 .callout {
@@ -231,6 +235,7 @@ polyline {
 
 .sensorBlock {
   height: 30px;
+  border-radius: 30px;
   width: auto;
   color: #fff;
   text-align: center;
@@ -241,6 +246,7 @@ polyline {
 .sensorBlockSquare {
   height: 30px;
   width: 30px;
+  border-radius: 30px;
   margin: auto;
   cursor: pointer;
 }
