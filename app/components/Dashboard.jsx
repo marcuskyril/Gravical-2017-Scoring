@@ -99,6 +99,19 @@ class Dashboard extends React.Component {
         modal.open();
     }
 
+    toggleHide(id) {
+      var panel = $('#'+id);
+
+      if((panel).css('display') === 'block') {
+        panel.slideUp();
+        panel.siblings().addClass('callout-minimize');
+
+      } else {
+        panel.slideDown();
+        panel.siblings().removeClass('callout-minimize');
+      }
+    }
+
     render() {
 
       // console.log("overall dashboard: ", this.state.overall);
@@ -110,7 +123,7 @@ class Dashboard extends React.Component {
 
             <div className="dashboard margin-top-md">
                 <div className="row">
-                  <div className="columns large-6">
+                  <div className="columns large-12">
                     <div className="callout-top-header margin-bottom-small">
                       <ul className="header-list">
                         <li>
@@ -143,17 +156,6 @@ class Dashboard extends React.Component {
                       </ul>
                     </div>
                   </div>
-                  <div className="columns large-6">
-                    <div className="callout-top-header margin-bottom-small">
-                      <ul className="header-list">
-                        <li>
-                          <div className="sub-header">
-                            Server Status
-                          </div>
-                        </li>
-                      </ul>
-                    </div>
-                  </div>
                 </div>
                 <div className="row">
                   <div className="columns medium-3 large 3 margin-bottom-small">
@@ -161,8 +163,12 @@ class Dashboard extends React.Component {
                   </div>
                   <div className="columns medium-9 large 9">
                     <div>
-                      <div className="callout callout-dark-header"><h4 className="header">Watch List</h4></div>
-                      <div className="callout callout-dark">
+                      <div className="callout callout-dark-header"><h4 className="header">Watch List</h4>
+                        <button onClick={() => this.toggleHide('watchList')} className="icon-btn-text-small">
+                          <FontAwesome name='minus'/>
+                        </button>
+                      </div>
+                      <div className="callout callout-dark" id="watchList">
                         <WatchList data={this.state.bfg}/>
                       </div>
                     </div>
