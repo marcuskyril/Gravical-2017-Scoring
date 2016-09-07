@@ -92,9 +92,7 @@ class EditSensor extends React.Component {
                       <button className="button hollow expanded" onClick={this.onEditSensor.bind(this)}>
                           Edit Sensor
                       </button>
-                      <button className="button hollow expanded" data-close="">
-                          Cancel
-                      </button>
+                      <a className="button hollow expanded close-reveal-modal" data-close="" aria-label="Close"> Cancel</a>
                   </div>
               </div>
           </form>

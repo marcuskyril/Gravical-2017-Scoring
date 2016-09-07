@@ -79713,7 +79713,7 @@
 	        { id: 'add-sensor-modal', className: 'reveal tiny text-center', 'data-reveal': '' },
 	        React.createElement(
 	          'form',
-	          { method: 'POST' },
+	          null,
 	          React.createElement(
 	            'div',
 	            { className: 'row' },
@@ -79795,9 +79795,9 @@
 	                'Add Sensor'
 	              ),
 	              React.createElement(
-	                'button',
-	                { className: 'button hollow expanded', 'data-close': '' },
-	                'Cancel'
+	                'a',
+	                { className: 'button hollow expanded close-reveal-modal', 'data-close': '', 'aria-label': 'Close' },
+	                ' Cancel'
 	              )
 	            )
 	          )
@@ -80043,9 +80043,9 @@
 	                'Edit Sensor'
 	              ),
 	              React.createElement(
-	                'button',
-	                { className: 'button hollow expanded', 'data-close': '' },
-	                'Cancel'
+	                'a',
+	                { className: 'button hollow expanded close-reveal-modal', 'data-close': '', 'aria-label': 'Close' },
+	                ' Cancel'
 	              )
 	            )
 	          )
@@ -80238,9 +80238,9 @@
 	                'Yes I do'
 	              ),
 	              React.createElement(
-	                'button',
-	                { id: 'closeDelete', className: 'button hollow expanded', 'data-close': '' },
-	                'Slow down, cowboy'
+	                'a',
+	                { className: 'button hollow expanded close-reveal-modal', 'data-close': '', 'aria-label': 'Close' },
+	                'Slow Down, Cowboy'
 	              )
 	            )
 	          )

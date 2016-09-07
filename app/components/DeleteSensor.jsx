@@ -70,9 +70,7 @@ class DeleteSensor extends React.Component {
                       <button className="button hollow expanded" onClick={this.onDeleteSensor.bind(this)}>
                           Yes I do
                       </button>
-                      <button id="closeDelete" className="button hollow expanded" data-close="">
-                          Slow down, cowboy
-                      </button>
+                      <a className="button hollow expanded close-reveal-modal" data-close="" aria-label="Close">Slow Down, Cowboy</a>
                   </div>
               </div>
           </form>
