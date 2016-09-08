@@ -45,7 +45,7 @@ class Dashboard extends React.Component {
           console.warn(error);
       });
 
-      var connection = new ab.Session('ws://devfour.sence.io:9000', function() {
+      var connection = new ab.Session('ws://opsdev.sence.io:9000', function() {
           connection.subscribe('', function(topic, data) {
 
               var timestamp = new Date().toLocaleString();

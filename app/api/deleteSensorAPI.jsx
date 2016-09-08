@@ -1,4 +1,4 @@
-const DELETE_SENSOR_URL = "http://devfour.sence.io/backend/delete-sensor.php";
+const DELETE_SENSOR_URL = "http://opsdev.sence.io/backend/delete-sensor.php";
 
 module.exports = {
 

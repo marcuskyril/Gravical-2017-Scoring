@@ -1,6 +1,6 @@
 var axios = require('axios');
 
-const NOTIFICATIONS_LOG_URL = 'http://devfour.sence.io/backend/get_notifications_log.php';
+const NOTIFICATIONS_LOG_URL = 'http://opsdev.sence.io/backend/get_notifications_log.php';
 
 module.exports = {
 

@@ -89,9 +89,9 @@ class EditSensor extends React.Component {
                           <input type="text" name="building" id="inputBuildingName" ref="building" placeholder="Building"/>
                       </label>
                       <div id="sensorMessage"><EditSensorMessage message={message}/></div>
-                      <button className="button hollow expanded" onClick={this.onEditSensor.bind(this)}>
+                      <a className="button hollow expanded" onClick={this.onEditSensor.bind(this)}>
                           Edit Sensor
-                      </button>
+                      </a>
                       <a className="button hollow expanded close-reveal-modal" data-close="" aria-label="Close"> Cancel</a>
                   </div>
               </div>

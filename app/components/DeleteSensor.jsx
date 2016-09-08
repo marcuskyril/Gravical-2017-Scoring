@@ -67,9 +67,9 @@ class DeleteSensor extends React.Component {
 
                       <div id="deleteSensorMessage"><DeleteSensorMessage message={message}/></div>
 
-                      <button className="button hollow expanded" onClick={this.onDeleteSensor.bind(this)}>
+                      <a className="button hollow expanded" onClick={this.onDeleteSensor.bind(this)}>
                           Yes I do
-                      </button>
+                      </a>
                       <a className="button hollow expanded close-reveal-modal" data-close="" aria-label="Close">Slow Down, Cowboy</a>
                   </div>
               </div>
