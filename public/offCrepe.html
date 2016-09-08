@@ -166,16 +166,34 @@
             </table>
         </div>
 
-        <!-- <canvas id="myChart" width="300" height="300"></canvas> -->
+        <div class="reveal tiny text-center" id="deleteSensorModal" data-reveal>
+            <form>
+                <div class="row">
+                    <div class="large-12 columns">
+                        <div class="header">Delete Sensor</div>
+
+                        <div class="header" style={{color: '#990000'}}>Hold up. You really wanna delete this bad boy?</div>
+
+                        <div id="deleteSensorMessage">
+                            <DeleteSensorMessage message={message}/>
+                        </div>
+
+                        <a onclick="deleteSensor(macAddress)" class="button hollow expanded">Delete Sensor</a>
+                        <a class="button hollow expanded close-reveal-modal" data-close aria-label="Close modal">Slow Down, Cowboy</a>
+                    </div>
+                </div>
+            </form>
+        </div>
 
         <div class="diagnosis">
             <div class="header textAlignCenter">Diagnosis</div>
             <span id="diagnosis"></span>
         </div>
+
         <div class="buttons margin-top-md">
-            <button onclick="removeSensor(macAddress)" class="button hollow expanded">Delete Sensor</button>
-            <button class="button hollow expanded disabled">Reboot</button>
-            <button onclick="pinToWatchList(macAddress)" class="button hollow expanded">Pin to watch list</button>
+            <a onClick="deleteSensorModal.open()" class="button hollow expanded">Delete Sensor</a>
+            <a class="button hollow expanded disabled">Reboot</a>
+            <a onclick="pinToWatchList(macAddress)" class="button hollow expanded">Pin to watch list</a>
         </div>
 
         <script src="https://use.fontawesome.com/67b81887ff.js"></script>
@@ -183,9 +201,14 @@
         <script src="js/jquery.js"></script>
         <script src="js/foundation.min.js"></script>
         <script src="js/what-input.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.2.1/Chart.js"></script>
         <script type="text/javascript">
-            // function sleep(milliseconds) {
+
+            var deleteSensorModal;
+
+            $(document).ready(function() {
+                deleteSensorModal = new Foundation.Reveal($('#deleteSensorModal'));
+                // $(document).scrollTop(0);
+            });
 
             var socket;
             var macAddress;
@@ -359,7 +382,7 @@
                 }
             }
 
-            function removeSensor(macAddress) {
+            function deleteSensor(macAddress) {
 
                 var DELETE_SENSOR_URL = "http://opsdev.sence.io/backend/delete-sensor.php";
 
@@ -375,10 +398,10 @@
                     url: DELETE_SENSOR_URL,
                     data: data,
                     success: function(msg) {
-                        //console.log("Que pasar?", msg);
+                        console.log("Que pasar?", msg);
                     },
                     error: function(e) {
-                      console.warn("Remove sensor", e);
+                        console.warn("Remove sensor", e);
                     }
                 });
 
@@ -404,10 +427,10 @@
                     url: PIN_TO_WATCHLIST_URL,
                     data: data,
                     success: function(msg) {
-                        //console.log("Que pasar?", msg);
+                        console.log("Que pasar?", msg);
                     },
                     error: function(e) {
-                      console.warn("Remove sensor", e);
+                        console.warn("Remove sensor", e);
                     }
                 });
             }

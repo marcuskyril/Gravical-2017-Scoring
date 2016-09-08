@@ -214,15 +214,6 @@ table.sensor-details-table {
         text-align: left;
     }
 }
-g text {
-    fill: $night-ocean;
-    stroke: $night-ocean;
-    display: none;
-}
-polyline {
-    stroke: $night-ocean;
-    display: none;
-}
 
 .statusText {
     color: red;
