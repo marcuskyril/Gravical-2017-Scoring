@@ -10,7 +10,7 @@ var BuildingOverview = require('BuildingOverview');
 var AddSensor = require('AddSensor');
 var EditSensor = require('EditSensor');
 var DeleteSensor = require('DeleteSensor');
-var NotificationLog = require('NotificationLog');
+var modal = null;
 var {Link, IndexLink} = require('react-router');
 
 class Dashboard extends React.Component {
@@ -56,7 +56,8 @@ class Dashboard extends React.Component {
                 sensorHealthOverviewV2: data.overview,
                 bfg: data.BFG,
                 currentTime: timestamp,
-                notifications: data.notifications
+                notifications: data.notifications,
+                serverOverview: data.serverOverview
               });
           });
 
@@ -95,7 +96,7 @@ class Dashboard extends React.Component {
 
     launchAddSensor() {
 
-        var modal = new Foundation.Reveal($('#add-sensor-modal'));
+        modal = new Foundation.Reveal($('#add-sensor-modal'));
         modal.open();
     }
 
@@ -118,6 +119,7 @@ class Dashboard extends React.Component {
       // console.log("bfg dashboard: ", this.state.bfg);
       // console.log("notifications dashboard: ", this.state.notifications);
       // console.log("sensorHealthOverviewV2 dashboard: ", this.state.sensorHealthOverviewV2);
+      console.log("server overview: ", this.state.serverOverview);
 
         return (
 
@@ -139,20 +141,6 @@ class Dashboard extends React.Component {
                             }}/>
                           </div>
                         </li>
-                        <li>
-                          <div className="sub-header">
-                             <Link to="/notificationLog" activeClassName="active" activeStyle={{
-                                color: '#222'
-                            }}> View all notifications <FontAwesome name='caret-right'/></Link>
-                          </div>
-                        </li>
-                        <li>
-                          <div className="sub-header">
-                             <Link to="/" activeClassName="active" activeStyle={{
-                                color: '#222'
-                            }}> View Sensor Log <FontAwesome name='caret-right'/></Link>
-                          </div>
-                        </li>
                       </ul>
                     </div>
                   </div>
@@ -165,7 +153,7 @@ class Dashboard extends React.Component {
                     <div>
                       <div className="callout callout-dark-header"><h4 className="header">Watch List</h4>
                         <button onClick={() => this.toggleHide('watchList')} className="icon-btn-text-small">
-                          <FontAwesome name='minus'/>
+                          <FontAwesome name='expand'/>
                         </button>
                       </div>
                       <div className="callout callout-dark" id="watchList">
@@ -183,7 +171,7 @@ class Dashboard extends React.Component {
                       <DeleteSensor deleteMac={this.state.deleteMac}/>
                       </div>
                       <div className="callout callout-dark">
-                        <SensorHealthOverviewV2 data={this.state.sensorHealthOverviewV2}/>
+                        <SensorHealthOverviewV2 data={this.state.sensorHealthOverviewV2} serverData={this.state.serverOverview}/>
                       </div>
                     </div>
 

@@ -1,8 +1,10 @@
 var React = require('react');
+var deleteModal = null;
+var editModal = null;
 
 var dataList = [];
 
-class BuildingV2 extends React.Component {
+class Building extends React.Component {
     render() {
 
         return (
@@ -17,7 +19,7 @@ class BuildingV2 extends React.Component {
     }
 }
 
-class SearchBarV2 extends React.Component {
+class SearchBar extends React.Component {
     constructor(props) {
         super(props);
     }
@@ -72,7 +74,7 @@ class BuildingListV2 extends React.Component {
             if ((buildingName.toLowerCase()).indexOf((this.props.filterText.toLowerCase())) === -1) {
                 return <div></div>
             }
-            rows.push(<BuildingV2 key={buildingName} buildingName={buildingName} areaNames={areaNames} levelNames={levelNames} sensors={sensors}/>);
+            rows.push(<Building key={buildingName} buildingName={buildingName} areaNames={areaNames} levelNames={levelNames} sensors={sensors}/>);
         }.bind(this));
 
         return (
@@ -87,25 +89,12 @@ class BuildingHeader extends React.Component {
 
     render() {
 
-        var rows = [];
-
-        rows.push(
-            <th style={{
-                textAlign: "center"
-            }}>Level</th>
-        );
-
-        this.props.areaArray.forEach(function(area) {
-            rows.push(
-                <th key={area} style={{
-                    textAlign: "center"
-                }}>{area}</th>
-            )
-        });
-
         return (
             <thead>
-                <tr>{rows}</tr>
+              <th style={{
+                  textAlign: "center"
+              }}>Level</th>
+            <th></th>
             </thead>
         );
     }
@@ -132,16 +121,16 @@ class LevelList extends React.Component {
             $('#inputSensorLocationID').val(sensorShizz[2]);
             $('#inputBuildingName').val(sensorShizz[4]);
 
-            var modal = new Foundation.Reveal($('#edit-sensor-modal'));
-            modal.open();
+            editModal = new Foundation.Reveal($('#edit-sensor-modal'));
+            editModal.open();
 
             break;
           case 'DELETE_ACTION':
 
             $('#deleteMac').val(macAddress);
 
-            var modal = new Foundation.Reveal($('#delete-sensor-modal'));
-            modal.open();
+            deleteModal = new Foundation.Reveal($('#delete-sensor-modal'));
+            deleteModal.open();
 
             break;
           case 'NO_ACTION':
@@ -161,6 +150,7 @@ class LevelList extends React.Component {
               } else {
                   document.getElementById(macAddress).style.visibility = "visible";
               }
+
               break;
           case 'OPEN_CANVAS_ACTION':
             document.getElementById("sensorDetailsIFrame").src = "./offCrepe.html?offCanMac=" + macAddress;
@@ -182,12 +172,11 @@ class LevelList extends React.Component {
         var levelArray = this.props.levelArray;
         var sensors = this.props.sensors;
 
-        //console.log("le dta oeignall", sensors);
         for (var i = 0; i < levelArray.length; i++) {
             var sensorsOnThisFloor = sensors[levelArray[i]];
-            var temp = [ < th> {
+            var temp = [<th> {
                     levelArray[i]
-                } < /th>];
+                } </th>];
 
           //console.log("current level", levelArray[i]);
 
@@ -227,8 +216,8 @@ class LevelList extends React.Component {
             switch(status) {
               case "ok":
                   temp.push(
-                    <td>
-                      <div className="sensorBlockSquare green" onClick={() => that.handleClick(sensorShizz, 'NO_ACTION')}></div>
+                    <li className="sensorList">
+                      <div className="sensorBlockSquare green" onClick={() => that.handleClick(sensorShizz, 'NO_ACTION')}>{id}</div>
                       <div className="dropdown-pane" id={macAdd} data-dropdown data-options="data-hover:true; data-close-on-click:true">
                           <ul className="vertical menu tableOptions">
                             <li className="menuHeader">{macAdd}</li>
@@ -237,13 +226,14 @@ class LevelList extends React.Component {
                             <li><a onClick={() => that.handleClick(sensorShizz, 'DELETE_ACTION')}>Delete</a></li>
                           </ul>
                         </div>
-                    </td>
+                    </li>
                   );
                 break;
+
                 case "warning" :
                 temp.push(
-                  <td>
-                    <div className="sensorBlockSquare orange" onClick={() => that.handleClick(sensorShizz, 'NO_ACTION')}></div>
+                  <li className="sensorList">
+                    <div className="sensorBlockSquare orange" onClick={() => that.handleClick(sensorShizz, 'NO_ACTION')}>{id}</div>
                     <div className="dropdown-pane" id={macAdd} data-dropdown data-options="data-hover:true; data-close-on-click:true">
                         <ul className="vertical menu tableOptions">
                           <li className="menuHeader">{macAdd}</li>
@@ -252,13 +242,14 @@ class LevelList extends React.Component {
                           <li><a onClick={() => that.handleClick(sensorShizz, 'DELETE_ACTION')}>Delete sensor</a></li>
                         </ul>
                       </div>
-                  </td>
+                  </li>
                 );
                 break;
+
                 case "danger" :
                   temp.push(
-                    <td>
-                      <div className="sensorBlockSquare red" onClick={() => that.handleClick(sensorShizz, 'NO_ACTION')}></div>
+                    <li className="sensorList">
+                      <div className="sensorBlockSquare red" onClick={() => that.handleClick(sensorShizz, 'NO_ACTION')}>{id}</div>
                       <div className="dropdown-pane" id={macAdd} data-dropdown data-options="data-hover:true; data-close-on-click:true">
                           <ul className="vertical menu tableOptions">
                             <li className="menuHeader">{macAdd}</li>
@@ -267,13 +258,14 @@ class LevelList extends React.Component {
                             <li><a onClick={() => that.handleClick(sensorShizz, 'DELETE_ACTION')}>Delete sensor</a></li>
                           </ul>
                         </div>
-                    </td>
+                    </li>
                 );
                 break;
+
                 case "down" :
                 temp.push(
-                  <td>
-                    <div className="sensorBlockSquare black" onClick={() => that.handleClick(sensorShizz, 'NO_ACTION')}></div>
+                  <li className="sensorList">
+                    <div className="sensorBlockSquare black" onClick={() => that.handleClick(sensorShizz, 'NO_ACTION')}>{id}</div>
                     <div className="dropdown-pane" id={macAdd} data-dropdown data-options="data-hover:true; data-close-on-click:true">
                         <ul className="vertical menu tableOptions">
                           <li className="menuHeader">{macAdd}</li>
@@ -282,13 +274,14 @@ class LevelList extends React.Component {
                           <li><a onClick={() => that.handleClick(sensorShizz, 'DELETE_ACTION')}>Delete sensor</a></li>
                         </ul>
                       </div>
-                  </td>
+                  </li>
                 );
                 break;
+
                 case "no data" :
                   temp.push(
-                    <td>
-                      <div className="sensorBlockSquare grey" onClick={() => that.handleClick(sensorShizz, 'NO_ACTION')}></div>
+                    <li className="sensorList">
+                      <div className="sensorBlockSquare grey" onClick={() => that.handleClick(sensorShizz, 'NO_ACTION')}>{id}</div>
                       <div className="dropdown-pane" id={macAdd} data-dropdown data-options="data-hover:true; data-close-on-click:true">
                           <ul className="vertical menu tableOptions">
                             <li className="menuHeader">{macAdd}</li>
@@ -297,20 +290,24 @@ class LevelList extends React.Component {
                             <li><a onClick={() => that.handleClick(sensorShizz, 'DELETE_ACTION')}>Delete sensor</a></li>
                           </ul>
                         </div>
-                    </td>
+                    </li>
                       );
                 break;
+
                 default :
-                temp.push(
-                    <td></td >
-                    );
+                // temp.push(
+                //     <td></td >
+                //     );
                 break;
             }
         });
 
+        //console.log("Here you go, punk", temp);
+
         tableRows.push(
             <tr>{temp}</tr>
         );
+
     }
 
     return (
@@ -330,24 +327,91 @@ constructor(props) {
     };
 }
 
-componentDidMount() {
-  $(document).foundation();
-}
-
 handleUserInput(filterText) {
     this.setState({filterText: filterText});
 }
 
 render() {
-    // console.log("Cool stuff from sensorHealthOverviewV2", this.props.data);
+    // console.log("Cool stuff from serverOverview", this.props.serverData);
 
     return (
         <div>
-            <SearchBarV2 filterText={this.state.filterText} onUserInput={this.handleUserInput.bind(this)}/>
+            <ServerList data={this.props.serverData}/>
+            <SearchBar filterText={this.state.filterText} onUserInput={this.handleUserInput.bind(this)}/>
             <BuildingListV2 data={this.props.data} filterText={this.state.filterText}/>
         </div>
     );
 }
+}
+
+class ServerList extends React.Component {
+
+  render() {
+    console.log("ServerList: ", this.props.data);
+    var serverList = this.props.data;
+
+    var rows = [];
+
+    for (var property in serverList) {
+        if (serverList.hasOwnProperty(property)) {
+            var server = serverList[property];
+            rows.push(<Server serverName={property} serverData={server}/>);
+
+        }
+    }
+
+    return (
+        <div>
+            {rows}
+        </div>
+    );
+  }
+}
+
+class Server extends React.Component {
+  render() {
+
+    console.log("dr. capsicum", this.props.serverData);
+
+      return (
+          <div>
+              <div className="header">{this.props.serverName}</div>
+              <ServerGroupList data={this.props.serverData}/>
+          </div>
+      );
+  }
+}
+
+class ServerGroupList extends React.Component {
+    render() {
+
+        var groups = this.props.data;
+        var rows = [];
+
+        for(var property in groups) {
+            if (groups.hasOwnProperty(property)) {
+                rows.push(<GroupRow data={groups[property]} />);
+            }
+        }
+
+        return (
+            <div>{rows}</div>
+        );
+    }
+}
+
+class GroupRow extends React.Component {
+  render() {
+    console.log("Group Row IMPT", this.props.data);
+
+    var longAndThin = this.props.data;
+
+    return (
+        <div>
+          {longAndThin.toString()}
+        </div>
+    );
+  }
 }
 
 module.exports = SensorHealthOverviewV2;

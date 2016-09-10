@@ -246,10 +246,18 @@ table.sensor-details-table {
   border-radius: 30px;
   margin: auto;
   cursor: pointer;
+  text-align: center;
+  line-height: 28px;
+  color: white;
+  font-weight: bold;
 }
 
 .sensorBlockSquare:hover {
     opacity: 0.5;
+}
+
+.sensorList {
+  display: inline-block;
 }
 
 .button-custom {

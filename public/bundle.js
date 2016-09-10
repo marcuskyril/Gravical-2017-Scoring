@@ -71933,6 +71933,28 @@
 	                                    'li',
 	                                    null,
 	                                    _react2.default.createElement(
+	                                        Link,
+	                                        { to: '/notificationLog', activeClassName: 'active', activeStyle: {
+	                                                color: '#222`'
+	                                            } },
+	                                        'Notification Log'
+	                                    )
+	                                ),
+	                                _react2.default.createElement(
+	                                    'li',
+	                                    null,
+	                                    _react2.default.createElement(
+	                                        Link,
+	                                        { to: '/', activeClassName: 'active', activeStyle: {
+	                                                color: '#222`'
+	                                            } },
+	                                        'Sensor Log'
+	                                    )
+	                                ),
+	                                _react2.default.createElement(
+	                                    'li',
+	                                    null,
+	                                    _react2.default.createElement(
 	                                        'a',
 	                                        { href: '#' },
 	                                        'Configure Settings'
@@ -72108,7 +72130,7 @@
 	var AddSensor = __webpack_require__(805);
 	var EditSensor = __webpack_require__(807);
 	var DeleteSensor = __webpack_require__(809);
-	var NotificationLog = __webpack_require__(581);
+	var modal = null;
 
 	var _require = __webpack_require__(47);
 
@@ -72164,7 +72186,8 @@
 	            sensorHealthOverviewV2: data.overview,
 	            bfg: data.BFG,
 	            currentTime: timestamp,
-	            notifications: data.notifications
+	            notifications: data.notifications,
+	            serverOverview: data.serverOverview
 	          });
 	        });
 	      }, function () {
@@ -72203,7 +72226,7 @@
 	    key: 'launchAddSensor',
 	    value: function launchAddSensor() {
 
-	      var modal = new Foundation.Reveal($('#add-sensor-modal'));
+	      modal = new Foundation.Reveal($('#add-sensor-modal'));
 	      modal.open();
 	    }
 	  }, {
@@ -72228,6 +72251,7 @@
 	      // console.log("bfg dashboard: ", this.state.bfg);
 	      // console.log("notifications dashboard: ", this.state.notifications);
 	      // console.log("sensorHealthOverviewV2 dashboard: ", this.state.sensorHealthOverviewV2);
+	      console.log("server overview: ", this.state.serverOverview);
 
 	      return React.createElement(
 	        'div',
@@ -72266,38 +72290,6 @@
 	                        textShadow: '0 1px 0 rgba(0, 0, 0, 0.1)', marginLeft: '0.5rem'
 	                      } })
 	                  )
-	                ),
-	                React.createElement(
-	                  'li',
-	                  null,
-	                  React.createElement(
-	                    'div',
-	                    { className: 'sub-header' },
-	                    React.createElement(
-	                      Link,
-	                      { to: '/notificationLog', activeClassName: 'active', activeStyle: {
-	                          color: '#222'
-	                        } },
-	                      ' View all notifications ',
-	                      React.createElement(FontAwesome, { name: 'caret-right' })
-	                    )
-	                  )
-	                ),
-	                React.createElement(
-	                  'li',
-	                  null,
-	                  React.createElement(
-	                    'div',
-	                    { className: 'sub-header' },
-	                    React.createElement(
-	                      Link,
-	                      { to: '/', activeClassName: 'active', activeStyle: {
-	                          color: '#222'
-	                        } },
-	                      ' View Sensor Log ',
-	                      React.createElement(FontAwesome, { name: 'caret-right' })
-	                    )
-	                  )
 	                )
 	              )
 	            )
@@ -72330,7 +72322,7 @@
 	                  { onClick: function onClick() {
 	                      return _this2.toggleHide('watchList');
 	                    }, className: 'icon-btn-text-small' },
-	                  React.createElement(FontAwesome, { name: 'minus' })
+	                  React.createElement(FontAwesome, { name: 'expand' })
 	                )
 	              ),
 	              React.createElement(
@@ -72363,7 +72355,7 @@
 	              React.createElement(
 	                'div',
 	                { className: 'callout callout-dark' },
-	                React.createElement(SensorHealthOverviewV2, { data: this.state.sensorHealthOverviewV2 })
+	                React.createElement(SensorHealthOverviewV2, { data: this.state.sensorHealthOverviewV2, serverData: this.state.serverOverview })
 	              )
 	            ),
 	            React.createElement(
@@ -72555,19 +72547,21 @@
 	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 	var React = __webpack_require__(14);
+	var deleteModal = null;
+	var editModal = null;
 
 	var dataList = [];
 
-	var BuildingV2 = function (_React$Component) {
-	    _inherits(BuildingV2, _React$Component);
+	var Building = function (_React$Component) {
+	    _inherits(Building, _React$Component);
 
-	    function BuildingV2() {
-	        _classCallCheck(this, BuildingV2);
+	    function Building() {
+	        _classCallCheck(this, Building);
 
-	        return _possibleConstructorReturn(this, Object.getPrototypeOf(BuildingV2).apply(this, arguments));
+	        return _possibleConstructorReturn(this, Object.getPrototypeOf(Building).apply(this, arguments));
 	    }
 
-	    _createClass(BuildingV2, [{
+	    _createClass(Building, [{
 	        key: "render",
 	        value: function render() {
 
@@ -72589,19 +72583,19 @@
 	        }
 	    }]);
 
-	    return BuildingV2;
+	    return Building;
 	}(React.Component);
 
-	var SearchBarV2 = function (_React$Component2) {
-	    _inherits(SearchBarV2, _React$Component2);
+	var SearchBar = function (_React$Component2) {
+	    _inherits(SearchBar, _React$Component2);
 
-	    function SearchBarV2(props) {
-	        _classCallCheck(this, SearchBarV2);
+	    function SearchBar(props) {
+	        _classCallCheck(this, SearchBar);
 
-	        return _possibleConstructorReturn(this, Object.getPrototypeOf(SearchBarV2).call(this, props));
+	        return _possibleConstructorReturn(this, Object.getPrototypeOf(SearchBar).call(this, props));
 	    }
 
-	    _createClass(SearchBarV2, [{
+	    _createClass(SearchBar, [{
 	        key: "handleChange",
 	        value: function handleChange() {
 
@@ -72621,7 +72615,7 @@
 	        }
 	    }]);
 
-	    return SearchBarV2;
+	    return SearchBar;
 	}(React.Component);
 
 	var BuildingListV2 = function (_React$Component3) {
@@ -72668,7 +72662,7 @@
 	                if (buildingName.toLowerCase().indexOf(this.props.filterText.toLowerCase()) === -1) {
 	                    return React.createElement("div", null);
 	                }
-	                rows.push(React.createElement(BuildingV2, { key: buildingName, buildingName: buildingName, areaNames: areaNames, levelNames: levelNames, sensors: sensors }));
+	                rows.push(React.createElement(Building, { key: buildingName, buildingName: buildingName, areaNames: areaNames, levelNames: levelNames, sensors: sensors }));
 	            }.bind(this));
 
 	            return React.createElement(
@@ -72695,34 +72689,17 @@
 	        key: "render",
 	        value: function render() {
 
-	            var rows = [];
-
-	            rows.push(React.createElement(
-	                "th",
-	                { style: {
-	                        textAlign: "center"
-	                    } },
-	                "Level"
-	            ));
-
-	            this.props.areaArray.forEach(function (area) {
-	                rows.push(React.createElement(
-	                    "th",
-	                    { key: area, style: {
-	                            textAlign: "center"
-	                        } },
-	                    area
-	                ));
-	            });
-
 	            return React.createElement(
 	                "thead",
 	                null,
 	                React.createElement(
-	                    "tr",
-	                    null,
-	                    rows
-	                )
+	                    "th",
+	                    { style: {
+	                            textAlign: "center"
+	                        } },
+	                    "Level"
+	                ),
+	                React.createElement("th", null)
 	            );
 	        }
 	    }]);
@@ -72756,16 +72733,16 @@
 	                    $('#inputSensorLocationID').val(sensorShizz[2]);
 	                    $('#inputBuildingName').val(sensorShizz[4]);
 
-	                    var modal = new Foundation.Reveal($('#edit-sensor-modal'));
-	                    modal.open();
+	                    editModal = new Foundation.Reveal($('#edit-sensor-modal'));
+	                    editModal.open();
 
 	                    break;
 	                case 'DELETE_ACTION':
 
 	                    $('#deleteMac').val(macAddress);
 
-	                    var modal = new Foundation.Reveal($('#delete-sensor-modal'));
-	                    modal.open();
+	                    deleteModal = new Foundation.Reveal($('#delete-sensor-modal'));
+	                    deleteModal.open();
 
 	                    break;
 	                case 'NO_ACTION':
@@ -72785,6 +72762,7 @@
 	                    } else {
 	                        document.getElementById(macAddress).style.visibility = "visible";
 	                    }
+
 	                    break;
 	                case 'OPEN_CANVAS_ACTION':
 	                    document.getElementById("sensorDetailsIFrame").src = "./offCrepe.html?offCanMac=" + macAddress;
@@ -72806,7 +72784,6 @@
 	            var levelArray = this.props.levelArray;
 	            var sensors = this.props.sensors;
 
-	            //console.log("le dta oeignall", sensors);
 	            for (var i = 0; i < levelArray.length; i++) {
 	                var sensorsOnThisFloor = sensors[levelArray[i]];
 	                var temp = [React.createElement(
@@ -72855,11 +72832,15 @@
 	                    switch (status) {
 	                        case "ok":
 	                            temp.push(React.createElement(
-	                                "td",
-	                                null,
-	                                React.createElement("div", { className: "sensorBlockSquare green", onClick: function onClick() {
-	                                        return that.handleClick(sensorShizz, 'NO_ACTION');
-	                                    } }),
+	                                "li",
+	                                { className: "sensorList" },
+	                                React.createElement(
+	                                    "div",
+	                                    { className: "sensorBlockSquare green", onClick: function onClick() {
+	                                            return that.handleClick(sensorShizz, 'NO_ACTION');
+	                                        } },
+	                                    id
+	                                ),
 	                                React.createElement(
 	                                    "div",
 	                                    { className: "dropdown-pane", id: macAdd, "data-dropdown": true, "data-options": "data-hover:true; data-close-on-click:true" },
@@ -72908,13 +72889,18 @@
 	                                )
 	                            ));
 	                            break;
+
 	                        case "warning":
 	                            temp.push(React.createElement(
-	                                "td",
-	                                null,
-	                                React.createElement("div", { className: "sensorBlockSquare orange", onClick: function onClick() {
-	                                        return that.handleClick(sensorShizz, 'NO_ACTION');
-	                                    } }),
+	                                "li",
+	                                { className: "sensorList" },
+	                                React.createElement(
+	                                    "div",
+	                                    { className: "sensorBlockSquare orange", onClick: function onClick() {
+	                                            return that.handleClick(sensorShizz, 'NO_ACTION');
+	                                        } },
+	                                    id
+	                                ),
 	                                React.createElement(
 	                                    "div",
 	                                    { className: "dropdown-pane", id: macAdd, "data-dropdown": true, "data-options": "data-hover:true; data-close-on-click:true" },
@@ -72963,13 +72949,18 @@
 	                                )
 	                            ));
 	                            break;
+
 	                        case "danger":
 	                            temp.push(React.createElement(
-	                                "td",
-	                                null,
-	                                React.createElement("div", { className: "sensorBlockSquare red", onClick: function onClick() {
-	                                        return that.handleClick(sensorShizz, 'NO_ACTION');
-	                                    } }),
+	                                "li",
+	                                { className: "sensorList" },
+	                                React.createElement(
+	                                    "div",
+	                                    { className: "sensorBlockSquare red", onClick: function onClick() {
+	                                            return that.handleClick(sensorShizz, 'NO_ACTION');
+	                                        } },
+	                                    id
+	                                ),
 	                                React.createElement(
 	                                    "div",
 	                                    { className: "dropdown-pane", id: macAdd, "data-dropdown": true, "data-options": "data-hover:true; data-close-on-click:true" },
@@ -73018,13 +73009,18 @@
 	                                )
 	                            ));
 	                            break;
+
 	                        case "down":
 	                            temp.push(React.createElement(
-	                                "td",
-	                                null,
-	                                React.createElement("div", { className: "sensorBlockSquare black", onClick: function onClick() {
-	                                        return that.handleClick(sensorShizz, 'NO_ACTION');
-	                                    } }),
+	                                "li",
+	                                { className: "sensorList" },
+	                                React.createElement(
+	                                    "div",
+	                                    { className: "sensorBlockSquare black", onClick: function onClick() {
+	                                            return that.handleClick(sensorShizz, 'NO_ACTION');
+	                                        } },
+	                                    id
+	                                ),
 	                                React.createElement(
 	                                    "div",
 	                                    { className: "dropdown-pane", id: macAdd, "data-dropdown": true, "data-options": "data-hover:true; data-close-on-click:true" },
@@ -73073,13 +73069,18 @@
 	                                )
 	                            ));
 	                            break;
+
 	                        case "no data":
 	                            temp.push(React.createElement(
-	                                "td",
-	                                null,
-	                                React.createElement("div", { className: "sensorBlockSquare grey", onClick: function onClick() {
-	                                        return that.handleClick(sensorShizz, 'NO_ACTION');
-	                                    } }),
+	                                "li",
+	                                { className: "sensorList" },
+	                                React.createElement(
+	                                    "div",
+	                                    { className: "sensorBlockSquare grey", onClick: function onClick() {
+	                                            return that.handleClick(sensorShizz, 'NO_ACTION');
+	                                        } },
+	                                    id
+	                                ),
 	                                React.createElement(
 	                                    "div",
 	                                    { className: "dropdown-pane", id: macAdd, "data-dropdown": true, "data-options": "data-hover:true; data-close-on-click:true" },
@@ -73128,11 +73129,16 @@
 	                                )
 	                            ));
 	                            break;
+
 	                        default:
-	                            temp.push(React.createElement("td", null));
+	                            // temp.push(
+	                            //     <td></td >
+	                            //     );
 	                            break;
 	                    }
 	                });
+
+	                //console.log("Here you go, punk", temp);
 
 	                tableRows.push(React.createElement(
 	                    "tr",
@@ -73167,11 +73173,6 @@
 	    }
 
 	    _createClass(SensorHealthOverviewV2, [{
-	        key: "componentDidMount",
-	        value: function componentDidMount() {
-	            $(document).foundation();
-	        }
-	    }, {
 	        key: "handleUserInput",
 	        value: function handleUserInput(filterText) {
 	            this.setState({ filterText: filterText });
@@ -73179,18 +73180,145 @@
 	    }, {
 	        key: "render",
 	        value: function render() {
-	            // console.log("Cool stuff from sensorHealthOverviewV2", this.props.data);
+	            // console.log("Cool stuff from serverOverview", this.props.serverData);
 
 	            return React.createElement(
 	                "div",
 	                null,
-	                React.createElement(SearchBarV2, { filterText: this.state.filterText, onUserInput: this.handleUserInput.bind(this) }),
+	                React.createElement(ServerList, { data: this.props.serverData }),
+	                React.createElement(SearchBar, { filterText: this.state.filterText, onUserInput: this.handleUserInput.bind(this) }),
 	                React.createElement(BuildingListV2, { data: this.props.data, filterText: this.state.filterText })
 	            );
 	        }
 	    }]);
 
 	    return SensorHealthOverviewV2;
+	}(React.Component);
+
+	var ServerList = function (_React$Component7) {
+	    _inherits(ServerList, _React$Component7);
+
+	    function ServerList() {
+	        _classCallCheck(this, ServerList);
+
+	        return _possibleConstructorReturn(this, Object.getPrototypeOf(ServerList).apply(this, arguments));
+	    }
+
+	    _createClass(ServerList, [{
+	        key: "render",
+	        value: function render() {
+	            console.log("ServerList: ", this.props.data);
+	            var serverList = this.props.data;
+
+	            var rows = [];
+
+	            for (var property in serverList) {
+	                if (serverList.hasOwnProperty(property)) {
+	                    var server = serverList[property];
+	                    rows.push(React.createElement(Server, { serverName: property, serverData: server }));
+	                }
+	            }
+
+	            return React.createElement(
+	                "div",
+	                null,
+	                rows
+	            );
+	        }
+	    }]);
+
+	    return ServerList;
+	}(React.Component);
+
+	var Server = function (_React$Component8) {
+	    _inherits(Server, _React$Component8);
+
+	    function Server() {
+	        _classCallCheck(this, Server);
+
+	        return _possibleConstructorReturn(this, Object.getPrototypeOf(Server).apply(this, arguments));
+	    }
+
+	    _createClass(Server, [{
+	        key: "render",
+	        value: function render() {
+
+	            console.log("dr. capsicum", this.props.serverData);
+
+	            return React.createElement(
+	                "div",
+	                null,
+	                React.createElement(
+	                    "div",
+	                    { className: "header" },
+	                    this.props.serverName
+	                ),
+	                React.createElement(ServerGroupList, { data: this.props.serverData })
+	            );
+	        }
+	    }]);
+
+	    return Server;
+	}(React.Component);
+
+	var ServerGroupList = function (_React$Component9) {
+	    _inherits(ServerGroupList, _React$Component9);
+
+	    function ServerGroupList() {
+	        _classCallCheck(this, ServerGroupList);
+
+	        return _possibleConstructorReturn(this, Object.getPrototypeOf(ServerGroupList).apply(this, arguments));
+	    }
+
+	    _createClass(ServerGroupList, [{
+	        key: "render",
+	        value: function render() {
+
+	            var groups = this.props.data;
+	            var rows = [];
+
+	            for (var property in groups) {
+	                if (groups.hasOwnProperty(property)) {
+	                    rows.push(React.createElement(GroupRow, { data: groups[property] }));
+	                }
+	            }
+
+	            return React.createElement(
+	                "div",
+	                null,
+	                rows
+	            );
+	        }
+	    }]);
+
+	    return ServerGroupList;
+	}(React.Component);
+
+	var GroupRow = function (_React$Component10) {
+	    _inherits(GroupRow, _React$Component10);
+
+	    function GroupRow() {
+	        _classCallCheck(this, GroupRow);
+
+	        return _possibleConstructorReturn(this, Object.getPrototypeOf(GroupRow).apply(this, arguments));
+	    }
+
+	    _createClass(GroupRow, [{
+	        key: "render",
+	        value: function render() {
+	            console.log("Group Row IMPT", this.props.data);
+
+	            var longAndThin = this.props.data;
+
+	            return React.createElement(
+	                "div",
+	                null,
+	                longAndThin.toString()
+	            );
+	        }
+	    }]);
+
+	    return GroupRow;
 	}(React.Component);
 
 	module.exports = SensorHealthOverviewV2;
@@ -80859,7 +80987,7 @@
 	exports.push([module.id, "@import url(https://fonts.googleapis.com/css?family=Lato:400,900i);", ""]);
 
 	// module
-	exports.push([module.id, "body,\nhtml {\n  background: #f2f2f2;\n  height: 100%;\n  font-family: roboto;\n  color: #1a1b1b; }\n\n.row {\n  max-width: 100rem; }\n\ndiv#offCanvas {\n  width: 350px;\n  height: 100%;\n  padding: 1.5rem;\n  background: #e8e8e8; }\n\n.is-open-right {\n  transform: translateX(-350px); }\n\n.off-canvas.position-right {\n  right: -350px; }\n\n.off-canvas-content {\n  background: #f2f2f2; }\n\na {\n  color: #6abedb; }\n\nhr {\n  border-color: #373837;\n  margin-top: 0.5rem; }\n\ntable thead {\n  background: #d3d3d3;\n  color: #1a1b1b;\n  border: 1px solid #e4e4e4; }\n\ntable tbody {\n  color: #1a1b1b;\n  border: 1px solid #e4e4e4; }\n\n.margin-top-large {\n  margin-top: 4rem; }\n\n.margin-bottom-large {\n  margin-bottom: 4rem; }\n\n.margin-right-small {\n  margin-right: 2rem; }\n\n.margin-left-small {\n  margin-left: 2rem; }\n\n.margin-left-tiny {\n  margin-left: 0.5rem; }\n\n.margin-top-md {\n  margin-top: 2rem; }\n\n.margin-top-small {\n  margin-top: 1rem; }\n\n.margin-bottom-md {\n  margin-bottom: 2rem; }\n\n.margin-bottom-small {\n  margin-bottom: 1rem; }\n\n.textAlignCenter {\n  text-align: center; }\n\nul.header-list {\n  display: inline-block;\n  list-style: none;\n  margin-bottom: 0px; }\n\n.sticky {\n  z-index: 10000;\n  left: 0px !important; }\n\n.callout {\n  background-color: #f2f2f2; }\n\n.callout-dark {\n  padding: 1.5rem;\n  background-color: #f2f2f2;\n  border: 2px solid #bdbdbd;\n  border-top: none;\n  margin-top: 0;\n  border-bottom-right-radius: 4px;\n  border-bottom-left-radius: 4px; }\n\n.scroll {\n  max-height: 100vh;\n  overflow-y: scroll; }\n\n.callout-dark-header {\n  padding: 0.5rem;\n  background-color: #fff;\n  border: 2px solid #bdbdbd;\n  border-bottom: 1px solid #bdbdbd;\n  border-top-left-radius: 4px;\n  border-top-right-radius: 4px;\n  margin-bottom: 0; }\n\n.callout-top-header {\n  padding: 1rem;\n  background-color: #f2f2f2;\n  border: 2px solid #bdbdbd;\n  border-radius: 4px; }\n\n.callout-minimize {\n  margin-bottom: 1rem;\n  border-radius: 4px 4px; }\n\n.icon-btn-text-small {\n  font-family: 'Pathway Gothic One', sans-serif;\n  text-transform: uppercase;\n  top: 15px;\n  right: 15px;\n  position: absolute;\n  color: #232f32;\n  font-size: 1.2rem; }\n\nlabel {\n  text-transform: capitalize;\n  color: #232f32; }\n\n.header {\n  color: #232f32;\n  margin-bottom: 0;\n  font-size: 1.2rem;\n  text-transform: uppercase;\n  font-family: 'Pathway Gothic One', sans-serif; }\n\n.sub-header {\n  color: #232f32;\n  font-size: 1.3rem;\n  font-family: 'Pathway Gothic One', sans-serif; }\n  .sub-header a {\n    text-transform: capitalize; }\n\n.page-title {\n  color: #6abedb;\n  font-family: 'Lato', sans-serif;\n  font-size: 1.5rem;\n  font-weight: bold;\n  margin-top: 1.5rem;\n  margin-bottom: 1.5rem; }\n\ninput[type=search] {\n  box-shadow: none; }\n\n.top-bar-upper {\n  color: #333;\n  font-size: 0.5rem; }\n\n.app-header {\n  font-size: 1.3rem; }\n\ntable.overview-custom tbody,\ntable.overview-custom th,\ntable.overview-custom thead,\ntable.overview-custom tr {\n  text-align: center; }\n\ntable.sensor-details-table tbody {\n  text-align: left; }\n\n.statusText {\n  color: red;\n  margin-bottom: 1rem;\n  text-transform: uppercase;\n  font-size: 0.8em;\n  font-weight: bold; }\n\n.notificationHeader {\n  color: #fff;\n  text-transform: uppercase;\n  font-size: 0.5em;\n  font-weight: bold; }\n\n.sensorBlock {\n  height: 30px;\n  border-radius: 30px;\n  width: auto;\n  color: #fff;\n  text-align: center;\n  font-family: 'Pathway Gothic One', sans-serif;\n  text-transform: uppercase; }\n\n.sensorBlockSquare {\n  height: 30px;\n  width: 30px;\n  border-radius: 30px;\n  margin: auto;\n  cursor: pointer; }\n\n.sensorBlockSquare:hover {\n  opacity: 0.5; }\n\n.button-custom {\n  height: 30px;\n  width: auto !important;\n  margin: 0px;\n  color: #fff !important;\n  text-align: center;\n  font-family: 'Pathway Gothic One', sans-serif;\n  text-transform: uppercase; }\n\n.remove {\n  border: 1px solid #990000;\n  background-color: #fff;\n  color: #990000 !important; }\n\n.tableOptions > li > a {\n  color: #323232;\n  font-weight: normal;\n  font-size: 1rem;\n  padding: 0.5rem 0.7rem; }\n\n.tableOptions .menuHeader, .menuHeader:hover {\n  background-color: #232f32 !important;\n  color: #fff;\n  padding: 0.3rem 0.7rem;\n  text-transform: uppercase; }\n\n.tableOptions > li {\n  border-bottom: 1px solid #f2f2f2; }\n\n.tableOptions > li:hover {\n  background-color: #f2f2f2; }\n\n.dropdown-pane {\n  padding: 0px; }\n\n.panel-grey {\n  background-color: #e4e4e4;\n  padding-top: 1rem; }\n\n#emailPanel, #namePanel, #passwordPanel {\n  display: none;\n  padding: 1rem;\n  background: #e4e4e4; }\n\n.button-cancel {\n  border-color: #990000 !important;\n  color: #990000 !important; }\n\n.green {\n  background-color: #006600; }\n\n.orange {\n  background-color: #cc7a00; }\n\n.red {\n  background-color: #990000; }\n\n.black {\n  background-color: #1a1b1b; }\n\n.grey {\n  background-color: #737373; }\n", ""]);
+	exports.push([module.id, "body,\nhtml {\n  background: #f2f2f2;\n  height: 100%;\n  font-family: roboto;\n  color: #1a1b1b; }\n\n.row {\n  max-width: 100rem; }\n\ndiv#offCanvas {\n  width: 350px;\n  height: 100%;\n  padding: 1.5rem;\n  background: #e8e8e8; }\n\n.is-open-right {\n  transform: translateX(-350px); }\n\n.off-canvas.position-right {\n  right: -350px; }\n\n.off-canvas-content {\n  background: #f2f2f2; }\n\na {\n  color: #6abedb; }\n\nhr {\n  border-color: #373837;\n  margin-top: 0.5rem; }\n\ntable thead {\n  background: #d3d3d3;\n  color: #1a1b1b;\n  border: 1px solid #e4e4e4; }\n\ntable tbody {\n  color: #1a1b1b;\n  border: 1px solid #e4e4e4; }\n\n.margin-top-large {\n  margin-top: 4rem; }\n\n.margin-bottom-large {\n  margin-bottom: 4rem; }\n\n.margin-right-small {\n  margin-right: 2rem; }\n\n.margin-left-small {\n  margin-left: 2rem; }\n\n.margin-left-tiny {\n  margin-left: 0.5rem; }\n\n.margin-top-md {\n  margin-top: 2rem; }\n\n.margin-top-small {\n  margin-top: 1rem; }\n\n.margin-bottom-md {\n  margin-bottom: 2rem; }\n\n.margin-bottom-small {\n  margin-bottom: 1rem; }\n\n.textAlignCenter {\n  text-align: center; }\n\nul.header-list {\n  display: inline-block;\n  list-style: none;\n  margin-bottom: 0px; }\n\n.sticky {\n  z-index: 10000;\n  left: 0px !important; }\n\n.callout {\n  background-color: #f2f2f2; }\n\n.callout-dark {\n  padding: 1.5rem;\n  background-color: #f2f2f2;\n  border: 2px solid #bdbdbd;\n  border-top: none;\n  margin-top: 0;\n  border-bottom-right-radius: 4px;\n  border-bottom-left-radius: 4px; }\n\n.scroll {\n  max-height: 100vh;\n  overflow-y: scroll; }\n\n.callout-dark-header {\n  padding: 0.5rem;\n  background-color: #fff;\n  border: 2px solid #bdbdbd;\n  border-bottom: 1px solid #bdbdbd;\n  border-top-left-radius: 4px;\n  border-top-right-radius: 4px;\n  margin-bottom: 0; }\n\n.callout-top-header {\n  padding: 1rem;\n  background-color: #f2f2f2;\n  border: 2px solid #bdbdbd;\n  border-radius: 4px; }\n\n.callout-minimize {\n  margin-bottom: 1rem;\n  border-radius: 4px 4px; }\n\n.icon-btn-text-small {\n  font-family: 'Pathway Gothic One', sans-serif;\n  text-transform: uppercase;\n  top: 15px;\n  right: 15px;\n  position: absolute;\n  color: #232f32;\n  font-size: 1.2rem; }\n\nlabel {\n  text-transform: capitalize;\n  color: #232f32; }\n\n.header {\n  color: #232f32;\n  margin-bottom: 0;\n  font-size: 1.2rem;\n  text-transform: uppercase;\n  font-family: 'Pathway Gothic One', sans-serif; }\n\n.sub-header {\n  color: #232f32;\n  font-size: 1.3rem;\n  font-family: 'Pathway Gothic One', sans-serif; }\n  .sub-header a {\n    text-transform: capitalize; }\n\n.page-title {\n  color: #6abedb;\n  font-family: 'Lato', sans-serif;\n  font-size: 1.5rem;\n  font-weight: bold;\n  margin-top: 1.5rem;\n  margin-bottom: 1.5rem; }\n\ninput[type=search] {\n  box-shadow: none; }\n\n.top-bar-upper {\n  color: #333;\n  font-size: 0.5rem; }\n\n.app-header {\n  font-size: 1.3rem; }\n\ntable.overview-custom tbody,\ntable.overview-custom th,\ntable.overview-custom thead,\ntable.overview-custom tr {\n  text-align: center; }\n\ntable.sensor-details-table tbody {\n  text-align: left; }\n\n.statusText {\n  color: red;\n  margin-bottom: 1rem;\n  text-transform: uppercase;\n  font-size: 0.8em;\n  font-weight: bold; }\n\n.notificationHeader {\n  color: #fff;\n  text-transform: uppercase;\n  font-size: 0.5em;\n  font-weight: bold; }\n\n.sensorBlock {\n  height: 30px;\n  border-radius: 30px;\n  width: auto;\n  color: #fff;\n  text-align: center;\n  font-family: 'Pathway Gothic One', sans-serif;\n  text-transform: uppercase; }\n\n.sensorBlockSquare {\n  height: 30px;\n  width: 30px;\n  border-radius: 30px;\n  margin: auto;\n  cursor: pointer;\n  text-align: center;\n  line-height: 28px;\n  color: white;\n  font-weight: bold; }\n\n.sensorBlockSquare:hover {\n  opacity: 0.5; }\n\n.sensorList {\n  display: inline-block; }\n\n.button-custom {\n  height: 30px;\n  width: auto !important;\n  margin: 0px;\n  color: #fff !important;\n  text-align: center;\n  font-family: 'Pathway Gothic One', sans-serif;\n  text-transform: uppercase; }\n\n.remove {\n  border: 1px solid #990000;\n  background-color: #fff;\n  color: #990000 !important; }\n\n.tableOptions > li > a {\n  color: #323232;\n  font-weight: normal;\n  font-size: 1rem;\n  padding: 0.5rem 0.7rem; }\n\n.tableOptions .menuHeader, .menuHeader:hover {\n  background-color: #232f32 !important;\n  color: #fff;\n  padding: 0.3rem 0.7rem;\n  text-transform: uppercase; }\n\n.tableOptions > li {\n  border-bottom: 1px solid #f2f2f2; }\n\n.tableOptions > li:hover {\n  background-color: #f2f2f2; }\n\n.dropdown-pane {\n  padding: 0px; }\n\n.panel-grey {\n  background-color: #e4e4e4;\n  padding-top: 1rem; }\n\n#emailPanel, #namePanel, #passwordPanel {\n  display: none;\n  padding: 1rem;\n  background: #e4e4e4; }\n\n.button-cancel {\n  border-color: #990000 !important;\n  color: #990000 !important; }\n\n.green {\n  background-color: #006600; }\n\n.orange {\n  background-color: #cc7a00; }\n\n.red {\n  background-color: #990000; }\n\n.black {\n  background-color: #1a1b1b; }\n\n.grey {\n  background-color: #737373; }\n", ""]);
 
 	// exports
 
@@ -80901,7 +81029,7 @@
 	exports.push([module.id, "@import url(https://fonts.googleapis.com/css?family=Lato:400,900i);", ""]);
 
 	// module
-	exports.push([module.id, "body,\nhtml {\n  background: #f2f2f2;\n  height: 100%;\n  font-family: roboto;\n  color: #1a1b1b; }\n\n.row {\n  max-width: 100rem; }\n\ndiv#offCanvas {\n  width: 350px;\n  height: 100%;\n  padding: 1.5rem;\n  background: #e8e8e8; }\n\n.is-open-right {\n  transform: translateX(-350px); }\n\n.off-canvas.position-right {\n  right: -350px; }\n\n.off-canvas-content {\n  background: #f2f2f2; }\n\na {\n  color: #6abedb; }\n\nhr {\n  border-color: #373837;\n  margin-top: 0.5rem; }\n\ntable thead {\n  background: #d3d3d3;\n  color: #1a1b1b;\n  border: 1px solid #e4e4e4; }\n\ntable tbody {\n  color: #1a1b1b;\n  border: 1px solid #e4e4e4; }\n\n.margin-top-large {\n  margin-top: 4rem; }\n\n.margin-bottom-large {\n  margin-bottom: 4rem; }\n\n.margin-right-small {\n  margin-right: 2rem; }\n\n.margin-left-small {\n  margin-left: 2rem; }\n\n.margin-left-tiny {\n  margin-left: 0.5rem; }\n\n.margin-top-md {\n  margin-top: 2rem; }\n\n.margin-top-small {\n  margin-top: 1rem; }\n\n.margin-bottom-md {\n  margin-bottom: 2rem; }\n\n.margin-bottom-small {\n  margin-bottom: 1rem; }\n\n.textAlignCenter {\n  text-align: center; }\n\nul.header-list {\n  display: inline-block;\n  list-style: none;\n  margin-bottom: 0px; }\n\n.sticky {\n  z-index: 10000;\n  left: 0px !important; }\n\n.callout {\n  background-color: #f2f2f2; }\n\n.callout-dark {\n  padding: 1.5rem;\n  background-color: #f2f2f2;\n  border: 2px solid #bdbdbd;\n  border-top: none;\n  margin-top: 0;\n  border-bottom-right-radius: 4px;\n  border-bottom-left-radius: 4px; }\n\n.scroll {\n  max-height: 100vh;\n  overflow-y: scroll; }\n\n.callout-dark-header {\n  padding: 0.5rem;\n  background-color: #fff;\n  border: 2px solid #bdbdbd;\n  border-bottom: 1px solid #bdbdbd;\n  border-top-left-radius: 4px;\n  border-top-right-radius: 4px;\n  margin-bottom: 0; }\n\n.callout-top-header {\n  padding: 1rem;\n  background-color: #f2f2f2;\n  border: 2px solid #bdbdbd;\n  border-radius: 4px; }\n\n.callout-minimize {\n  margin-bottom: 1rem;\n  border-radius: 4px 4px; }\n\n.icon-btn-text-small {\n  font-family: 'Pathway Gothic One', sans-serif;\n  text-transform: uppercase;\n  top: 15px;\n  right: 15px;\n  position: absolute;\n  color: #232f32;\n  font-size: 1.2rem; }\n\nlabel {\n  text-transform: capitalize;\n  color: #232f32; }\n\n.header {\n  color: #232f32;\n  margin-bottom: 0;\n  font-size: 1.2rem;\n  text-transform: uppercase;\n  font-family: 'Pathway Gothic One', sans-serif; }\n\n.sub-header {\n  color: #232f32;\n  font-size: 1.3rem;\n  font-family: 'Pathway Gothic One', sans-serif; }\n  .sub-header a {\n    text-transform: capitalize; }\n\n.page-title {\n  color: #6abedb;\n  font-family: 'Lato', sans-serif;\n  font-size: 1.5rem;\n  font-weight: bold;\n  margin-top: 1.5rem;\n  margin-bottom: 1.5rem; }\n\ninput[type=search] {\n  box-shadow: none; }\n\n.top-bar-upper {\n  color: #333;\n  font-size: 0.5rem; }\n\n.app-header {\n  font-size: 1.3rem; }\n\ntable.overview-custom tbody,\ntable.overview-custom th,\ntable.overview-custom thead,\ntable.overview-custom tr {\n  text-align: center; }\n\ntable.sensor-details-table tbody {\n  text-align: left; }\n\n.statusText {\n  color: red;\n  margin-bottom: 1rem;\n  text-transform: uppercase;\n  font-size: 0.8em;\n  font-weight: bold; }\n\n.notificationHeader {\n  color: #fff;\n  text-transform: uppercase;\n  font-size: 0.5em;\n  font-weight: bold; }\n\n.sensorBlock {\n  height: 30px;\n  border-radius: 30px;\n  width: auto;\n  color: #fff;\n  text-align: center;\n  font-family: 'Pathway Gothic One', sans-serif;\n  text-transform: uppercase; }\n\n.sensorBlockSquare {\n  height: 30px;\n  width: 30px;\n  border-radius: 30px;\n  margin: auto;\n  cursor: pointer; }\n\n.sensorBlockSquare:hover {\n  opacity: 0.5; }\n\n.button-custom {\n  height: 30px;\n  width: auto !important;\n  margin: 0px;\n  color: #fff !important;\n  text-align: center;\n  font-family: 'Pathway Gothic One', sans-serif;\n  text-transform: uppercase; }\n\n.remove {\n  border: 1px solid #990000;\n  background-color: #fff;\n  color: #990000 !important; }\n\n.tableOptions > li > a {\n  color: #323232;\n  font-weight: normal;\n  font-size: 1rem;\n  padding: 0.5rem 0.7rem; }\n\n.tableOptions .menuHeader, .menuHeader:hover {\n  background-color: #232f32 !important;\n  color: #fff;\n  padding: 0.3rem 0.7rem;\n  text-transform: uppercase; }\n\n.tableOptions > li {\n  border-bottom: 1px solid #f2f2f2; }\n\n.tableOptions > li:hover {\n  background-color: #f2f2f2; }\n\n.dropdown-pane {\n  padding: 0px; }\n\n.panel-grey {\n  background-color: #e4e4e4;\n  padding-top: 1rem; }\n\n#emailPanel, #namePanel, #passwordPanel {\n  display: none;\n  padding: 1rem;\n  background: #e4e4e4; }\n\n.button-cancel {\n  border-color: #990000 !important;\n  color: #990000 !important; }\n\n.green {\n  background-color: #006600; }\n\n.orange {\n  background-color: #cc7a00; }\n\n.red {\n  background-color: #990000; }\n\n.black {\n  background-color: #1a1b1b; }\n\n.grey {\n  background-color: #737373; }\n\n.top-bar-left {\n  margin-top: 1.5rem; }\n\n.top-bar-right {\n  margin-top: 1.5rem; }\n\n.top-bar {\n  padding: 0rem 2rem 0rem 2rem;\n  background: #232f32;\n  height: 4rem;\n  box-shadow: 0.5px 0.5px 5px #373837; }\n\n.top-bar ul {\n  background: #232f32;\n  /* temporary fix */\n  position: absolute;\n  top: 15px;\n  right: 15px; }\n\n.top-bar.lower {\n  padding-top: 0px; }\n\n.top-bar-title {\n  font-size: 1.5rem;\n  font-family: 'Lato', sans-serif;\n  font-weight: bold;\n  position: absolute;\n  top: 15px;\n  left: 15px; }\n\n.menu > li > a {\n  color: #fafafa;\n  font-weight: bold;\n  font-size: 0.9rem;\n  text-transform: capitalize; }\n\n.is-dropdown-submenu {\n  border: 1px solid #373737; }\n", ""]);
+	exports.push([module.id, "body,\nhtml {\n  background: #f2f2f2;\n  height: 100%;\n  font-family: roboto;\n  color: #1a1b1b; }\n\n.row {\n  max-width: 100rem; }\n\ndiv#offCanvas {\n  width: 350px;\n  height: 100%;\n  padding: 1.5rem;\n  background: #e8e8e8; }\n\n.is-open-right {\n  transform: translateX(-350px); }\n\n.off-canvas.position-right {\n  right: -350px; }\n\n.off-canvas-content {\n  background: #f2f2f2; }\n\na {\n  color: #6abedb; }\n\nhr {\n  border-color: #373837;\n  margin-top: 0.5rem; }\n\ntable thead {\n  background: #d3d3d3;\n  color: #1a1b1b;\n  border: 1px solid #e4e4e4; }\n\ntable tbody {\n  color: #1a1b1b;\n  border: 1px solid #e4e4e4; }\n\n.margin-top-large {\n  margin-top: 4rem; }\n\n.margin-bottom-large {\n  margin-bottom: 4rem; }\n\n.margin-right-small {\n  margin-right: 2rem; }\n\n.margin-left-small {\n  margin-left: 2rem; }\n\n.margin-left-tiny {\n  margin-left: 0.5rem; }\n\n.margin-top-md {\n  margin-top: 2rem; }\n\n.margin-top-small {\n  margin-top: 1rem; }\n\n.margin-bottom-md {\n  margin-bottom: 2rem; }\n\n.margin-bottom-small {\n  margin-bottom: 1rem; }\n\n.textAlignCenter {\n  text-align: center; }\n\nul.header-list {\n  display: inline-block;\n  list-style: none;\n  margin-bottom: 0px; }\n\n.sticky {\n  z-index: 10000;\n  left: 0px !important; }\n\n.callout {\n  background-color: #f2f2f2; }\n\n.callout-dark {\n  padding: 1.5rem;\n  background-color: #f2f2f2;\n  border: 2px solid #bdbdbd;\n  border-top: none;\n  margin-top: 0;\n  border-bottom-right-radius: 4px;\n  border-bottom-left-radius: 4px; }\n\n.scroll {\n  max-height: 100vh;\n  overflow-y: scroll; }\n\n.callout-dark-header {\n  padding: 0.5rem;\n  background-color: #fff;\n  border: 2px solid #bdbdbd;\n  border-bottom: 1px solid #bdbdbd;\n  border-top-left-radius: 4px;\n  border-top-right-radius: 4px;\n  margin-bottom: 0; }\n\n.callout-top-header {\n  padding: 1rem;\n  background-color: #f2f2f2;\n  border: 2px solid #bdbdbd;\n  border-radius: 4px; }\n\n.callout-minimize {\n  margin-bottom: 1rem;\n  border-radius: 4px 4px; }\n\n.icon-btn-text-small {\n  font-family: 'Pathway Gothic One', sans-serif;\n  text-transform: uppercase;\n  top: 15px;\n  right: 15px;\n  position: absolute;\n  color: #232f32;\n  font-size: 1.2rem; }\n\nlabel {\n  text-transform: capitalize;\n  color: #232f32; }\n\n.header {\n  color: #232f32;\n  margin-bottom: 0;\n  font-size: 1.2rem;\n  text-transform: uppercase;\n  font-family: 'Pathway Gothic One', sans-serif; }\n\n.sub-header {\n  color: #232f32;\n  font-size: 1.3rem;\n  font-family: 'Pathway Gothic One', sans-serif; }\n  .sub-header a {\n    text-transform: capitalize; }\n\n.page-title {\n  color: #6abedb;\n  font-family: 'Lato', sans-serif;\n  font-size: 1.5rem;\n  font-weight: bold;\n  margin-top: 1.5rem;\n  margin-bottom: 1.5rem; }\n\ninput[type=search] {\n  box-shadow: none; }\n\n.top-bar-upper {\n  color: #333;\n  font-size: 0.5rem; }\n\n.app-header {\n  font-size: 1.3rem; }\n\ntable.overview-custom tbody,\ntable.overview-custom th,\ntable.overview-custom thead,\ntable.overview-custom tr {\n  text-align: center; }\n\ntable.sensor-details-table tbody {\n  text-align: left; }\n\n.statusText {\n  color: red;\n  margin-bottom: 1rem;\n  text-transform: uppercase;\n  font-size: 0.8em;\n  font-weight: bold; }\n\n.notificationHeader {\n  color: #fff;\n  text-transform: uppercase;\n  font-size: 0.5em;\n  font-weight: bold; }\n\n.sensorBlock {\n  height: 30px;\n  border-radius: 30px;\n  width: auto;\n  color: #fff;\n  text-align: center;\n  font-family: 'Pathway Gothic One', sans-serif;\n  text-transform: uppercase; }\n\n.sensorBlockSquare {\n  height: 30px;\n  width: 30px;\n  border-radius: 30px;\n  margin: auto;\n  cursor: pointer;\n  text-align: center;\n  line-height: 28px;\n  color: white;\n  font-weight: bold; }\n\n.sensorBlockSquare:hover {\n  opacity: 0.5; }\n\n.sensorList {\n  display: inline-block; }\n\n.button-custom {\n  height: 30px;\n  width: auto !important;\n  margin: 0px;\n  color: #fff !important;\n  text-align: center;\n  font-family: 'Pathway Gothic One', sans-serif;\n  text-transform: uppercase; }\n\n.remove {\n  border: 1px solid #990000;\n  background-color: #fff;\n  color: #990000 !important; }\n\n.tableOptions > li > a {\n  color: #323232;\n  font-weight: normal;\n  font-size: 1rem;\n  padding: 0.5rem 0.7rem; }\n\n.tableOptions .menuHeader, .menuHeader:hover {\n  background-color: #232f32 !important;\n  color: #fff;\n  padding: 0.3rem 0.7rem;\n  text-transform: uppercase; }\n\n.tableOptions > li {\n  border-bottom: 1px solid #f2f2f2; }\n\n.tableOptions > li:hover {\n  background-color: #f2f2f2; }\n\n.dropdown-pane {\n  padding: 0px; }\n\n.panel-grey {\n  background-color: #e4e4e4;\n  padding-top: 1rem; }\n\n#emailPanel, #namePanel, #passwordPanel {\n  display: none;\n  padding: 1rem;\n  background: #e4e4e4; }\n\n.button-cancel {\n  border-color: #990000 !important;\n  color: #990000 !important; }\n\n.green {\n  background-color: #006600; }\n\n.orange {\n  background-color: #cc7a00; }\n\n.red {\n  background-color: #990000; }\n\n.black {\n  background-color: #1a1b1b; }\n\n.grey {\n  background-color: #737373; }\n\n.top-bar-left {\n  margin-top: 1.5rem; }\n\n.top-bar-right {\n  margin-top: 1.5rem;\n  text-align: right; }\n\n.top-bar {\n  padding: 0rem 2rem 0rem 2rem;\n  background: #232f32;\n  height: 4rem;\n  box-shadow: 0.5px 0.5px 5px #373837; }\n\n.top-bar ul {\n  background: #232f32;\n  /* temporary fix */\n  position: absolute;\n  top: 15px;\n  right: 15px; }\n\n.top-bar.lower {\n  padding-top: 0px; }\n\n.top-bar-title {\n  font-size: 1.5rem;\n  font-family: 'Lato', sans-serif;\n  font-weight: bold;\n  position: absolute;\n  top: 15px;\n  left: 15px; }\n\n.menu > li > a {\n  color: #fafafa;\n  font-weight: bold;\n  font-size: 0.9rem;\n  text-transform: capitalize; }\n\n.is-dropdown-submenu {\n  border: 1px solid #373737; }\n", ""]);
 
 	// exports
 
@@ -80983,7 +81111,7 @@
 	exports.push([module.id, "@import url(https://fonts.googleapis.com/css?family=Lato:400,900i);", ""]);
 
 	// module
-	exports.push([module.id, "body,\nhtml {\n  background: #f2f2f2;\n  height: 100%;\n  font-family: roboto;\n  color: #1a1b1b; }\n\n.row {\n  max-width: 100rem; }\n\ndiv#offCanvas {\n  width: 350px;\n  height: 100%;\n  padding: 1.5rem;\n  background: #e8e8e8; }\n\n.is-open-right {\n  transform: translateX(-350px); }\n\n.off-canvas.position-right {\n  right: -350px; }\n\n.off-canvas-content {\n  background: #f2f2f2; }\n\na {\n  color: #6abedb; }\n\nhr {\n  border-color: #373837;\n  margin-top: 0.5rem; }\n\ntable thead {\n  background: #d3d3d3;\n  color: #1a1b1b;\n  border: 1px solid #e4e4e4; }\n\ntable tbody {\n  color: #1a1b1b;\n  border: 1px solid #e4e4e4; }\n\n.margin-top-large {\n  margin-top: 4rem; }\n\n.margin-bottom-large {\n  margin-bottom: 4rem; }\n\n.margin-right-small {\n  margin-right: 2rem; }\n\n.margin-left-small {\n  margin-left: 2rem; }\n\n.margin-left-tiny {\n  margin-left: 0.5rem; }\n\n.margin-top-md {\n  margin-top: 2rem; }\n\n.margin-top-small {\n  margin-top: 1rem; }\n\n.margin-bottom-md {\n  margin-bottom: 2rem; }\n\n.margin-bottom-small {\n  margin-bottom: 1rem; }\n\n.textAlignCenter {\n  text-align: center; }\n\nul.header-list {\n  display: inline-block;\n  list-style: none;\n  margin-bottom: 0px; }\n\n.sticky {\n  z-index: 10000;\n  left: 0px !important; }\n\n.callout {\n  background-color: #f2f2f2; }\n\n.callout-dark {\n  padding: 1.5rem;\n  background-color: #f2f2f2;\n  border: 2px solid #bdbdbd;\n  border-top: none;\n  margin-top: 0;\n  border-bottom-right-radius: 4px;\n  border-bottom-left-radius: 4px; }\n\n.scroll {\n  max-height: 100vh;\n  overflow-y: scroll; }\n\n.callout-dark-header {\n  padding: 0.5rem;\n  background-color: #fff;\n  border: 2px solid #bdbdbd;\n  border-bottom: 1px solid #bdbdbd;\n  border-top-left-radius: 4px;\n  border-top-right-radius: 4px;\n  margin-bottom: 0; }\n\n.callout-top-header {\n  padding: 1rem;\n  background-color: #f2f2f2;\n  border: 2px solid #bdbdbd;\n  border-radius: 4px; }\n\n.callout-minimize {\n  margin-bottom: 1rem;\n  border-radius: 4px 4px; }\n\n.icon-btn-text-small {\n  font-family: 'Pathway Gothic One', sans-serif;\n  text-transform: uppercase;\n  top: 15px;\n  right: 15px;\n  position: absolute;\n  color: #232f32;\n  font-size: 1.2rem; }\n\nlabel {\n  text-transform: capitalize;\n  color: #232f32; }\n\n.header {\n  color: #232f32;\n  margin-bottom: 0;\n  font-size: 1.2rem;\n  text-transform: uppercase;\n  font-family: 'Pathway Gothic One', sans-serif; }\n\n.sub-header {\n  color: #232f32;\n  font-size: 1.3rem;\n  font-family: 'Pathway Gothic One', sans-serif; }\n  .sub-header a {\n    text-transform: capitalize; }\n\n.page-title {\n  color: #6abedb;\n  font-family: 'Lato', sans-serif;\n  font-size: 1.5rem;\n  font-weight: bold;\n  margin-top: 1.5rem;\n  margin-bottom: 1.5rem; }\n\ninput[type=search] {\n  box-shadow: none; }\n\n.top-bar-upper {\n  color: #333;\n  font-size: 0.5rem; }\n\n.app-header {\n  font-size: 1.3rem; }\n\ntable.overview-custom tbody,\ntable.overview-custom th,\ntable.overview-custom thead,\ntable.overview-custom tr {\n  text-align: center; }\n\ntable.sensor-details-table tbody {\n  text-align: left; }\n\n.statusText {\n  color: red;\n  margin-bottom: 1rem;\n  text-transform: uppercase;\n  font-size: 0.8em;\n  font-weight: bold; }\n\n.notificationHeader {\n  color: #fff;\n  text-transform: uppercase;\n  font-size: 0.5em;\n  font-weight: bold; }\n\n.sensorBlock {\n  height: 30px;\n  border-radius: 30px;\n  width: auto;\n  color: #fff;\n  text-align: center;\n  font-family: 'Pathway Gothic One', sans-serif;\n  text-transform: uppercase; }\n\n.sensorBlockSquare {\n  height: 30px;\n  width: 30px;\n  border-radius: 30px;\n  margin: auto;\n  cursor: pointer; }\n\n.sensorBlockSquare:hover {\n  opacity: 0.5; }\n\n.button-custom {\n  height: 30px;\n  width: auto !important;\n  margin: 0px;\n  color: #fff !important;\n  text-align: center;\n  font-family: 'Pathway Gothic One', sans-serif;\n  text-transform: uppercase; }\n\n.remove {\n  border: 1px solid #990000;\n  background-color: #fff;\n  color: #990000 !important; }\n\n.tableOptions > li > a {\n  color: #323232;\n  font-weight: normal;\n  font-size: 1rem;\n  padding: 0.5rem 0.7rem; }\n\n.tableOptions .menuHeader, .menuHeader:hover {\n  background-color: #232f32 !important;\n  color: #fff;\n  padding: 0.3rem 0.7rem;\n  text-transform: uppercase; }\n\n.tableOptions > li {\n  border-bottom: 1px solid #f2f2f2; }\n\n.tableOptions > li:hover {\n  background-color: #f2f2f2; }\n\n.dropdown-pane {\n  padding: 0px; }\n\n.panel-grey {\n  background-color: #e4e4e4;\n  padding-top: 1rem; }\n\n#emailPanel, #namePanel, #passwordPanel {\n  display: none;\n  padding: 1rem;\n  background: #e4e4e4; }\n\n.button-cancel {\n  border-color: #990000 !important;\n  color: #990000 !important; }\n\n.green {\n  background-color: #006600; }\n\n.orange {\n  background-color: #cc7a00; }\n\n.red {\n  background-color: #990000; }\n\n.black {\n  background-color: #1a1b1b; }\n\n.grey {\n  background-color: #737373; }\n\n.griddle-container {\n  border: none !important; }\n\n.griddle .top-section {\n  clear: both;\n  display: table;\n  width: 100%; }\n\n.griddle .griddle-filter {\n  float: left;\n  width: 50%;\n  text-align: left;\n  color: #222;\n  min-height: 1px; }\n\n.griddle-body {\n  font-size: 1em; }\n\n.griddle .griddle-settings-toggle {\n  float: left;\n  width: 50%;\n  text-align: right;\n  color: #f8f8f8; }\n\n.griddle .griddle-settings {\n  background-color: #FFF;\n  border: 1px solid #DDD;\n  color: #222;\n  padding: 10px;\n  margin-bottom: 10px; }\n\n.griddle .griddle-settings .settings {\n  color: #f8f8f8; }\n\n.griddle .griddle-settings .griddle-columns {\n  clear: both;\n  display: table;\n  width: 100%;\n  border-bottom: 1px solid #EDEDED;\n  margin-bottom: 10px; }\n\n.griddle .griddle-settings .griddle-column-selection {\n  float: left;\n  width: 20%; }\n\n.griddle table {\n  width: 100%;\n  table-layout: fixed; }\n\n.griddle th {\n  background-color: #EDEDEF;\n  border: 0px;\n  border-bottom: 1px solid #DDD;\n  color: #222;\n  padding: 5px; }\n\n.griddle td {\n  padding: 5px;\n  background-color: #FFF;\n  border-top-color: #DDD;\n  color: #222; }\n\n.griddle .footer-container {\n  padding: 0px;\n  background-color: #EDEDED;\n  border: 0px;\n  color: #222; }\n\n.griddle button {\n  color: transparent; }\n\n.griddle .griddle-previous, .griddle .griddle-page, .griddle .griddle-next {\n  float: left;\n  width: 33%;\n  min-height: 1px;\n  margin-top: 5px; }\n\n.griddle .griddle-page {\n  text-align: center; }\n\n.griddle .griddle-next {\n  text-align: right; }\n", ""]);
+	exports.push([module.id, "body,\nhtml {\n  background: #f2f2f2;\n  height: 100%;\n  font-family: roboto;\n  color: #1a1b1b; }\n\n.row {\n  max-width: 100rem; }\n\ndiv#offCanvas {\n  width: 350px;\n  height: 100%;\n  padding: 1.5rem;\n  background: #e8e8e8; }\n\n.is-open-right {\n  transform: translateX(-350px); }\n\n.off-canvas.position-right {\n  right: -350px; }\n\n.off-canvas-content {\n  background: #f2f2f2; }\n\na {\n  color: #6abedb; }\n\nhr {\n  border-color: #373837;\n  margin-top: 0.5rem; }\n\ntable thead {\n  background: #d3d3d3;\n  color: #1a1b1b;\n  border: 1px solid #e4e4e4; }\n\ntable tbody {\n  color: #1a1b1b;\n  border: 1px solid #e4e4e4; }\n\n.margin-top-large {\n  margin-top: 4rem; }\n\n.margin-bottom-large {\n  margin-bottom: 4rem; }\n\n.margin-right-small {\n  margin-right: 2rem; }\n\n.margin-left-small {\n  margin-left: 2rem; }\n\n.margin-left-tiny {\n  margin-left: 0.5rem; }\n\n.margin-top-md {\n  margin-top: 2rem; }\n\n.margin-top-small {\n  margin-top: 1rem; }\n\n.margin-bottom-md {\n  margin-bottom: 2rem; }\n\n.margin-bottom-small {\n  margin-bottom: 1rem; }\n\n.textAlignCenter {\n  text-align: center; }\n\nul.header-list {\n  display: inline-block;\n  list-style: none;\n  margin-bottom: 0px; }\n\n.sticky {\n  z-index: 10000;\n  left: 0px !important; }\n\n.callout {\n  background-color: #f2f2f2; }\n\n.callout-dark {\n  padding: 1.5rem;\n  background-color: #f2f2f2;\n  border: 2px solid #bdbdbd;\n  border-top: none;\n  margin-top: 0;\n  border-bottom-right-radius: 4px;\n  border-bottom-left-radius: 4px; }\n\n.scroll {\n  max-height: 100vh;\n  overflow-y: scroll; }\n\n.callout-dark-header {\n  padding: 0.5rem;\n  background-color: #fff;\n  border: 2px solid #bdbdbd;\n  border-bottom: 1px solid #bdbdbd;\n  border-top-left-radius: 4px;\n  border-top-right-radius: 4px;\n  margin-bottom: 0; }\n\n.callout-top-header {\n  padding: 1rem;\n  background-color: #f2f2f2;\n  border: 2px solid #bdbdbd;\n  border-radius: 4px; }\n\n.callout-minimize {\n  margin-bottom: 1rem;\n  border-radius: 4px 4px; }\n\n.icon-btn-text-small {\n  font-family: 'Pathway Gothic One', sans-serif;\n  text-transform: uppercase;\n  top: 15px;\n  right: 15px;\n  position: absolute;\n  color: #232f32;\n  font-size: 1.2rem; }\n\nlabel {\n  text-transform: capitalize;\n  color: #232f32; }\n\n.header {\n  color: #232f32;\n  margin-bottom: 0;\n  font-size: 1.2rem;\n  text-transform: uppercase;\n  font-family: 'Pathway Gothic One', sans-serif; }\n\n.sub-header {\n  color: #232f32;\n  font-size: 1.3rem;\n  font-family: 'Pathway Gothic One', sans-serif; }\n  .sub-header a {\n    text-transform: capitalize; }\n\n.page-title {\n  color: #6abedb;\n  font-family: 'Lato', sans-serif;\n  font-size: 1.5rem;\n  font-weight: bold;\n  margin-top: 1.5rem;\n  margin-bottom: 1.5rem; }\n\ninput[type=search] {\n  box-shadow: none; }\n\n.top-bar-upper {\n  color: #333;\n  font-size: 0.5rem; }\n\n.app-header {\n  font-size: 1.3rem; }\n\ntable.overview-custom tbody,\ntable.overview-custom th,\ntable.overview-custom thead,\ntable.overview-custom tr {\n  text-align: center; }\n\ntable.sensor-details-table tbody {\n  text-align: left; }\n\n.statusText {\n  color: red;\n  margin-bottom: 1rem;\n  text-transform: uppercase;\n  font-size: 0.8em;\n  font-weight: bold; }\n\n.notificationHeader {\n  color: #fff;\n  text-transform: uppercase;\n  font-size: 0.5em;\n  font-weight: bold; }\n\n.sensorBlock {\n  height: 30px;\n  border-radius: 30px;\n  width: auto;\n  color: #fff;\n  text-align: center;\n  font-family: 'Pathway Gothic One', sans-serif;\n  text-transform: uppercase; }\n\n.sensorBlockSquare {\n  height: 30px;\n  width: 30px;\n  border-radius: 30px;\n  margin: auto;\n  cursor: pointer;\n  text-align: center;\n  line-height: 28px;\n  color: white;\n  font-weight: bold; }\n\n.sensorBlockSquare:hover {\n  opacity: 0.5; }\n\n.sensorList {\n  display: inline-block; }\n\n.button-custom {\n  height: 30px;\n  width: auto !important;\n  margin: 0px;\n  color: #fff !important;\n  text-align: center;\n  font-family: 'Pathway Gothic One', sans-serif;\n  text-transform: uppercase; }\n\n.remove {\n  border: 1px solid #990000;\n  background-color: #fff;\n  color: #990000 !important; }\n\n.tableOptions > li > a {\n  color: #323232;\n  font-weight: normal;\n  font-size: 1rem;\n  padding: 0.5rem 0.7rem; }\n\n.tableOptions .menuHeader, .menuHeader:hover {\n  background-color: #232f32 !important;\n  color: #fff;\n  padding: 0.3rem 0.7rem;\n  text-transform: uppercase; }\n\n.tableOptions > li {\n  border-bottom: 1px solid #f2f2f2; }\n\n.tableOptions > li:hover {\n  background-color: #f2f2f2; }\n\n.dropdown-pane {\n  padding: 0px; }\n\n.panel-grey {\n  background-color: #e4e4e4;\n  padding-top: 1rem; }\n\n#emailPanel, #namePanel, #passwordPanel {\n  display: none;\n  padding: 1rem;\n  background: #e4e4e4; }\n\n.button-cancel {\n  border-color: #990000 !important;\n  color: #990000 !important; }\n\n.green {\n  background-color: #006600; }\n\n.orange {\n  background-color: #cc7a00; }\n\n.red {\n  background-color: #990000; }\n\n.black {\n  background-color: #1a1b1b; }\n\n.grey {\n  background-color: #737373; }\n\n.griddle-container {\n  border: none !important; }\n\n.griddle .top-section {\n  clear: both;\n  display: table;\n  width: 100%; }\n\n.griddle .griddle-filter {\n  float: left;\n  width: 50%;\n  text-align: left;\n  color: #222;\n  min-height: 1px; }\n\n.griddle-body {\n  font-size: 1em; }\n\n.griddle .griddle-settings-toggle {\n  float: left;\n  width: 50%;\n  text-align: right;\n  color: #f8f8f8; }\n\n.griddle .griddle-settings {\n  background-color: #FFF;\n  border: 1px solid #DDD;\n  color: #222;\n  padding: 10px;\n  margin-bottom: 10px; }\n\n.griddle .griddle-settings .settings {\n  color: #f8f8f8; }\n\n.griddle .griddle-settings .griddle-columns {\n  clear: both;\n  display: table;\n  width: 100%;\n  border-bottom: 1px solid #EDEDED;\n  margin-bottom: 10px; }\n\n.griddle .griddle-settings .griddle-column-selection {\n  float: left;\n  width: 20%; }\n\n.griddle table {\n  width: 100%;\n  table-layout: fixed; }\n\n.griddle th {\n  background-color: #EDEDEF;\n  border: 0px;\n  border-bottom: 1px solid #DDD;\n  color: #222;\n  padding: 5px; }\n\n.griddle td {\n  padding: 5px;\n  background-color: #FFF;\n  border-top-color: #DDD;\n  color: #222; }\n\n.griddle .footer-container {\n  padding: 0px;\n  background-color: #EDEDED;\n  border: 0px;\n  color: #222; }\n\n.griddle button {\n  color: transparent; }\n\n.griddle .griddle-previous, .griddle .griddle-page, .griddle .griddle-next {\n  float: left;\n  width: 33%;\n  min-height: 1px;\n  margin-top: 5px; }\n\n.griddle .griddle-page {\n  text-align: center; }\n\n.griddle .griddle-next {\n  text-align: right; }\n", ""]);
 
 	// exports
 

@@ -216,6 +216,11 @@ table.sensor-details-table tbody {
 }
 
 .table-row-highlight {
+    font-weight: bold;
     border: solid 1px rgb(153, 0, 0);
     background-color: rgba(153,0,0,0.4);
+}
+
+.reveal {
+  background: #e8e8e8;
 }

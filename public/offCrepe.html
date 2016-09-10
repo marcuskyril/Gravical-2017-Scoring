@@ -172,7 +172,7 @@
                     <div class="large-12 columns">
                         <div class="header">Delete Sensor</div>
 
-                        <div class="header" style={{color: '#990000'}}>Hold up. You really wanna delete this bad boy?</div>
+                        <div class="header" style='font-size:1.2rem;color:#990000;margin-bottom:1rem;font-weight:normal'>Hold up. You really wanna delete this bad boy?</div>
 
                         <div id="deleteSensorMessage">
                             <DeleteSensorMessage message={message}/>
@@ -191,7 +191,7 @@
         </div>
 
         <div class="buttons margin-top-md">
-            <a onClick="deleteSensorModal.open()" class="button hollow expanded">Delete Sensor</a>
+            <a onClick="scroll()" class="button hollow expanded">Delete Sensor</a>
             <a class="button hollow expanded disabled">Reboot</a>
             <a onclick="pinToWatchList(macAddress)" class="button hollow expanded">Pin to watch list</a>
         </div>
@@ -207,8 +207,14 @@
 
             $(document).ready(function() {
                 deleteSensorModal = new Foundation.Reveal($('#deleteSensorModal'));
-                // $(document).scrollTop(0);
             });
+
+
+            function scroll() {
+              deleteSensorModal.open();
+              parent.window.scrollTo(0,0);
+            }
+
 
             var socket;
             var macAddress;

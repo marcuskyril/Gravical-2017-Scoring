@@ -75,6 +75,16 @@ class Nav extends React.Component {
                                             }}>Update Profile</Link>
                                         </li>
                                         <li>
+                                            <Link to="/notificationLog" activeClassName="active" activeStyle={{
+                                                color: '#222`'
+                                            }}>Notification Log</Link>
+                                        </li>
+                                        <li>
+                                            <Link to="/" activeClassName="active" activeStyle={{
+                                                color: '#222`'
+                                            }}>Sensor Log</Link>
+                                        </li>
+                                        <li>
                                             <a href="#">Configure Settings</a>
                                         </li>
                                         <li>
