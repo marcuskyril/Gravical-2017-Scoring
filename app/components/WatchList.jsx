@@ -3,6 +3,7 @@ var axios = require('axios');
 var Griddle = require('griddle-react');
 var retrieveSensorDetails = require('retrieveSensorDetails');
 var removeFromWatchlist = require('removeFromWatchlist');
+var unpinModal = null;
 var ReactDOM = require('react-dom');
 
 var dataList = [];
@@ -11,18 +12,15 @@ class RemoveComponent extends React.Component {
 
     handleClick(macAddress) {
 
-      // console.log("macAddress to be removed: ", macAddress);
-      event.stopPropagation();
+      $('#unpinMac').val(macAddress);
 
-      removeFromWatchlist.removeFromWatchlist(macAddress).then(function (response) {
-        console.log("removed sensor?", response);
-      });
+      unpinModal.open();
     }
 
     render() {
       return (
         <a onClick={() => this.handleClick(this.props.data)} >
-            <div className="sensorBlock remove">Un-Pin</div>
+            <div id="unpin-btn" className="sensorBlock remove">Un-Pin</div>
         </a>
       );
 
@@ -34,23 +32,17 @@ class SensorBlockComponent extends React.Component {
     render() {
         // url ="speakers/" + this.props.rowData.state + "/" + this.props.data;
 
-        switch (this.props.data) {
-            case "ok":
-                return <div className="sensorBlock green">{this.props.data}</div>
-                break;
-            case "warning":
-                return <div className="sensorBlock orange">{this.props.data}</div>
-                break;
-            case "danger":
-                return <div className="sensorBlock red">{this.props.data}</div>
-                break;
-            case "down":
-                return <div className="sensorBlock black">{this.props.data}</div>
-                break;
-            default:
-                return <div className="sensorBlock grey">{this.props.data}</div>
-                break;
+        var colorMap = {
+          "ok" : "sensorBlock green",
+          "warning" : "sensorBlock orange",
+          "danger" : "sensorBlock red",
+          "down" : "sensorBlock black",
+          "noData" : "sensorBlock grey",
         }
+
+        return (
+            <div className={colorMap[this.props.data]}>{this.props.data}</div>
+        );
     }
 };
 
@@ -124,20 +116,6 @@ const rowMetaData = {
   "bodyCssClassName": "customTableRow"
 }
 
-class NoDataComponent extends React.Component {
-    constructor(props) {
-        super(props);
-    }
-
-    render() {
-        return (
-            <div>
-                <h1>You are not watching jack.</h1>
-            </div>
-        );
-    }
-};
-
 class WatchList extends React.Component {
 
     constructor(props) {
@@ -147,10 +125,19 @@ class WatchList extends React.Component {
         };
     }
 
+    componentDidMount() {
+        unpinModal = new Foundation.Reveal($('#unpin-sensor-modal'));
+    }
+
     tableClickHandler(gridRow) {
-      var macAddress = gridRow.props.data.mac_address
-      $('#offCanvas').foundation('open', event);
-      document.getElementById("sensorDetailsIFrame").src = "./offCrepe.html?offCanMac=" + macAddress;
+        console.log("test test test", gridRow);
+        console.log("adfdafa", event);
+        var macAddress = gridRow.props.data.mac_address
+
+        if($('#unpin-sensor-modal').css('display') === 'none') {
+            $('#offCanvas').foundation('open', event);
+            document.getElementById("sensorDetailsIFrame").src = "./offCrepe.html?offCanMac=" + macAddress;
+        }
     }
 
     render() {

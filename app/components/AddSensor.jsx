@@ -38,6 +38,7 @@ class AddSensor extends React.Component {
       //console.log("message", that.state.message);
 
       that.refs.macAddress.value = '';
+      that.refs.port.value = '';
       that.refs.region.value = '';
       that.refs.sensorLocationLevel.value = '';
       that.refs.sensorLocationID.value = '';
@@ -57,17 +58,24 @@ class AddSensor extends React.Component {
     });
 
     return (
-      <div id="add-sensor-modal" className="reveal tiny text-center" data-reveal="">
+      <div id="add-sensor-modal" className="reveal medium" data-reveal="">
           <form>
               <div className="row">
-                  <div className="large-12 columns">
-                      <div className="header">Add Sensor</div>
+                  <div className="header" style={{paddingLeft: '0.9375rem'}}>Add Sensor</div>
 
-                      <label>Mac Address
-                          <input type="text" name="macAddress" ref="macAddress" placeholder="Mac Address" noValidate/>
-                      </label>
+                  <div className="large-6 columns">
+                    <label>Mac Address
+                        <input type="text" name="macAddress" ref="macAddress" placeholder="Mac Address"/>
+                    </label>
+
+                    <label>Port
+                        <input type="text" name="port" id="inputMac" ref="port" placeholder="Port"/>
+                    </label>
+                  </div>
+
+                  <div className="large-6 columns" style={{'borderLeft':'solid 1px #e4e4e4'}}>
                       <label>Region
-                          <select ref="region" name="region" noValidate>
+                          <select ref="region" name="region">
                               <option value=""></option>
                               <option value="north">North</option>
                               <option value="south">South</option>
@@ -88,13 +96,16 @@ class AddSensor extends React.Component {
                       <label>Building
                           <input type="text" name="building" ref="building" placeholder="Building"/>
                       </label>
-                      <div id="sensorMessage"><AddSensorMessage message={message}/></div>
-                      <button className="button hollow expanded" onClick={this.onAddSensor.bind(this)}>
-                          Add Sensor
-                      </button>
-                      <a className="button hollow expanded close-reveal-modal" data-close="" aria-label="Close"> Cancel</a>
                   </div>
               </div>
+              <div className="row">
+                  <div id="sensorMessage"><AddSensorMessage message={message}/></div>
+                  <a className="button proceed expanded" onClick={this.onAddSensor.bind(this)}>
+                      Add Sensor
+                  </a>
+                  <a className="button cancel expanded close-reveal-modal" data-close="" aria-label="Close"> Cancel</a>
+              </div>
+
           </form>
       </div>
     );

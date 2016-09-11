@@ -11,10 +11,6 @@ class Nav extends React.Component {
         super(props);
     }
 
-    // componentDidMount() {
-    //     $(document).foundation();
-    // }
-
     onLogout() {
         console.log("attempting logout");
         // var {dispatch} = this.props;

@@ -1,7 +1,7 @@
 var React = require('react');
 var Abnormal = require('Abnormal');
 var Uptime = require('Uptime');
-var SensorHealthOverviewV2 = require('SensorHealthOverviewV2');
+var SensorHealthOverview = require('SensorHealthOverview');
 var WatchList = require('WatchList');
 var Tableaux = require('Tableaux');
 var NotificationBar = require('NotificationBar');
@@ -10,7 +10,9 @@ var BuildingOverview = require('BuildingOverview');
 var AddSensor = require('AddSensor');
 var EditSensor = require('EditSensor');
 var DeleteSensor = require('DeleteSensor');
-var modal = null;
+var UnpinSensor = require('UnpinSensor');
+var addModal = null;
+var unpinModal = null;
 var {Link, IndexLink} = require('react-router');
 
 class Dashboard extends React.Component {
@@ -34,6 +36,8 @@ class Dashboard extends React.Component {
 
     componentDidMount() {
       // initiate websocket
+
+      addModal = new Foundation.Reveal($('#add-sensor-modal'));
 
       var that = this;
 
@@ -95,9 +99,8 @@ class Dashboard extends React.Component {
     }
 
     launchAddSensor() {
-
-        modal = new Foundation.Reveal($('#add-sensor-modal'));
-        modal.open();
+        // modal = new Foundation.Reveal($('#add-sensor-modal'));
+        addModal.open();
     }
 
     toggleHide(id) {
@@ -119,7 +122,7 @@ class Dashboard extends React.Component {
       // console.log("bfg dashboard: ", this.state.bfg);
       // console.log("notifications dashboard: ", this.state.notifications);
       // console.log("sensorHealthOverviewV2 dashboard: ", this.state.sensorHealthOverviewV2);
-      console.log("server overview: ", this.state.serverOverview);
+      // console.log("server overview: ", this.state.serverOverview);
 
         return (
 
@@ -162,16 +165,17 @@ class Dashboard extends React.Component {
                     </div>
 
                     <div>
-                      <div className="callout callout-dark-header"><h4 className="header">Sensor Health Overview</h4>
+                      <div className="callout callout-dark-header"><h4 className="header">Health Overview</h4>
                       <button onClick={this.launchAddSensor} className="icon-btn-text-small">
-                        <FontAwesome name='plus-circle'/> ADD SENSOR
+                        <FontAwesome name='plus-circle'/> Add Sensor / Server
                       </button>
                       <AddSensor type={this.state.type}/>
                       <EditSensor/>
+                      <UnpinSensor/>
                       <DeleteSensor deleteMac={this.state.deleteMac}/>
                       </div>
                       <div className="callout callout-dark">
-                        <SensorHealthOverviewV2 data={this.state.sensorHealthOverviewV2} serverData={this.state.serverOverview}/>
+                        <SensorHealthOverview data={this.state.sensorHealthOverviewV2} serverData={this.state.serverOverview}/>
                       </div>
                     </div>
 

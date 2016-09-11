@@ -130,7 +130,7 @@
 	var browserHistory = _require2.browserHistory;
 
 	var actions = __webpack_require__(139);
-	var store = __webpack_require__(811).configure();
+	var store = __webpack_require__(813).configure();
 
 	_firebase2.default.auth().onAuthStateChanged(function (user) {
 	  if (user) {
@@ -150,13 +150,13 @@
 	});
 
 	// Load foundation
-	__webpack_require__(814);
+	__webpack_require__(816);
 	$(document).foundation();
 
-	__webpack_require__(818);
 	__webpack_require__(820);
 	__webpack_require__(822);
 	__webpack_require__(824);
+	__webpack_require__(826);
 
 	ReactDOM.render(React.createElement(
 	  'div',
@@ -10686,6 +10686,7 @@
 	var React = __webpack_require__(14);
 
 	var user = null;
+	var modal = null;
 
 	var ConfirmationModal = function (_React$Component) {
 	    _inherits(ConfirmationModal, _React$Component);
@@ -10702,6 +10703,11 @@
 	    }
 
 	    _createClass(ConfirmationModal, [{
+	        key: 'componentDidMount',
+	        value: function componentDidMount() {
+	            modal = new Foundation.Reveal($('#confirmation-modal'));
+	        }
+	    }, {
 	        key: 'launchConfirmationModal',
 	        value: function launchConfirmationModal() {
 	            var assocArr = {
@@ -10713,7 +10719,7 @@
 	            this.setState({
 	                'action': assoArr[this.props.action]
 	            });
-	            var modal = new Foundation.Reveal($('#confirmation-modal'));
+
 	            modal.open();
 	        }
 	    }, {
@@ -71796,10 +71802,6 @@
 	        return _possibleConstructorReturn(this, Object.getPrototypeOf(Nav).call(this, props));
 	    }
 
-	    // componentDidMount() {
-	    //     $(document).foundation();
-	    // }
-
 	    _createClass(Nav, [{
 	        key: 'onLogout',
 	        value: function onLogout() {
@@ -72121,16 +72123,18 @@
 	var React = __webpack_require__(14);
 	var Abnormal = __webpack_require__(791);
 	var Uptime = __webpack_require__(159);
-	var SensorHealthOverviewV2 = __webpack_require__(792);
-	var WatchList = __webpack_require__(793);
-	var Tableaux = __webpack_require__(796);
-	var NotificationBar = __webpack_require__(797);
+	var SensorHealthOverview = __webpack_require__(792);
+	var WatchList = __webpack_require__(794);
+	var Tableaux = __webpack_require__(797);
+	var NotificationBar = __webpack_require__(798);
 	var FontAwesome = __webpack_require__(789);
-	var BuildingOverview = __webpack_require__(804);
-	var AddSensor = __webpack_require__(805);
-	var EditSensor = __webpack_require__(807);
-	var DeleteSensor = __webpack_require__(809);
-	var modal = null;
+	var BuildingOverview = __webpack_require__(805);
+	var AddSensor = __webpack_require__(806);
+	var EditSensor = __webpack_require__(808);
+	var DeleteSensor = __webpack_require__(810);
+	var UnpinSensor = __webpack_require__(812);
+	var addModal = null;
+	var unpinModal = null;
 
 	var _require = __webpack_require__(47);
 
@@ -72164,6 +72168,8 @@
 	    key: 'componentDidMount',
 	    value: function componentDidMount() {
 	      // initiate websocket
+
+	      addModal = new Foundation.Reveal($('#add-sensor-modal'));
 
 	      var that = this;
 
@@ -72225,9 +72231,8 @@
 	  }, {
 	    key: 'launchAddSensor',
 	    value: function launchAddSensor() {
-
-	      modal = new Foundation.Reveal($('#add-sensor-modal'));
-	      modal.open();
+	      // modal = new Foundation.Reveal($('#add-sensor-modal'));
+	      addModal.open();
 	    }
 	  }, {
 	    key: 'toggleHide',
@@ -72251,7 +72256,7 @@
 	      // console.log("bfg dashboard: ", this.state.bfg);
 	      // console.log("notifications dashboard: ", this.state.notifications);
 	      // console.log("sensorHealthOverviewV2 dashboard: ", this.state.sensorHealthOverviewV2);
-	      console.log("server overview: ", this.state.serverOverview);
+	      // console.log("server overview: ", this.state.serverOverview);
 
 	      return React.createElement(
 	        'div',
@@ -72340,22 +72345,23 @@
 	                React.createElement(
 	                  'h4',
 	                  { className: 'header' },
-	                  'Sensor Health Overview'
+	                  'Health Overview'
 	                ),
 	                React.createElement(
 	                  'button',
 	                  { onClick: this.launchAddSensor, className: 'icon-btn-text-small' },
 	                  React.createElement(FontAwesome, { name: 'plus-circle' }),
-	                  ' ADD SENSOR'
+	                  ' Add Sensor / Server'
 	                ),
 	                React.createElement(AddSensor, { type: this.state.type }),
 	                React.createElement(EditSensor, null),
+	                React.createElement(UnpinSensor, null),
 	                React.createElement(DeleteSensor, { deleteMac: this.state.deleteMac })
 	              ),
 	              React.createElement(
 	                'div',
 	                { className: 'callout callout-dark' },
-	                React.createElement(SensorHealthOverviewV2, { data: this.state.sensorHealthOverviewV2, serverData: this.state.serverOverview })
+	                React.createElement(SensorHealthOverview, { data: this.state.sensorHealthOverviewV2, serverData: this.state.serverOverview })
 	              )
 	            ),
 	            React.createElement(
@@ -72536,7 +72542,7 @@
 /* 792 */
 /***/ function(module, exports, __webpack_require__) {
 
-	/* WEBPACK VAR INJECTION */(function($) {"use strict";
+	/* WEBPACK VAR INJECTION */(function($) {'use strict';
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
@@ -72547,8 +72553,17 @@
 	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 	var React = __webpack_require__(14);
+	var ServerList = __webpack_require__(793);
 	var deleteModal = null;
 	var editModal = null;
+
+	var colorMap = {
+	    "ok": "sensorBlockSquare green sensorList",
+	    "warning": "sensorBlockSquare orange sensorList",
+	    "danger": "sensorBlockSquare red sensorList",
+	    "down": "sensorBlockSquare black sensorList",
+	    "no data": "sensorBlockSquare grey sensorList"
+	};
 
 	var dataList = [];
 
@@ -72562,20 +72577,20 @@
 	    }
 
 	    _createClass(Building, [{
-	        key: "render",
+	        key: 'render',
 	        value: function render() {
 
 	            return React.createElement(
-	                "div",
-	                { className: "column row" },
+	                'div',
+	                { className: 'column row' },
 	                React.createElement(
-	                    "div",
-	                    { className: "header" },
+	                    'div',
+	                    { className: 'header' },
 	                    this.props.buildingName
 	                ),
 	                React.createElement(
-	                    "table",
-	                    { className: "sensorHealthTable" },
+	                    'table',
+	                    { className: 'sensorHealthTable' },
 	                    React.createElement(BuildingHeader, { areaArray: this.props.areaNames }),
 	                    React.createElement(LevelList, { areaArray: this.props.areaNames, levelArray: this.props.levelNames, sensors: this.props.sensors })
 	                )
@@ -72596,21 +72611,21 @@
 	    }
 
 	    _createClass(SearchBar, [{
-	        key: "handleChange",
+	        key: 'handleChange',
 	        value: function handleChange() {
 
 	            this.props.onUserInput(this.refs.filterTextInput.value);
 	        }
 	    }, {
-	        key: "render",
+	        key: 'render',
 	        value: function render() {
 
 	            return React.createElement(
-	                "form",
-	                { id: "buildingFilter" },
-	                React.createElement("input", { type: "text", style: {
+	                'form',
+	                { id: 'buildingFilter' },
+	                React.createElement('input', { type: 'text', style: {
 	                        width: "50%"
-	                    }, placeholder: "Filter Results", value: this.props.filterText, ref: "filterTextInput", onChange: this.handleChange.bind(this) })
+	                    }, placeholder: 'Filter Results', value: this.props.filterText, ref: 'filterTextInput', onChange: this.handleChange.bind(this) })
 	            );
 	        }
 	    }]);
@@ -72628,7 +72643,7 @@
 	    }
 
 	    _createClass(BuildingListV2, [{
-	        key: "render",
+	        key: 'render',
 	        value: function render() {
 
 	            var rows = [];
@@ -72660,13 +72675,13 @@
 	                var levelNames = building.levelNames;
 	                var sensors = building.sensors;
 	                if (buildingName.toLowerCase().indexOf(this.props.filterText.toLowerCase()) === -1) {
-	                    return React.createElement("div", null);
+	                    return React.createElement('div', null);
 	                }
 	                rows.push(React.createElement(Building, { key: buildingName, buildingName: buildingName, areaNames: areaNames, levelNames: levelNames, sensors: sensors }));
 	            }.bind(this));
 
 	            return React.createElement(
-	                "div",
+	                'div',
 	                null,
 	                rows
 	            );
@@ -72686,20 +72701,25 @@
 	    }
 
 	    _createClass(BuildingHeader, [{
-	        key: "render",
+	        key: 'render',
 	        value: function render() {
 
 	            return React.createElement(
-	                "thead",
+	                'thead',
 	                null,
 	                React.createElement(
-	                    "th",
-	                    { style: {
-	                            textAlign: "center"
-	                        } },
-	                    "Level"
-	                ),
-	                React.createElement("th", null)
+	                    'tr',
+	                    null,
+	                    React.createElement(
+	                        'th',
+	                        { style: {
+	                                textAlign: "center",
+	                                width: '20%'
+	                            } },
+	                        'Level'
+	                    ),
+	                    React.createElement('th', null)
+	                )
 	            );
 	        }
 	    }]);
@@ -72717,31 +72737,152 @@
 	    }
 
 	    _createClass(LevelList, [{
-	        key: "handleClick",
-	        value: function handleClick(sensorShizz, action) {
-	            var macAddress = sensorShizz[0];
-	            // console.log("event", macAddress, action);
+	        key: 'render',
+	        value: function render() {
+
+	            var that = this;
+	            var level;
+
+	            var tableRows = [];
+
+	            var areaArray = this.props.areaArray;
+	            var levelArray = this.props.levelArray;
+	            var sensors = this.props.sensors;
+
+	            for (var i = 0; i < levelArray.length; i++) {
+	                var sensorsOnThisFloor = sensors[levelArray[i]];
+	                var temp = [];
+	                var superTemp = [];
+
+	                for (var j = 0; j < sensorsOnThisFloor.length; j++) {
+	                    ////console.log("sensorsOnThisFloor", sensorsOnThisFloor[j]);
+	                    var sensorId = sensorsOnThisFloor[j]['id'];
+	                    var status = sensorsOnThisFloor[j]['status'];
+	                    var macAdd = sensorsOnThisFloor[j]['mac'];
+	                    var region = sensorsOnThisFloor[j]['region'];
+	                    var building = sensorsOnThisFloor[j]['building'];
+	                    var level = sensorsOnThisFloor[j]['level'];
+	                    //console.log("macAdd", macAdd);
+	                    var thePos = areaArray.indexOf(sensorId);
+	                    superTemp[thePos] = [macAdd, status, sensorId, region, building, level];
+	                    //console.log("thePos" + thePos + ", sensor: " + superTemp[thePos]);
+	                }
+
+	                superTemp.forEach(function (sensorData) {
+
+	                    var macAdd = sensorData[0];
+	                    var status = sensorData[1];
+	                    var id = sensorData[2];
+	                    var region = sensorData[3];
+	                    var building = sensorData[4];
+	                    level = sensorData[5];
+
+	                    temp.push(React.createElement(VerticalMenu, { key: macAdd, macAdd: macAdd, sensorData: sensorData, 'class': colorMap[status], id: id }));
+	                });
+
+	                tableRows.push(React.createElement(
+	                    'tr',
+	                    null,
+	                    React.createElement(
+	                        'th',
+	                        null,
+	                        level.length === 1 ? '0' + level : level
+	                    ),
+	                    React.createElement(
+	                        'td',
+	                        null,
+	                        React.createElement(
+	                            'ul',
+	                            { style: { margin: '0px' } },
+	                            temp
+	                        )
+	                    )
+	                ));
+	            }
+
+	            return React.createElement(
+	                'tbody',
+	                null,
+	                tableRows
+	            );
+	        }
+	    }]);
+
+	    return LevelList;
+	}(React.Component);
+
+	var SensorHealthOverview = function (_React$Component6) {
+	    _inherits(SensorHealthOverview, _React$Component6);
+
+	    function SensorHealthOverview(props) {
+	        _classCallCheck(this, SensorHealthOverview);
+
+	        var _this6 = _possibleConstructorReturn(this, Object.getPrototypeOf(SensorHealthOverview).call(this, props));
+
+	        _this6.state = {
+	            filterText: ''
+	        };
+	        return _this6;
+	    }
+
+	    _createClass(SensorHealthOverview, [{
+	        key: 'componentDidMount',
+	        value: function componentDidMount() {
+	            editModal = new Foundation.Reveal($('#edit-sensor-modal'));
+	            deleteModal = new Foundation.Reveal($('#delete-sensor-modal'));
+	        }
+	    }, {
+	        key: 'handleUserInput',
+	        value: function handleUserInput(filterText) {
+	            this.setState({ filterText: filterText });
+	        }
+	    }, {
+	        key: 'render',
+	        value: function render() {
+	            // console.log("Cool stuff from serverOverview", this.props.serverData);
+
+	            return React.createElement(
+	                'div',
+	                null,
+	                React.createElement(ServerList, { data: this.props.serverData }),
+	                React.createElement(SearchBar, { filterText: this.state.filterText, onUserInput: this.handleUserInput.bind(this) }),
+	                React.createElement(BuildingListV2, { data: this.props.data, filterText: this.state.filterText })
+	            );
+	        }
+	    }]);
+
+	    return SensorHealthOverview;
+	}(React.Component);
+
+	var VerticalMenu = function (_React$Component7) {
+	    _inherits(VerticalMenu, _React$Component7);
+
+	    function VerticalMenu(props) {
+	        _classCallCheck(this, VerticalMenu);
+
+	        return _possibleConstructorReturn(this, Object.getPrototypeOf(VerticalMenu).call(this, props));
+	    }
+
+	    _createClass(VerticalMenu, [{
+	        key: 'handleClick',
+	        value: function handleClick(sensorData, action) {
+	            var macAddress = sensorData[0];
 
 	            switch (action) {
 	                case 'EDIT_ACTION':
 
-	                    // console.log("sensorShizz", sensorShizz);
-
 	                    $('#inputMac').val(macAddress);
-	                    $('#inputRegion').val(sensorShizz[3].toLowerCase());
-	                    $('#inputLocationLevel').val(sensorShizz[5]);
-	                    $('#inputSensorLocationID').val(sensorShizz[2]);
-	                    $('#inputBuildingName').val(sensorShizz[4]);
+	                    $('#inputRegion').val(sensorData[3].toLowerCase());
+	                    $('#inputLocationLevel').val(sensorData[5]);
+	                    $('#inputSensorLocationID').val(sensorData[2]);
+	                    $('#inputBuildingName').val(sensorData[4]);
 
-	                    editModal = new Foundation.Reveal($('#edit-sensor-modal'));
 	                    editModal.open();
 
 	                    break;
 	                case 'DELETE_ACTION':
 
 	                    $('#deleteMac').val(macAddress);
-
-	                    deleteModal = new Foundation.Reveal($('#delete-sensor-modal'));
 	                    deleteModal.open();
 
 	                    break;
@@ -72773,559 +72914,278 @@
 	            }
 	        }
 	    }, {
-	        key: "render",
+	        key: 'render',
 	        value: function render() {
-
-	            var that = this;
-
-	            var tableRows = [];
-
-	            var areaArray = this.props.areaArray;
-	            var levelArray = this.props.levelArray;
-	            var sensors = this.props.sensors;
-
-	            for (var i = 0; i < levelArray.length; i++) {
-	                var sensorsOnThisFloor = sensors[levelArray[i]];
-	                var temp = [React.createElement(
-	                    "th",
-	                    null,
-	                    " ",
-	                    levelArray[i],
-	                    " "
-	                )];
-
-	                //console.log("current level", levelArray[i]);
-
-
-	                var superTemp = [];
-	                for (var j = 0; j < areaArray.length; j++) {
-	                    superTemp.push("");
-	                }
-
-	                for (var j = 0; j < sensorsOnThisFloor.length; j++) {
-	                    ////console.log("sensorsOnThisFloor", sensorsOnThisFloor[j]);
-	                    var sensorId = sensorsOnThisFloor[j]['id'];
-	                    var status = sensorsOnThisFloor[j]['status'];
-	                    var macAdd = sensorsOnThisFloor[j]['mac'];
-	                    var region = sensorsOnThisFloor[j]['region'];
-	                    var building = sensorsOnThisFloor[j]['building'];
-	                    var level = sensorsOnThisFloor[j]['level'];
-	                    //console.log("macAdd", macAdd);
-	                    var thePos = areaArray.indexOf(sensorId);
-	                    superTemp[thePos] = [macAdd, status, sensorId, region, building, level];
-	                    //console.log("thePos" + thePos + ", sensor: " + superTemp[thePos]);
-	                }
-
-	                // temp.push(superTemp);
-	                // console.log("woah", superTemp);
-
-	                superTemp.forEach(function (sensorShizz) {
-
-	                    // console.log("sensorShizz status", sensorShizz);
-	                    var macAdd = sensorShizz[0];
-	                    var status = sensorShizz[1];
-	                    var id = sensorShizz[2];
-	                    var region = sensorShizz[3];
-	                    var building = sensorShizz[4];
-	                    var level = sensorShizz[5];
-
-	                    switch (status) {
-	                        case "ok":
-	                            temp.push(React.createElement(
-	                                "li",
-	                                { className: "sensorList" },
-	                                React.createElement(
-	                                    "div",
-	                                    { className: "sensorBlockSquare green", onClick: function onClick() {
-	                                            return that.handleClick(sensorShizz, 'NO_ACTION');
-	                                        } },
-	                                    id
-	                                ),
-	                                React.createElement(
-	                                    "div",
-	                                    { className: "dropdown-pane", id: macAdd, "data-dropdown": true, "data-options": "data-hover:true; data-close-on-click:true" },
-	                                    React.createElement(
-	                                        "ul",
-	                                        { className: "vertical menu tableOptions" },
-	                                        React.createElement(
-	                                            "li",
-	                                            { className: "menuHeader" },
-	                                            macAdd
-	                                        ),
-	                                        React.createElement(
-	                                            "li",
-	                                            null,
-	                                            React.createElement(
-	                                                "a",
-	                                                { onClick: function onClick() {
-	                                                        return that.handleClick(sensorShizz, 'OPEN_CANVAS_ACTION');
-	                                                    }, "data-toggle": "offCanvas" },
-	                                                "More details »"
-	                                            )
-	                                        ),
-	                                        React.createElement(
-	                                            "li",
-	                                            null,
-	                                            React.createElement(
-	                                                "a",
-	                                                { onClick: function onClick() {
-	                                                        return that.handleClick(sensorShizz, 'EDIT_ACTION');
-	                                                    } },
-	                                                "Edit"
-	                                            )
-	                                        ),
-	                                        React.createElement(
-	                                            "li",
-	                                            null,
-	                                            React.createElement(
-	                                                "a",
-	                                                { onClick: function onClick() {
-	                                                        return that.handleClick(sensorShizz, 'DELETE_ACTION');
-	                                                    } },
-	                                                "Delete"
-	                                            )
-	                                        )
-	                                    )
-	                                )
-	                            ));
-	                            break;
-
-	                        case "warning":
-	                            temp.push(React.createElement(
-	                                "li",
-	                                { className: "sensorList" },
-	                                React.createElement(
-	                                    "div",
-	                                    { className: "sensorBlockSquare orange", onClick: function onClick() {
-	                                            return that.handleClick(sensorShizz, 'NO_ACTION');
-	                                        } },
-	                                    id
-	                                ),
-	                                React.createElement(
-	                                    "div",
-	                                    { className: "dropdown-pane", id: macAdd, "data-dropdown": true, "data-options": "data-hover:true; data-close-on-click:true" },
-	                                    React.createElement(
-	                                        "ul",
-	                                        { className: "vertical menu tableOptions" },
-	                                        React.createElement(
-	                                            "li",
-	                                            { className: "menuHeader" },
-	                                            macAdd
-	                                        ),
-	                                        React.createElement(
-	                                            "li",
-	                                            null,
-	                                            React.createElement(
-	                                                "a",
-	                                                { onClick: function onClick() {
-	                                                        return that.handleClick(sensorShizz, 'OPEN_CANVAS_ACTION');
-	                                                    }, "data-toggle": "offCanvas" },
-	                                                "More details »"
-	                                            )
-	                                        ),
-	                                        React.createElement(
-	                                            "li",
-	                                            null,
-	                                            React.createElement(
-	                                                "a",
-	                                                { onClick: function onClick() {
-	                                                        return that.handleClick(sensorShizz, 'EDIT_ACTION');
-	                                                    } },
-	                                                "Edit sensor"
-	                                            )
-	                                        ),
-	                                        React.createElement(
-	                                            "li",
-	                                            null,
-	                                            React.createElement(
-	                                                "a",
-	                                                { onClick: function onClick() {
-	                                                        return that.handleClick(sensorShizz, 'DELETE_ACTION');
-	                                                    } },
-	                                                "Delete sensor"
-	                                            )
-	                                        )
-	                                    )
-	                                )
-	                            ));
-	                            break;
-
-	                        case "danger":
-	                            temp.push(React.createElement(
-	                                "li",
-	                                { className: "sensorList" },
-	                                React.createElement(
-	                                    "div",
-	                                    { className: "sensorBlockSquare red", onClick: function onClick() {
-	                                            return that.handleClick(sensorShizz, 'NO_ACTION');
-	                                        } },
-	                                    id
-	                                ),
-	                                React.createElement(
-	                                    "div",
-	                                    { className: "dropdown-pane", id: macAdd, "data-dropdown": true, "data-options": "data-hover:true; data-close-on-click:true" },
-	                                    React.createElement(
-	                                        "ul",
-	                                        { className: "vertical menu tableOptions" },
-	                                        React.createElement(
-	                                            "li",
-	                                            { className: "menuHeader" },
-	                                            macAdd
-	                                        ),
-	                                        React.createElement(
-	                                            "li",
-	                                            null,
-	                                            React.createElement(
-	                                                "a",
-	                                                { onClick: function onClick() {
-	                                                        return that.handleClick(sensorShizz, 'OPEN_CANVAS_ACTION');
-	                                                    }, "data-toggle": "offCanvas" },
-	                                                "More details »"
-	                                            )
-	                                        ),
-	                                        React.createElement(
-	                                            "li",
-	                                            null,
-	                                            React.createElement(
-	                                                "a",
-	                                                { onClick: function onClick() {
-	                                                        return that.handleClick(sensorShizz, 'EDIT_ACTION');
-	                                                    } },
-	                                                "Edit sensor"
-	                                            )
-	                                        ),
-	                                        React.createElement(
-	                                            "li",
-	                                            null,
-	                                            React.createElement(
-	                                                "a",
-	                                                { onClick: function onClick() {
-	                                                        return that.handleClick(sensorShizz, 'DELETE_ACTION');
-	                                                    } },
-	                                                "Delete sensor"
-	                                            )
-	                                        )
-	                                    )
-	                                )
-	                            ));
-	                            break;
-
-	                        case "down":
-	                            temp.push(React.createElement(
-	                                "li",
-	                                { className: "sensorList" },
-	                                React.createElement(
-	                                    "div",
-	                                    { className: "sensorBlockSquare black", onClick: function onClick() {
-	                                            return that.handleClick(sensorShizz, 'NO_ACTION');
-	                                        } },
-	                                    id
-	                                ),
-	                                React.createElement(
-	                                    "div",
-	                                    { className: "dropdown-pane", id: macAdd, "data-dropdown": true, "data-options": "data-hover:true; data-close-on-click:true" },
-	                                    React.createElement(
-	                                        "ul",
-	                                        { className: "vertical menu tableOptions" },
-	                                        React.createElement(
-	                                            "li",
-	                                            { className: "menuHeader" },
-	                                            macAdd
-	                                        ),
-	                                        React.createElement(
-	                                            "li",
-	                                            null,
-	                                            React.createElement(
-	                                                "a",
-	                                                { onClick: function onClick() {
-	                                                        return that.handleClick(sensorShizz, 'OPEN_CANVAS_ACTION');
-	                                                    }, "data-toggle": "offCanvas" },
-	                                                "More details »"
-	                                            )
-	                                        ),
-	                                        React.createElement(
-	                                            "li",
-	                                            null,
-	                                            React.createElement(
-	                                                "a",
-	                                                { onClick: function onClick() {
-	                                                        return that.handleClick(sensorShizz, 'EDIT_ACTION');
-	                                                    } },
-	                                                "Edit sensor"
-	                                            )
-	                                        ),
-	                                        React.createElement(
-	                                            "li",
-	                                            null,
-	                                            React.createElement(
-	                                                "a",
-	                                                { onClick: function onClick() {
-	                                                        return that.handleClick(sensorShizz, 'DELETE_ACTION');
-	                                                    } },
-	                                                "Delete sensor"
-	                                            )
-	                                        )
-	                                    )
-	                                )
-	                            ));
-	                            break;
-
-	                        case "no data":
-	                            temp.push(React.createElement(
-	                                "li",
-	                                { className: "sensorList" },
-	                                React.createElement(
-	                                    "div",
-	                                    { className: "sensorBlockSquare grey", onClick: function onClick() {
-	                                            return that.handleClick(sensorShizz, 'NO_ACTION');
-	                                        } },
-	                                    id
-	                                ),
-	                                React.createElement(
-	                                    "div",
-	                                    { className: "dropdown-pane", id: macAdd, "data-dropdown": true, "data-options": "data-hover:true; data-close-on-click:true" },
-	                                    React.createElement(
-	                                        "ul",
-	                                        { className: "vertical menu tableOptions" },
-	                                        React.createElement(
-	                                            "li",
-	                                            { className: "menuHeader" },
-	                                            macAdd
-	                                        ),
-	                                        React.createElement(
-	                                            "li",
-	                                            null,
-	                                            React.createElement(
-	                                                "a",
-	                                                { onClick: function onClick() {
-	                                                        return that.handleClick(sensorShizz, 'OPEN_CANVAS_ACTION');
-	                                                    }, "data-toggle": "offCanvas" },
-	                                                "More details »"
-	                                            )
-	                                        ),
-	                                        React.createElement(
-	                                            "li",
-	                                            null,
-	                                            React.createElement(
-	                                                "a",
-	                                                { onClick: function onClick() {
-	                                                        return that.handleClick(sensorShizz, 'EDIT_ACTION');
-	                                                    } },
-	                                                "Edit sensor"
-	                                            )
-	                                        ),
-	                                        React.createElement(
-	                                            "li",
-	                                            null,
-	                                            React.createElement(
-	                                                "a",
-	                                                { onClick: function onClick() {
-	                                                        return that.handleClick(sensorShizz, 'DELETE_ACTION');
-	                                                    } },
-	                                                "Delete sensor"
-	                                            )
-	                                        )
-	                                    )
-	                                )
-	                            ));
-	                            break;
-
-	                        default:
-	                            // temp.push(
-	                            //     <td></td >
-	                            //     );
-	                            break;
-	                    }
-	                });
-
-	                //console.log("Here you go, punk", temp);
-
-	                tableRows.push(React.createElement(
-	                    "tr",
-	                    null,
-	                    temp
-	                ));
-	            }
+	            var _this8 = this;
 
 	            return React.createElement(
-	                "tbody",
-	                null,
-	                tableRows
-	            );
-	        }
-	    }]);
-
-	    return LevelList;
-	}(React.Component);
-
-	var SensorHealthOverviewV2 = function (_React$Component6) {
-	    _inherits(SensorHealthOverviewV2, _React$Component6);
-
-	    function SensorHealthOverviewV2(props) {
-	        _classCallCheck(this, SensorHealthOverviewV2);
-
-	        var _this6 = _possibleConstructorReturn(this, Object.getPrototypeOf(SensorHealthOverviewV2).call(this, props));
-
-	        _this6.state = {
-	            filterText: ''
-	        };
-	        return _this6;
-	    }
-
-	    _createClass(SensorHealthOverviewV2, [{
-	        key: "handleUserInput",
-	        value: function handleUserInput(filterText) {
-	            this.setState({ filterText: filterText });
-	        }
-	    }, {
-	        key: "render",
-	        value: function render() {
-	            // console.log("Cool stuff from serverOverview", this.props.serverData);
-
-	            return React.createElement(
-	                "div",
-	                null,
-	                React.createElement(ServerList, { data: this.props.serverData }),
-	                React.createElement(SearchBar, { filterText: this.state.filterText, onUserInput: this.handleUserInput.bind(this) }),
-	                React.createElement(BuildingListV2, { data: this.props.data, filterText: this.state.filterText })
-	            );
-	        }
-	    }]);
-
-	    return SensorHealthOverviewV2;
-	}(React.Component);
-
-	var ServerList = function (_React$Component7) {
-	    _inherits(ServerList, _React$Component7);
-
-	    function ServerList() {
-	        _classCallCheck(this, ServerList);
-
-	        return _possibleConstructorReturn(this, Object.getPrototypeOf(ServerList).apply(this, arguments));
-	    }
-
-	    _createClass(ServerList, [{
-	        key: "render",
-	        value: function render() {
-	            console.log("ServerList: ", this.props.data);
-	            var serverList = this.props.data;
-
-	            var rows = [];
-
-	            for (var property in serverList) {
-	                if (serverList.hasOwnProperty(property)) {
-	                    var server = serverList[property];
-	                    rows.push(React.createElement(Server, { serverName: property, serverData: server }));
-	                }
-	            }
-
-	            return React.createElement(
-	                "div",
-	                null,
-	                rows
-	            );
-	        }
-	    }]);
-
-	    return ServerList;
-	}(React.Component);
-
-	var Server = function (_React$Component8) {
-	    _inherits(Server, _React$Component8);
-
-	    function Server() {
-	        _classCallCheck(this, Server);
-
-	        return _possibleConstructorReturn(this, Object.getPrototypeOf(Server).apply(this, arguments));
-	    }
-
-	    _createClass(Server, [{
-	        key: "render",
-	        value: function render() {
-
-	            console.log("dr. capsicum", this.props.serverData);
-
-	            return React.createElement(
-	                "div",
-	                null,
+	                'li',
+	                { className: 'sensorList' },
 	                React.createElement(
-	                    "div",
-	                    { className: "header" },
-	                    this.props.serverName
+	                    'div',
+	                    { className: this.props.class, onClick: function onClick() {
+	                            return _this8.handleClick(_this8.props.sensorData, 'NO_ACTION');
+	                        } },
+	                    this.props.id
 	                ),
-	                React.createElement(ServerGroupList, { data: this.props.serverData })
+	                React.createElement(
+	                    'div',
+	                    { className: 'dropdown-pane', id: this.props.macAdd, 'data-dropdown': true, 'data-options': 'data-hover:true; data-close-on-click:true' },
+	                    React.createElement(
+	                        'ul',
+	                        { className: 'vertical menu tableOptions' },
+	                        React.createElement(
+	                            'li',
+	                            { className: 'menuHeader' },
+	                            this.props.macAdd
+	                        ),
+	                        React.createElement(
+	                            'li',
+	                            null,
+	                            React.createElement(
+	                                'a',
+	                                { onClick: function onClick() {
+	                                        return _this8.handleClick(_this8.props.sensorData, 'OPEN_CANVAS_ACTION');
+	                                    }, 'data-toggle': 'offCanvas' },
+	                                'More details »'
+	                            )
+	                        ),
+	                        React.createElement(
+	                            'li',
+	                            null,
+	                            React.createElement(
+	                                'a',
+	                                { onClick: function onClick() {
+	                                        return _this8.handleClick(_this8.props.sensorData, 'EDIT_ACTION');
+	                                    } },
+	                                'Edit sensor'
+	                            )
+	                        ),
+	                        React.createElement(
+	                            'li',
+	                            null,
+	                            React.createElement(
+	                                'a',
+	                                { onClick: function onClick() {
+	                                        return _this8.handleClick(_this8.props.sensorData, 'DELETE_ACTION');
+	                                    } },
+	                                'Delete sensor'
+	                            )
+	                        )
+	                    )
+	                )
 	            );
 	        }
 	    }]);
 
-	    return Server;
+	    return VerticalMenu;
 	}(React.Component);
 
-	var ServerGroupList = function (_React$Component9) {
-	    _inherits(ServerGroupList, _React$Component9);
-
-	    function ServerGroupList() {
-	        _classCallCheck(this, ServerGroupList);
-
-	        return _possibleConstructorReturn(this, Object.getPrototypeOf(ServerGroupList).apply(this, arguments));
-	    }
-
-	    _createClass(ServerGroupList, [{
-	        key: "render",
-	        value: function render() {
-
-	            var groups = this.props.data;
-	            var rows = [];
-
-	            for (var property in groups) {
-	                if (groups.hasOwnProperty(property)) {
-	                    rows.push(React.createElement(GroupRow, { data: groups[property] }));
-	                }
-	            }
-
-	            return React.createElement(
-	                "div",
-	                null,
-	                rows
-	            );
-	        }
-	    }]);
-
-	    return ServerGroupList;
-	}(React.Component);
-
-	var GroupRow = function (_React$Component10) {
-	    _inherits(GroupRow, _React$Component10);
-
-	    function GroupRow() {
-	        _classCallCheck(this, GroupRow);
-
-	        return _possibleConstructorReturn(this, Object.getPrototypeOf(GroupRow).apply(this, arguments));
-	    }
-
-	    _createClass(GroupRow, [{
-	        key: "render",
-	        value: function render() {
-	            console.log("Group Row IMPT", this.props.data);
-
-	            var longAndThin = this.props.data;
-
-	            return React.createElement(
-	                "div",
-	                null,
-	                longAndThin.toString()
-	            );
-	        }
-	    }]);
-
-	    return GroupRow;
-	}(React.Component);
-
-	module.exports = SensorHealthOverviewV2;
+	module.exports = SensorHealthOverview;
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(9)))
 
 /***/ },
 /* 793 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	var React = __webpack_require__(14);
+	var colorMap = {
+	  "up": "sensorBlockSquare green sensorList",
+	  "warning": "sensorBlockSquare orange sensorList",
+	  "danger": "sensorBlockSquare red sensorList",
+	  "down": "sensorBlockSquare black sensorList",
+	  "no data": "sensorBlockSquare grey sensorList"
+	};
+
+	var ServerList = function (_React$Component) {
+	  _inherits(ServerList, _React$Component);
+
+	  function ServerList() {
+	    _classCallCheck(this, ServerList);
+
+	    return _possibleConstructorReturn(this, Object.getPrototypeOf(ServerList).apply(this, arguments));
+	  }
+
+	  _createClass(ServerList, [{
+	    key: "render",
+	    value: function render() {
+	      // console.log("ServerList: ", this.props.data);
+	      var serverList = this.props.data;
+
+	      var rows = [];
+
+	      for (var property in serverList) {
+	        if (serverList.hasOwnProperty(property)) {
+	          var server = serverList[property];
+	          rows.push(React.createElement(Server, { key: property, serverName: property, serverData: server }));
+	        }
+	      }
+
+	      return React.createElement(
+	        "div",
+	        null,
+	        rows
+	      );
+	    }
+	  }]);
+
+	  return ServerList;
+	}(React.Component);
+
+	var Server = function (_React$Component2) {
+	  _inherits(Server, _React$Component2);
+
+	  function Server() {
+	    _classCallCheck(this, Server);
+
+	    return _possibleConstructorReturn(this, Object.getPrototypeOf(Server).apply(this, arguments));
+	  }
+
+	  _createClass(Server, [{
+	    key: "render",
+	    value: function render() {
+
+	      // console.log("dr. capsicum", this.props.serverData);
+	      return React.createElement(
+	        "div",
+	        null,
+	        React.createElement(
+	          "div",
+	          { className: "header" },
+	          this.props.serverName
+	        ),
+	        React.createElement(ServerGroupList, { data: this.props.serverData })
+	      );
+	    }
+	  }]);
+
+	  return Server;
+	}(React.Component);
+
+	var ServerGroupList = function (_React$Component3) {
+	  _inherits(ServerGroupList, _React$Component3);
+
+	  function ServerGroupList() {
+	    _classCallCheck(this, ServerGroupList);
+
+	    return _possibleConstructorReturn(this, Object.getPrototypeOf(ServerGroupList).apply(this, arguments));
+	  }
+
+	  _createClass(ServerGroupList, [{
+	    key: "render",
+	    value: function render() {
+
+	      var groups = this.props.data;
+	      var rows = [];
+
+	      for (var property in groups) {
+	        if (groups.hasOwnProperty(property)) {
+	          rows.push(React.createElement(GroupRow, { key: property, data: groups[property] }));
+	        }
+	      }
+
+	      return React.createElement(
+	        "table",
+	        null,
+	        React.createElement(
+	          "thead",
+	          null,
+	          React.createElement(
+	            "tr",
+	            null,
+	            React.createElement(
+	              "th",
+	              { style: { textAlign: 'center', width: '20%' } },
+	              "Groups"
+	            ),
+	            React.createElement("th", null)
+	          )
+	        ),
+	        React.createElement(
+	          "tbody",
+	          null,
+	          rows
+	        )
+	      );
+	    }
+	  }]);
+
+	  return ServerGroupList;
+	}(React.Component);
+
+	var GroupRow = function (_React$Component4) {
+	  _inherits(GroupRow, _React$Component4);
+
+	  function GroupRow() {
+	    _classCallCheck(this, GroupRow);
+
+	    return _possibleConstructorReturn(this, Object.getPrototypeOf(GroupRow).apply(this, arguments));
+	  }
+
+	  _createClass(GroupRow, [{
+	    key: "render",
+	    value: function render() {
+
+	      // console.log("longAndThin", this.props.data);
+
+	      var longAndThin = this.props.data;
+	      var rows = [];
+	      var group;
+
+	      longAndThin.forEach(function (server) {
+	        // console.log("server", server);
+
+	        var cluster = server["cluster"];
+	        group = server["group"];
+	        var id = server["id"];
+	        var mac = server["mac"];
+	        var status = server["status"];
+
+	        rows.push(React.createElement(
+	          "li",
+	          { key: id, className: colorMap[status] },
+	          id
+	        ));
+	      });
+
+	      return React.createElement(
+	        "tr",
+	        null,
+	        React.createElement(
+	          "th",
+	          null,
+	          group.length === 1 ? "0" + group : group
+	        ),
+	        React.createElement(
+	          "td",
+	          null,
+	          React.createElement(
+	            "ul",
+	            { style: { margin: '0px' } },
+	            rows
+	          )
+	        )
+	      );
+	    }
+	  }]);
+
+	  return GroupRow;
+	}(React.Component);
+
+	module.exports = ServerList;
+
+/***/ },
+/* 794 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function($) {'use strict';
@@ -73341,8 +73201,9 @@
 	var React = __webpack_require__(14);
 	var axios = __webpack_require__(140);
 	var Griddle = __webpack_require__(582);
-	var retrieveSensorDetails = __webpack_require__(794);
-	var removeFromWatchlist = __webpack_require__(795);
+	var retrieveSensorDetails = __webpack_require__(795);
+	var removeFromWatchlist = __webpack_require__(796);
+	var unpinModal = null;
 	var ReactDOM = __webpack_require__(490);
 
 	var dataList = [];
@@ -73360,12 +73221,9 @@
 	        key: 'handleClick',
 	        value: function handleClick(macAddress) {
 
-	            // console.log("macAddress to be removed: ", macAddress);
-	            event.stopPropagation();
+	            $('#unpinMac').val(macAddress);
 
-	            removeFromWatchlist.removeFromWatchlist(macAddress).then(function (response) {
-	                console.log("removed sensor?", response);
-	            });
+	            unpinModal.open();
 	        }
 	    }, {
 	        key: 'render',
@@ -73379,7 +73237,7 @@
 	                    } },
 	                React.createElement(
 	                    'div',
-	                    { className: 'sensorBlock remove' },
+	                    { id: 'unpin-btn', className: 'sensorBlock remove' },
 	                    'Un-Pin'
 	                )
 	            );
@@ -73405,43 +73263,19 @@
 	        value: function render() {
 	            // url ="speakers/" + this.props.rowData.state + "/" + this.props.data;
 
-	            switch (this.props.data) {
-	                case "ok":
-	                    return React.createElement(
-	                        'div',
-	                        { className: 'sensorBlock green' },
-	                        this.props.data
-	                    );
-	                    break;
-	                case "warning":
-	                    return React.createElement(
-	                        'div',
-	                        { className: 'sensorBlock orange' },
-	                        this.props.data
-	                    );
-	                    break;
-	                case "danger":
-	                    return React.createElement(
-	                        'div',
-	                        { className: 'sensorBlock red' },
-	                        this.props.data
-	                    );
-	                    break;
-	                case "down":
-	                    return React.createElement(
-	                        'div',
-	                        { className: 'sensorBlock black' },
-	                        this.props.data
-	                    );
-	                    break;
-	                default:
-	                    return React.createElement(
-	                        'div',
-	                        { className: 'sensorBlock grey' },
-	                        this.props.data
-	                    );
-	                    break;
-	            }
+	            var colorMap = {
+	                "ok": "sensorBlock green",
+	                "warning": "sensorBlock orange",
+	                "danger": "sensorBlock red",
+	                "down": "sensorBlock black",
+	                "noData": "sensorBlock grey"
+	            };
+
+	            return React.createElement(
+	                'div',
+	                { className: colorMap[this.props.data] },
+	                this.props.data
+	            );
 	        }
 	    }]);
 
@@ -73532,55 +73366,36 @@
 	    "bodyCssClassName": "customTableRow"
 	};
 
-	var NoDataComponent = function (_React$Component4) {
-	    _inherits(NoDataComponent, _React$Component4);
-
-	    function NoDataComponent(props) {
-	        _classCallCheck(this, NoDataComponent);
-
-	        return _possibleConstructorReturn(this, Object.getPrototypeOf(NoDataComponent).call(this, props));
-	    }
-
-	    _createClass(NoDataComponent, [{
-	        key: 'render',
-	        value: function render() {
-	            return React.createElement(
-	                'div',
-	                null,
-	                React.createElement(
-	                    'h1',
-	                    null,
-	                    'You are not watching jack.'
-	                )
-	            );
-	        }
-	    }]);
-
-	    return NoDataComponent;
-	}(React.Component);
-
-	;
-
-	var WatchList = function (_React$Component5) {
-	    _inherits(WatchList, _React$Component5);
+	var WatchList = function (_React$Component4) {
+	    _inherits(WatchList, _React$Component4);
 
 	    function WatchList(props) {
 	        _classCallCheck(this, WatchList);
 
-	        var _this7 = _possibleConstructorReturn(this, Object.getPrototypeOf(WatchList).call(this, props));
+	        var _this6 = _possibleConstructorReturn(this, Object.getPrototypeOf(WatchList).call(this, props));
 
-	        _this7.state = {
+	        _this6.state = {
 	            dataList: []
 	        };
-	        return _this7;
+	        return _this6;
 	    }
 
 	    _createClass(WatchList, [{
+	        key: 'componentDidMount',
+	        value: function componentDidMount() {
+	            unpinModal = new Foundation.Reveal($('#unpin-sensor-modal'));
+	        }
+	    }, {
 	        key: 'tableClickHandler',
 	        value: function tableClickHandler(gridRow) {
+	            console.log("test test test", gridRow);
+	            console.log("adfdafa", event);
 	            var macAddress = gridRow.props.data.mac_address;
-	            $('#offCanvas').foundation('open', event);
-	            document.getElementById("sensorDetailsIFrame").src = "./offCrepe.html?offCanMac=" + macAddress;
+
+	            if ($('#unpin-sensor-modal').css('display') === 'none') {
+	                $('#offCanvas').foundation('open', event);
+	                document.getElementById("sensorDetailsIFrame").src = "./offCrepe.html?offCanMac=" + macAddress;
+	            }
 	        }
 	    }, {
 	        key: 'render',
@@ -73631,7 +73446,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(9)))
 
 /***/ },
-/* 794 */
+/* 795 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -73656,7 +73471,7 @@
 	};
 
 /***/ },
-/* 795 */
+/* 796 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function($) {'use strict';
@@ -73694,7 +73509,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(9)))
 
 /***/ },
-/* 796 */
+/* 797 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function($) {'use strict';
@@ -73993,16 +73808,16 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(9)))
 
 /***/ },
-/* 797 */
+/* 798 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-	var _reactNotification = __webpack_require__(798);
+	var _reactNotification = __webpack_require__(799);
 
-	var _immutable = __webpack_require__(803);
+	var _immutable = __webpack_require__(804);
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -74093,7 +73908,7 @@
 	module.exports = NotificationBar;
 
 /***/ },
-/* 798 */
+/* 799 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -74103,11 +73918,11 @@
 	});
 	exports.NotificationStack = exports.Notification = undefined;
 
-	var _notification = __webpack_require__(799);
+	var _notification = __webpack_require__(800);
 
 	var _notification2 = _interopRequireDefault(_notification);
 
-	var _notificationStack = __webpack_require__(801);
+	var _notificationStack = __webpack_require__(802);
 
 	var _notificationStack2 = _interopRequireDefault(_notificationStack);
 
@@ -74117,7 +73932,7 @@
 	exports.NotificationStack = _notificationStack2.default;
 
 /***/ },
-/* 799 */
+/* 800 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -74132,7 +73947,7 @@
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _defaultPropTypes = __webpack_require__(800);
+	var _defaultPropTypes = __webpack_require__(801);
 
 	var _defaultPropTypes2 = _interopRequireDefault(_defaultPropTypes);
 
@@ -74333,7 +74148,7 @@
 	exports.default = Notification;
 
 /***/ },
-/* 800 */
+/* 801 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -74361,7 +74176,7 @@
 	};
 
 /***/ },
-/* 801 */
+/* 802 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -74376,11 +74191,11 @@
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _defaultPropTypes = __webpack_require__(800);
+	var _defaultPropTypes = __webpack_require__(801);
 
 	var _defaultPropTypes2 = _interopRequireDefault(_defaultPropTypes);
 
-	var _stackedNotification = __webpack_require__(802);
+	var _stackedNotification = __webpack_require__(803);
 
 	var _stackedNotification2 = _interopRequireDefault(_stackedNotification);
 
@@ -74434,7 +74249,7 @@
 	exports.default = NotificationStack;
 
 /***/ },
-/* 802 */
+/* 803 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -74451,7 +74266,7 @@
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _notification = __webpack_require__(799);
+	var _notification = __webpack_require__(800);
 
 	var _notification2 = _interopRequireDefault(_notification);
 
@@ -74516,7 +74331,7 @@
 	exports.default = StackedNotification;
 
 /***/ },
-/* 803 */
+/* 804 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -79500,7 +79315,7 @@
 	}));
 
 /***/ },
-/* 804 */
+/* 805 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -79759,7 +79574,7 @@
 	module.exports = BuildingOverview;
 
 /***/ },
-/* 805 */
+/* 806 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function($) {'use strict';
@@ -79773,7 +79588,7 @@
 	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 	var React = __webpack_require__(14);
-	var addSensorAPI = __webpack_require__(806);
+	var addSensorAPI = __webpack_require__(807);
 
 	var AddSensor = function (_React$Component) {
 	  _inherits(AddSensor, _React$Component);
@@ -79818,6 +79633,7 @@
 	        //console.log("message", that.state.message);
 
 	        that.refs.macAddress.value = '';
+	        that.refs.port.value = '';
 	        that.refs.region.value = '';
 	        that.refs.sensorLocationLevel.value = '';
 	        that.refs.sensorLocationID.value = '';
@@ -79838,7 +79654,7 @@
 
 	      return React.createElement(
 	        'div',
-	        { id: 'add-sensor-modal', className: 'reveal tiny text-center', 'data-reveal': '' },
+	        { id: 'add-sensor-modal', className: 'reveal medium', 'data-reveal': '' },
 	        React.createElement(
 	          'form',
 	          null,
@@ -79847,25 +79663,35 @@
 	            { className: 'row' },
 	            React.createElement(
 	              'div',
-	              { className: 'large-12 columns' },
-	              React.createElement(
-	                'div',
-	                { className: 'header' },
-	                'Add Sensor'
-	              ),
+	              { className: 'header', style: { paddingLeft: '0.9375rem' } },
+	              'Add Sensor'
+	            ),
+	            React.createElement(
+	              'div',
+	              { className: 'large-6 columns' },
 	              React.createElement(
 	                'label',
 	                null,
 	                'Mac Address',
-	                React.createElement('input', { type: 'text', name: 'macAddress', ref: 'macAddress', placeholder: 'Mac Address', noValidate: true })
+	                React.createElement('input', { type: 'text', name: 'macAddress', ref: 'macAddress', placeholder: 'Mac Address' })
 	              ),
+	              React.createElement(
+	                'label',
+	                null,
+	                'Port',
+	                React.createElement('input', { type: 'text', name: 'port', id: 'inputMac', ref: 'port', placeholder: 'Port' })
+	              )
+	            ),
+	            React.createElement(
+	              'div',
+	              { className: 'large-6 columns', style: { 'borderLeft': 'solid 1px #e4e4e4' } },
 	              React.createElement(
 	                'label',
 	                null,
 	                'Region',
 	                React.createElement(
 	                  'select',
-	                  { ref: 'region', name: 'region', noValidate: true },
+	                  { ref: 'region', name: 'region' },
 	                  React.createElement('option', { value: '' }),
 	                  React.createElement(
 	                    'option',
@@ -79911,22 +79737,26 @@
 	                null,
 	                'Building',
 	                React.createElement('input', { type: 'text', name: 'building', ref: 'building', placeholder: 'Building' })
-	              ),
-	              React.createElement(
-	                'div',
-	                { id: 'sensorMessage' },
-	                React.createElement(AddSensorMessage, { message: message })
-	              ),
-	              React.createElement(
-	                'button',
-	                { className: 'button hollow expanded', onClick: this.onAddSensor.bind(this) },
-	                'Add Sensor'
-	              ),
-	              React.createElement(
-	                'a',
-	                { className: 'button hollow expanded close-reveal-modal', 'data-close': '', 'aria-label': 'Close' },
-	                ' Cancel'
 	              )
+	            )
+	          ),
+	          React.createElement(
+	            'div',
+	            { className: 'row' },
+	            React.createElement(
+	              'div',
+	              { id: 'sensorMessage' },
+	              React.createElement(AddSensorMessage, { message: message })
+	            ),
+	            React.createElement(
+	              'a',
+	              { className: 'button proceed expanded', onClick: this.onAddSensor.bind(this) },
+	              'Add Sensor'
+	            ),
+	            React.createElement(
+	              'a',
+	              { className: 'button cancel expanded close-reveal-modal', 'data-close': '', 'aria-label': 'Close' },
+	              ' Cancel'
 	            )
 	          )
 	        )
@@ -79967,7 +79797,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(9)))
 
 /***/ },
-/* 806 */
+/* 807 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function($) {'use strict';
@@ -80007,7 +79837,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(9)))
 
 /***/ },
-/* 807 */
+/* 808 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function($) {'use strict';
@@ -80021,7 +79851,7 @@
 	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 	var React = __webpack_require__(14);
-	var editSensorAPI = __webpack_require__(808);
+	var editSensorAPI = __webpack_require__(809);
 
 	var EditSensor = function (_React$Component) {
 	  _inherits(EditSensor, _React$Component);
@@ -80066,6 +79896,7 @@
 	        //console.log("message", that.state.message);
 
 	        that.refs.macAddress.value = '';
+	        that.refs.port.value = '';
 	        that.refs.region.value = '';
 	        that.refs.sensorLocationLevel.value = '';
 	        that.refs.sensorLocationID.value = '';
@@ -80086,7 +79917,7 @@
 
 	      return React.createElement(
 	        'div',
-	        { id: 'edit-sensor-modal', className: 'reveal tiny text-center', 'data-reveal': '' },
+	        { id: 'edit-sensor-modal', className: 'reveal medium', 'data-reveal': '' },
 	        React.createElement(
 	          'form',
 	          null,
@@ -80095,25 +79926,35 @@
 	            { className: 'row' },
 	            React.createElement(
 	              'div',
-	              { className: 'large-12 columns' },
-	              React.createElement(
-	                'div',
-	                { className: 'header' },
-	                'Edit Sensor'
-	              ),
+	              { className: 'header', style: { paddingLeft: '0.9375rem' } },
+	              'Add Sensor'
+	            ),
+	            React.createElement(
+	              'div',
+	              { className: 'large-6 columns' },
 	              React.createElement(
 	                'label',
 	                null,
 	                'Mac Address',
-	                React.createElement('input', { type: 'text', name: 'macAddress', id: 'inputMac', ref: 'macAddress', placeholder: 'Mac Address', noValidate: true })
+	                React.createElement('input', { type: 'text', name: 'macAddress', id: 'inputMac', ref: 'macAddress', placeholder: 'Mac Address', disabled: true })
 	              ),
+	              React.createElement(
+	                'label',
+	                null,
+	                'Port',
+	                React.createElement('input', { type: 'text', name: 'port', id: 'inputMac', ref: 'port', placeholder: 'Port' })
+	              )
+	            ),
+	            React.createElement(
+	              'div',
+	              { className: 'large-6 columns', style: { 'borderLeft': 'solid 1px #e4e4e4' } },
 	              React.createElement(
 	                'label',
 	                null,
 	                'Region',
 	                React.createElement(
 	                  'select',
-	                  { ref: 'region', name: 'region', id: 'inputRegion', noValidate: true },
+	                  { ref: 'region', name: 'region', id: 'inputRegion' },
 	                  React.createElement('option', { value: '' }),
 	                  React.createElement(
 	                    'option',
@@ -80159,22 +80000,26 @@
 	                null,
 	                'Building',
 	                React.createElement('input', { type: 'text', name: 'building', id: 'inputBuildingName', ref: 'building', placeholder: 'Building' })
-	              ),
-	              React.createElement(
-	                'div',
-	                { id: 'sensorMessage' },
-	                React.createElement(EditSensorMessage, { message: message })
-	              ),
-	              React.createElement(
-	                'a',
-	                { className: 'button hollow expanded', onClick: this.onEditSensor.bind(this) },
-	                'Edit Sensor'
-	              ),
-	              React.createElement(
-	                'a',
-	                { className: 'button hollow expanded close-reveal-modal', 'data-close': '', 'aria-label': 'Close' },
-	                ' Cancel'
 	              )
+	            )
+	          ),
+	          React.createElement(
+	            'div',
+	            { className: 'row' },
+	            React.createElement(
+	              'div',
+	              { id: 'sensorMessage' },
+	              React.createElement(EditSensorMessage, { message: message })
+	            ),
+	            React.createElement(
+	              'a',
+	              { className: 'button proceed expanded', onClick: this.onEditSensor.bind(this) },
+	              'Edit Sensor'
+	            ),
+	            React.createElement(
+	              'a',
+	              { className: 'button cancel expanded close-reveal-modal', 'data-close': '', 'aria-label': 'Close' },
+	              ' Cancel'
 	            )
 	          )
 	        )
@@ -80215,7 +80060,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(9)))
 
 /***/ },
-/* 808 */
+/* 809 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function($) {'use strict';
@@ -80255,7 +80100,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(9)))
 
 /***/ },
-/* 809 */
+/* 810 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function($) {'use strict';
@@ -80269,7 +80114,7 @@
 	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 	var React = __webpack_require__(14);
-	var deleteSensorAPI = __webpack_require__(810);
+	var deleteSensorAPI = __webpack_require__(811);
 	var deleteMac = "";
 
 	var DeleteSensor = function (_React$Component) {
@@ -80362,12 +80207,12 @@
 	              ),
 	              React.createElement(
 	                'a',
-	                { className: 'button hollow expanded', onClick: this.onDeleteSensor.bind(this) },
+	                { className: 'button proceed expanded', onClick: this.onDeleteSensor.bind(this) },
 	                'Yes I do'
 	              ),
 	              React.createElement(
 	                'a',
-	                { className: 'button hollow expanded close-reveal-modal', 'data-close': '', 'aria-label': 'Close' },
+	                { className: 'button cancel expanded close-reveal-modal', 'data-close': '', 'aria-label': 'Close' },
 	                'Slow Down, Cowboy'
 	              )
 	            )
@@ -80410,7 +80255,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(9)))
 
 /***/ },
-/* 810 */
+/* 811 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function($) {"use strict";
@@ -80440,7 +80285,148 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(9)))
 
 /***/ },
-/* 811 */
+/* 812 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/* WEBPACK VAR INJECTION */(function($) {'use strict';
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	var React = __webpack_require__(14);
+	var removeFromWatchlist = __webpack_require__(796);
+	var unpinMac = "";
+
+	var UnpinSensor = function (_React$Component) {
+	  _inherits(UnpinSensor, _React$Component);
+
+	  function UnpinSensor(props) {
+	    _classCallCheck(this, UnpinSensor);
+
+	    var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(UnpinSensor).call(this, props));
+
+	    _this.state = {
+	      message: ''
+	    };
+	    return _this;
+	  }
+
+	  _createClass(UnpinSensor, [{
+	    key: 'onUnpinSensor',
+	    value: function onUnpinSensor() {
+
+	      var that = this;
+
+	      var macAddress = $('#unpinMac').val();
+
+	      removeFromWatchlist.removeFromWatchlist(macAddress).then(function (response) {
+	        console.log("removed sensor?", response);
+
+	        $('#closeUnpin').click();
+	      });
+	    }
+	  }, {
+	    key: 'render',
+	    value: function render() {
+	      // console.log("delete sensor state ", this.state);
+	      var message = this.state.message;
+	      var that = this;
+
+	      if ($('#unpinMac').val() !== "") {
+	        unpinMac = $('#unpinMac').val();
+	      }
+
+	      // resets message to empty string on close
+	      $('#unpin-sensor-modal').on('closed.zf.reveal', function () {
+	        //console.log("close");
+	        that.setState({
+	          message: ''
+	        });
+	      });
+
+	      return React.createElement(
+	        'div',
+	        { id: 'unpin-sensor-modal', className: 'reveal tiny text-center', 'data-reveal': '' },
+	        React.createElement(
+	          'form',
+	          null,
+	          React.createElement(
+	            'div',
+	            { className: 'row' },
+	            React.createElement(
+	              'div',
+	              { className: 'large-12 columns' },
+	              React.createElement(
+	                'div',
+	                { className: 'header' },
+	                'Unpin Sensor'
+	              ),
+	              React.createElement(
+	                'div',
+	                { className: 'header', style: { color: '#990000' } },
+	                'Unpin this sensor, you want to?'
+	              ),
+	              React.createElement('input', { id: 'unpinMac', value: '', hidden: true }),
+	              React.createElement(
+	                'div',
+	                { id: 'unpinSensorMessage' },
+	                React.createElement(UnpinSensorMessage, { message: message })
+	              ),
+	              React.createElement(
+	                'a',
+	                { className: 'button proceed expanded', onClick: this.onUnpinSensor.bind(this) },
+	                'Yes I do'
+	              ),
+	              React.createElement(
+	                'a',
+	                { className: 'button cancel expanded close-reveal-modal', 'data-close': '', 'aria-label': 'Close', id: 'closeUnpin' },
+	                'Slow Down, Cowboy'
+	              )
+	            )
+	          )
+	        )
+	      );
+	    }
+	  }]);
+
+	  return UnpinSensor;
+	}(React.Component);
+
+	var UnpinSensorMessage = function (_React$Component2) {
+	  _inherits(UnpinSensorMessage, _React$Component2);
+
+	  function UnpinSensorMessage() {
+	    _classCallCheck(this, UnpinSensorMessage);
+
+	    return _possibleConstructorReturn(this, Object.getPrototypeOf(UnpinSensorMessage).apply(this, arguments));
+	  }
+
+	  _createClass(UnpinSensorMessage, [{
+	    key: 'render',
+	    value: function render() {
+	      var message = this.props.message;
+
+	      return React.createElement(
+	        'div',
+	        { className: 'statusText' },
+	        message
+	      );
+	    }
+	  }]);
+
+	  return UnpinSensorMessage;
+	}(React.Component);
+
+	module.exports = UnpinSensor;
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(9)))
+
+/***/ },
+/* 813 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -80454,11 +80440,11 @@
 
 	var redux = _interopRequireWildcard(_redux);
 
-	var _reduxThunk = __webpack_require__(812);
+	var _reduxThunk = __webpack_require__(814);
 
 	var _reduxThunk2 = _interopRequireDefault(_reduxThunk);
 
-	var _reducers = __webpack_require__(813);
+	var _reducers = __webpack_require__(815);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -80480,7 +80466,7 @@
 	};
 
 /***/ },
-/* 812 */
+/* 814 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -80508,7 +80494,7 @@
 	exports['default'] = thunk;
 
 /***/ },
-/* 813 */
+/* 815 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -80603,16 +80589,16 @@
 	// };
 
 /***/ },
-/* 814 */
+/* 816 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(815);
+	var content = __webpack_require__(817);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
-	var update = __webpack_require__(817)(content, {});
+	var update = __webpack_require__(819)(content, {});
 	if(content.locals) module.exports = content.locals;
 	// Hot Module Replacement
 	if(false) {
@@ -80629,10 +80615,10 @@
 	}
 
 /***/ },
-/* 815 */
+/* 817 */
 /***/ function(module, exports, __webpack_require__) {
 
-	exports = module.exports = __webpack_require__(816)();
+	exports = module.exports = __webpack_require__(818)();
 	// imports
 
 
@@ -80643,7 +80629,7 @@
 
 
 /***/ },
-/* 816 */
+/* 818 */
 /***/ function(module, exports) {
 
 	/*
@@ -80699,7 +80685,7 @@
 
 
 /***/ },
-/* 817 */
+/* 819 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*
@@ -80951,16 +80937,16 @@
 
 
 /***/ },
-/* 818 */
+/* 820 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(819);
+	var content = __webpack_require__(821);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
-	var update = __webpack_require__(817)(content, {});
+	var update = __webpack_require__(819)(content, {});
 	if(content.locals) module.exports = content.locals;
 	// Hot Module Replacement
 	if(false) {
@@ -80977,32 +80963,32 @@
 	}
 
 /***/ },
-/* 819 */
+/* 821 */
 /***/ function(module, exports, __webpack_require__) {
 
-	exports = module.exports = __webpack_require__(816)();
+	exports = module.exports = __webpack_require__(818)();
 	// imports
 	exports.push([module.id, "@import url(http://fonts.googleapis.com/css?family=Roboto:300,400);", ""]);
 	exports.push([module.id, "@import url(https://fonts.googleapis.com/css?family=Pathway+Gothic+One);", ""]);
 	exports.push([module.id, "@import url(https://fonts.googleapis.com/css?family=Lato:400,900i);", ""]);
 
 	// module
-	exports.push([module.id, "body,\nhtml {\n  background: #f2f2f2;\n  height: 100%;\n  font-family: roboto;\n  color: #1a1b1b; }\n\n.row {\n  max-width: 100rem; }\n\ndiv#offCanvas {\n  width: 350px;\n  height: 100%;\n  padding: 1.5rem;\n  background: #e8e8e8; }\n\n.is-open-right {\n  transform: translateX(-350px); }\n\n.off-canvas.position-right {\n  right: -350px; }\n\n.off-canvas-content {\n  background: #f2f2f2; }\n\na {\n  color: #6abedb; }\n\nhr {\n  border-color: #373837;\n  margin-top: 0.5rem; }\n\ntable thead {\n  background: #d3d3d3;\n  color: #1a1b1b;\n  border: 1px solid #e4e4e4; }\n\ntable tbody {\n  color: #1a1b1b;\n  border: 1px solid #e4e4e4; }\n\n.margin-top-large {\n  margin-top: 4rem; }\n\n.margin-bottom-large {\n  margin-bottom: 4rem; }\n\n.margin-right-small {\n  margin-right: 2rem; }\n\n.margin-left-small {\n  margin-left: 2rem; }\n\n.margin-left-tiny {\n  margin-left: 0.5rem; }\n\n.margin-top-md {\n  margin-top: 2rem; }\n\n.margin-top-small {\n  margin-top: 1rem; }\n\n.margin-bottom-md {\n  margin-bottom: 2rem; }\n\n.margin-bottom-small {\n  margin-bottom: 1rem; }\n\n.textAlignCenter {\n  text-align: center; }\n\nul.header-list {\n  display: inline-block;\n  list-style: none;\n  margin-bottom: 0px; }\n\n.sticky {\n  z-index: 10000;\n  left: 0px !important; }\n\n.callout {\n  background-color: #f2f2f2; }\n\n.callout-dark {\n  padding: 1.5rem;\n  background-color: #f2f2f2;\n  border: 2px solid #bdbdbd;\n  border-top: none;\n  margin-top: 0;\n  border-bottom-right-radius: 4px;\n  border-bottom-left-radius: 4px; }\n\n.scroll {\n  max-height: 100vh;\n  overflow-y: scroll; }\n\n.callout-dark-header {\n  padding: 0.5rem;\n  background-color: #fff;\n  border: 2px solid #bdbdbd;\n  border-bottom: 1px solid #bdbdbd;\n  border-top-left-radius: 4px;\n  border-top-right-radius: 4px;\n  margin-bottom: 0; }\n\n.callout-top-header {\n  padding: 1rem;\n  background-color: #f2f2f2;\n  border: 2px solid #bdbdbd;\n  border-radius: 4px; }\n\n.callout-minimize {\n  margin-bottom: 1rem;\n  border-radius: 4px 4px; }\n\n.icon-btn-text-small {\n  font-family: 'Pathway Gothic One', sans-serif;\n  text-transform: uppercase;\n  top: 15px;\n  right: 15px;\n  position: absolute;\n  color: #232f32;\n  font-size: 1.2rem; }\n\nlabel {\n  text-transform: capitalize;\n  color: #232f32; }\n\n.header {\n  color: #232f32;\n  margin-bottom: 0;\n  font-size: 1.2rem;\n  text-transform: uppercase;\n  font-family: 'Pathway Gothic One', sans-serif; }\n\n.sub-header {\n  color: #232f32;\n  font-size: 1.3rem;\n  font-family: 'Pathway Gothic One', sans-serif; }\n  .sub-header a {\n    text-transform: capitalize; }\n\n.page-title {\n  color: #6abedb;\n  font-family: 'Lato', sans-serif;\n  font-size: 1.5rem;\n  font-weight: bold;\n  margin-top: 1.5rem;\n  margin-bottom: 1.5rem; }\n\ninput[type=search] {\n  box-shadow: none; }\n\n.top-bar-upper {\n  color: #333;\n  font-size: 0.5rem; }\n\n.app-header {\n  font-size: 1.3rem; }\n\ntable.overview-custom tbody,\ntable.overview-custom th,\ntable.overview-custom thead,\ntable.overview-custom tr {\n  text-align: center; }\n\ntable.sensor-details-table tbody {\n  text-align: left; }\n\n.statusText {\n  color: red;\n  margin-bottom: 1rem;\n  text-transform: uppercase;\n  font-size: 0.8em;\n  font-weight: bold; }\n\n.notificationHeader {\n  color: #fff;\n  text-transform: uppercase;\n  font-size: 0.5em;\n  font-weight: bold; }\n\n.sensorBlock {\n  height: 30px;\n  border-radius: 30px;\n  width: auto;\n  color: #fff;\n  text-align: center;\n  font-family: 'Pathway Gothic One', sans-serif;\n  text-transform: uppercase; }\n\n.sensorBlockSquare {\n  height: 30px;\n  width: 30px;\n  border-radius: 30px;\n  margin: auto;\n  cursor: pointer;\n  text-align: center;\n  line-height: 28px;\n  color: white;\n  font-weight: bold; }\n\n.sensorBlockSquare:hover {\n  opacity: 0.5; }\n\n.sensorList {\n  display: inline-block; }\n\n.button-custom {\n  height: 30px;\n  width: auto !important;\n  margin: 0px;\n  color: #fff !important;\n  text-align: center;\n  font-family: 'Pathway Gothic One', sans-serif;\n  text-transform: uppercase; }\n\n.remove {\n  border: 1px solid #990000;\n  background-color: #fff;\n  color: #990000 !important; }\n\n.tableOptions > li > a {\n  color: #323232;\n  font-weight: normal;\n  font-size: 1rem;\n  padding: 0.5rem 0.7rem; }\n\n.tableOptions .menuHeader, .menuHeader:hover {\n  background-color: #232f32 !important;\n  color: #fff;\n  padding: 0.3rem 0.7rem;\n  text-transform: uppercase; }\n\n.tableOptions > li {\n  border-bottom: 1px solid #f2f2f2; }\n\n.tableOptions > li:hover {\n  background-color: #f2f2f2; }\n\n.dropdown-pane {\n  padding: 0px; }\n\n.panel-grey {\n  background-color: #e4e4e4;\n  padding-top: 1rem; }\n\n#emailPanel, #namePanel, #passwordPanel {\n  display: none;\n  padding: 1rem;\n  background: #e4e4e4; }\n\n.button-cancel {\n  border-color: #990000 !important;\n  color: #990000 !important; }\n\n.green {\n  background-color: #006600; }\n\n.orange {\n  background-color: #cc7a00; }\n\n.red {\n  background-color: #990000; }\n\n.black {\n  background-color: #1a1b1b; }\n\n.grey {\n  background-color: #737373; }\n", ""]);
+	exports.push([module.id, "body,\nhtml {\n  background: #f2f2f2;\n  height: 100%;\n  font-family: roboto;\n  color: #1a1b1b; }\n\n.row {\n  max-width: 100rem; }\n\ndiv#offCanvas {\n  width: 350px;\n  height: 100%;\n  padding: 1.5rem;\n  background: #e8e8e8; }\n\n.is-open-right {\n  transform: translateX(-350px); }\n\n.off-canvas.position-right {\n  right: -350px; }\n\n.off-canvas-content {\n  background: #f2f2f2; }\n\na {\n  color: #6abedb; }\n\nhr {\n  border-color: #373837;\n  margin-top: 0.5rem; }\n\ntable thead {\n  background: #d3d3d3;\n  color: #1a1b1b;\n  border: 1px solid #e4e4e4; }\n\ntable tbody {\n  color: #1a1b1b;\n  border: 1px solid #e4e4e4; }\n\n.margin-top-large {\n  margin-top: 4rem; }\n\n.margin-bottom-large {\n  margin-bottom: 4rem; }\n\n.margin-right-small {\n  margin-right: 2rem; }\n\n.margin-left-small {\n  margin-left: 2rem; }\n\n.margin-left-tiny {\n  margin-left: 0.5rem; }\n\n.margin-top-md {\n  margin-top: 2rem; }\n\n.margin-top-small {\n  margin-top: 1rem; }\n\n.margin-bottom-md {\n  margin-bottom: 2rem; }\n\n.margin-bottom-small {\n  margin-bottom: 1rem; }\n\n.textAlignCenter {\n  text-align: center; }\n\nul.header-list {\n  display: inline-block;\n  list-style: none;\n  margin-bottom: 0px; }\n\n.sticky {\n  z-index: 10000;\n  left: 0px !important; }\n\n.callout {\n  background-color: #f2f2f2; }\n\n.callout-dark {\n  padding: 1.5rem;\n  background-color: #f2f2f2;\n  border: 2px solid #bdbdbd;\n  border-top: none;\n  margin-top: 0;\n  border-bottom-right-radius: 4px;\n  border-bottom-left-radius: 4px; }\n\n.scroll {\n  max-height: 100vh;\n  overflow-y: scroll; }\n\n.callout-dark-header {\n  padding: 0.5rem;\n  background-color: #fff;\n  border: 2px solid #bdbdbd;\n  border-bottom: 1px solid #bdbdbd;\n  border-top-left-radius: 4px;\n  border-top-right-radius: 4px;\n  margin-bottom: 0; }\n\n.callout-top-header {\n  padding: 1rem;\n  background-color: #f2f2f2;\n  border: 2px solid #bdbdbd;\n  border-radius: 4px; }\n\n.callout-minimize {\n  margin-bottom: 1rem;\n  border-radius: 4px 4px; }\n\n.icon-btn-text-small {\n  font-family: 'Pathway Gothic One', sans-serif;\n  text-transform: uppercase;\n  top: 15px;\n  right: 15px;\n  position: absolute;\n  color: #232f32;\n  font-size: 1.2rem; }\n\nlabel {\n  text-transform: capitalize;\n  color: #232f32; }\n\n.header {\n  color: #232f32;\n  margin-bottom: 0;\n  font-size: 1.2rem;\n  text-transform: uppercase;\n  font-family: 'Pathway Gothic One', sans-serif; }\n\n.sub-header {\n  color: #232f32;\n  font-size: 1.3rem;\n  font-family: 'Pathway Gothic One', sans-serif; }\n  .sub-header a {\n    text-transform: capitalize; }\n\n.page-title {\n  color: #6abedb;\n  font-family: 'Lato', sans-serif;\n  font-size: 1.5rem;\n  font-weight: bold;\n  margin-top: 1.5rem;\n  margin-bottom: 1.5rem; }\n\ninput[type=search] {\n  box-shadow: none; }\n\n.top-bar-upper {\n  color: #333;\n  font-size: 0.5rem; }\n\n.app-header {\n  font-size: 1.3rem; }\n\ntable.overview-custom tbody,\ntable.overview-custom th,\ntable.overview-custom thead,\ntable.overview-custom tr {\n  text-align: center; }\n\ntable.sensor-details-table tbody {\n  text-align: left; }\n\n.statusText {\n  color: red;\n  margin-bottom: 1rem;\n  text-transform: uppercase;\n  font-size: 0.8em;\n  font-weight: bold; }\n\n.notificationHeader {\n  color: #fff;\n  text-transform: uppercase;\n  font-size: 0.5em;\n  font-weight: bold; }\n\n.sensorBlock {\n  height: 30px;\n  border-radius: 30px;\n  width: auto;\n  color: #fff;\n  text-align: center;\n  font-family: 'Pathway Gothic One', sans-serif;\n  text-transform: uppercase; }\n\n.sensorBlockSquare {\n  height: 30px;\n  width: 30px;\n  border-radius: 30px;\n  margin: auto;\n  cursor: pointer;\n  text-align: center;\n  line-height: 28px;\n  color: white;\n  font-weight: bold; }\n\n.sensorBlockSquare:hover {\n  opacity: 0.5; }\n\n.sensorList {\n  display: inline-block; }\n\n.button-custom {\n  height: 30px;\n  width: auto !important;\n  margin: 0px;\n  color: #fff !important;\n  text-align: center;\n  font-family: 'Pathway Gothic One', sans-serif;\n  text-transform: uppercase; }\n\n.proceed {\n  background: #6abedb; }\n\n.cancel {\n  background: #990000; }\n\n.remove {\n  border: 1px solid #990000;\n  background-color: #fff;\n  color: #990000 !important; }\n\n.tableOptions > li > a {\n  color: #323232;\n  font-weight: normal;\n  font-size: 1rem;\n  padding: 0.5rem 0.7rem; }\n\n.tableOptions .menuHeader, .menuHeader:hover {\n  background-color: #232f32 !important;\n  color: #fff;\n  padding: 0.3rem 0.7rem;\n  text-transform: uppercase; }\n\n.tableOptions > li {\n  border-bottom: 1px solid #f2f2f2; }\n\n.tableOptions > li:hover {\n  background-color: #f2f2f2; }\n\n.dropdown-pane {\n  padding: 0px; }\n\n.panel-grey {\n  background-color: #e4e4e4;\n  padding-top: 1rem; }\n\n#emailPanel, #namePanel, #passwordPanel {\n  display: none;\n  padding: 1rem;\n  background: #e4e4e4; }\n\n.button-cancel {\n  border-color: #990000 !important;\n  color: #990000 !important; }\n\n.green {\n  background-color: #006600; }\n\n.orange {\n  background-color: #cc7a00; }\n\n.red {\n  background-color: #990000; }\n\n.black {\n  background-color: #1a1b1b; }\n\n.grey {\n  background-color: #737373; }\n", ""]);
 
 	// exports
 
 
 /***/ },
-/* 820 */
+/* 822 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(821);
+	var content = __webpack_require__(823);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
-	var update = __webpack_require__(817)(content, {});
+	var update = __webpack_require__(819)(content, {});
 	if(content.locals) module.exports = content.locals;
 	// Hot Module Replacement
 	if(false) {
@@ -81019,32 +81005,32 @@
 	}
 
 /***/ },
-/* 821 */
+/* 823 */
 /***/ function(module, exports, __webpack_require__) {
 
-	exports = module.exports = __webpack_require__(816)();
+	exports = module.exports = __webpack_require__(818)();
 	// imports
 	exports.push([module.id, "@import url(http://fonts.googleapis.com/css?family=Roboto:300,400);", ""]);
 	exports.push([module.id, "@import url(https://fonts.googleapis.com/css?family=Pathway+Gothic+One);", ""]);
 	exports.push([module.id, "@import url(https://fonts.googleapis.com/css?family=Lato:400,900i);", ""]);
 
 	// module
-	exports.push([module.id, "body,\nhtml {\n  background: #f2f2f2;\n  height: 100%;\n  font-family: roboto;\n  color: #1a1b1b; }\n\n.row {\n  max-width: 100rem; }\n\ndiv#offCanvas {\n  width: 350px;\n  height: 100%;\n  padding: 1.5rem;\n  background: #e8e8e8; }\n\n.is-open-right {\n  transform: translateX(-350px); }\n\n.off-canvas.position-right {\n  right: -350px; }\n\n.off-canvas-content {\n  background: #f2f2f2; }\n\na {\n  color: #6abedb; }\n\nhr {\n  border-color: #373837;\n  margin-top: 0.5rem; }\n\ntable thead {\n  background: #d3d3d3;\n  color: #1a1b1b;\n  border: 1px solid #e4e4e4; }\n\ntable tbody {\n  color: #1a1b1b;\n  border: 1px solid #e4e4e4; }\n\n.margin-top-large {\n  margin-top: 4rem; }\n\n.margin-bottom-large {\n  margin-bottom: 4rem; }\n\n.margin-right-small {\n  margin-right: 2rem; }\n\n.margin-left-small {\n  margin-left: 2rem; }\n\n.margin-left-tiny {\n  margin-left: 0.5rem; }\n\n.margin-top-md {\n  margin-top: 2rem; }\n\n.margin-top-small {\n  margin-top: 1rem; }\n\n.margin-bottom-md {\n  margin-bottom: 2rem; }\n\n.margin-bottom-small {\n  margin-bottom: 1rem; }\n\n.textAlignCenter {\n  text-align: center; }\n\nul.header-list {\n  display: inline-block;\n  list-style: none;\n  margin-bottom: 0px; }\n\n.sticky {\n  z-index: 10000;\n  left: 0px !important; }\n\n.callout {\n  background-color: #f2f2f2; }\n\n.callout-dark {\n  padding: 1.5rem;\n  background-color: #f2f2f2;\n  border: 2px solid #bdbdbd;\n  border-top: none;\n  margin-top: 0;\n  border-bottom-right-radius: 4px;\n  border-bottom-left-radius: 4px; }\n\n.scroll {\n  max-height: 100vh;\n  overflow-y: scroll; }\n\n.callout-dark-header {\n  padding: 0.5rem;\n  background-color: #fff;\n  border: 2px solid #bdbdbd;\n  border-bottom: 1px solid #bdbdbd;\n  border-top-left-radius: 4px;\n  border-top-right-radius: 4px;\n  margin-bottom: 0; }\n\n.callout-top-header {\n  padding: 1rem;\n  background-color: #f2f2f2;\n  border: 2px solid #bdbdbd;\n  border-radius: 4px; }\n\n.callout-minimize {\n  margin-bottom: 1rem;\n  border-radius: 4px 4px; }\n\n.icon-btn-text-small {\n  font-family: 'Pathway Gothic One', sans-serif;\n  text-transform: uppercase;\n  top: 15px;\n  right: 15px;\n  position: absolute;\n  color: #232f32;\n  font-size: 1.2rem; }\n\nlabel {\n  text-transform: capitalize;\n  color: #232f32; }\n\n.header {\n  color: #232f32;\n  margin-bottom: 0;\n  font-size: 1.2rem;\n  text-transform: uppercase;\n  font-family: 'Pathway Gothic One', sans-serif; }\n\n.sub-header {\n  color: #232f32;\n  font-size: 1.3rem;\n  font-family: 'Pathway Gothic One', sans-serif; }\n  .sub-header a {\n    text-transform: capitalize; }\n\n.page-title {\n  color: #6abedb;\n  font-family: 'Lato', sans-serif;\n  font-size: 1.5rem;\n  font-weight: bold;\n  margin-top: 1.5rem;\n  margin-bottom: 1.5rem; }\n\ninput[type=search] {\n  box-shadow: none; }\n\n.top-bar-upper {\n  color: #333;\n  font-size: 0.5rem; }\n\n.app-header {\n  font-size: 1.3rem; }\n\ntable.overview-custom tbody,\ntable.overview-custom th,\ntable.overview-custom thead,\ntable.overview-custom tr {\n  text-align: center; }\n\ntable.sensor-details-table tbody {\n  text-align: left; }\n\n.statusText {\n  color: red;\n  margin-bottom: 1rem;\n  text-transform: uppercase;\n  font-size: 0.8em;\n  font-weight: bold; }\n\n.notificationHeader {\n  color: #fff;\n  text-transform: uppercase;\n  font-size: 0.5em;\n  font-weight: bold; }\n\n.sensorBlock {\n  height: 30px;\n  border-radius: 30px;\n  width: auto;\n  color: #fff;\n  text-align: center;\n  font-family: 'Pathway Gothic One', sans-serif;\n  text-transform: uppercase; }\n\n.sensorBlockSquare {\n  height: 30px;\n  width: 30px;\n  border-radius: 30px;\n  margin: auto;\n  cursor: pointer;\n  text-align: center;\n  line-height: 28px;\n  color: white;\n  font-weight: bold; }\n\n.sensorBlockSquare:hover {\n  opacity: 0.5; }\n\n.sensorList {\n  display: inline-block; }\n\n.button-custom {\n  height: 30px;\n  width: auto !important;\n  margin: 0px;\n  color: #fff !important;\n  text-align: center;\n  font-family: 'Pathway Gothic One', sans-serif;\n  text-transform: uppercase; }\n\n.remove {\n  border: 1px solid #990000;\n  background-color: #fff;\n  color: #990000 !important; }\n\n.tableOptions > li > a {\n  color: #323232;\n  font-weight: normal;\n  font-size: 1rem;\n  padding: 0.5rem 0.7rem; }\n\n.tableOptions .menuHeader, .menuHeader:hover {\n  background-color: #232f32 !important;\n  color: #fff;\n  padding: 0.3rem 0.7rem;\n  text-transform: uppercase; }\n\n.tableOptions > li {\n  border-bottom: 1px solid #f2f2f2; }\n\n.tableOptions > li:hover {\n  background-color: #f2f2f2; }\n\n.dropdown-pane {\n  padding: 0px; }\n\n.panel-grey {\n  background-color: #e4e4e4;\n  padding-top: 1rem; }\n\n#emailPanel, #namePanel, #passwordPanel {\n  display: none;\n  padding: 1rem;\n  background: #e4e4e4; }\n\n.button-cancel {\n  border-color: #990000 !important;\n  color: #990000 !important; }\n\n.green {\n  background-color: #006600; }\n\n.orange {\n  background-color: #cc7a00; }\n\n.red {\n  background-color: #990000; }\n\n.black {\n  background-color: #1a1b1b; }\n\n.grey {\n  background-color: #737373; }\n\n.top-bar-left {\n  margin-top: 1.5rem; }\n\n.top-bar-right {\n  margin-top: 1.5rem;\n  text-align: right; }\n\n.top-bar {\n  padding: 0rem 2rem 0rem 2rem;\n  background: #232f32;\n  height: 4rem;\n  box-shadow: 0.5px 0.5px 5px #373837; }\n\n.top-bar ul {\n  background: #232f32;\n  /* temporary fix */\n  position: absolute;\n  top: 15px;\n  right: 15px; }\n\n.top-bar.lower {\n  padding-top: 0px; }\n\n.top-bar-title {\n  font-size: 1.5rem;\n  font-family: 'Lato', sans-serif;\n  font-weight: bold;\n  position: absolute;\n  top: 15px;\n  left: 15px; }\n\n.menu > li > a {\n  color: #fafafa;\n  font-weight: bold;\n  font-size: 0.9rem;\n  text-transform: capitalize; }\n\n.is-dropdown-submenu {\n  border: 1px solid #373737; }\n", ""]);
+	exports.push([module.id, "body,\nhtml {\n  background: #f2f2f2;\n  height: 100%;\n  font-family: roboto;\n  color: #1a1b1b; }\n\n.row {\n  max-width: 100rem; }\n\ndiv#offCanvas {\n  width: 350px;\n  height: 100%;\n  padding: 1.5rem;\n  background: #e8e8e8; }\n\n.is-open-right {\n  transform: translateX(-350px); }\n\n.off-canvas.position-right {\n  right: -350px; }\n\n.off-canvas-content {\n  background: #f2f2f2; }\n\na {\n  color: #6abedb; }\n\nhr {\n  border-color: #373837;\n  margin-top: 0.5rem; }\n\ntable thead {\n  background: #d3d3d3;\n  color: #1a1b1b;\n  border: 1px solid #e4e4e4; }\n\ntable tbody {\n  color: #1a1b1b;\n  border: 1px solid #e4e4e4; }\n\n.margin-top-large {\n  margin-top: 4rem; }\n\n.margin-bottom-large {\n  margin-bottom: 4rem; }\n\n.margin-right-small {\n  margin-right: 2rem; }\n\n.margin-left-small {\n  margin-left: 2rem; }\n\n.margin-left-tiny {\n  margin-left: 0.5rem; }\n\n.margin-top-md {\n  margin-top: 2rem; }\n\n.margin-top-small {\n  margin-top: 1rem; }\n\n.margin-bottom-md {\n  margin-bottom: 2rem; }\n\n.margin-bottom-small {\n  margin-bottom: 1rem; }\n\n.textAlignCenter {\n  text-align: center; }\n\nul.header-list {\n  display: inline-block;\n  list-style: none;\n  margin-bottom: 0px; }\n\n.sticky {\n  z-index: 10000;\n  left: 0px !important; }\n\n.callout {\n  background-color: #f2f2f2; }\n\n.callout-dark {\n  padding: 1.5rem;\n  background-color: #f2f2f2;\n  border: 2px solid #bdbdbd;\n  border-top: none;\n  margin-top: 0;\n  border-bottom-right-radius: 4px;\n  border-bottom-left-radius: 4px; }\n\n.scroll {\n  max-height: 100vh;\n  overflow-y: scroll; }\n\n.callout-dark-header {\n  padding: 0.5rem;\n  background-color: #fff;\n  border: 2px solid #bdbdbd;\n  border-bottom: 1px solid #bdbdbd;\n  border-top-left-radius: 4px;\n  border-top-right-radius: 4px;\n  margin-bottom: 0; }\n\n.callout-top-header {\n  padding: 1rem;\n  background-color: #f2f2f2;\n  border: 2px solid #bdbdbd;\n  border-radius: 4px; }\n\n.callout-minimize {\n  margin-bottom: 1rem;\n  border-radius: 4px 4px; }\n\n.icon-btn-text-small {\n  font-family: 'Pathway Gothic One', sans-serif;\n  text-transform: uppercase;\n  top: 15px;\n  right: 15px;\n  position: absolute;\n  color: #232f32;\n  font-size: 1.2rem; }\n\nlabel {\n  text-transform: capitalize;\n  color: #232f32; }\n\n.header {\n  color: #232f32;\n  margin-bottom: 0;\n  font-size: 1.2rem;\n  text-transform: uppercase;\n  font-family: 'Pathway Gothic One', sans-serif; }\n\n.sub-header {\n  color: #232f32;\n  font-size: 1.3rem;\n  font-family: 'Pathway Gothic One', sans-serif; }\n  .sub-header a {\n    text-transform: capitalize; }\n\n.page-title {\n  color: #6abedb;\n  font-family: 'Lato', sans-serif;\n  font-size: 1.5rem;\n  font-weight: bold;\n  margin-top: 1.5rem;\n  margin-bottom: 1.5rem; }\n\ninput[type=search] {\n  box-shadow: none; }\n\n.top-bar-upper {\n  color: #333;\n  font-size: 0.5rem; }\n\n.app-header {\n  font-size: 1.3rem; }\n\ntable.overview-custom tbody,\ntable.overview-custom th,\ntable.overview-custom thead,\ntable.overview-custom tr {\n  text-align: center; }\n\ntable.sensor-details-table tbody {\n  text-align: left; }\n\n.statusText {\n  color: red;\n  margin-bottom: 1rem;\n  text-transform: uppercase;\n  font-size: 0.8em;\n  font-weight: bold; }\n\n.notificationHeader {\n  color: #fff;\n  text-transform: uppercase;\n  font-size: 0.5em;\n  font-weight: bold; }\n\n.sensorBlock {\n  height: 30px;\n  border-radius: 30px;\n  width: auto;\n  color: #fff;\n  text-align: center;\n  font-family: 'Pathway Gothic One', sans-serif;\n  text-transform: uppercase; }\n\n.sensorBlockSquare {\n  height: 30px;\n  width: 30px;\n  border-radius: 30px;\n  margin: auto;\n  cursor: pointer;\n  text-align: center;\n  line-height: 28px;\n  color: white;\n  font-weight: bold; }\n\n.sensorBlockSquare:hover {\n  opacity: 0.5; }\n\n.sensorList {\n  display: inline-block; }\n\n.button-custom {\n  height: 30px;\n  width: auto !important;\n  margin: 0px;\n  color: #fff !important;\n  text-align: center;\n  font-family: 'Pathway Gothic One', sans-serif;\n  text-transform: uppercase; }\n\n.proceed {\n  background: #6abedb; }\n\n.cancel {\n  background: #990000; }\n\n.remove {\n  border: 1px solid #990000;\n  background-color: #fff;\n  color: #990000 !important; }\n\n.tableOptions > li > a {\n  color: #323232;\n  font-weight: normal;\n  font-size: 1rem;\n  padding: 0.5rem 0.7rem; }\n\n.tableOptions .menuHeader, .menuHeader:hover {\n  background-color: #232f32 !important;\n  color: #fff;\n  padding: 0.3rem 0.7rem;\n  text-transform: uppercase; }\n\n.tableOptions > li {\n  border-bottom: 1px solid #f2f2f2; }\n\n.tableOptions > li:hover {\n  background-color: #f2f2f2; }\n\n.dropdown-pane {\n  padding: 0px; }\n\n.panel-grey {\n  background-color: #e4e4e4;\n  padding-top: 1rem; }\n\n#emailPanel, #namePanel, #passwordPanel {\n  display: none;\n  padding: 1rem;\n  background: #e4e4e4; }\n\n.button-cancel {\n  border-color: #990000 !important;\n  color: #990000 !important; }\n\n.green {\n  background-color: #006600; }\n\n.orange {\n  background-color: #cc7a00; }\n\n.red {\n  background-color: #990000; }\n\n.black {\n  background-color: #1a1b1b; }\n\n.grey {\n  background-color: #737373; }\n\n.top-bar-left {\n  margin-top: 1.5rem; }\n\n.top-bar-right {\n  margin-top: 1.5rem;\n  text-align: right; }\n\n.top-bar {\n  padding: 0rem 2rem 0rem 2rem;\n  background: #232f32;\n  height: 4rem;\n  box-shadow: 0.5px 0.5px 5px #373837; }\n\n.top-bar ul {\n  background: #232f32;\n  /* temporary fix */\n  position: absolute;\n  top: 15px;\n  right: 15px; }\n\n.top-bar.lower {\n  padding-top: 0px; }\n\n.top-bar-title {\n  font-size: 1.5rem;\n  font-family: 'Lato', sans-serif;\n  font-weight: bold;\n  position: absolute;\n  top: 15px;\n  left: 15px; }\n\n.menu > li > a {\n  color: #fafafa;\n  font-weight: bold;\n  font-size: 0.9rem;\n  text-transform: capitalize; }\n\n.is-dropdown-submenu {\n  border: 1px solid #373737; }\n", ""]);
 
 	// exports
 
 
 /***/ },
-/* 822 */
+/* 824 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(823);
+	var content = __webpack_require__(825);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
-	var update = __webpack_require__(817)(content, {});
+	var update = __webpack_require__(819)(content, {});
 	if(content.locals) module.exports = content.locals;
 	// Hot Module Replacement
 	if(false) {
@@ -81061,10 +81047,10 @@
 	}
 
 /***/ },
-/* 823 */
+/* 825 */
 /***/ function(module, exports, __webpack_require__) {
 
-	exports = module.exports = __webpack_require__(816)();
+	exports = module.exports = __webpack_require__(818)();
 	// imports
 
 
@@ -81075,16 +81061,16 @@
 
 
 /***/ },
-/* 824 */
+/* 826 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(825);
+	var content = __webpack_require__(827);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
-	var update = __webpack_require__(817)(content, {});
+	var update = __webpack_require__(819)(content, {});
 	if(content.locals) module.exports = content.locals;
 	// Hot Module Replacement
 	if(false) {
@@ -81101,17 +81087,17 @@
 	}
 
 /***/ },
-/* 825 */
+/* 827 */
 /***/ function(module, exports, __webpack_require__) {
 
-	exports = module.exports = __webpack_require__(816)();
+	exports = module.exports = __webpack_require__(818)();
 	// imports
 	exports.push([module.id, "@import url(http://fonts.googleapis.com/css?family=Roboto:300,400);", ""]);
 	exports.push([module.id, "@import url(https://fonts.googleapis.com/css?family=Pathway+Gothic+One);", ""]);
 	exports.push([module.id, "@import url(https://fonts.googleapis.com/css?family=Lato:400,900i);", ""]);
 
 	// module
-	exports.push([module.id, "body,\nhtml {\n  background: #f2f2f2;\n  height: 100%;\n  font-family: roboto;\n  color: #1a1b1b; }\n\n.row {\n  max-width: 100rem; }\n\ndiv#offCanvas {\n  width: 350px;\n  height: 100%;\n  padding: 1.5rem;\n  background: #e8e8e8; }\n\n.is-open-right {\n  transform: translateX(-350px); }\n\n.off-canvas.position-right {\n  right: -350px; }\n\n.off-canvas-content {\n  background: #f2f2f2; }\n\na {\n  color: #6abedb; }\n\nhr {\n  border-color: #373837;\n  margin-top: 0.5rem; }\n\ntable thead {\n  background: #d3d3d3;\n  color: #1a1b1b;\n  border: 1px solid #e4e4e4; }\n\ntable tbody {\n  color: #1a1b1b;\n  border: 1px solid #e4e4e4; }\n\n.margin-top-large {\n  margin-top: 4rem; }\n\n.margin-bottom-large {\n  margin-bottom: 4rem; }\n\n.margin-right-small {\n  margin-right: 2rem; }\n\n.margin-left-small {\n  margin-left: 2rem; }\n\n.margin-left-tiny {\n  margin-left: 0.5rem; }\n\n.margin-top-md {\n  margin-top: 2rem; }\n\n.margin-top-small {\n  margin-top: 1rem; }\n\n.margin-bottom-md {\n  margin-bottom: 2rem; }\n\n.margin-bottom-small {\n  margin-bottom: 1rem; }\n\n.textAlignCenter {\n  text-align: center; }\n\nul.header-list {\n  display: inline-block;\n  list-style: none;\n  margin-bottom: 0px; }\n\n.sticky {\n  z-index: 10000;\n  left: 0px !important; }\n\n.callout {\n  background-color: #f2f2f2; }\n\n.callout-dark {\n  padding: 1.5rem;\n  background-color: #f2f2f2;\n  border: 2px solid #bdbdbd;\n  border-top: none;\n  margin-top: 0;\n  border-bottom-right-radius: 4px;\n  border-bottom-left-radius: 4px; }\n\n.scroll {\n  max-height: 100vh;\n  overflow-y: scroll; }\n\n.callout-dark-header {\n  padding: 0.5rem;\n  background-color: #fff;\n  border: 2px solid #bdbdbd;\n  border-bottom: 1px solid #bdbdbd;\n  border-top-left-radius: 4px;\n  border-top-right-radius: 4px;\n  margin-bottom: 0; }\n\n.callout-top-header {\n  padding: 1rem;\n  background-color: #f2f2f2;\n  border: 2px solid #bdbdbd;\n  border-radius: 4px; }\n\n.callout-minimize {\n  margin-bottom: 1rem;\n  border-radius: 4px 4px; }\n\n.icon-btn-text-small {\n  font-family: 'Pathway Gothic One', sans-serif;\n  text-transform: uppercase;\n  top: 15px;\n  right: 15px;\n  position: absolute;\n  color: #232f32;\n  font-size: 1.2rem; }\n\nlabel {\n  text-transform: capitalize;\n  color: #232f32; }\n\n.header {\n  color: #232f32;\n  margin-bottom: 0;\n  font-size: 1.2rem;\n  text-transform: uppercase;\n  font-family: 'Pathway Gothic One', sans-serif; }\n\n.sub-header {\n  color: #232f32;\n  font-size: 1.3rem;\n  font-family: 'Pathway Gothic One', sans-serif; }\n  .sub-header a {\n    text-transform: capitalize; }\n\n.page-title {\n  color: #6abedb;\n  font-family: 'Lato', sans-serif;\n  font-size: 1.5rem;\n  font-weight: bold;\n  margin-top: 1.5rem;\n  margin-bottom: 1.5rem; }\n\ninput[type=search] {\n  box-shadow: none; }\n\n.top-bar-upper {\n  color: #333;\n  font-size: 0.5rem; }\n\n.app-header {\n  font-size: 1.3rem; }\n\ntable.overview-custom tbody,\ntable.overview-custom th,\ntable.overview-custom thead,\ntable.overview-custom tr {\n  text-align: center; }\n\ntable.sensor-details-table tbody {\n  text-align: left; }\n\n.statusText {\n  color: red;\n  margin-bottom: 1rem;\n  text-transform: uppercase;\n  font-size: 0.8em;\n  font-weight: bold; }\n\n.notificationHeader {\n  color: #fff;\n  text-transform: uppercase;\n  font-size: 0.5em;\n  font-weight: bold; }\n\n.sensorBlock {\n  height: 30px;\n  border-radius: 30px;\n  width: auto;\n  color: #fff;\n  text-align: center;\n  font-family: 'Pathway Gothic One', sans-serif;\n  text-transform: uppercase; }\n\n.sensorBlockSquare {\n  height: 30px;\n  width: 30px;\n  border-radius: 30px;\n  margin: auto;\n  cursor: pointer;\n  text-align: center;\n  line-height: 28px;\n  color: white;\n  font-weight: bold; }\n\n.sensorBlockSquare:hover {\n  opacity: 0.5; }\n\n.sensorList {\n  display: inline-block; }\n\n.button-custom {\n  height: 30px;\n  width: auto !important;\n  margin: 0px;\n  color: #fff !important;\n  text-align: center;\n  font-family: 'Pathway Gothic One', sans-serif;\n  text-transform: uppercase; }\n\n.remove {\n  border: 1px solid #990000;\n  background-color: #fff;\n  color: #990000 !important; }\n\n.tableOptions > li > a {\n  color: #323232;\n  font-weight: normal;\n  font-size: 1rem;\n  padding: 0.5rem 0.7rem; }\n\n.tableOptions .menuHeader, .menuHeader:hover {\n  background-color: #232f32 !important;\n  color: #fff;\n  padding: 0.3rem 0.7rem;\n  text-transform: uppercase; }\n\n.tableOptions > li {\n  border-bottom: 1px solid #f2f2f2; }\n\n.tableOptions > li:hover {\n  background-color: #f2f2f2; }\n\n.dropdown-pane {\n  padding: 0px; }\n\n.panel-grey {\n  background-color: #e4e4e4;\n  padding-top: 1rem; }\n\n#emailPanel, #namePanel, #passwordPanel {\n  display: none;\n  padding: 1rem;\n  background: #e4e4e4; }\n\n.button-cancel {\n  border-color: #990000 !important;\n  color: #990000 !important; }\n\n.green {\n  background-color: #006600; }\n\n.orange {\n  background-color: #cc7a00; }\n\n.red {\n  background-color: #990000; }\n\n.black {\n  background-color: #1a1b1b; }\n\n.grey {\n  background-color: #737373; }\n\n.griddle-container {\n  border: none !important; }\n\n.griddle .top-section {\n  clear: both;\n  display: table;\n  width: 100%; }\n\n.griddle .griddle-filter {\n  float: left;\n  width: 50%;\n  text-align: left;\n  color: #222;\n  min-height: 1px; }\n\n.griddle-body {\n  font-size: 1em; }\n\n.griddle .griddle-settings-toggle {\n  float: left;\n  width: 50%;\n  text-align: right;\n  color: #f8f8f8; }\n\n.griddle .griddle-settings {\n  background-color: #FFF;\n  border: 1px solid #DDD;\n  color: #222;\n  padding: 10px;\n  margin-bottom: 10px; }\n\n.griddle .griddle-settings .settings {\n  color: #f8f8f8; }\n\n.griddle .griddle-settings .griddle-columns {\n  clear: both;\n  display: table;\n  width: 100%;\n  border-bottom: 1px solid #EDEDED;\n  margin-bottom: 10px; }\n\n.griddle .griddle-settings .griddle-column-selection {\n  float: left;\n  width: 20%; }\n\n.griddle table {\n  width: 100%;\n  table-layout: fixed; }\n\n.griddle th {\n  background-color: #EDEDEF;\n  border: 0px;\n  border-bottom: 1px solid #DDD;\n  color: #222;\n  padding: 5px; }\n\n.griddle td {\n  padding: 5px;\n  background-color: #FFF;\n  border-top-color: #DDD;\n  color: #222; }\n\n.griddle .footer-container {\n  padding: 0px;\n  background-color: #EDEDED;\n  border: 0px;\n  color: #222; }\n\n.griddle button {\n  color: transparent; }\n\n.griddle .griddle-previous, .griddle .griddle-page, .griddle .griddle-next {\n  float: left;\n  width: 33%;\n  min-height: 1px;\n  margin-top: 5px; }\n\n.griddle .griddle-page {\n  text-align: center; }\n\n.griddle .griddle-next {\n  text-align: right; }\n", ""]);
+	exports.push([module.id, "body,\nhtml {\n  background: #f2f2f2;\n  height: 100%;\n  font-family: roboto;\n  color: #1a1b1b; }\n\n.row {\n  max-width: 100rem; }\n\ndiv#offCanvas {\n  width: 350px;\n  height: 100%;\n  padding: 1.5rem;\n  background: #e8e8e8; }\n\n.is-open-right {\n  transform: translateX(-350px); }\n\n.off-canvas.position-right {\n  right: -350px; }\n\n.off-canvas-content {\n  background: #f2f2f2; }\n\na {\n  color: #6abedb; }\n\nhr {\n  border-color: #373837;\n  margin-top: 0.5rem; }\n\ntable thead {\n  background: #d3d3d3;\n  color: #1a1b1b;\n  border: 1px solid #e4e4e4; }\n\ntable tbody {\n  color: #1a1b1b;\n  border: 1px solid #e4e4e4; }\n\n.margin-top-large {\n  margin-top: 4rem; }\n\n.margin-bottom-large {\n  margin-bottom: 4rem; }\n\n.margin-right-small {\n  margin-right: 2rem; }\n\n.margin-left-small {\n  margin-left: 2rem; }\n\n.margin-left-tiny {\n  margin-left: 0.5rem; }\n\n.margin-top-md {\n  margin-top: 2rem; }\n\n.margin-top-small {\n  margin-top: 1rem; }\n\n.margin-bottom-md {\n  margin-bottom: 2rem; }\n\n.margin-bottom-small {\n  margin-bottom: 1rem; }\n\n.textAlignCenter {\n  text-align: center; }\n\nul.header-list {\n  display: inline-block;\n  list-style: none;\n  margin-bottom: 0px; }\n\n.sticky {\n  z-index: 10000;\n  left: 0px !important; }\n\n.callout {\n  background-color: #f2f2f2; }\n\n.callout-dark {\n  padding: 1.5rem;\n  background-color: #f2f2f2;\n  border: 2px solid #bdbdbd;\n  border-top: none;\n  margin-top: 0;\n  border-bottom-right-radius: 4px;\n  border-bottom-left-radius: 4px; }\n\n.scroll {\n  max-height: 100vh;\n  overflow-y: scroll; }\n\n.callout-dark-header {\n  padding: 0.5rem;\n  background-color: #fff;\n  border: 2px solid #bdbdbd;\n  border-bottom: 1px solid #bdbdbd;\n  border-top-left-radius: 4px;\n  border-top-right-radius: 4px;\n  margin-bottom: 0; }\n\n.callout-top-header {\n  padding: 1rem;\n  background-color: #f2f2f2;\n  border: 2px solid #bdbdbd;\n  border-radius: 4px; }\n\n.callout-minimize {\n  margin-bottom: 1rem;\n  border-radius: 4px 4px; }\n\n.icon-btn-text-small {\n  font-family: 'Pathway Gothic One', sans-serif;\n  text-transform: uppercase;\n  top: 15px;\n  right: 15px;\n  position: absolute;\n  color: #232f32;\n  font-size: 1.2rem; }\n\nlabel {\n  text-transform: capitalize;\n  color: #232f32; }\n\n.header {\n  color: #232f32;\n  margin-bottom: 0;\n  font-size: 1.2rem;\n  text-transform: uppercase;\n  font-family: 'Pathway Gothic One', sans-serif; }\n\n.sub-header {\n  color: #232f32;\n  font-size: 1.3rem;\n  font-family: 'Pathway Gothic One', sans-serif; }\n  .sub-header a {\n    text-transform: capitalize; }\n\n.page-title {\n  color: #6abedb;\n  font-family: 'Lato', sans-serif;\n  font-size: 1.5rem;\n  font-weight: bold;\n  margin-top: 1.5rem;\n  margin-bottom: 1.5rem; }\n\ninput[type=search] {\n  box-shadow: none; }\n\n.top-bar-upper {\n  color: #333;\n  font-size: 0.5rem; }\n\n.app-header {\n  font-size: 1.3rem; }\n\ntable.overview-custom tbody,\ntable.overview-custom th,\ntable.overview-custom thead,\ntable.overview-custom tr {\n  text-align: center; }\n\ntable.sensor-details-table tbody {\n  text-align: left; }\n\n.statusText {\n  color: red;\n  margin-bottom: 1rem;\n  text-transform: uppercase;\n  font-size: 0.8em;\n  font-weight: bold; }\n\n.notificationHeader {\n  color: #fff;\n  text-transform: uppercase;\n  font-size: 0.5em;\n  font-weight: bold; }\n\n.sensorBlock {\n  height: 30px;\n  border-radius: 30px;\n  width: auto;\n  color: #fff;\n  text-align: center;\n  font-family: 'Pathway Gothic One', sans-serif;\n  text-transform: uppercase; }\n\n.sensorBlockSquare {\n  height: 30px;\n  width: 30px;\n  border-radius: 30px;\n  margin: auto;\n  cursor: pointer;\n  text-align: center;\n  line-height: 28px;\n  color: white;\n  font-weight: bold; }\n\n.sensorBlockSquare:hover {\n  opacity: 0.5; }\n\n.sensorList {\n  display: inline-block; }\n\n.button-custom {\n  height: 30px;\n  width: auto !important;\n  margin: 0px;\n  color: #fff !important;\n  text-align: center;\n  font-family: 'Pathway Gothic One', sans-serif;\n  text-transform: uppercase; }\n\n.proceed {\n  background: #6abedb; }\n\n.cancel {\n  background: #990000; }\n\n.remove {\n  border: 1px solid #990000;\n  background-color: #fff;\n  color: #990000 !important; }\n\n.tableOptions > li > a {\n  color: #323232;\n  font-weight: normal;\n  font-size: 1rem;\n  padding: 0.5rem 0.7rem; }\n\n.tableOptions .menuHeader, .menuHeader:hover {\n  background-color: #232f32 !important;\n  color: #fff;\n  padding: 0.3rem 0.7rem;\n  text-transform: uppercase; }\n\n.tableOptions > li {\n  border-bottom: 1px solid #f2f2f2; }\n\n.tableOptions > li:hover {\n  background-color: #f2f2f2; }\n\n.dropdown-pane {\n  padding: 0px; }\n\n.panel-grey {\n  background-color: #e4e4e4;\n  padding-top: 1rem; }\n\n#emailPanel, #namePanel, #passwordPanel {\n  display: none;\n  padding: 1rem;\n  background: #e4e4e4; }\n\n.button-cancel {\n  border-color: #990000 !important;\n  color: #990000 !important; }\n\n.green {\n  background-color: #006600; }\n\n.orange {\n  background-color: #cc7a00; }\n\n.red {\n  background-color: #990000; }\n\n.black {\n  background-color: #1a1b1b; }\n\n.grey {\n  background-color: #737373; }\n\n.griddle-container {\n  border: none !important; }\n\n.griddle .top-section {\n  clear: both;\n  display: table;\n  width: 100%; }\n\n.griddle .griddle-filter {\n  float: left;\n  width: 50%;\n  text-align: left;\n  color: #222;\n  min-height: 1px; }\n\n.griddle-body {\n  font-size: 1em; }\n\n.griddle .griddle-settings-toggle {\n  float: left;\n  width: 50%;\n  text-align: right;\n  color: #f8f8f8; }\n\n.griddle .griddle-settings {\n  background-color: #FFF;\n  border: 1px solid #DDD;\n  color: #222;\n  padding: 10px;\n  margin-bottom: 10px; }\n\n.griddle .griddle-settings .settings {\n  color: #f8f8f8; }\n\n.griddle .griddle-settings .griddle-columns {\n  clear: both;\n  display: table;\n  width: 100%;\n  border-bottom: 1px solid #EDEDED;\n  margin-bottom: 10px; }\n\n.griddle .griddle-settings .griddle-column-selection {\n  float: left;\n  width: 20%; }\n\n.griddle table {\n  width: 100%;\n  table-layout: fixed; }\n\n.griddle th {\n  background-color: #EDEDEF;\n  border: 0px;\n  border-bottom: 1px solid #DDD;\n  color: #222;\n  padding: 5px; }\n\n.griddle td {\n  padding: 5px;\n  background-color: #FFF;\n  border-top-color: #DDD;\n  color: #222; }\n\n.griddle .footer-container {\n  padding: 0px;\n  background-color: #EDEDED;\n  border: 0px;\n  color: #222; }\n\n.griddle button {\n  color: transparent; }\n\n.griddle .griddle-previous, .griddle .griddle-page, .griddle .griddle-next {\n  float: left;\n  width: 33%;\n  min-height: 1px;\n  margin-top: 5px; }\n\n.griddle .griddle-page {\n  text-align: center; }\n\n.griddle .griddle-next {\n  text-align: right; }\n", ""]);
 
 	// exports
 

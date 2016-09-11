@@ -60,8 +60,10 @@ module.exports = {
       NotificationLog: 'app/components/NotificationLog.jsx',
       PageNotFound: 'app/components/PageNotFound.jsx',
       SensorDetails: 'app/components/SensorDetails.jsx',
-      SensorHealthOverviewV2: 'app/components/SensorHealthOverviewV2.jsx',
+      SensorHealthOverview: 'app/components/SensorHealthOverview.jsx',
+      ServerList: 'app/components/ServerList.jsx',
       Tableaux: 'app/components/Tableaux.jsx',
+      UnpinSensor: 'app/components/UnpinSensor.jsx',
       Uptime: 'app/components/Uptime.jsx',
 
       addSensorAPI: 'app/api/addSensorAPI.jsx',

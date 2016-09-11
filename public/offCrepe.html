@@ -25,9 +25,7 @@
         <div class="header textAlignCenter" id="status"></div>
         <div class="sub-header textAlignCenter" id="last_reboot">loading...</div>
 
-        <div class="sub-header textAlignCenter" id="itsDeadJim">
-
-        </div>
+        <div class="sub-header textAlignCenter" id="itsDeadJim"></div>
 
         <div class="table-container" id="tableaux-mini">
             <table class="sensor-details-table margin-top-md">
@@ -126,7 +124,6 @@
 
                     </td>
                 </tr>
-                </tr>
                 <tr>
                     <td>
                         3
@@ -137,7 +134,6 @@
                     <td id="top3-usage">
 
                     </td>
-                </tr>
                 </tr>
                 <tr>
                     <td>
@@ -150,7 +146,6 @@
 
                     </td>
                 </tr>
-                </tr>
                 <tr>
                     <td>
                         5
@@ -162,8 +157,26 @@
 
                     </td>
                 </tr>
-                </tr>
             </table>
+        </div>
+
+        <!-- Gotta find a way to reuse these modals, yes? -->
+
+        <div class="reveal tiny text-center" id="unpinSensorModal" data-reveal>
+            <form>
+                <div class="row">
+                    <div class="large-12 columns">
+                        <div class="header">Unpin Sensor</div>
+
+                        <div class="header" style='font-size:1.2rem;color:#990000;margin-bottom:1rem;font-weight:normal'>Hold up. You really wanna unpin this sensor?</div>
+
+                        <div id="unpinSensorMessage"></div>
+
+                        <a onclick="pinToWatchList(macAddress)" class="button expanded proceed">Unpin Sensor</a>
+                        <a class="button expanded cancel close-reveal-modal" data-close aria-label="Close modal">Slow Down, Cowboy</a>
+                    </div>
+                </div>
+            </form>
         </div>
 
         <div class="reveal tiny text-center" id="deleteSensorModal" data-reveal>
@@ -174,12 +187,10 @@
 
                         <div class="header" style='font-size:1.2rem;color:#990000;margin-bottom:1rem;font-weight:normal'>Hold up. You really wanna delete this bad boy?</div>
 
-                        <div id="deleteSensorMessage">
-                            <DeleteSensorMessage message={message}/>
-                        </div>
+                        <div id="deleteSensorMessage"></div>
 
-                        <a onclick="deleteSensor(macAddress)" class="button hollow expanded">Delete Sensor</a>
-                        <a class="button hollow expanded close-reveal-modal" data-close aria-label="Close modal">Slow Down, Cowboy</a>
+                        <a onclick="deleteSensor(macAddress)" class="button expanded proceed">Delete Sensor</a>
+                        <a class="button expanded cancel close-reveal-modal" data-close aria-label="Close modal">Slow Down, Cowboy</a>
                     </div>
                 </div>
             </form>
@@ -191,9 +202,9 @@
         </div>
 
         <div class="buttons margin-top-md">
-            <a onClick="scroll()" class="button hollow expanded">Delete Sensor</a>
-            <a class="button hollow expanded disabled">Reboot</a>
-            <a onclick="pinToWatchList(macAddress)" class="button hollow expanded">Pin to watch list</a>
+            <a onClick="scroll('DELETE_ACTION')" class="button hollow expanded">Delete Sensor</a>
+            <a id="bootyCall" onclick="reboot(macAddress)" class="button hollow expanded disabled">Reboot</a>
+            <a onclick="scroll('PIN_ACTION')" class="button hollow expanded">Pin to watch list</a>
         </div>
 
         <script src="https://use.fontawesome.com/67b81887ff.js"></script>
@@ -204,14 +215,29 @@
         <script type="text/javascript">
 
             var deleteSensorModal;
+            var unpinSensorModal;
 
             $(document).ready(function() {
                 deleteSensorModal = new Foundation.Reveal($('#deleteSensorModal'));
+                unpinSensorModal = new Foundation.Reveal($('#unpinSensorModal'));
             });
 
 
-            function scroll() {
-              deleteSensorModal.open();
+            function scroll(action) {
+
+              switch(action) {
+                case 'DELETE_ACTION':
+                    deleteSensorModal.open();
+                break;
+
+                case 'PIN_ACTION':
+                    unpinSensorModal.open();
+                break;
+                default:
+                    console.warn("Mayday, mayday, mayday.")
+                break;
+              }
+
               parent.window.scrollTo(0,0);
             }
 
@@ -221,7 +247,6 @@
 
             var data = [];
             var usage = [];
-            var ctx = document.getElementById("myChart");
             var QueryString = function() {
                 // This function is anonymous, is executed immediately and
                 // the return value is assigned to QueryString!
@@ -263,6 +288,8 @@
 
                     var response = JSON.parse(msg.data);
 
+                    // console.log("bbq chips", response);
+
                     if (typeof response.error == "undefined") {
 
                         document.getElementById("building").innerHTML = response["building"];
@@ -270,6 +297,10 @@
                         document.getElementById("id").innerHTML = response["sensor_location_id"];
                         var status = response["status"];
                         document.getElementById("status").innerHTML = status;
+
+                        if(response["port"] && response["port"].length > 0 && $('#bootyCall').hasClass('disabled')) {
+                          $('#bootyCall').removeClass('disabled');
+                        }
 
                         switch (status) {
                             case "ok":
@@ -416,6 +447,30 @@
                 parent.document.getElementsByClassName("js-off-canvas-exit")[0].dispatchEvent(oEvent);
             }
 
+            function reboot(macAddress) {
+              var REBOOT_SENSOR_URL = "http://opsdev.sence.io/backend/initialize_reboot_sequence.php";
+
+              var data = {
+                  "MAC": macAddress
+              }
+
+              $.ajax({
+                  type: "POST",
+                  beforeSend: function(request) {
+                      request.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+                  },
+                  url: REBOOT_SENSOR_URL,
+                  data: data,
+                  success: function(msg) {
+                      console.log("Que pasar?", msg);
+                  },
+                  error: function(e) {
+                      console.warn("Remove sensor", e);
+                  }
+              });
+
+            }
+
             function pinToWatchList(macAddress) {
                 var PIN_TO_WATCHLIST_URL = "http://opsdev.sence.io/backend/sensor-watchlist-pin.php";
 
@@ -423,7 +478,6 @@
                     "MAC": macAddress,
                     "pin_status": true
                 }
-
 
                 $.ajax({
                     type: "POST",

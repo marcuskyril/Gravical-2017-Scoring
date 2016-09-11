@@ -31,6 +31,14 @@ hr {
     margin-top: 0.5rem;
 }
 
+.proceed {
+  background: #6abedb;
+}
+
+.cancel {
+  background: #990000;
+}
+
 .row {
     max-width: 85rem;
 }

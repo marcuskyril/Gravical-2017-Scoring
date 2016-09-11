@@ -3,6 +3,7 @@ import * as Redux from 'react-redux';
 import * as actions from 'actions';
 import firebase, {firebaseRef} from 'app/firebase/';
 var user = null;
+var modal = null;
 
 class ConfirmationModal extends React.Component {
     constructor(props) {
@@ -11,6 +12,10 @@ class ConfirmationModal extends React.Component {
         this.state = {
             'action': this.props.action
         }
+    }
+
+    componentDidMount() {
+      modal = new Foundation.Reveal($('#confirmation-modal'));
     }
 
     launchConfirmationModal() {
@@ -23,7 +28,7 @@ class ConfirmationModal extends React.Component {
         this.setState({
             'action': assoArr[this.props.action]
         });
-        var modal = new Foundation.Reveal($('#confirmation-modal'));
+        
         modal.open();
     }
 
