@@ -101,7 +101,7 @@
         </div>
         <div class="top-5">
             <div class="header textAlignCenter">Top 5 Processes</div>
-            <table>
+            <table class="top-five-table">
                 <tr>
                     <td>
                         1
@@ -166,13 +166,13 @@
             <form>
                 <div class="row">
                     <div class="large-12 columns">
-                        <div class="header">Unpin Sensor</div>
+                        <div id="pinTitle" class="header">Unpin Sensor</div>
 
-                        <div class="header" style='font-size:1.2rem;color:#990000;margin-bottom:1rem;font-weight:normal'>Hold up. You really wanna unpin this sensor?</div>
+                        <div id="pinMessage" class="header" style='font-size:1.2rem;color:#990000;margin-bottom:1rem;font-weight:normal'>Hold up. You really wanna unpin this sensor?</div>
 
                         <div id="unpinSensorMessage"></div>
 
-                        <a onclick="pinToWatchList(macAddress)" class="button expanded proceed">Unpin Sensor</a>
+                        <a id="pinBtn" onclick="pinToWatchList(macAddress)" class="button expanded proceed">Unpin Sensor</a>
                         <a class="button expanded cancel close-reveal-modal" data-close aria-label="Close modal">Slow Down, Cowboy</a>
                     </div>
                 </div>
@@ -202,9 +202,9 @@
         </div>
 
         <div class="buttons margin-top-md">
-            <a onClick="scroll('DELETE_ACTION')" class="button hollow expanded">Delete Sensor</a>
-            <a id="bootyCall" onclick="reboot(macAddress)" class="button hollow expanded disabled">Reboot</a>
-            <a onclick="scroll('PIN_ACTION')" class="button hollow expanded">Pin to watch list</a>
+            <a onClick="scroll('DELETE_ACTION')" class="button expanded cancel">Delete Sensor</a>
+            <a id="bootyCall" onclick="reboot(macAddress)" class="button expanded proceed disabled">Reboot</a>
+            <a id="pinBtnMain" onclick="scroll('PIN_ACTION')" style="border: 1px solid #990000; color: #990000" class="button hollow expanded">Pin to watch list</a>
         </div>
 
         <script src="https://use.fontawesome.com/67b81887ff.js"></script>
@@ -377,6 +377,20 @@
                             document.getElementById("last_reboot").innerHTML = "";
                         } else {
                             document.getElementById("itsDeadJim").innerHTML = "";
+                        }
+
+                        if(response["watchlist"]) {
+
+                            document.getElementById('pinTitle').innerHTML = 'Un-pin sensor?';
+                            document.getElementById('pinMessage').innerHTML = 'Unpin this sensor, you would like to?';
+                            document.getElementById('pinBtn').innerHTML = 'Un-pin Sensor';
+                            document.getElementById('pinBtnMain').innerHTML = 'Un-pin Sensor';
+                        } else {
+
+                            document.getElementById('pinTitle').innerHTML = 'Pin sensor?';
+                            document.getElementById('pinMessage').innerHTML = 'pin this sensor, you would like to?';
+                            document.getElementById('pinBtn').innerHTML = 'Pin Sensor';
+                            document.getElementById('pinBtnMain').innerHTML = 'Pin Sensor';
                         }
 
                     } else {

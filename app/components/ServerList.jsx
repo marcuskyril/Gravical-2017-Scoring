@@ -72,8 +72,6 @@ class ServerGroupList extends React.Component {
 class GroupRow extends React.Component {
   render() {
 
-    // console.log("longAndThin", this.props.data);
-
     var longAndThin = this.props.data;
     var rows = [];
     var group;

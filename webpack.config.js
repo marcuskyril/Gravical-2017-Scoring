@@ -63,6 +63,7 @@ module.exports = {
       SensorHealthOverview: 'app/components/SensorHealthOverview.jsx',
       ServerList: 'app/components/ServerList.jsx',
       Tableaux: 'app/components/Tableaux.jsx',
+      Terminal: 'app/components/Terminal.jsx',
       UnpinSensor: 'app/components/UnpinSensor.jsx',
       Uptime: 'app/components/Uptime.jsx',
 

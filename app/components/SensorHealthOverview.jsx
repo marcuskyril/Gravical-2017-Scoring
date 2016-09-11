@@ -1,7 +1,9 @@
 var React = require('react');
 var ServerList = require('ServerList');
+var FontAwesome = require('react-fontawesome');
 var deleteModal = null;
 var editModal = null;
+var terminal = null;
 
 var colorMap = {
   "ok" : "sensorBlockSquare green sensorList",
@@ -195,10 +197,15 @@ constructor(props) {
 componentDidMount() {
     editModal = new Foundation.Reveal($('#edit-sensor-modal'));
     deleteModal = new Foundation.Reveal($('#delete-sensor-modal'));
+    terminal = new Foundation.Reveal($('#terminal'));
 }
 
 handleUserInput(filterText) {
     this.setState({filterText: filterText});
+}
+
+launchTerminal() {
+    terminal.open();
 }
 
 render() {
@@ -206,6 +213,11 @@ render() {
 
     return (
         <div>
+
+            <button onClick={this.launchTerminal.bind(this)} className="test button">
+              <FontAwesome name='rocket'/> Touch me
+            </button>
+
             <ServerList data={this.props.serverData}/>
             <SearchBar filterText={this.state.filterText} onUserInput={this.handleUserInput.bind(this)}/>
             <BuildingListV2 data={this.props.data} filterText={this.state.filterText}/>

@@ -265,13 +265,13 @@ class Tableaux extends React.Component {
     return (
         <Griddle
             results={dataList}
-            settingsIconComponent={<FontAwesome name='cog' style={{color: '#232f32'}} size="2x" className="margin-left-small"/>}
+            settingsIconComponent={<FontAwesome name='cog' style={{color: '#232f32', marginLeft: '1rem'}} size="2x"/>}
             columnMetadata={tableMetaData}
             tableClassName="table"
             showFilter={true}
             columns={currentlySelected}
             showSettings={true}
-            settingsText=""
+            settingsText="Touch me"
         />
     );
   }

@@ -8,7 +8,6 @@ html {
     height: 100%;
     font-family: 'Pathway Gothic One', sans-serif;
     color: #6abedb;
-    text-transform: uppercase;
     width: 100%;
     background-color: #e8e8e8;
     overflow: scroll;
@@ -19,6 +18,7 @@ html {
 
 #diagnosis {
     color: #1a1b1b;
+    font-size: 1.2rem;
     margin-left: 30px;
 }
 
@@ -175,7 +175,7 @@ label {
 
 .sub-header {
     color: #232f32;
-    font-size: 0.9rem;
+    font-size: 1.2rem;
     font-family: 'Pathway Gothic One', sans-serif;
 }
 
@@ -209,6 +209,11 @@ table.overview-custom tr {
 
 table.sensor-details-table tbody {
     text-align: left;
+    font-size: 1.2rem;
+}
+
+.top-five-table {
+  font-size: 1.2rem;
 }
 
 .statusText {
@@ -226,7 +231,7 @@ table.sensor-details-table tbody {
 .table-row-highlight {
     font-weight: bold;
     border: solid 1px rgb(153, 0, 0);
-    background-color: rgba(153,0,0,0.4);
+    background-color: rgba(153,0,0,0.4) !important;
 }
 
 .reveal {

@@ -37,7 +37,7 @@ class SensorBlockComponent extends React.Component {
           "warning" : "sensorBlock orange",
           "danger" : "sensorBlock red",
           "down" : "sensorBlock black",
-          "noData" : "sensorBlock grey",
+          "-" : "sensorBlock grey",
         }
 
         return (
@@ -130,8 +130,7 @@ class WatchList extends React.Component {
     }
 
     tableClickHandler(gridRow) {
-        console.log("test test test", gridRow);
-        console.log("adfdafa", event);
+
         var macAddress = gridRow.props.data.mac_address
 
         if($('#unpin-sensor-modal').css('display') === 'none') {

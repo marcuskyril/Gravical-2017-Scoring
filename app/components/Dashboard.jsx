@@ -11,6 +11,7 @@ var AddSensor = require('AddSensor');
 var EditSensor = require('EditSensor');
 var DeleteSensor = require('DeleteSensor');
 var UnpinSensor = require('UnpinSensor');
+var Terminal = require('Terminal');
 var addModal = null;
 var unpinModal = null;
 var {Link, IndexLink} = require('react-router');
@@ -172,6 +173,7 @@ class Dashboard extends React.Component {
                       <AddSensor type={this.state.type}/>
                       <EditSensor/>
                       <UnpinSensor/>
+                      <Terminal/>
                       <DeleteSensor deleteMac={this.state.deleteMac}/>
                       </div>
                       <div className="callout callout-dark">

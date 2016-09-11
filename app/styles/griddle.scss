@@ -84,7 +84,8 @@
 }
 
 .griddle button {
-  color: transparent;
+  font-weight: bold;
+  color: $night-ocean;
 }
 
 .griddle .griddle-previous, .griddle .griddle-page, .griddle .griddle-next{
