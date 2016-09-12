@@ -1,6 +1,6 @@
 var React = require('react');
 var colorMap = {
-  "up" : "sensorBlockSquare green sensorList",
+  "ok" : "sensorBlockSquare green sensorList",
   "warning" : "sensorBlockSquare orange sensorList",
   "danger" : "sensorBlockSquare red sensorList",
   "down" : "sensorBlockSquare black sensorList",
@@ -84,6 +84,8 @@ class GroupRow extends React.Component {
         var id = server["id"];
         var mac = server["mac"];
         var status = server["status"];
+
+        // console.log("colorMap", status, colorMap[status]);
 
         rows.push(<li key={id} className={colorMap[status]}>{id}</li>)
     });

@@ -260,7 +260,6 @@ table.sensor-details-table {
   height: 30px;
   width: 30px;
   border-radius: 4px;
-  margin-right: 1px;
   cursor: pointer;
   text-align: center;
   line-height: 28px;
@@ -274,6 +273,8 @@ table.sensor-details-table {
 
 .sensorList {
   display: inline-block;
+  margin-right: 1px;
+
 }
 
 .button-custom {
