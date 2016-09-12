@@ -129,31 +129,10 @@ class Dashboard extends React.Component {
 
             <div className="dashboard margin-top-md">
                 <div className="row">
-                  <div className="columns large-12">
-                    <div className="callout-top-header margin-bottom-small">
-                      <ul className="header-list">
-                        <li>
-                          <div className="sub-header">
-                            Welcome, {this.state.userDisplayName}
-                          </div>
-                        </li>
-                        <li>
-                          <div className="sub-header margin-bottom-small">
-                            Last sync at {this.state.currentTime}
-                            <FontAwesome name='refresh' spin style={{
-                                textShadow: '0 1px 0 rgba(0, 0, 0, 0.1)', marginLeft: '0.5rem'
-                            }}/>
-                          </div>
-                        </li>
-                      </ul>
-                    </div>
-                  </div>
-                </div>
-                <div className="row">
-                  <div className="columns medium-3 large 3 margin-bottom-small">
+                  <div className="columns small-12 medium-12 large-3 margin-bottom-small">
                       <BuildingOverview data={this.state.overall} />
                   </div>
-                  <div className="columns medium-9 large 9">
+                  <div className="columns small-12 medium-12 large-9">
                     <div>
                       <div className="callout callout-dark-header"><h4 className="header">Watch List</h4>
                         <button onClick={() => this.toggleHide('watchList')} className="icon-btn-text-small">
@@ -190,13 +169,27 @@ class Dashboard extends React.Component {
 
                   </div>
 
-                  <div className = "columns large-9">
+                  <div className="allSensors columns medium-12 large-9">
                     <div className="callout callout-dark-header"><h4 className="header">All Sensors</h4></div>
                     <div className="callout callout-dark" id="bfg">
                       <Tableaux data={this.state.bfg}/>
                     </div>
                   </div>
                 </div>
+
+                <div className="row textAlignCenter">
+                  <div className="columns small-12 medium-12 large-12 margin-bottom-small">
+
+                      <div className="sub-header">
+                        {this.state.userDisplayName} | Last sync at {this.state.currentTime}
+                        <FontAwesome name='refresh' spin style={{
+                            textShadow: '0 1px 0 rgba(0, 0, 0, 0.1)', marginLeft: '0.5rem'
+                        }}/>
+                      </div>
+
+                    </div>
+                </div>
+
                 <NotificationBar notificationData={this.state.notifications} timestamp={this.state.currentTime}/>
             </div>
         );

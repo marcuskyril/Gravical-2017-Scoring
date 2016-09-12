@@ -288,7 +288,9 @@
 
                     var response = JSON.parse(msg.data);
 
-                    // console.log("bbq chips", response);
+                    //console.log("bbq chips", response);
+                    updatePinButton(response["watchlist"]);
+
 
                     if (typeof response.error == "undefined") {
 
@@ -379,21 +381,12 @@
                             document.getElementById("itsDeadJim").innerHTML = "";
                         }
 
-                        if(response["watchlist"]) {
-
-                            document.getElementById('pinTitle').innerHTML = 'Un-pin sensor?';
-                            document.getElementById('pinMessage').innerHTML = 'Unpin this sensor, you would like to?';
-                            document.getElementById('pinBtn').innerHTML = 'Un-pin Sensor';
-                            document.getElementById('pinBtnMain').innerHTML = 'Un-pin Sensor';
-                        } else {
-
-                            document.getElementById('pinTitle').innerHTML = 'Pin sensor?';
-                            document.getElementById('pinMessage').innerHTML = 'pin this sensor, you would like to?';
-                            document.getElementById('pinBtn').innerHTML = 'Pin Sensor';
-                            document.getElementById('pinBtnMain').innerHTML = 'Pin Sensor';
-                        }
+                        //updatePinButton(response["watchlist"]);
 
                     } else {
+
+                        //updatePinButton(response["watchlist"]);
+
                         document.getElementById("status").innerHTML = "no data";
                         document.getElementById("last_reboot").innerHTML = "";
                     }
@@ -414,6 +407,21 @@
             }
 
             document.getElementById("mac_address").innerHTML = macAddress;
+
+            function updatePinButton(isPinned) {
+              if(isPinned) {
+
+                  document.getElementById('pinTitle').innerHTML = 'Un-pin sensor?';
+                  document.getElementById('pinMessage').innerHTML = 'Unpin this sensor, you would like to?';
+                  document.getElementById('pinBtn').innerHTML = 'Un-pin Sensor';
+                  document.getElementById('pinBtnMain').innerHTML = 'Un-pin Sensor';
+              } else {
+                  document.getElementById('pinTitle').innerHTML = 'Pin sensor?';
+                  document.getElementById('pinMessage').innerHTML = 'pin this sensor, you would like to?';
+                  document.getElementById('pinBtn').innerHTML = 'Pin Sensor';
+                  document.getElementById('pinBtnMain').innerHTML = 'Pin Sensor';
+              }
+            }
 
             function send(msg) {
                 // console.log("sent: " + msg);

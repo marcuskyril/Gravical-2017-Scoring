@@ -14,7 +14,7 @@ class Building extends React.Component {
         return (
             <div className="column row">
                 <div className="header">{this.props.buildingName}</div>
-                  <div style={{height: '250px', width: '100%'}}>
+                  <div className="buildingCharts" style={{height: '250px', width: '100%'}}>
                   <ResponsiveContainer>
                     <PieChart width={400} height={400}>
                       <Pie

@@ -53,6 +53,17 @@ hr {
     border-color: $light-grey;
     margin-top: 0.5rem;
 }
+
+@media only screen and (max-width: 480px) {
+  .buildingCharts, .allSensors {
+      display: none;
+  }
+}
+
+.reveal {
+  top: 100px !important;
+}
+
 table thead {
     background: #d3d3d3;
     color: $body-color;

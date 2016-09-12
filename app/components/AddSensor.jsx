@@ -82,6 +82,7 @@ class AddSensor extends React.Component {
                               <option value="east">East</option>
                               <option value="west">West</option>
                               <option value="central">Central</option>
+                              <option value="virtual">Virtual</option>
                           </select>
                       </label>
 

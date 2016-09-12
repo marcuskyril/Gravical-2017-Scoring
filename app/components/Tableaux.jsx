@@ -271,7 +271,7 @@ class Tableaux extends React.Component {
             showFilter={true}
             columns={currentlySelected}
             showSettings={true}
-            settingsText="Touch me"
+            settingsText="Settings"
         />
     );
   }
