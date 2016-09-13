@@ -24,6 +24,7 @@ const tableMetaData =  [
     "locked": true,
     "visible": true,
     "displayName": "Mac Address",
+    "sortable": true,
     "customCommponent": LinkComponent2
   },
   {
@@ -31,6 +32,7 @@ const tableMetaData =  [
     "order": 2,
     "locked": false,
     "visible": true,
+    "sortable": true,
     "displayName": "Latest Timestamp"
   },
   {
@@ -38,6 +40,7 @@ const tableMetaData =  [
     "order": 3,
     "locked": false,
     "visible": true,
+    "sortable": true,
     "displayName": "Building"
   },
   {
@@ -45,6 +48,7 @@ const tableMetaData =  [
     "order": 4,
     "locked": false,
     "visible": true,
+    "sortable": true,
     "displayName": "Location ID"
   },
   {
@@ -52,6 +56,7 @@ const tableMetaData =  [
     "order": 5,
     "locked": false,
     "visible": true,
+    "sortable": true,
     "displayName": "Sensor Type"
   },
   {
@@ -59,6 +64,7 @@ const tableMetaData =  [
     "order": 6,
     "locked": false,
     "visible": true,
+    "sortable": true,
     "displayName": "Current Status"
   },
   {
@@ -186,7 +192,6 @@ class Tableaux extends React.Component {
     super(props);
     this.state = {
         dataList: []
-        // colsSelected: ["mac_address", "sensor_status"]
     };
   }
 

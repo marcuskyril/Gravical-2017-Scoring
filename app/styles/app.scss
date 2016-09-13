@@ -174,21 +174,22 @@ ul.header-list {
   text-transform: uppercase;
   color: #fff;
   font-size: 1.2rem;
+  background: $header-color;
 }
 
 label {
     text-transform: capitalize;
-    // font-family: 'Pathway Gothic One', sans-serif;
     color: $night-ocean;
 }
+
 .header {
     color: $night-ocean;
-    // margin-top: $space-large;
     margin-bottom: 0;
     font-size: 1.2rem;
     text-transform: uppercase;
     font-family: 'Pathway Gothic One', sans-serif;
 }
+
 .sub-header {
     color: $night-ocean;
     font-size: 1.3rem;
