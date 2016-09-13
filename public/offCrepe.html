@@ -14,21 +14,22 @@
 <body>
 
     <div class="sensor-details">
-        <div class="header textAlignCenter" id="mac_address">Loading</div>
+        <div class="header textAlignCenter" id="building">Loading</div>
         <hr/>
-        <div class="sub-header textAlignCenter" id="building"></div>
-        <div class="sub-header textAlignCenter">
+        <div class="sub-header textAlignCenter" id="mac_address"></div>
+        <!-- <div class="sub-header textAlignCenter">
             <span id="level"></span>
             <span id="id"></span>
-        </div>
+        </div> -->
 
         <div class="header textAlignCenter" id="status"></div>
         <div class="sub-header textAlignCenter" id="last_reboot">loading...</div>
 
         <div class="sub-header textAlignCenter" id="itsDeadJim"></div>
 
-        <div class="table-container" id="tableaux-mini">
-            <table class="sensor-details-table margin-top-md">
+        <div class="table-container margin-top-md" id="tableaux-mini">
+            <div class="header textAlignCenter">Statistics</div>
+            <table class="sensor-details-table">
                 <tbody>
                     <tr>
                         <td>
@@ -294,9 +295,9 @@
 
                     if (typeof response.error == "undefined") {
 
-                        document.getElementById("building").innerHTML = response["building"];
-                        document.getElementById("level").innerHTML = response["sensor_location_level"];
-                        document.getElementById("id").innerHTML = response["sensor_location_id"];
+                        document.getElementById("building").innerHTML = response["building"] + " " +response["sensor_location_level"] +response["sensor_location_id"];
+                        // document.getElementById("level").innerHTML = response["sensor_location_level"];
+                        // document.getElementById("id").innerHTML = response["sensor_location_id"];
                         var status = response["status"];
                         document.getElementById("status").innerHTML = status;
 
@@ -375,7 +376,7 @@
 
 
                         if (response["status"].toLowerCase() == "down") {
-                            document.getElementById("itsDeadJim").innerHTML = "<b>Sensor Data is correct as of<br> " + response["latest_timestamp"] + "</b>";
+                            document.getElementById("itsDeadJim").innerHTML = "<b>Data last collected at<br> " + response["latest_timestamp"] + "</b>";
                             document.getElementById("last_reboot").innerHTML = "";
                         } else {
                             document.getElementById("itsDeadJim").innerHTML = "";

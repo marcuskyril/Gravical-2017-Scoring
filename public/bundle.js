@@ -72837,7 +72837,7 @@
 	                    'button',
 	                    { onClick: this.launchTerminal.bind(this), className: 'test button' },
 	                    React.createElement(FontAwesome, { name: 'rocket' }),
-	                    ' Touch me'
+	                    ' Launch Terminal'
 	                ),
 	                React.createElement(ServerList, { data: this.props.serverData }),
 	                React.createElement(SearchBar, { filterText: this.state.filterText, onUserInput: this.handleUserInput.bind(this) }),

@@ -215,7 +215,7 @@ render() {
         <div>
 
             <button onClick={this.launchTerminal.bind(this)} className="test button">
-              <FontAwesome name='rocket'/> Touch me
+              <FontAwesome name='rocket'/> Launch Terminal
             </button>
 
             <ServerList data={this.props.serverData}/>

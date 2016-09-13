@@ -17,7 +17,7 @@ html {
 }
 
 
-.button.disabled, .button[disabled] {
+.button.disabled, .button[disabled], .button.disabled:hover {
     background: #000;
 }
 
@@ -43,6 +43,10 @@ hr {
 
 .cancel {
   background: #990000;
+}
+
+.cancel:hover{
+  background: #7a0000;
 }
 
 .row {
