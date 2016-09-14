@@ -28,7 +28,7 @@ class ConfirmationModal extends React.Component {
         this.setState({
             'action': assoArr[this.props.action]
         });
-        
+
         modal.open();
     }
 
@@ -297,10 +297,10 @@ class AccountSettings extends React.Component {
                               <form>
                                   <div className="row">
                                       <div className="medium-4 columns">
-                                          <input type="password" ref="newPassword" placeholder="*******"/>
+                                          <input type="password" ref="newPassword" placeholder="New password"/>
                                       </div>
                                       <div className="medium-4 columns">
-                                          <input type="password" ref="confirmPassword" placeholder="*******"/>
+                                          <input type="password" ref="confirmPassword" placeholder="Repeat password"/>
                                       </div>
                                       <button className="button" type="button" onClick={this.onUpdatePassword.bind(this)}>Update</button>
                                       <button className="button hollow button-cancel margin-left-tiny" type="button" onClick={() => {$('#passwordPanel').slideUp(); $('.passwordHeader').removeClass('panel-grey')}} >Cancel</button>

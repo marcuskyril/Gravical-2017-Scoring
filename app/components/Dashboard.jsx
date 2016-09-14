@@ -37,6 +37,7 @@ class Dashboard extends React.Component {
 
     componentDidMount() {
       // initiate websocket
+      console.log("location", this.props.location.pathname);
 
       addModal = new Foundation.Reveal($('#add-sensor-modal'));
 
@@ -50,7 +51,9 @@ class Dashboard extends React.Component {
           console.warn(error);
       });
 
-      var connection = new ab.Session('ws://opsdev.sence.io:9000', function() {
+      const HOST = 'ws://opsdev.sence.io:9000';
+
+      var connection = new ab.Session(HOST, function() {
           connection.subscribe('', function(topic, data) {
 
               var timestamp = new Date().toLocaleString();
@@ -67,7 +70,16 @@ class Dashboard extends React.Component {
           });
 
       }, function() {
+
+          // refresh browser when connection is unavailable
+
           console.warn('WebSocket connection closed: all data unavailable');
+
+          // if(this.props && this.props.location.pathname === '/dashboard') {
+          //     alert("Connection closed, refreshing browser");
+          //     window.location.href = '/';
+          // }
+
       }, {'skipSubprotocolCheck': true});
 
       // close dropdowns

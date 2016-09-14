@@ -11141,12 +11141,12 @@
 	                                    React.createElement(
 	                                        'div',
 	                                        { className: 'medium-4 columns' },
-	                                        React.createElement('input', { type: 'password', ref: 'newPassword', placeholder: '*******' })
+	                                        React.createElement('input', { type: 'password', ref: 'newPassword', placeholder: 'New password' })
 	                                    ),
 	                                    React.createElement(
 	                                        'div',
 	                                        { className: 'medium-4 columns' },
-	                                        React.createElement('input', { type: 'password', ref: 'confirmPassword', placeholder: '*******' })
+	                                        React.createElement('input', { type: 'password', ref: 'confirmPassword', placeholder: 'Repeat password' })
 	                                    ),
 	                                    React.createElement(
 	                                        'button',
@@ -72169,6 +72169,7 @@
 	    key: 'componentDidMount',
 	    value: function componentDidMount() {
 	      // initiate websocket
+	      console.log("location", this.props.location.pathname);
 
 	      addModal = new Foundation.Reveal($('#add-sensor-modal'));
 
@@ -72182,7 +72183,9 @@
 	        console.warn(error);
 	      });
 
-	      var connection = new ab.Session('ws://opsdev.sence.io:9000', function () {
+	      var HOST = 'ws://opsdev.sence.io:9000';
+
+	      var connection = new ab.Session(HOST, function () {
 	        connection.subscribe('', function (topic, data) {
 
 	          var timestamp = new Date().toLocaleString();
@@ -72198,7 +72201,15 @@
 	          });
 	        });
 	      }, function () {
+
+	        // refresh browser when connection is unavailable
+
 	        console.warn('WebSocket connection closed: all data unavailable');
+
+	        // if(this.props && this.props.location.pathname === '/dashboard') {
+	        //     alert("Connection closed, refreshing browser");
+	        //     window.location.href = '/';
+	        // }
 	      }, { 'skipSubprotocolCheck': true });
 
 	      // close dropdowns
@@ -72569,7 +72580,9 @@
 	                React.createElement(
 	                    'div',
 	                    { className: 'header' },
-	                    this.props.buildingName
+	                    this.props.buildingName,
+	                    ' | Total count: ',
+	                    this.props.sensorCount
 	                ),
 	                React.createElement(
 	                    'table',
@@ -72638,14 +72651,15 @@
 	                if (buildings.hasOwnProperty(property)) {
 	                    var buildingName = property;
 
-	                    // console.log("buildingName", buildingName);
+	                    // console.log("buildings[property]", buildings[property]);
 	                    // console.log("areaNames", buildings[property]["area_names"]);
 
 	                    var temp = {
 	                        buildingName: buildingName,
 	                        areaNames: buildings[property]["area_names"],
 	                        levelNames: buildings[property]["level_names"],
-	                        sensors: buildings[property]["sensors"]
+	                        sensors: buildings[property]["sensors"],
+	                        sensorCount: buildings[property]["sensor_count"]
 	                    };
 
 	                    allBuildings.push(temp);
@@ -72657,10 +72671,12 @@
 	                var areaNames = building.areaNames;
 	                var levelNames = building.levelNames;
 	                var sensors = building.sensors;
+	                var sensorCount = building.sensorCount;
 	                if (buildingName.toLowerCase().indexOf(this.props.filterText.toLowerCase()) === -1) {
 	                    return React.createElement('div', null);
 	                }
-	                rows.push(React.createElement(Building, { key: buildingName, buildingName: buildingName, areaNames: areaNames, levelNames: levelNames, sensors: sensors }));
+
+	                rows.push(React.createElement(Building, { key: buildingName, buildingName: buildingName, areaNames: areaNames, levelNames: levelNames, sensors: sensors, sensorCount: sensorCount }));
 	            }.bind(this));
 
 	            return React.createElement(
@@ -72728,6 +72744,8 @@
 
 	            var tableRows = [];
 
+	            // console.log("whhhhhy", this.props.areaArray);
+
 	            var areaArray = this.props.areaArray;
 	            var levelArray = this.props.levelArray;
 	            var sensors = this.props.sensors;
@@ -72746,6 +72764,9 @@
 	                    var building = sensorsOnThisFloor[j]['building'];
 	                    var level = sensorsOnThisFloor[j]['level'];
 	                    //console.log("macAdd", macAdd);
+
+	                    // console.log("areaArray", areaArray);
+
 	                    var thePos = areaArray.indexOf(sensorId);
 	                    superTemp[thePos] = [macAdd, status, sensorId, region, building, level];
 	                    //console.log("thePos" + thePos + ", sensor: " + superTemp[thePos]);
@@ -72836,12 +72857,17 @@
 	                React.createElement(
 	                    'button',
 	                    { onClick: this.launchTerminal.bind(this), className: 'test button' },
-	                    React.createElement(FontAwesome, { name: 'rocket' }),
+	                    React.createElement(FontAwesome, { name: 'rocket', style: { marginRight: '5px' } }),
 	                    ' Launch Terminal'
 	                ),
-	                React.createElement(ServerList, { data: this.props.serverData }),
 	                React.createElement(SearchBar, { filterText: this.state.filterText, onUserInput: this.handleUserInput.bind(this) }),
-	                React.createElement(BuildingListV2, { data: this.props.data, filterText: this.state.filterText })
+	                React.createElement(BuildingListV2, { data: this.props.data, filterText: this.state.filterText }),
+	                React.createElement(
+	                    'div',
+	                    { className: 'header' },
+	                    'Servers'
+	                ),
+	                React.createElement(ServerList, { data: this.props.serverData })
 	            );
 	        }
 	    }]);
@@ -72879,6 +72905,11 @@
 
 	                    $('#deleteMac').val(macAddress);
 	                    deleteModal.open();
+
+	                    break;
+	                case 'REBOOT_ACTION':
+
+	                    alert("Nope, nothing here.");
 
 	                    break;
 	                case 'NO_ACTION':
@@ -72965,6 +72996,17 @@
 	                                        return _this8.handleClick(_this8.props.sensorData, 'DELETE_ACTION');
 	                                    } },
 	                                'Delete sensor'
+	                            )
+	                        ),
+	                        React.createElement(
+	                            'li',
+	                            null,
+	                            React.createElement(
+	                                'a',
+	                                { onClick: function onClick() {
+	                                        return _this8.handleClick(_this8.props.sensorData, 'REBOOT_ACTION');
+	                                    } },
+	                                'Reboot sensor'
 	                            )
 	                        )
 	                    )
@@ -73877,7 +73919,7 @@
 	              message: ' | ' + nextProps.notificationData[0].problem.status + ' | ' + nextProps.notificationData[0].timestamp.date,
 	              key: newCount,
 	              action: 'Dismiss',
-	              dismissAfter: 100000,
+	              dismissAfter: 5000,
 	              onClick: function onClick() {
 	                return _this2.removeNotification(newCount);
 	              }

@@ -38,7 +38,7 @@ class NotificationBar extends React.Component {
             message: ` | ${nextProps.notificationData[0].problem.status} | ${nextProps.notificationData[0].timestamp.date}`,
             key: newCount,
             action: 'Dismiss',
-            dismissAfter: 100000,
+            dismissAfter: 5000,
             onClick: () => this.removeNotification(newCount),
           })
         });

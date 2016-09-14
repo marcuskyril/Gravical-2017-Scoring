@@ -274,7 +274,7 @@
             macAddress = QueryString["offCanMac"];
 
             //connect to WebSocket
-            var host = "ws://opsdev.sence.io:9010/SensorStatus";
+            const host = "ws://opsdev.sence.io:9010/SensorStatus";
             try {
                 socket = new WebSocket(host);
                 // log('WebSocket - status ' + socket.readyState);
@@ -444,7 +444,7 @@
 
             function deleteSensor(macAddress) {
 
-                var DELETE_SENSOR_URL = "http://opsdev.sence.io/backend/delete-sensor.php";
+                const DELETE_SENSOR_URL = "http://opsdev.sence.io/backend/delete-sensor.php";
 
                 var data = {
                     "MAC": macAddress
@@ -471,7 +471,7 @@
             }
 
             function reboot(macAddress) {
-              var REBOOT_SENSOR_URL = "http://opsdev.sence.io/backend/initialize_reboot_sequence.php";
+              const REBOOT_SENSOR_URL = "http://opsdev.sence.io/backend/initialize_reboot_sequence.php";
 
               var data = {
                   "MAC": macAddress
@@ -495,7 +495,7 @@
             }
 
             function pinToWatchList(macAddress) {
-                var PIN_TO_WATCHLIST_URL = "http://opsdev.sence.io/backend/sensor-watchlist-pin.php";
+                const PIN_TO_WATCHLIST_URL = "http://opsdev.sence.io/backend/sensor-watchlist-pin.php";
 
                 var data = {
                     "MAC": macAddress,

@@ -20,7 +20,7 @@ class Building extends React.Component {
 
         return (
             <div className="column row">
-                <div className="header">{this.props.buildingName}</div>
+                <div className="header">{this.props.buildingName} | Total count: {this.props.sensorCount}</div>
                 <table className="sensorHealthTable">
                     <BuildingHeader areaArray={this.props.areaNames}/>
                     <LevelList areaArray={this.props.areaNames} levelArray={this.props.levelNames} sensors={this.props.sensors}/>
@@ -63,14 +63,15 @@ class BuildingListV2 extends React.Component {
             if (buildings.hasOwnProperty(property)) {
                 var buildingName = property;
 
-                // console.log("buildingName", buildingName);
+                // console.log("buildings[property]", buildings[property]);
                 // console.log("areaNames", buildings[property]["area_names"]);
 
                 var temp = {
                     buildingName: buildingName,
                     areaNames: buildings[property]["area_names"],
                     levelNames: buildings[property]["level_names"],
-                    sensors: buildings[property]["sensors"]
+                    sensors: buildings[property]["sensors"],
+                    sensorCount: buildings[property]["sensor_count"]
                 }
 
                 allBuildings.push(temp);
@@ -82,10 +83,12 @@ class BuildingListV2 extends React.Component {
             var areaNames = building.areaNames;
             var levelNames = building.levelNames;
             var sensors = building.sensors;
+            var sensorCount = building.sensorCount;
             if ((buildingName.toLowerCase()).indexOf((this.props.filterText.toLowerCase())) === -1) {
                 return <div></div>
             }
-            rows.push(<Building key={buildingName} buildingName={buildingName} areaNames={areaNames} levelNames={levelNames} sensors={sensors}/>);
+
+            rows.push(<Building key={buildingName} buildingName={buildingName} areaNames={areaNames} levelNames={levelNames} sensors={sensors} sensorCount={sensorCount}/>);
         }.bind(this));
 
         return (
@@ -127,6 +130,8 @@ class LevelList extends React.Component {
 
         var tableRows = [];
 
+        // console.log("whhhhhy", this.props.areaArray);
+
         var areaArray = this.props.areaArray;
         var levelArray = this.props.levelArray;
         var sensors = this.props.sensors;
@@ -145,6 +150,9 @@ class LevelList extends React.Component {
               var building = sensorsOnThisFloor[j]['building'];
               var level = sensorsOnThisFloor[j]['level'];
               //console.log("macAdd", macAdd);
+
+              // console.log("areaArray", areaArray);
+
               var thePos = areaArray.indexOf(sensorId);
               superTemp[thePos] = [macAdd, status, sensorId, region, building, level];
               //console.log("thePos" + thePos + ", sensor: " + superTemp[thePos]);
@@ -215,12 +223,16 @@ render() {
         <div>
 
             <button onClick={this.launchTerminal.bind(this)} className="test button">
-              <FontAwesome name='rocket'/> Launch Terminal
+              <FontAwesome name='rocket'style={{marginRight: '5px'}}/> Launch Terminal
             </button>
 
-            <ServerList data={this.props.serverData}/>
             <SearchBar filterText={this.state.filterText} onUserInput={this.handleUserInput.bind(this)}/>
             <BuildingListV2 data={this.props.data} filterText={this.state.filterText}/>
+
+            <div className="header">Servers</div>
+
+            <ServerList data={this.props.serverData}/>
+
         </div>
     );
   }
@@ -251,6 +263,11 @@ class VerticalMenu extends React.Component {
 
             $('#deleteMac').val(macAddress);
             deleteModal.open();
+
+            break;
+          case 'REBOOT_ACTION':
+
+            alert("Nope, nothing here.");
 
             break;
           case 'NO_ACTION':
@@ -291,6 +308,7 @@ class VerticalMenu extends React.Component {
                    <li><a onClick={() => this.handleClick(this.props.sensorData, 'OPEN_CANVAS_ACTION')} data-toggle="offCanvas">More details &raquo;</a></li>
                    <li><a onClick={() => this.handleClick(this.props.sensorData, 'EDIT_ACTION')}>Edit sensor</a></li>
                    <li><a onClick={() => this.handleClick(this.props.sensorData, 'DELETE_ACTION')}>Delete sensor</a></li>
+                   <li><a onClick={() => this.handleClick(this.props.sensorData, 'REBOOT_ACTION')}>Reboot sensor</a></li>
                  </ul>
                </div>
            </li>
