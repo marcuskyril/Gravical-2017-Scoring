@@ -7,8 +7,7 @@ class DeleteSensor extends React.Component {
     super(props);
 
     this.state = {
-      message: '',
-      macAddress: this.props.deleteMac
+      message: ''
     }
   }
 
@@ -31,8 +30,6 @@ class DeleteSensor extends React.Component {
         that.setState({
           message: response.msg
         });
-
-        $('#closeDelete').click();
       }
 
     });

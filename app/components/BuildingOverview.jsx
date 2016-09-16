@@ -75,6 +75,7 @@ class SearchBar extends React.Component {
                 <input type="text" placeholder="Filter Results"
                   value={this.props.filterText}
                   ref="filterTextInput"
+                  id="buildingSearch"
                   onChange={this.handleChange.bind(this)}/>
             </form>
         );

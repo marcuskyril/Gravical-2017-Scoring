@@ -7,7 +7,7 @@ class Terminal extends React.Component {
 
     render() {
 
-      var iframeLink = "http://opsdev.sence.io:4200/";
+      const iframeLink = "http://opsdev.sence.io:4201/";
 
       return(
         <div id="terminal" className="reveal large" data-reveal="">

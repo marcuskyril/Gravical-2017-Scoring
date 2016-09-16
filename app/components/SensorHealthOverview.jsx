@@ -3,6 +3,7 @@ var ServerList = require('ServerList');
 var FontAwesome = require('react-fontawesome');
 var deleteModal = null;
 var editModal = null;
+var rebootModal = null;
 var terminal = null;
 
 var colorMap = {
@@ -205,6 +206,7 @@ constructor(props) {
 componentDidMount() {
     editModal = new Foundation.Reveal($('#edit-sensor-modal'));
     deleteModal = new Foundation.Reveal($('#delete-sensor-modal'));
+    rebootModal = new Foundation.Reveal($('#reboot-sensor-modal'));
     terminal = new Foundation.Reveal($('#terminal'));
 }
 
@@ -267,7 +269,8 @@ class VerticalMenu extends React.Component {
             break;
           case 'REBOOT_ACTION':
 
-            alert("Nope, nothing here.");
+            $('#rebootMac').val(macAddress);
+            rebootModal.open();
 
             break;
           case 'NO_ACTION':

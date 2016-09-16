@@ -2,10 +2,12 @@ const REBOOT_SENSOR_URL = "http://opsdev.sence.io/backend/initialize_reboot_sequ
 
 module.exports = {
 
-    addSensor: function(inputMac) {
+    rebootSensor: function(inputMac, username, password) {
 
         var data = {
-          MAC: inputMac
+          MAC: inputMac,
+          username: username,
+          password: password
         }
 
         return $.ajax({

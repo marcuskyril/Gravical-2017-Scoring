@@ -59,6 +59,7 @@ module.exports = {
       NotificationBar: 'app/components/NotificationBar.jsx',
       NotificationLog: 'app/components/NotificationLog.jsx',
       PageNotFound: 'app/components/PageNotFound.jsx',
+      RebootSensor: 'app/components/RebootSensor.jsx',
       SensorDetails: 'app/components/SensorDetails.jsx',
       SensorHealthOverview: 'app/components/SensorHealthOverview.jsx',
       ServerList: 'app/components/ServerList.jsx',
@@ -71,6 +72,7 @@ module.exports = {
       editSensorAPI: 'app/api/editSensorAPI.jsx',
       deleteSensorAPI: 'app/api/deleteSensorAPI.jsx',
       notificationLogAPI: 'app/api/notificationLogAPI.jsx',
+      rebootSensorAPI: 'app/api/rebootSensorAPI.jsx',
       removeFromWatchlist: 'app/api/removeFromWatchlistAPI.jsx',
       retrieveSensorDetails: 'app/api/retrieveSensorDetails.jsx',
 

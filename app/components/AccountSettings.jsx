@@ -315,3 +315,7 @@ class AccountSettings extends React.Component {
 };
 
 module.exports = AccountSettings;
+
+
+// onSubmit={(e) => onUpdatePassword.bind(this) }
+// e.preventDefault();

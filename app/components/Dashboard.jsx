@@ -11,6 +11,7 @@ var AddSensor = require('AddSensor');
 var EditSensor = require('EditSensor');
 var DeleteSensor = require('DeleteSensor');
 var UnpinSensor = require('UnpinSensor');
+var RebootSensor = require('RebootSensor');
 var Terminal = require('Terminal');
 var addModal = null;
 var unpinModal = null;
@@ -24,7 +25,6 @@ class Dashboard extends React.Component {
         this.state = {
           connection: null,
           type: "-",
-          deleteMac: "",
           overall: [],
           bfg: [],
           notifications: [],
@@ -164,8 +164,9 @@ class Dashboard extends React.Component {
                       <AddSensor type={this.state.type}/>
                       <EditSensor/>
                       <UnpinSensor/>
+                      <RebootSensor/>
                       <Terminal/>
-                      <DeleteSensor deleteMac={this.state.deleteMac}/>
+                      <DeleteSensor/>
                       </div>
                       <div className="callout callout-dark">
                         <SensorHealthOverview data={this.state.sensorHealthOverviewV2} serverData={this.state.serverOverview}/>
