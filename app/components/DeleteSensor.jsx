@@ -14,11 +14,9 @@ class DeleteSensor extends React.Component {
   onDeleteSensor(event) {
 
     event.preventDefault();
-    // console.log("onDeleteSensor, ", $('#deleteMac').val());
-    // var macAddress = $('#deleteMac').val();
-    // console.log("To be deleted: ", macAddress);
 
     var that = this;
+    var deleteMac = $('#deleteMac').text();
 
     deleteSensorAPI.deleteSensor(deleteMac).then(function(response){
 
@@ -30,6 +28,8 @@ class DeleteSensor extends React.Component {
         that.setState({
           message: response.msg
         });
+
+        $('#delete-sensor-modal').foundation('close');
       }
 
     });
@@ -40,9 +40,7 @@ class DeleteSensor extends React.Component {
     var message = this.state.message;
     var that = this;
 
-    if ($('#deleteMac').val() !== "") {
-        deleteMac = $('#deleteMac').val();
-    }
+    deleteMac = this.state.macAdd;
 
     // resets message to empty string on close
     $('#delete-sensor-modal').on('closed.zf.reveal', function() {
@@ -60,14 +58,15 @@ class DeleteSensor extends React.Component {
                       <div className="header">Delete Sensor</div>
 
                       <div className="header" style={{color: '#990000'}}>Hold up. You really wanna delete this bad boy?</div>
-                      <input id="deleteMac" value="" hidden></input>
+                      <div className="header" id="deleteDetails"></div>
+                      <div className="header" id="deleteMac"></div>
 
                       <div id="deleteSensorMessage"><DeleteSensorMessage message={message}/></div>
 
                       <a className="button proceed expanded" onClick={this.onDeleteSensor.bind(this)}>
                           Yes I do
                       </a>
-                      <a className="button cancel expanded close-reveal-modal" data-close="" aria-label="Close">Slow Down, Cowboy</a>
+                      <a id="deleteClose" className="button cancel expanded close-reveal-modal" data-close="" aria-label="Close">Slow Down, Cowboy</a>
                   </div>
               </div>
           </form>

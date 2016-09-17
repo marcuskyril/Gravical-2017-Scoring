@@ -192,7 +192,8 @@
 
                         <div id="unpinSensorMessage"></div>
 
-                        <a id="pinBtn" onclick="pinToWatchList(macAddress)" class="button expanded proceed">Unpin Sensor</a>
+                        <!-- <a id="pinBtn" onclick="pinToWatchList(macAddress)" class="button expanded proceed">Unpin Sensor</a> -->
+                        <a id="pinBtn" onclick="pinStatus ? pinToWatchList(macAddress, false) : pinToWatchList(macAddress, true);" class="button expanded proceed">Unpin Sensor</a>
                         <a class="button expanded cancel close-reveal-modal" data-close aria-label="Close modal">Slow Down, Cowboy</a>
                     </div>
                 </div>

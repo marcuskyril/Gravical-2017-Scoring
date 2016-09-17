@@ -72551,6 +72551,7 @@
 	var React = __webpack_require__(14);
 	var ServerList = __webpack_require__(793);
 	var FontAwesome = __webpack_require__(789);
+	var DeleteSensor = __webpack_require__(810);
 	var deleteModal = null;
 	var editModal = null;
 	var rebootModal = null;
@@ -72894,22 +72895,29 @@
 	        key: 'handleClick',
 	        value: function handleClick(sensorData, action) {
 	            var macAddress = sensorData[0];
+	            var region = sensorData[3];
+	            var level = sensorData[5];
+	            var areaID = sensorData[2];
+	            var buildingName = sensorData[4];
 
 	            switch (action) {
 	                case 'EDIT_ACTION':
 
 	                    $('#inputMac').val(macAddress);
-	                    $('#inputRegion').val(sensorData[3].toLowerCase());
-	                    $('#inputLocationLevel').val(sensorData[5]);
-	                    $('#inputSensorLocationID').val(sensorData[2]);
-	                    $('#inputBuildingName').val(sensorData[4]);
+	                    $('#inputRegion').val(region.toLowerCase());
+	                    $('#inputLocationLevel').val(level);
+	                    $('#inputSensorLocationID').val(areaID);
+	                    $('#inputBuildingName').val(buildingName);
 
 	                    editModal.open();
 
 	                    break;
 	                case 'DELETE_ACTION':
 
-	                    $('#deleteMac').val(macAddress);
+	                    // $('#deleteMac').val(macAddress);
+	                    document.getElementById('deleteDetails').innerHTML = buildingName + ": " + level + areaID;
+	                    document.getElementById('deleteMac').innerHTML = macAddress;
+
 	                    deleteModal.open();
 
 	                    break;
@@ -80195,11 +80203,9 @@
 	    value: function onDeleteSensor(event) {
 
 	      event.preventDefault();
-	      // console.log("onDeleteSensor, ", $('#deleteMac').val());
-	      // var macAddress = $('#deleteMac').val();
-	      // console.log("To be deleted: ", macAddress);
 
 	      var that = this;
+	      var deleteMac = $('#deleteMac').text();
 
 	      deleteSensorAPI.deleteSensor(deleteMac).then(function (response) {
 
@@ -80211,6 +80217,8 @@
 	          that.setState({
 	            message: response.msg
 	          });
+
+	          $('#delete-sensor-modal').foundation('close');
 	        }
 	      });
 	    }
@@ -80221,9 +80229,7 @@
 	      var message = this.state.message;
 	      var that = this;
 
-	      if ($('#deleteMac').val() !== "") {
-	        deleteMac = $('#deleteMac').val();
-	      }
+	      deleteMac = this.state.macAdd;
 
 	      // resets message to empty string on close
 	      $('#delete-sensor-modal').on('closed.zf.reveal', function () {
@@ -80255,7 +80261,8 @@
 	                { className: 'header', style: { color: '#990000' } },
 	                'Hold up. You really wanna delete this bad boy?'
 	              ),
-	              React.createElement('input', { id: 'deleteMac', value: '', hidden: true }),
+	              React.createElement('div', { className: 'header', id: 'deleteDetails' }),
+	              React.createElement('div', { className: 'header', id: 'deleteMac' }),
 	              React.createElement(
 	                'div',
 	                { id: 'deleteSensorMessage' },
@@ -80268,7 +80275,7 @@
 	              ),
 	              React.createElement(
 	                'a',
-	                { className: 'button cancel expanded close-reveal-modal', 'data-close': '', 'aria-label': 'Close' },
+	                { id: 'deleteClose', className: 'button cancel expanded close-reveal-modal', 'data-close': '', 'aria-label': 'Close' },
 	                'Slow Down, Cowboy'
 	              )
 	            )
@@ -80691,7 +80698,7 @@
 /* 815 */
 /***/ function(module, exports, __webpack_require__) {
 
-	"use strict";
+	/* WEBPACK VAR INJECTION */(function($) {'use strict';
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
@@ -80702,6 +80709,7 @@
 	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 	var React = __webpack_require__(14);
+	var iframeLink = "http://opsdev.sence.io:4201/";
 
 	var Terminal = function (_React$Component) {
 	  _inherits(Terminal, _React$Component);
@@ -80713,17 +80721,28 @@
 	  }
 
 	  _createClass(Terminal, [{
-	    key: "render",
+	    key: 'refresh',
+	    value: function refresh() {
+	      // window.location.href = iframeLink;
+	      $('#terminalIFrame').attr('src', function (i, val) {
+	        return val;
+	      });
+	    }
+	  }, {
+	    key: 'render',
 	    value: function render() {
 
-	      var iframeLink = "http://opsdev.sence.io:4201/";
-
 	      return React.createElement(
-	        "div",
-	        { id: "terminal", className: "reveal large", "data-reveal": "" },
-	        React.createElement("iframe", { id: "sensorDetailsIFrame", src: iframeLink, width: "100%", style: {
+	        'div',
+	        { id: 'terminal', className: 'reveal large', 'data-reveal': '' },
+	        React.createElement(
+	          'a',
+	          { className: 'button', onClick: this.refresh },
+	          'Refresh'
+	        ),
+	        React.createElement('iframe', { id: 'terminalIFrame', src: iframeLink, width: '100%', style: {
 	            border: "none"
-	          }, height: "500px" })
+	          }, height: '500px' })
 	      );
 	    }
 	  }]);
@@ -80732,6 +80751,7 @@
 	}(React.Component);
 
 	module.exports = Terminal;
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(9)))
 
 /***/ },
 /* 816 */

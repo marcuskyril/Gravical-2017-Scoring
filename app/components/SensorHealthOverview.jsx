@@ -1,6 +1,7 @@
 var React = require('react');
 var ServerList = require('ServerList');
 var FontAwesome = require('react-fontawesome');
+var DeleteSensor = require('DeleteSensor');
 var deleteModal = null;
 var editModal = null;
 var rebootModal = null;
@@ -248,22 +249,29 @@ class VerticalMenu extends React.Component {
 
     handleClick(sensorData, action) {
         var macAddress = sensorData[0];
+        var region = sensorData[3];
+        var level = sensorData[5];
+        var areaID = sensorData[2];
+        var buildingName = sensorData[4];
 
         switch(action){
           case 'EDIT_ACTION':
 
             $('#inputMac').val(macAddress);
-            $('#inputRegion').val(sensorData[3].toLowerCase());
-            $('#inputLocationLevel').val(sensorData[5]);
-            $('#inputSensorLocationID').val(sensorData[2]);
-            $('#inputBuildingName').val(sensorData[4]);
+            $('#inputRegion').val(region.toLowerCase());
+            $('#inputLocationLevel').val(level);
+            $('#inputSensorLocationID').val(areaID);
+            $('#inputBuildingName').val(buildingName);
 
             editModal.open();
 
             break;
           case 'DELETE_ACTION':
 
-            $('#deleteMac').val(macAddress);
+            // $('#deleteMac').val(macAddress);
+            document.getElementById('deleteDetails').innerHTML = buildingName +": " +level +areaID;
+            document.getElementById('deleteMac').innerHTML = macAddress;
+
             deleteModal.open();
 
             break;
@@ -303,6 +311,7 @@ class VerticalMenu extends React.Component {
     }
     render() {
        return (
+
            <li className="sensorList">
              <div className={this.props.class} onClick={() => this.handleClick(this.props.sensorData, 'NO_ACTION')}>{this.props.id}</div>
              <div className="dropdown-pane" id={this.props.macAdd} data-dropdown data-options="data-hover:true; data-close-on-click:true">

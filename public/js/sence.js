@@ -32,6 +32,7 @@ function scroll(action) {
 
 var socket;
 var macAddress;
+var pinStatus;
 
 var data = [];
 var usage = [];
@@ -77,8 +78,8 @@ try {
         var response = JSON.parse(msg.data);
 
         //console.log("bbq chips", response);
-        updatePinButton(response["watchlist"]);
-
+        pinStatus = response["watchlist"];
+        updatePinButton(pinStatus);
 
         if (typeof response.error == "undefined") {
 
@@ -203,6 +204,7 @@ function updatePinButton(isPinned) {
       document.getElementById('pinMessage').innerHTML = 'Unpin this sensor, you would like to?';
       document.getElementById('pinBtn').innerHTML = 'Un-pin Sensor';
       document.getElementById('pinBtnMain').innerHTML = 'Un-pin Sensor';
+
   } else {
       document.getElementById('pinTitle').innerHTML = 'Pin sensor?';
       document.getElementById('pinMessage').innerHTML = 'pin this sensor, you would like to?';
@@ -246,6 +248,7 @@ function deleteSensor(macAddress) {
         data: data,
         success: function(msg) {
             console.log("Que pasar?", msg);
+            deleteSensorModal.close();
         },
         error: function(e) {
             console.warn("Remove sensor", e);
@@ -273,6 +276,7 @@ function reboot(macAddress) {
       data: data,
       success: function(msg) {
           console.log("Que pasar?", msg);
+          rebootSensorModal.close();
       },
       error: function(e) {
           console.warn("Remove sensor", e);
@@ -281,12 +285,15 @@ function reboot(macAddress) {
 
 }
 
-function pinToWatchList(macAddress) {
+function pinToWatchList(macAddress, pin) {
     const PIN_TO_WATCHLIST_URL = "http://opsdev.sence.io/backend/sensor-watchlist-pin.php";
+
+    console.log("Hola", macAddress);
+    console.log("Hola", pin);
 
     var data = {
         "MAC": macAddress,
-        "pin_status": true
+        "pin_status": pin
     }
 
     $.ajax({
@@ -298,6 +305,7 @@ function pinToWatchList(macAddress) {
         data: data,
         success: function(msg) {
             console.log("Que pasar?", msg);
+            unpinSensorModal.close();
         },
         error: function(e) {
             console.warn("Remove sensor", e);
