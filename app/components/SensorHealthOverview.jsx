@@ -6,6 +6,7 @@ var deleteModal = null;
 var editModal = null;
 var rebootModal = null;
 var terminal = null;
+var host = 'http://opsdev.sence.io:4201/';
 
 var colorMap = {
   "ok" : "sensorBlockSquare green sensorList",
@@ -129,6 +130,7 @@ class LevelList extends React.Component {
 
         var that = this;
         var level;
+        var port;
 
         var tableRows = [];
 
@@ -144,19 +146,20 @@ class LevelList extends React.Component {
             var superTemp = [];
 
             for (var j = 0; j < sensorsOnThisFloor.length; j++) {
-              ////console.log("sensorsOnThisFloor", sensorsOnThisFloor[j]);
+              // console.log("sensorsOnThisFloor", sensorsOnThisFloor[j]);
               var sensorId = sensorsOnThisFloor[j]['id'];
               var status = sensorsOnThisFloor[j]['status'];
               var macAdd = sensorsOnThisFloor[j]['mac'];
               var region = sensorsOnThisFloor[j]['region'];
               var building = sensorsOnThisFloor[j]['building'];
               var level = sensorsOnThisFloor[j]['level'];
+              var port = sensorsOnThisFloor[j]['port'];
               //console.log("macAdd", macAdd);
 
               // console.log("areaArray", areaArray);
 
               var thePos = areaArray.indexOf(sensorId);
-              superTemp[thePos] = [macAdd, status, sensorId, region, building, level];
+              superTemp[thePos] = [macAdd, status, sensorId, region, building, level, port];
               //console.log("thePos" + thePos + ", sensor: " + superTemp[thePos]);
             }
 
@@ -168,6 +171,7 @@ class LevelList extends React.Component {
               var region = sensorData[3];
               var building = sensorData[4];
               level = sensorData[5];
+              port = sensorData[6];
 
               temp.push(<VerticalMenu key={macAdd} macAdd={macAdd} sensorData={sensorData} class={colorMap[status]} id={id}/>);
 
@@ -216,6 +220,7 @@ handleUserInput(filterText) {
 }
 
 launchTerminal() {
+    document.getElementById('terminalIFrame').src = host;
     terminal.open();
 }
 
@@ -253,6 +258,7 @@ class VerticalMenu extends React.Component {
         var level = sensorData[5];
         var areaID = sensorData[2];
         var buildingName = sensorData[4];
+        var port = sensorData[6];
 
         switch(action){
           case 'EDIT_ACTION':
@@ -303,6 +309,14 @@ class VerticalMenu extends React.Component {
           case 'OPEN_CANVAS_ACTION':
             document.getElementById("sensorDetailsIFrame").src = "./offCrepe.html?offCanMac=" + macAddress;
             break;
+          case 'LAUNCH_TERMINAL_ACTION':
+
+            if(port.length > 0){
+              document.getElementById("terminalIFrame").src = `${host}?username=pi&port=${port}`;
+            }
+
+            terminal.open();
+            break;
           default:
             console.warn('Invalid request.');
             break;
@@ -321,6 +335,7 @@ class VerticalMenu extends React.Component {
                    <li><a onClick={() => this.handleClick(this.props.sensorData, 'EDIT_ACTION')}>Edit sensor</a></li>
                    <li><a onClick={() => this.handleClick(this.props.sensorData, 'DELETE_ACTION')}>Delete sensor</a></li>
                    <li><a onClick={() => this.handleClick(this.props.sensorData, 'REBOOT_ACTION')}>Reboot sensor</a></li>
+                   <li><a onClick={() => this.handleClick(this.props.sensorData, 'LAUNCH_TERMINAL_ACTION')}>Launch terminal</a></li>
                  </ul>
                </div>
            </li>
