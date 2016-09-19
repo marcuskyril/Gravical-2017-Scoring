@@ -235,9 +235,14 @@ render() {
             </button>
 
             <SearchBar filterText={this.state.filterText} onUserInput={this.handleUserInput.bind(this)}/>
+
+            <div className="header">Sensors</div>
+            <hr className="divider"/>
+
             <BuildingListV2 data={this.props.data} filterText={this.state.filterText}/>
 
             <div className="header">Servers</div>
+            <hr className="divider"/>
 
             <ServerList data={this.props.serverData}/>
 
