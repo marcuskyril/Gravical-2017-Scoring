@@ -4,10 +4,11 @@ const RETRIEVE_UPTIME_DATA_URL = 'http://opsdev.sence.io/backend/get_historical_
 
 module.exports = {
 
-    retrieveUptimeData: function(buildingName) {
+    retrieveUptimeData: function(buildingName, numDays) {
 
         var data = {
-          building: buildingName
+          building: buildingName,
+          days: numDays
         }
 
         return $.ajax({
@@ -18,7 +19,7 @@ module.exports = {
             url: RETRIEVE_UPTIME_DATA_URL,
             data: data,
             success: function(response) {
-                // console.log("Que pasar?", response);
+                console.log("Que pasar?", response);
             }
         });
     }
