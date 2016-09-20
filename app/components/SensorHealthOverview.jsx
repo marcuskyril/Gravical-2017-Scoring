@@ -1,12 +1,12 @@
 var React = require('react');
 var ServerList = require('ServerList');
 var FontAwesome = require('react-fontawesome');
-var DeleteSensor = require('DeleteSensor');
 var deleteModal = null;
 var editModal = null;
 var rebootModal = null;
 var terminal = null;
-var host = 'http://opsdev.sence.io:4201/';
+var {Link, IndexLink} = require('react-router');
+const HOST = 'http://opsdev.sence.io:4201/';
 
 var colorMap = {
   "ok" : "sensorBlockSquare green sensorList",
@@ -21,9 +21,12 @@ var dataList = [];
 class Building extends React.Component {
     render() {
 
+        var uptimeLink = `/uptime/${this.props.buildingName}`;
+
         return (
             <div className="column row">
                 <div className="header">{this.props.buildingName} | Total count: {this.props.sensorCount}</div>
+                <IndexLink activeClassName='active' to={uptimeLink}>View historical data &raquo;</IndexLink>
                 <table className="sensorHealthTable">
                     <BuildingHeader areaArray={this.props.areaNames}/>
                     <LevelList areaArray={this.props.areaNames} levelArray={this.props.levelNames} sensors={this.props.sensors}/>
@@ -220,7 +223,7 @@ handleUserInput(filterText) {
 }
 
 launchTerminal() {
-    document.getElementById('terminalIFrame').src = host;
+    document.getElementById('terminalIFrame').src = HOST;
     terminal.open();
 }
 
@@ -317,7 +320,7 @@ class VerticalMenu extends React.Component {
           case 'LAUNCH_TERMINAL_ACTION':
 
             if(port.length > 0){
-              document.getElementById("terminalIFrame").src = `${host}?username=pi&port=${port}`;
+              document.getElementById("terminalIFrame").src = `${HOST}?username=pi&port=${port}`;
             }
 
             terminal.open();

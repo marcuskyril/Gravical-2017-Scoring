@@ -34,33 +34,6 @@ class Nav extends React.Component {
                             <ul className="dropdown menu" data-dropdown-menu>
                                 <li>
                                     <Link to="/" activeClassName="active" activeStyle={{
-                                        color: '#222'
-                                    }}><FontAwesome name='bar-chart'/></Link>
-                                    <ul className="menu vertical">
-                                        <li>
-                                            <Link to="/uptime" activeClassName="active" activeStyle={{
-                                                color: '#222`'
-                                            }}>Uptime</Link>
-                                        </li>
-                                        <li>
-                                            <a href="#">CPU Usage</a>
-                                        </li>
-                                        <li>
-                                            <a href="#">Temperature</a>
-                                        </li>
-                                        <li>
-                                            <a href="#">RAM Usage</a>
-                                        </li>
-                                        <li>
-                                            <a href="#">Storage</a>
-                                        </li>
-                                        <li>
-                                            <a href="#">Network Speed</a>
-                                        </li>
-                                    </ul>
-                                </li>
-                                <li>
-                                    <Link to="/" activeClassName="active" activeStyle={{
                                         color: 'blue'
                                     }}><FontAwesome name='cog'/></Link>
                                     <ul className="menu vertical">

@@ -75,6 +75,7 @@ module.exports = {
       rebootSensorAPI: 'app/api/rebootSensorAPI.jsx',
       removeFromWatchlist: 'app/api/removeFromWatchlistAPI.jsx',
       retrieveSensorDetails: 'app/api/retrieveSensorDetails.jsx',
+      retrieveUptimeDataAPI: 'app/api/retrieveUptimeDataAPI.jsx',
 
       applicationStyles: 'app/styles/app.scss',
       griddleStyles: 'app/styles/griddle.scss',

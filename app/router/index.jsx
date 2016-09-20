@@ -30,10 +30,11 @@ export default(
       <Route path="/dashboard" component={Main} >
           <Route path="/accountSettings" component={AccountSettings} onEnter={requireLogin}/>
           <Route path="/notificationLog" component={NotificationLog} onEnter={requireLogin}/>
-          <Route path="/uptime" component={Uptime} onEnter={requireLogin}/>
+          <Route path="/uptime(/:buildingName)" component={Uptime} onEnter={requireLogin}/>
           <IndexRoute component={Dashboard}/>
       </Route>
       <Route path="/" component={Login} onEnter={redirectIfLoggedIn}/>
+      <Route path="*" component={PageNotFound}/>
     </Router>
 );
 
