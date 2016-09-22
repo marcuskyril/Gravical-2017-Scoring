@@ -131,7 +131,7 @@ class Uptime extends React.Component {
     var {isLoading, data} = this.state;
 
     function renderMessage() {
-      if(isLoading) {
+      if(isLoading) { 
         $('.off-canvas-content').addClass('loading-overlay');
 
         return (
