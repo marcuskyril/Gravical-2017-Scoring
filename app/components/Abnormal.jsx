@@ -69,7 +69,9 @@ class Abnormal extends React.Component {
                         "network_router": allSensorData[sensor]["network_router"]
                     };
 
-                    dataList.push(row);
+                    if (allSensorData[sensor]["flapping"] != "false") {
+                        dataList.push(row);
+                    }
                 }
             }
         }

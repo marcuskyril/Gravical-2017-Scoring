@@ -67,6 +67,7 @@ module.exports = {
       Terminal: 'app/components/Terminal.jsx',
       UnpinSensor: 'app/components/UnpinSensor.jsx',
       Uptime: 'app/components/Uptime.jsx',
+      VerticalMenu: 'app/components/VerticalMenu.jsx',
 
       addSensorAPI: 'app/api/addSensorAPI.jsx',
       editSensorAPI: 'app/api/editSensorAPI.jsx',

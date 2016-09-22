@@ -128,15 +128,29 @@ class Uptime extends React.Component {
   render() {
 
     // console.log("data", this.state.data);
-    var {isLoading, data} = this.state;
+    var {isLoading, data, buildingName} = this.state;
+    var that = this;
 
     function renderMessage() {
-      if(isLoading) { 
+      if(isLoading) {
         $('.off-canvas-content').addClass('loading-overlay');
 
         return (
           <div className="textAlignCenter">
             <FontAwesome name='refresh' size={'5x'} spin style={{color: '#fff', textShadow: '0 1px 0 rgba(0, 0, 0, 0.1)'}}/>
+          </div>
+        );
+      } else {
+        return (
+          <div>
+            <div className="page-title">{buildingName}</div>
+            <button onClick={that.minimizeAll}>
+                <FontAwesome name='expand' style={{
+                    marginRight: '0.5rem'
+                }}/>
+              Show/Hide all
+            </button>
+            <hr/>
           </div>
         );
       }
@@ -146,14 +160,7 @@ class Uptime extends React.Component {
       <div id="uptime-wrapper" className="margin-top-large">
         <div className="row" style={{minHeight: '100vh'}}>
           <div className="columns large-12">
-            <div className="page-title">{this.state.buildingName}</div>
-              <button onClick={this.minimizeAll}>
-                  <FontAwesome name='expand' style={{
-                      marginRight: '0.5rem'
-                  }}/>
-                Minimize all
-              </button>
-            <hr/>
+
             {renderMessage()}
             <UptimeList data={this.state.data}/>
           </div>
