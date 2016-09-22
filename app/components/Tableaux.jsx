@@ -226,7 +226,7 @@ class Tableaux extends React.Component {
                     "sensor_type" : allSensorData[sensor]["sensor_type"],
                     "current_status" : allSensorData[sensor]["current_status"],
                     "sensor_status" : allSensorData[sensor]["sensor_status"],
-                    "flapping" : allSensorData[sensor]["flapping"] ? "true" : "false",
+                    "flapping" : allSensorData[sensor]["flapping"],
                     "network_router" : allSensorData[sensor]["network_router"],
                     "temperature" : allSensorData[sensor]["temperature"],
                     "CPU_usage" : allSensorData[sensor]["CPU_Usage"],

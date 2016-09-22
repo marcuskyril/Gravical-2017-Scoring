@@ -65,7 +65,7 @@ class Abnormal extends React.Component {
                     var row = {
                         "mac_address": mac,
                         "sensor_status": allSensorData[sensor]["sensor_status"],
-                        "flapping": allSensorData[sensor]["flapping"] ? "true":"false",
+                        "flapping": allSensorData[sensor]["flapping"],
                         "network_router": allSensorData[sensor]["network_router"]
                     };
 

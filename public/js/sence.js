@@ -119,7 +119,7 @@ try {
             document.getElementById("cpu").innerHTML = response["cpu"];
             document.getElementById("storage").innerHTML = response["storage"];
             document.getElementById("ram").innerHTML = response["ram"];
-            document.getElementById("flapping").innerHTML = response["flapping"] ? true : false;
+            document.getElementById("flapping").innerHTML = response["flapping"];
 
             document.getElementById("top1").innerHTML = response["top_5_processes"]["1"]["process"];
             document.getElementById("top2").innerHTML = response["top_5_processes"]["2"]["process"];

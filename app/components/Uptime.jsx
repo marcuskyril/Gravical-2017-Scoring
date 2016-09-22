@@ -189,8 +189,14 @@ class UptimeList extends React.Component {
 
 class SensorList extends React.Component {
 
-  minimize() {
+  minimize(level) {
+    var pane = $('#'+level);
 
+    if(pane.css('display') === 'block') {
+      pane.slideUp();
+    } else {
+      pane.slideDown();
+    }
   }
 
   render() {
@@ -215,11 +221,11 @@ class SensorList extends React.Component {
       <div className="margin-bottom-md">
         <div className="callout callout-dark-header">
           {currentLevel}
-          <button onClick={() => this.minimize('watchList')} className="icon-btn-text-small">
+          <button onClick={() => this.minimize(this.props.level)} className="icon-btn-text-small">
               <FontAwesome name='expand'/>
           </button>
         </div>
-        <div className="callout callout-dark">
+        <div id={this.props.level} className="callout callout-dark">
           {rows}
         </div>
       </div>

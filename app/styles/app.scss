@@ -188,6 +188,7 @@ ul.header-list {
 .callout-minimize {
     margin-bottom: 1rem;
     border-radius: 4px 4px;
+    padding: 0.5rem;
 }
 
 .icon-btn-text-small {
@@ -232,6 +233,10 @@ label {
     a {
         text-transform: capitalize;
     }
+}
+
+#watchList {
+  display: none;
 }
 
 .page-title {

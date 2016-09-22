@@ -119,6 +119,7 @@ class Dashboard extends React.Component {
         } else {
             panel.slideDown();
             panel.siblings().removeClass('callout-minimize');
+            panel.siblings().addClass('callout-dark-header');
         }
     }
 
@@ -139,7 +140,7 @@ class Dashboard extends React.Component {
                     </div>
                     <div className="columns small-12 medium-12 large-9">
                         <div>
-                            <div className="callout callout-dark-header">
+                            <div className="callout callout-minimize">
                                 <div className="page-title">Watch List</div>
                                 <button onClick={() => this.toggleHide('watchList')} className="icon-btn-text-small">
                                     <FontAwesome name='expand'/>
