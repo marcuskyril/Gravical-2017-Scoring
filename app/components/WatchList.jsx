@@ -3,7 +3,6 @@ var axios = require('axios');
 var Griddle = require('griddle-react');
 var retrieveSensorDetails = require('retrieveSensorDetails');
 var removeFromWatchlist = require('removeFromWatchlist');
-var unpinModal = null;
 var ReactDOM = require('react-dom');
 
 var dataList = [];
@@ -13,8 +12,7 @@ class RemoveComponent extends React.Component {
     handleClick(macAddress) {
 
       $('#unpinMac').val(macAddress);
-
-      unpinModal.open();
+      $('#unpin-sensor-modal').foundation('open');
     }
 
     render() {
@@ -123,10 +121,6 @@ class WatchList extends React.Component {
         this.state = {
             dataList: []
         };
-    }
-
-    componentDidMount() {
-        unpinModal = new Foundation.Reveal($('#unpin-sensor-modal'));
     }
 
     tableClickHandler(gridRow) {

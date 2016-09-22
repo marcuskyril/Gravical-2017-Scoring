@@ -3,7 +3,6 @@ import * as Redux from 'react-redux';
 import * as actions from 'actions';
 import firebase, {firebaseRef} from 'app/firebase/';
 var user = null;
-var modal = null;
 
 class ConfirmationModal extends React.Component {
     constructor(props) {
@@ -14,9 +13,7 @@ class ConfirmationModal extends React.Component {
         }
     }
 
-    componentDidMount() {
-      modal = new Foundation.Reveal($('#confirmation-modal'));
-    }
+    componentDidMount() {}
 
     launchConfirmationModal() {
         var assocArr = {
@@ -29,7 +26,7 @@ class ConfirmationModal extends React.Component {
             'action': assoArr[this.props.action]
         });
 
-        modal.open();
+        $('#confirmation-modal').foundation('open');
     }
 
     render() {
@@ -95,28 +92,28 @@ class AccountSettings extends React.Component {
 
         $('#' + clickTarget).click(function() {
 
-            switch(revealTarget) {
-              case "emailPanel":
-                $('.emailHeader').addClass('panel-grey');
-                $('#namePanel').slideUp("slow");
-                $('#passwordPanel').slideUp("slow");
-                $('.nameHeader, .passwordHeader').removeClass('panel-grey');
-                break;
-              case "namePanel":
-                $('.nameHeader').addClass('panel-grey');
-                $('#emailPanel').slideUp("slow");
-                $('#passwordPanel').slideUp("slow");
-                $('.emailHeader, .passwordHeader').removeClass('panel-grey');
-                break;
-              case "passwordPanel":
-                $('.passwordHeader').addClass('panel-grey');
-                $('#emailPanel').slideUp("slow");
-                $('#namePanel').slideUp("slow");
-                $('.emailHeader, .nameHeader').removeClass('panel-grey');
-                break;
-              default:
-                console.warn("Oh snap. Something went wrong.");
-              break;
+            switch (revealTarget) {
+                case "emailPanel":
+                    $('.emailHeader').addClass('panel-grey');
+                    $('#namePanel').slideUp("slow");
+                    $('#passwordPanel').slideUp("slow");
+                    $('.nameHeader, .passwordHeader').removeClass('panel-grey');
+                    break;
+                case "namePanel":
+                    $('.nameHeader').addClass('panel-grey');
+                    $('#emailPanel').slideUp("slow");
+                    $('#passwordPanel').slideUp("slow");
+                    $('.emailHeader, .passwordHeader').removeClass('panel-grey');
+                    break;
+                case "passwordPanel":
+                    $('.passwordHeader').addClass('panel-grey');
+                    $('#emailPanel').slideUp("slow");
+                    $('#namePanel').slideUp("slow");
+                    $('.emailHeader, .nameHeader').removeClass('panel-grey');
+                    break;
+                default:
+                    console.warn("Oh snap. Something went wrong.");
+                    break;
             }
 
             $('#' + revealTarget).slideDown("slow");
@@ -138,9 +135,7 @@ class AccountSettings extends React.Component {
             user.updateProfile({displayName: displayName}).then(function() {
                 alert('New display name: ' + user.displayName);
 
-                that.setState({
-                  userDisplayName: displayName
-                })
+                that.setState({userDisplayName: displayName})
 
                 $('#namePanel').slideUp();
                 $('.nameHeader').removeClass('panel-grey');
@@ -171,9 +166,7 @@ class AccountSettings extends React.Component {
                 $('#emailPanel').slideUp();
                 $('.emailHeader').removeClass('panel-grey');
 
-                that.setState({
-                  email: inputEmail
-                })
+                that.setState({email: inputEmail})
 
             }, function(error) {
                 alert('Oh snap. ' + error);
@@ -199,7 +192,6 @@ class AccountSettings extends React.Component {
 
                     $('#passwordPanel').slideUp();
                     $('.passwordHeader').removeClass('panel-grey');
-
 
                 }, function(error) {
                     alert('Oh snap. ' + error);
@@ -235,15 +227,18 @@ class AccountSettings extends React.Component {
                 <div className="large-8 columns large-centered">
                     <div className="page-title">General Account Settings</div>
                     <div className="profile wrapper" style={{
-                        'color': '#000', 'minHeight': '500px'
+                        'color': '#000',
+                        'minHeight': '500px'
                     }}>
 
                         <div className="row nameHeader">
-                              <div className="columns large-2"><b>Name</b></div>
-                              <div className="columns large-5">{this.state.userDisplayName}</div>
-                              <div className="columns large-5">
-                                  <a id="triggerNamePanel" onClick={this.reveal('triggerNamePanel', 'namePanel')}>Edit</a>
-                              </div>
+                            <div className="columns large-2">
+                                <b>Name</b>
+                            </div>
+                            <div className="columns large-5">{this.state.userDisplayName}</div>
+                            <div className="columns large-5">
+                                <a id="triggerNamePanel" onClick={this.reveal('triggerNamePanel', 'namePanel')}>Edit</a>
+                            </div>
                         </div>
 
                         <div className="row" id="namePanel">
@@ -253,13 +248,18 @@ class AccountSettings extends React.Component {
                                         <input type="text" ref="displayName" placeholder={this.state.userDisplayName}/>
                                     </div>
                                     <button className="button" type="button" onClick={this.onUpdateDisplayName.bind(this)}>Update</button>
-                                    <button className="button hollow button-cancel margin-left-tiny" type="button" onClick={() => {$('#namePanel').slideUp(); $('.nameHeader').removeClass('panel-grey')}}>Cancel</button>
+                                    <button className="button hollow button-cancel margin-left-tiny" type="button" onClick={() => {
+                                        $('#namePanel').slideUp();
+                                        $('.nameHeader').removeClass('panel-grey')
+                                    }}>Cancel</button>
                                 </div>
                             </form>
                         </div>
 
                         <div className="row emailHeader">
-                            <div className="columns large-2"><b>Email</b></div>
+                            <div className="columns large-2">
+                                <b>Email</b>
+                            </div>
                             <div className="columns large-5">{this.state.email}</div>
                             <div className="columns large-5">
                                 <a id="triggerEmailPanel" onClick={this.reveal('triggerEmailPanel', 'emailPanel')}>Edit</a>
@@ -267,45 +267,57 @@ class AccountSettings extends React.Component {
                         </div>
 
                         <div className="row" id="emailPanel">
-                              <form>
-                                  <div className="row">
-                                      <div className="medium-6 columns">
-                                          <input type="text" ref="newEmail" placeholder={this.state.email}/>
-                                      </div>
-                                      <button className="button" type="button" onClick={this.onUpdateEmail.bind(this)}>Update</button>
-                                      <button className="button hollow button-cancel margin-left-tiny" type="button" onClick={() => {$('#emailPanel').slideUp(); $('.emailHeader').removeClass('panel-grey')}}>Cancel</button>
-                                  </div>
-                              </form>
+                            <form>
+                                <div className="row">
+                                    <div className="medium-6 columns">
+                                        <input type="text" ref="newEmail" placeholder={this.state.email}/>
+                                    </div>
+                                    <button className="button" type="button" onClick={this.onUpdateEmail.bind(this)}>Update</button>
+                                    <button className="button hollow button-cancel margin-left-tiny" type="button" onClick={() => {
+                                        $('#emailPanel').slideUp();
+                                        $('.emailHeader').removeClass('panel-grey')
+                                    }}>Cancel</button>
+                                </div>
+                            </form>
                         </div>
 
                         <div className="row">
-                            <div className="columns large-2"><b>Email Verified?</b></div>
-                            <div className="columns large-5">{this.state.emailVerified ? "true":"false" }</div>
+                            <div className="columns large-2">
+                                <b>Email Verified?</b>
+                            </div>
+                            <div className="columns large-5">{this.state.emailVerified
+                                    ? "true"
+                                    : "false"}</div>
                             <div className="columns large-5">
                                 <a onClick={this.onVerifyEmail}>Verify Email</a>
                             </div>
                         </div>
 
                         <div className="row passwordHeader">
-                            <div className="columns large-2"><b>Password</b></div>
+                            <div className="columns large-2">
+                                <b>Password</b>
+                            </div>
                             <div className="columns large-5">
                                 <a id="triggerPasswordPanel" onClick={this.reveal('triggerPasswordPanel', 'passwordPanel')}>Update Password</a>
                             </div>
                         </div>
 
                         <div className="row" id="passwordPanel">
-                              <form>
-                                  <div className="row">
-                                      <div className="medium-4 columns">
-                                          <input type="password" ref="newPassword" placeholder="New password"/>
-                                      </div>
-                                      <div className="medium-4 columns">
-                                          <input type="password" ref="confirmPassword" placeholder="Repeat password"/>
-                                      </div>
-                                      <button className="button" type="button" onClick={this.onUpdatePassword.bind(this)}>Update</button>
-                                      <button className="button hollow button-cancel margin-left-tiny" type="button" onClick={() => {$('#passwordPanel').slideUp(); $('.passwordHeader').removeClass('panel-grey')}} >Cancel</button>
-                                  </div>
-                              </form>
+                            <form>
+                                <div className="row">
+                                    <div className="medium-4 columns">
+                                        <input type="password" ref="newPassword" placeholder="New password"/>
+                                    </div>
+                                    <div className="medium-4 columns">
+                                        <input type="password" ref="confirmPassword" placeholder="Repeat password"/>
+                                    </div>
+                                    <button className="button" type="button" onClick={this.onUpdatePassword.bind(this)}>Update</button>
+                                    <button className="button hollow button-cancel margin-left-tiny" type="button" onClick={() => {
+                                        $('#passwordPanel').slideUp();
+                                        $('.passwordHeader').removeClass('panel-grey')
+                                    }}>Cancel</button>
+                                </div>
+                            </form>
                         </div>
                     </div>
                 </div>
@@ -315,7 +327,6 @@ class AccountSettings extends React.Component {
 };
 
 module.exports = AccountSettings;
-
 
 // onSubmit={(e) => onUpdatePassword.bind(this) }
 // e.preventDefault();

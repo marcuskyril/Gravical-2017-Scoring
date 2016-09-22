@@ -16,8 +16,6 @@ class Terminal extends React.Component {
     }
 
     render() {
-
-
       return(
           <div id="terminal" className="reveal large" data-reveal="" style={{padding: '0', border: 'none'}}>
             <div className="top-bar">

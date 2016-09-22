@@ -27,7 +27,7 @@ var redirectIfLoggedIn = (nextState, replace, next) => {
 
 export default(
     <Router history={hashHistory}>
-      <Route path="/dashboard" component={Main} >
+      <Route path="/dashboard(/:buildingName)" component={Main} >
           <Route path="/accountSettings" component={AccountSettings} onEnter={requireLogin}/>
           <Route path="/notificationLog" component={NotificationLog} onEnter={requireLogin}/>
           <Route path="/uptime(/:buildingName)" component={Uptime} onEnter={requireLogin}/>

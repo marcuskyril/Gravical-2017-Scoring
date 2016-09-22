@@ -4,11 +4,18 @@ import * as actions from 'actions';
 var FontAwesome = require('react-fontawesome');
 import firebase, {firebaseRef} from 'app/firebase/';
 var {Link, IndexLink} = require('react-router');
+const HOST = 'http://opsdev.sence.io:4201/';
+
 
 class Nav extends React.Component {
 
     constructor(props) {
         super(props);
+    }
+
+    launchTerminal() {
+        document.getElementById('terminalIFrame').src = HOST;
+        $('#terminal').foundation('open');
     }
 
     onLogout() {
@@ -24,46 +31,49 @@ class Nav extends React.Component {
 
         return (
 
-                    <div className="top-bar">
-                        <div className="top-bar-title">
-                            <IndexLink to="/" activeClassName="active" activeStyle={{
-                                color: '#f8f8f8'
-                            }}>sence | mitos</IndexLink>
-                        </div>
-                        <div className="top-bar-right">
-                            <ul className="dropdown menu" data-dropdown-menu>
+            <div className="top-bar">
+                <div className="top-bar-title">
+                    <IndexLink to="/" activeClassName="active" activeStyle={{
+                        color: '#f8f8f8'
+                    }}>sence | mitos</IndexLink>
+                </div>
+                <div className="top-bar-right">
+                    <ul className="dropdown menu" data-dropdown-menu>
+                        <li>
+                          <a><FontAwesome name='terminal' onClick={this.launchTerminal.bind(this)}/></a>
+                        </li>
+                        <li>
+                            <Link to="/" activeClassName="active" activeStyle={{
+                                color: 'blue'
+                            }}><FontAwesome name='cog'/></Link>
+                            <ul className="menu vertical">
+
+                                <li>
+                                    <Link to="/accountSettings" activeClassName="active" activeStyle={{
+                                        color: '#222`'
+                                    }}>Update Profile</Link>
+                                </li>
+                                <li>
+                                    <Link to="/notificationLog" activeClassName="active" activeStyle={{
+                                        color: '#222`'
+                                    }}>Notification Log</Link>
+                                </li>
                                 <li>
                                     <Link to="/" activeClassName="active" activeStyle={{
-                                        color: 'blue'
-                                    }}><FontAwesome name='cog'/></Link>
-                                    <ul className="menu vertical">
-
-                                        <li>
-                                            <Link to="/accountSettings" activeClassName="active" activeStyle={{
-                                                color: '#222`'
-                                            }}>Update Profile</Link>
-                                        </li>
-                                        <li>
-                                            <Link to="/notificationLog" activeClassName="active" activeStyle={{
-                                                color: '#222`'
-                                            }}>Notification Log</Link>
-                                        </li>
-                                        <li>
-                                            <Link to="/" activeClassName="active" activeStyle={{
-                                                color: '#222`'
-                                            }}>Sensor Log</Link>
-                                        </li>
-                                        <li>
-                                            <a href="#">Configure Settings</a>
-                                        </li>
-                                        <li>
-                                            <a onClick={this.onLogout}>Log Out</a>
-                                        </li>
-                                    </ul>
+                                        color: '#222`'
+                                    }}>Sensor Log</Link>
+                                </li>
+                                <li>
+                                    <a href="#">Configure Settings</a>
+                                </li>
+                                <li>
+                                    <a onClick={this.onLogout}>Log Out</a>
                                 </li>
                             </ul>
-                        </div>
-                    </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
 
         );
     }

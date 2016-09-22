@@ -211,20 +211,13 @@ constructor(props) {
     };
 }
 
-componentDidMount() {
-    editModal = new Foundation.Reveal($('#edit-sensor-modal'));
-    deleteModal = new Foundation.Reveal($('#delete-sensor-modal'));
-    rebootModal = new Foundation.Reveal($('#reboot-sensor-modal'));
-    terminal = new Foundation.Reveal($('#terminal'));
-}
-
 handleUserInput(filterText) {
     this.setState({filterText: filterText});
 }
 
 launchTerminal() {
     document.getElementById('terminalIFrame').src = HOST;
-    terminal.open();
+    $('#terminal').foundation('open');
 }
 
 render() {
@@ -232,11 +225,6 @@ render() {
 
     return (
         <div>
-
-            <button onClick={this.launchTerminal.bind(this)} className="test button">
-              <FontAwesome name='rocket'style={{marginRight: '5px'}}/> Launch Terminal
-            </button>
-
             <SearchBar filterText={this.state.filterText} onUserInput={this.handleUserInput.bind(this)}/>
 
             <div className="header">Sensors</div>
@@ -277,22 +265,23 @@ class VerticalMenu extends React.Component {
             $('#inputSensorLocationID').val(areaID);
             $('#inputBuildingName').val(buildingName);
 
-            editModal.open();
+            // editModal.open();
+            $('#edit-sensor-modal').foundation('open');
 
             break;
           case 'DELETE_ACTION':
 
-            // $('#deleteMac').val(macAddress);
             document.getElementById('deleteDetails').innerHTML = buildingName +": " +level +areaID;
             document.getElementById('deleteMac').innerHTML = macAddress;
 
-            deleteModal.open();
+            // deleteModal.open();
+            $('#delete-sensor-modal').foundation('open');
 
             break;
           case 'REBOOT_ACTION':
 
             $('#rebootMac').val(macAddress);
-            rebootModal.open();
+            $('#reboot-sensor-modal').foundation('open');
 
             break;
           case 'NO_ACTION':
@@ -323,7 +312,7 @@ class VerticalMenu extends React.Component {
               document.getElementById("terminalIFrame").src = `${HOST}?username=pi&port=${port}`;
             }
 
-            terminal.open();
+            $('#terminal').foundation('open');
             break;
           default:
             console.warn('Invalid request.');

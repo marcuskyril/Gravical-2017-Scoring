@@ -148,28 +148,30 @@ try {
                 parseFloat(response["top_5_processes"]["5"]["usage"])
             ];
 
-            document.getElementById("diagnosis").innerHTML = response["diagnosis"]["result"];
-
-            //console.log("fields to color: ", response["diagnosis"]["fields"]);
-            var fields = response["diagnosis"]["fields"];
-
-            //uncolor table rows
-            $("#tableaux-mini").find(".table-row-highlight").removeClass("table-row-highlight");
-
-            for (var i = 0; i < fields.length; i++) {
-                // console.log("field: ", fields[i]);
-                // console.log("painting the walls red");
-                document.getElementById(fields[i]).parentNode.className = "table-row-highlight";
-            }
-
-
-            if (response["status"].toLowerCase() == "down") {
-                document.getElementById("itsDeadJim").innerHTML = "<b>Data last collected at<br> " + response["latest_timestamp"] + "</b>";
-                document.getElementById("last_reboot").innerHTML = "";
+            if (response["diagnosis"] == "nil") {
+                $(".diagnosis").hide();
             } else {
-                document.getElementById("itsDeadJim").innerHTML = "";
-            }
+                document.getElementById("diagnosis").innerHTML = response["diagnosis"]["result"];
 
+                //console.log("fields to color: ", response["diagnosis"]["fields"]);
+                var fields = response["diagnosis"]["fields"];
+
+                //uncolor table rows
+                $("#tableaux-mini").find(".table-row-highlight").removeClass("table-row-highlight");
+
+                for (var i = 0; i < fields.length; i++) {
+                    // console.log("field: ", fields[i]);
+                    // console.log("painting the walls red");
+                    document.getElementById(fields[i]).parentNode.className = "table-row-highlight";
+                }
+
+                if (response["status"].toLowerCase() == "down") {
+                    document.getElementById("itsDeadJim").innerHTML = "<b>Data last collected at<br> " + response["latest_timestamp"] + "</b>";
+                    document.getElementById("last_reboot").innerHTML = "";
+                } else {
+                    document.getElementById("itsDeadJim").innerHTML = "";
+                }
+            }
             //updatePinButton(response["watchlist"]);
 
         } else {

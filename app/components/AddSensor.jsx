@@ -21,10 +21,12 @@ class AddSensor extends React.Component {
     var inputLocationLevel = this.refs.sensorLocationLevel.value;
     var inputLocationID = this.refs.sensorLocationID.value;
     var inputBuilding = this.refs.building.value;
+    var inputPort = this.refs.port.value;
+    var isServer = this.refs.isServer.value;
 
     var that = this;
 
-    addSensorAPI.addSensor(inputMac, inputRegion, inputLocationLevel, inputLocationID, inputBuilding).then(function(response){
+    addSensorAPI.addSensor(inputMac, inputRegion, inputLocationLevel, inputLocationID, inputBuilding, inputPort, isServer).then(function(response){
 
       if(response.error) {
         that.setState({
@@ -43,7 +45,7 @@ class AddSensor extends React.Component {
       that.refs.sensorLocationLevel.value = '';
       that.refs.sensorLocationID.value = '';
       that.refs.building.value = '';
-
+      that.refs.isServer.value = false;
     });
   }
 
@@ -64,13 +66,23 @@ class AddSensor extends React.Component {
                   <div className="header" style={{paddingLeft: '0.9375rem'}}>Add Sensor</div>
 
                   <div className="large-6 columns">
-                    <label>Mac Address
-                        <input type="text" name="macAddress" ref="macAddress" placeholder="Mac Address"/>
-                    </label>
 
-                    <label>Port
-                        <input type="text" name="port" id="inputMac" ref="port" placeholder="Port"/>
-                    </label>
+                      <label>Mac Address
+                          <input type="text" name="macAddress" ref="macAddress" placeholder="Mac Address"/>
+                      </label>
+
+                      <fieldset className="fieldset">
+                        <label>Server?
+                          <legend>Server</legend>
+                            <input id="isServer" ref="isServer" type="checkbox"/>
+                        </label>
+                      </fieldset>
+
+                      <div id="port">
+                        <label>Port
+                            <input type="text" name="port" id="inputPort" ref="port" placeholder="Port"/>
+                        </label>
+                      </div>
                   </div>
 
                   <div className="large-6 columns" style={{'borderLeft':'solid 1px #e4e4e4'}}>

@@ -1,6 +1,7 @@
 var React = require('react');
 var axios = require('axios');
 var Recharts = require('recharts');
+var FontAwesome = require('react-fontawesome');
 var retrieveUptimeDataAPI = require('retrieveUptimeDataAPI');
 const {XAxis, Cell, YAxis, Legend, BarChart, Bar, CartesianGrid, Tooltip, Brush, ResponsiveContainer} = Recharts;
 
@@ -61,7 +62,7 @@ class SimpleBarChart extends React.Component{
   	return (
       <div>
         <div className="header">{this.props.id} | {this.props.mac}</div>
-        <BarChart width={1400} height={65} data={this.props.uptimeData} syncId={this.props.level}
+        <BarChart width={1200} height={50} data={this.props.uptimeData} syncId={this.props.level}
                   margin={{top: 5, right: 30, left: 20, bottom: 5}} barGap={0} barCategoryGap={0}>
              <CartesianGrid strokeDasharray="3 3"/>
              <Tooltip/>
@@ -72,7 +73,6 @@ class SimpleBarChart extends React.Component{
                  ))
                }
              </Bar>
-             <Brush height={20}/>
         </BarChart>
       </div>
     );
@@ -87,7 +87,8 @@ class Uptime extends React.Component {
 
     this.state = {
       buildingName: props.params.buildingName,
-      data: null
+      data: null,
+      isLoading: false
     }
   }
 
@@ -96,24 +97,64 @@ class Uptime extends React.Component {
     var that = this;
     //console.log("buildingName", this.state.buildingName);
     // call API here
-    retrieveUptimeDataAPI.retrieveUptimeData(this.state.buildingName, 1).then(function(response) {
-        // console.log("response", response);
-        that.setState({
-          data: response
-        })
+
+    this.setState({
+      isLoading: true
     });
 
+
+    retrieveUptimeDataAPI.retrieveUptimeData(this.state.buildingName, 3).then(function(response) {
+        // console.log("response", response);
+        that.setState({
+          data: response,
+          isLoading: false
+        });
+
+        $('.off-canvas-content').removeClass('loading-overlay');
+    });
+
+  }
+
+  minimizeAll() {
+    var panels = $('.callout-dark');
+
+    if(panels.css('display') === 'block') {
+      panels.slideUp();
+    } else {
+      panels.slideDown();
+    }
   }
 
   render() {
 
     // console.log("data", this.state.data);
+    var {isLoading, data} = this.state;
+
+    function renderMessage() {
+      if(isLoading) {
+        $('.off-canvas-content').addClass('loading-overlay');
+
+        return (
+          <div className="textAlignCenter">
+            <FontAwesome name='refresh' size={'5x'} spin style={{color: '#fff', textShadow: '0 1px 0 rgba(0, 0, 0, 0.1)'}}/>
+          </div>
+        );
+      }
+    }
 
     return (
-      <div className="margin-top-large">
+      <div id="uptime-wrapper" className="margin-top-large">
         <div className="row" style={{minHeight: '100vh'}}>
           <div className="columns large-12">
-            <div className="header">{this.state.buildingName}</div>
+            <div className="page-title">{this.state.buildingName}</div>
+              <button onClick={this.minimizeAll}>
+                  <FontAwesome name='expand' style={{
+                      marginRight: '0.5rem'
+                  }}/>
+                Minimize all
+              </button>
+            <hr/>
+            {renderMessage()}
             <UptimeList data={this.state.data}/>
           </div>
         </div>
@@ -147,6 +188,11 @@ class UptimeList extends React.Component {
 }
 
 class SensorList extends React.Component {
+
+  minimize() {
+
+  }
+
   render() {
     var sensorsOnLevel = this.props.data;
     var rows = [];
@@ -167,8 +213,15 @@ class SensorList extends React.Component {
 
     return (
       <div className="margin-bottom-md">
-        {currentLevel}
-        {rows}
+        <div className="callout callout-dark-header">
+          {currentLevel}
+          <button onClick={() => this.minimize('watchList')} className="icon-btn-text-small">
+              <FontAwesome name='expand'/>
+          </button>
+        </div>
+        <div className="callout callout-dark">
+          {rows}
+        </div>
       </div>
     );
   }

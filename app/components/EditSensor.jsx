@@ -21,10 +21,11 @@ class EditSensor extends React.Component {
     var inputLocationLevel = this.refs.sensorLocationLevel.value;
     var inputLocationID = this.refs.sensorLocationID.value;
     var inputBuilding = this.refs.building.value;
+    var inputPort = this.refs.port.value;
 
     var that = this;
 
-    editSensorAPI.editSensor(inputMac, inputRegion, inputLocationLevel, inputLocationID, inputBuilding).then(function(response){
+    editSensorAPI.editSensor(inputMac, inputRegion, inputLocationLevel, inputLocationID, inputPort, inputBuilding).then(function(response){
 
       if(response.error) {
         that.setState({
@@ -43,7 +44,7 @@ class EditSensor extends React.Component {
       that.refs.sensorLocationLevel.value = '';
       that.refs.sensorLocationID.value = '';
       that.refs.building.value = '';
-
+      that.refs.port.value = '';
     });
   }
 
@@ -61,7 +62,7 @@ class EditSensor extends React.Component {
       <div id="edit-sensor-modal" className="reveal medium" data-reveal="">
           <form>
               <div className="row">
-                    <div className="header" style={{paddingLeft: '0.9375rem'}}>Add Sensor</div>
+                    <div className="header" style={{paddingLeft: '0.9375rem'}}>Edit Sensor</div>
 
                     <div className="large-6 columns">
                       <label>Mac Address
@@ -69,7 +70,7 @@ class EditSensor extends React.Component {
                       </label>
 
                       <label>Port
-                          <input type="text" name="port" id="inputMac" ref="port" placeholder="Port"/>
+                          <input type="text" name="port" id="inputPort" ref="port" placeholder="Port"/>
                       </label>
                     </div>
 

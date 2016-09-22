@@ -1,5 +1,3 @@
-var axios = require('axios');
-
 const RETRIEVE_UPTIME_DATA_URL = 'http://opsdev.sence.io/backend/get_historical_uptime.php';
 
 module.exports = {

@@ -1,7 +1,6 @@
 @import url( 'http://fonts.googleapis.com/css?family=Roboto:300,400');
 @import url( 'https://fonts.googleapis.com/css?family=Pathway+Gothic+One');
 @import url( 'https://fonts.googleapis.com/css?family=Lato:400,900i');
-
 $space-large: 1.5rem;
 $title-color: #555;
 $nav-font: #333;
@@ -12,7 +11,6 @@ $dark-grey: #323232;
 $light-grey: #373837;
 $not-so-dark-grey: #e8e8e8;
 $crazy-light-grey: #f2f2f2;
-
 // Chart colors
 $green: #006600;
 $orange: #cc7a00;
@@ -27,8 +25,18 @@ html {
     font-family: roboto;
     color: $body-color;
 }
+
 .row {
     max-width: 100rem;
+}
+
+.loading-overlay {
+    background-color: rgba(10, 10, 10, 0.45) !important;
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
 }
 
 div#offCanvas {
@@ -37,35 +45,42 @@ div#offCanvas {
     padding: 1.5rem;
     background: $not-so-dark-grey;
 }
+
 .is-open-right {
     transform: translateX(-350px);
 }
+
 .off-canvas.position-right {
     right: -350px;
 }
+
 .off-canvas-content {
     background: $crazy-light-grey;
 }
+
 a {
     color: $header-color;
 }
+
 hr {
-    border-color: $light-grey;
+    border-color: #bdbdbd;
     margin-top: 0.5rem;
+    max-width: 100%;
 }
 
 @media only screen and (max-width: 480px) {
-  .buildingCharts, .allSensors {
-      display: none;
-  }
+    .allSensors,
+    .buildingCharts {
+        display: none;
+    }
 }
 
 .divider {
-  border-color: #bdbdbd;
+    border-color: #bdbdbd;
 }
 
 .reveal {
-  top: 100px !important;
+    top: 100px !important;
 }
 
 table thead {
@@ -73,28 +88,34 @@ table thead {
     color: $body-color;
     border: 1px solid #e4e4e4;
 }
+
 table tbody {
     color: $body-color;
     border: 1px solid #e4e4e4;
 }
+
 .margin-top-large {
     margin-top: 4rem;
 }
+
 .margin-bottom-large {
     margin-bottom: 4rem;
 }
+
 .margin-right-small {
     margin-right: 2rem;
 }
+
 .margin-left-small {
     margin-left: 2rem;
 }
 
 .margin-left-tiny {
-  margin-left: 0.5rem;
+    margin-left: 0.5rem;
 }
+
 .margin-right-tiny {
-  margin-right: 0.5rem;
+    margin-right: 0.5rem;
 }
 
 .margin-top-md {
@@ -108,31 +129,33 @@ table tbody {
 .margin-bottom-md {
     margin-bottom: 2rem;
 }
+
 .margin-bottom-small {
     margin-bottom: 1rem;
 }
+
 .textAlignCenter {
     text-align: center;
 }
 
 ul.header-list {
-  display: inline-block;
-  list-style: none;
-  margin-bottom: 0px;
+    display: inline-block;
+    list-style: none;
+    margin-bottom: 0;
 }
 
 .sticky {
-  z-index: 10000;
-  left: 0px !important;
+    z-index: 10000;
+    left: 0 !important;
 }
 
 .callout {
-    background-color: $crazy-light-grey;
+    background-color: #fff;
 }
 
 .callout-dark {
     padding: 1.5rem;
-    background-color: $crazy-light-grey;
+    background-color: #fff;
     border: 2px solid #bdbdbd;
     border-top: none;
     margin-top: 0;
@@ -141,8 +164,8 @@ ul.header-list {
 }
 
 .scroll {
-  max-height: 100vh;
-  overflow-y: scroll;
+    max-height: 100vh;
+    overflow-y: scroll;
 }
 
 .callout-dark-header {
@@ -154,16 +177,17 @@ ul.header-list {
     border-top-right-radius: 4px;
     margin-bottom: 0;
 }
+
 .callout-top-header {
-  padding: 1rem;
-  background-color: $crazy-light-grey;
-  border: 2px solid #bdbdbd;
-  border-radius: 4px;
+    padding: 1rem;
+    background-color: $crazy-light-grey;
+    border: 2px solid #bdbdbd;
+    border-radius: 4px;
 }
 
 .callout-minimize {
-  margin-bottom: 1rem;
-  border-radius: 4px 4px;
+    margin-bottom: 1rem;
+    border-radius: 4px 4px;
 }
 
 .icon-btn-text-small {
@@ -177,12 +201,15 @@ ul.header-list {
 }
 
 .test {
-  font-family: 'Pathway Gothic One', sans-serif;
-  text-transform: uppercase;
-  color: #fff;
-  font-size: 1.2rem;
-  background: $header-color;
+    font-family: 'Pathway Gothic One', sans-serif;
+    text-transform: uppercase;
+    color: #fff;
+    font-size: 1.2rem;
+    background: $header-color;
 }
+// .buildingCharts {
+//   display: none;
+// }
 
 label {
     text-transform: capitalize;
@@ -203,28 +230,30 @@ label {
     font-family: 'Pathway Gothic One', sans-serif;
 
     a {
-      text-transform: capitalize;
+        text-transform: capitalize;
     }
 }
+
 .page-title {
-    color: $header-color;
+    color: $night-ocean;
     font-family: 'Lato', sans-serif;
-    font-size: 1.5rem;
+    font-size: 1.3rem;
     font-weight: bold;
-    margin-top: $space-large;
-    margin-bottom: $space-large;
 }
 
 input[type=search] {
     box-shadow: none;
 }
+
 .top-bar-upper {
     color: $nav-font;
     font-size: 0.5rem;
 }
+
 .app-header {
     font-size: 1.3rem;
 }
+
 table.overview-custom {
     tbody,
     th,
@@ -233,6 +262,7 @@ table.overview-custom {
         text-align: center;
     }
 }
+
 table.sensor-details-table {
     tbody {
         text-align: left;
@@ -248,31 +278,31 @@ table.sensor-details-table {
 }
 
 .notificationHeader {
-  color: #fff;
-  text-transform: uppercase;
-  font-size: 0.5em;
-  font-weight: bold;
+    color: #fff;
+    text-transform: uppercase;
+    font-size: 0.5em;
+    font-weight: bold;
 }
 
 .sensorBlock {
-  height: 30px;
-  border-radius: 30px;
-  width: auto;
-  color: #fff;
-  text-align: center;
-  font-family: 'Pathway Gothic One', sans-serif;
-  text-transform: uppercase;
+    height: 30px;
+    border-radius: 30px;
+    width: auto;
+    color: #fff;
+    text-align: center;
+    font-family: 'Pathway Gothic One', sans-serif;
+    text-transform: uppercase;
 }
 
 .sensorBlockSquare {
-  height: 30px;
-  width: 30px;
-  border-radius: 4px;
-  cursor: pointer;
-  text-align: center;
-  line-height: 28px;
-  color: white;
-  font-weight: bold;
+    height: 30px;
+    width: 30px;
+    border-radius: 4px;
+    cursor: pointer;
+    text-align: center;
+    line-height: 28px;
+    color: white;
+    font-weight: bold;
 }
 
 .sensorBlockSquare:hover {
@@ -280,97 +310,107 @@ table.sensor-details-table {
 }
 
 .sensorList {
-  display: inline-block;
-  margin-right: 1px;
-
+    display: inline-block;
+    margin-right: 1px;
 }
 
 .button-custom {
-  height: 30px;
-  width: auto !important;
-  margin: 0px;
-  color: #fff !important;
-  text-align: center;
-  font-family: 'Pathway Gothic One', sans-serif;
-  text-transform: uppercase;
+    height: 30px;
+    width: auto !important;
+    margin: 0;
+    color: #fff !important;
+    text-align: center;
+    font-family: 'Pathway Gothic One', sans-serif;
+    text-transform: uppercase;
 }
 
 .proceed {
-  background: $header-color;
+    background: $header-color;
 }
 
 .cancel {
-  background: $red;
+    background: $red;
 }
 
-.cancel:hover{
-  background: #7a0000;
+.cancel:hover {
+    background: #7a0000;
 }
 
 .remove {
-  border: 1px solid $red;
-  background-color: #fff;
-  color: $red !important;
+    border: 1px solid $red;
+    background-color: #fff;
+    color: $red !important;
 }
 
 .tableOptions > li > a {
-  color: $dark-grey;
-  font-weight: normal;
-  font-size: 1rem;
-  padding: 0.5rem 0.7rem;
+    color: $dark-grey;
+    font-weight: normal;
+    font-size: 1rem;
+    padding: 0.5rem 0.7rem;
 }
 
-.tableOptions .menuHeader, .menuHeader:hover {
-  background-color: $night-ocean !important;
-  color: #fff;
-  padding: 0.3rem 0.7rem;
-  text-transform: uppercase;
+.menuHeader:hover,
+.tableOptions .menuHeader {
+    background-color: $night-ocean !important;
+    color: #fff;
+    padding: 0.3rem 0.7rem;
+    text-transform: uppercase;
 }
 
 .tableOptions > li {
-  border-bottom: 1px solid $crazy-light-grey;
+    border-bottom: 1px solid $crazy-light-grey;
 }
 
 .tableOptions > li:hover {
-  background-color: $crazy-light-grey;
+    background-color: $crazy-light-grey;
 }
 
 .dropdown-pane {
-  padding: 0px;
+    padding: 0;
 }
 
 .panel-grey {
-  background-color: #e4e4e4;
-  padding-top: 1rem;
+    background-color: #e4e4e4;
+    padding-top: 1rem;
 }
 
-#emailPanel, #namePanel, #passwordPanel {
-  display: none;
-  padding: 1rem;
-  background: #e4e4e4;
+#emailPanel,
+#namePanel,
+#passwordPanel {
+    display: none;
+    padding: 1rem;
+    background: #e4e4e4;
+}
+
+input[type=checkbox]:checked ~ #port {
+    display: block;
+}
+
+#port {
+    display: none;
 }
 
 .button-cancel {
-  border-color: $red !important;
-  color: $red !important;
+    border-color: $red !important;
+    color: $red !important;
 }
 
 .green {
-  background-color: $green;
+    background-color: $green;
 }
 
 .orange {
-  background-color: $orange;
+    background-color: $orange;
 }
 
 .red {
-  background-color: $red;
+    background-color: $red;
 }
 
 .black {
-  background-color: $black;
+    background-color: $black;
 }
 
 .grey {
-  background-color: $grey;
+    background-color: $grey;
 }

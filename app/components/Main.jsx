@@ -39,10 +39,8 @@ render() {
                           <Sticky>
                             <Nav/>
                         </Sticky>
-                        <div className="row">
-                            <div className="columns large-12 large 12">
-                              {this.props.children}
-                            </div>
+                        <div>
+                          {this.props.children}
                         </div>
                       </StickyContainer>
                     </div>
