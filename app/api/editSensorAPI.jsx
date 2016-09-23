@@ -4,15 +4,18 @@ const EDIT_SENSOR_URL = 'http://opsdev.sence.io/backend/edit-sensor.php';
 
 module.exports = {
 
-    editSensor: function(inputMac, inputRegion, inputLocationLevel, inputLocationID, inputBuilding) {
+    editSensor: function(inputMac, inputRegion, inputLocationLevel, inputLocationID, inputBuilding, inputPort) {
 
         var data = {
           MAC: inputMac,
           "geo-region": inputRegion,
           "sensor-location-level": inputLocationLevel,
           "sensor-location-id": inputLocationID,
-          "building": inputBuilding
+          "building": inputBuilding,
+          "port": inputPort
         }
+
+        console.log("edit data", data);
 
         return $.ajax({
             type: "POST",

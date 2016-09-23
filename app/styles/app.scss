@@ -1,6 +1,7 @@
 @import url( 'http://fonts.googleapis.com/css?family=Roboto:300,400');
 @import url( 'https://fonts.googleapis.com/css?family=Pathway+Gothic+One');
 @import url( 'https://fonts.googleapis.com/css?family=Lato:400,900i');
+
 $space-large: 1.5rem;
 $title-color: #555;
 $nav-font: #333;
@@ -24,6 +25,19 @@ html {
     height: 100%;
     font-family: roboto;
     color: $body-color;
+}
+
+body {
+  -webkit-animation-delay: 0.1s;
+    -webkit-animation-name: fontfix;
+    -webkit-animation-duration: 0.1s;
+    -webkit-animation-iteration-count: 1;
+    -webkit-animation-timing-function: linear;
+}
+
+@-webkit-keyframes fontfix {
+    from { opacity: 1; }
+    to   { opacity: 1; }
 }
 
 .row {
@@ -208,9 +222,6 @@ ul.header-list {
     font-size: 1.2rem;
     background: $header-color;
 }
-// .buildingCharts {
-//   display: none;
-// }
 
 label {
     text-transform: capitalize;

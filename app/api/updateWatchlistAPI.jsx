@@ -1,15 +1,15 @@
 var axios = require('axios');
 
-const REMOVE_FROM_WATCHLIST_URL = 'http://opsdev.sence.io/backend/sensor-watchlist-pin.php';
+const UPDATE_WATCHLIST_URL = 'http://opsdev.sence.io/backend/sensor-watchlist-pin.php';
 
 module.exports = {
 
-    removeFromWatchlist: function(macAddress) {
+    updateWatchList: function(macAddress, pin_status) {
         console.log("trying to remove: ", macAddress);
 
         var data = {
             "MAC": macAddress,
-            "pin_status": false
+            "pin_status": pin_status
         }
 
         return $.ajax({
@@ -17,7 +17,7 @@ module.exports = {
             beforeSend: function(request) {
                 request.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
             },
-            url: REMOVE_FROM_WATCHLIST_URL,
+            url: UPDATE_WATCHLIST_URL,
             data: data,
             success: function(msg) {
                 console.log("Que pasar?", msg);

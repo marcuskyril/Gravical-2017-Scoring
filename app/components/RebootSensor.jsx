@@ -63,7 +63,7 @@ class RebootSensor extends React.Component {
           <form>
               <div className="row">
                   <div className="large-12 columns">
-                      <div className="header">Reboot Sensor</div>
+                      <div className="page-title">Reboot Sensor</div>
 
                       <div className="header" style={{color: '#990000'}}>Hold up. You really wanna reboot this bad boy?</div>
                       <input id="rebootMac" value="" hidden></input>

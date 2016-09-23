@@ -69,7 +69,7 @@ class SimpleBarChart extends React.Component{
              <Bar dataKey="value">
                {
                  this.props.uptimeData.map((entry, index) =>(
-                  <Cell key={`cell=${index}`} fill={colorMap[entry['status']]} />
+                  <Cell key={`cell=${index}`} stroke={colorMap[entry['status']]} fill={colorMap[entry['status']]} />
                  ))
                }
              </Bar>
@@ -101,15 +101,21 @@ class Uptime extends React.Component {
     this.retrieveData(3, 30);
   }
 
+  onSubmit() {
+
+    var numDays = parseInt(this.refs.numDays.value);
+    var interval = parseInt(this.refs.interval.value);
+
+    this.retrieveData(numDays, interval);
+  }
+
   retrieveData(numDays, interval) {
 
     var that = this;
 
-    console.log("num days", numDays);
-
     $('.off-canvas-content').addClass('loading-overlay');
 
-    retrieveUptimeDataAPI.retrieveUptimeData(this.state.buildingName, numDays, interval).then(function(response) {
+    retrieveUptimeDataAPI.retrieveUptimeData(that.state.buildingName, numDays, interval).then(function(response) {
         // console.log("response", response);
         that.setState({
           data: response,
@@ -175,7 +181,8 @@ class Uptime extends React.Component {
                 <option value="15">15 mins</option>
                 <option value="10">10 mins</option>
               </select>
-              <a className="button proceed expanded" onClick={this.retrieveData}>Go</a>
+
+              <a className="button proceed expanded" onClick={(e) => that.onSubmit()}>Go</a>
             </form>
             <hr/>
           </div>
@@ -201,8 +208,6 @@ class UptimeList extends React.Component {
     render() {
 
         var dataList = this.props.data;
-        // console.log("dataList", dataList);
-
         var rows = [];
 
         for(var level in dataList) {

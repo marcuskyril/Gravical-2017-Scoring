@@ -45,21 +45,6 @@ class VerticalMenu extends React.Component {
             break;
           case 'NO_ACTION':
               var dropdowns = document.getElementsByClassName("dropdown-pane");
-
-              // console.log("reboot", this.props.reboot);
-              //
-              // var id = `#reboot${this.props.macAdd}`
-              //
-              // var that = this;
-              //
-              // if(this.props.reboot) {
-              //   alert("hello" + that.props.reboot +id);
-              //   $('id').removeClass('inactive-link');
-              // } else {
-              //   alert("hello" + that.props.reboot +id);
-              //   $('id').addClass('inactive-link');
-              // }
-
               var i;
 
               for (i = 0; i < dropdowns.length; i++) {
@@ -78,6 +63,13 @@ class VerticalMenu extends React.Component {
               break;
           case 'OPEN_CANVAS_ACTION':
             document.getElementById("sensorDetailsIFrame").src = "./offCrepe.html?offCanMac=" + macAddress;
+            break;
+
+          case 'WATCHLIST_UPDATE_ACTION':
+
+            $('#pinMac').val(macAddress);
+            $('#pin-sensor-modal').foundation('open');
+
             break;
           case 'LAUNCH_TERMINAL_ACTION':
 
@@ -104,7 +96,7 @@ class VerticalMenu extends React.Component {
                    <li><a onClick={() => this.handleClick(this.props.sensorData, 'OPEN_CANVAS_ACTION')} data-toggle="offCanvas">More details &raquo;</a></li>
                    <li><a onClick={() => this.handleClick(this.props.sensorData, 'EDIT_ACTION')}>Edit sensor</a></li>
                    <li><a onClick={() => this.handleClick(this.props.sensorData, 'DELETE_ACTION')}>Delete sensor</a></li>
-                   <li><a onClick={() => this.handleClick(this.props.sensorData, 'PIN_ACTION')}>Pin sensor</a></li>
+                   <li><a onClick={() => this.handleClick(this.props.sensorData, 'WATCHLIST_UPDATE_ACTION')}>Pin sensor</a></li>
                    <li><a onClick={() => this.handleClick(this.props.sensorData, 'LAUNCH_TERMINAL_ACTION')}>Launch terminal</a></li>
                  </ul>
                </div>

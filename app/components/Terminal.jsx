@@ -17,9 +17,9 @@ class Terminal extends React.Component {
 
     render() {
       return(
-          <div id="terminal" className="reveal large" data-reveal="" style={{padding: '0', border: 'none'}}>
+          <div id="terminal" className="reveal large" data-reveal="" style={{padding: '0', border: 'none', background: '#000'}}>
             <div className="top-bar">
-              <div className="top-bar-title">A Cool Terminal</div>
+              <div className="top-bar-title">terminal</div>
               <div className="top-bar-right">
                   <a className="margin-right-tiny" onClick={this.refresh}><FontAwesome name='refresh'/></a>
                   <a onClick={this.close}><FontAwesome name='close'/></a>

@@ -11,6 +11,17 @@ class AddSensor extends React.Component {
     }
   }
 
+  updateRegion() {
+
+    var that = this;
+
+    if($('#isServer').prop('checked')) {
+      that.refs.region.value = 'virtual';
+    } else {
+      that.refs.region.value = '';
+    }
+  }
+
   onAddSensor(e) {
     // console.log("test type: ", this.props.type);
 
@@ -63,7 +74,7 @@ class AddSensor extends React.Component {
       <div id="add-sensor-modal" className="reveal medium" data-reveal="">
           <form>
               <div className="row">
-                  <div className="header" style={{paddingLeft: '0.9375rem'}}>Add Sensor</div>
+                  <div className="page-title" style={{paddingLeft: '0.9375rem'}}>Add Sensor / Server</div>
 
                   <div className="large-6 columns">
 
@@ -71,18 +82,15 @@ class AddSensor extends React.Component {
                           <input type="text" name="macAddress" ref="macAddress" placeholder="Mac Address"/>
                       </label>
 
-                      <fieldset className="fieldset">
-                        <label>Server?
-                          <legend>Server</legend>
-                            <input id="isServer" ref="isServer" type="checkbox"/>
-                        </label>
-                      </fieldset>
+                      <fieldset>
+                        <input id="isServer" ref="isServer" type="checkbox" onClick={this.updateRegion.bind(this)}/><label>Server?</label>
 
-                      <div id="port">
-                        <label>Port
-                            <input type="text" name="port" id="inputPort" ref="port" placeholder="Port"/>
-                        </label>
-                      </div>
+                        <div id="port">
+                          <label>Port
+                              <input type="text" name="port" id="inputPort" ref="port" placeholder="Port"/>
+                          </label>
+                        </div>
+                      </fieldset>
                   </div>
 
                   <div className="large-6 columns" style={{'borderLeft':'solid 1px #e4e4e4'}}>
@@ -98,16 +106,16 @@ class AddSensor extends React.Component {
                           </select>
                       </label>
 
-                      <label>Sensor Location level
-                          <input type="text" name="sensorLocationLevel" ref="sensorLocationLevel" placeholder="Sensor Location Level"/>
+                      <label>Building level / Group Level
+                          <input type="text" name="sensorLocationLevel" ref="sensorLocationLevel" placeholder="Building / Group Level"/>
                       </label>
 
-                      <label>Sensor Location ID
-                          <input type="text" name="sensorLocationID" ref="sensorLocationID" placeholder="Sensor Location ID"/>
+                      <label>Area / Server ID
+                          <input type="text" name="sensorLocationID" ref="sensorLocationID" placeholder="Area / Server ID"/>
                       </label>
 
-                      <label>Building
-                          <input type="text" name="building" ref="building" placeholder="Building"/>
+                      <label>Building / Cluster
+                          <input type="text" name="building" ref="building" placeholder="Building / Cluster Level"/>
                       </label>
                   </div>
               </div>

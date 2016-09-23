@@ -162,7 +162,6 @@ class LevelList extends React.Component {
 
               var thePos = areaArray.indexOf(sensorId);
               superTemp[thePos] = [macAdd, status, sensorId, region, building, level, port, reboot];
-              //console.log("thePos" + thePos + ", sensor: " + superTemp[thePos]);
             }
 
             superTemp.forEach(function(sensorData) {

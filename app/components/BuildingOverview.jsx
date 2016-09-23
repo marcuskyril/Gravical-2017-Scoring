@@ -125,7 +125,7 @@ class BuildingList extends React.Component {
 class BuildingOverview extends React.Component {
     constructor(props) {
         super(props);
-        console.log("test", this.props.filter);
+
         this.state = {
             filterText: this.props.filter
         };

@@ -1,5 +1,5 @@
 var React = require('react');
-var removeFromWatchlist = require('removeFromWatchlist');
+var updateWatchList = require('updateWatchList');
 var unpinMac = "";
 
 class UnpinSensor extends React.Component {
@@ -17,7 +17,7 @@ class UnpinSensor extends React.Component {
 
     var macAddress = $('#unpinMac').val();
 
-    removeFromWatchlist.removeFromWatchlist(macAddress).then(function (response) {
+    updateWatchList.updateWatchList(macAddress, false).then(function (response) {
       console.log("removed sensor?", response);
 
       $('#closeUnpin').click();
@@ -46,7 +46,7 @@ class UnpinSensor extends React.Component {
           <form>
               <div className="row">
                   <div className="large-12 columns">
-                      <div className="header">Unpin Sensor</div>
+                      <div className="page-title">Unpin Sensor</div>
 
                       <div className="header" style={{color: '#990000'}}>Unpin this sensor, you want to?</div>
                       <input id="unpinMac" value="" hidden></input>

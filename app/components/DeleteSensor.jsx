@@ -55,7 +55,7 @@ class DeleteSensor extends React.Component {
           <form>
               <div className="row">
                   <div className="large-12 columns">
-                      <div className="header">Delete Sensor</div>
+                      <div className="page-title">Delete Sensor</div>
 
                       <div className="header" style={{color: '#990000'}}>Hold up. You really wanna delete this bad boy?</div>
                       <div className="header" id="deleteDetails"></div>

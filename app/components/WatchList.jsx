@@ -2,7 +2,7 @@ var React = require('react');
 var axios = require('axios');
 var Griddle = require('griddle-react');
 var retrieveSensorDetails = require('retrieveSensorDetails');
-var removeFromWatchlist = require('removeFromWatchlist');
+var updateWatchList = require('updateWatchList');
 var ReactDOM = require('react-dom');
 
 var dataList = [];
@@ -97,7 +97,7 @@ const tableMetaData = [
         "order": 4,
         "locked": true,
         "visible": true,
-        "displayName": "Health",
+        "displayName": "Sensor Status",
         "customComponent": SensorBlockComponent
     },{
         "columnName": "remove",

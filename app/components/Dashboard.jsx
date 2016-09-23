@@ -12,6 +12,7 @@ var EditSensor = require('EditSensor');
 var DeleteSensor = require('DeleteSensor');
 var UnpinSensor = require('UnpinSensor');
 var RebootSensor = require('RebootSensor');
+var PinSensor = require('PinSensor');
 var Terminal = require('Terminal');
 var {Link, IndexLink} = require('react-router');
 const HOST = 'ws://opsdev.sence.io:9000';
@@ -167,6 +168,7 @@ class Dashboard extends React.Component {
                                 <RebootSensor/>
                                 <Terminal/>
                                 <DeleteSensor/>
+                                <PinSensor/>
                             </div>
                             <div className="callout callout-dark">
                                 <SensorHealthOverview filter={this.state.filterParam} data={this.state.sensorHealthOverviewV2} serverData={this.state.serverOverview}/>

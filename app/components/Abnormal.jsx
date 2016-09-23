@@ -1,19 +1,41 @@
 var React = require('react');
 var Griddle = require('griddle-react');
 
-class LinkComponent3 extends React.Component {
-    constructor(props) {
-        super(props);
-    }
+class SensorBlockComponent extends React.Component {
 
-    handleClick(data) {
-        console.log("click", data);
+    render() {
+        // url ="speakers/" + this.props.rowData.state + "/" + this.props.data;
+
+        var colorMap = {
+          "ok" : "sensorBlock green",
+          "warning" : "sensorBlock orange",
+          "danger" : "sensorBlock red",
+          "down" : "sensorBlock black",
+          "-" : "sensorBlock grey",
+        }
+
+        return (
+            <div className={colorMap[this.props.data]}>{this.props.data}</div>
+        );
+    }
+};
+
+class PinComponent extends React.Component {
+
+    handleClick(macAddress) {
+
+      $('#pinMac').val(macAddress);
+      $('#pin-sensor-modal').foundation('open');
+
     }
 
     render() {
-        return (
-            <a onClick={this.handleClick(this.props.data)} data-toggle="offCanvas">{this.props.data}</a>
-        );
+      return (
+        <a onClick={() => this.handleClick(this.props.data)} >
+            <div id="pin-btn" className="sensorBlock pin">Pin</div>
+        </a>
+      );
+
     }
 };
 
@@ -32,21 +54,22 @@ const tableMetaData = [
         "displayName": "ID"
     }, {
         "columnName": "sensor_status",
-        "order": 3,
+        "order": 5,
         "locked": false,
         "visible": true,
         "sortable": true,
-        "displayName": "Sensor Status"
+        "displayName": "Sensor Status",
+        "customComponent": SensorBlockComponent
     }, {
         "columnName": "flapping",
-        "order": 4,
+        "order": 3,
         "locked": false,
         "visible": true,
         "sortable": true,
         "displayName": "Flapping"
     }, {
         "columnName": "network_router",
-        "order": 5,
+        "order": 4,
         "locked": false,
         "visible": true,
         "sortable": true,
@@ -57,29 +80,12 @@ const tableMetaData = [
         "locked": false,
         "visible": true,
         "sortable": true,
-        "displayName": "Pin",
+        "displayName": "Actions",
         "customComponent": PinComponent
     }
 ];
 
-class PinComponent extends React.Component {
 
-    handleClick(macAddress) {
-
-      // $('#unpinMac').val(macAddress);
-      // $('#unpin-sensor-modal').foundation('open');
-
-    }
-
-    render() {
-      return (
-        <a onClick={() => this.handleClick(this.props.data)} >
-            <div id="pin-btn" className="sensorBlock pin">Pin</div>
-        </a>
-      );
-
-    }
-};
 
 class Abnormal extends React.Component {
     constructor(props) {

@@ -130,7 +130,7 @@
 	var browserHistory = _require2.browserHistory;
 
 	var actions = __webpack_require__(139);
-	var store = __webpack_require__(818).configure();
+	var store = __webpack_require__(819).configure();
 
 	_firebase2.default.auth().onAuthStateChanged(function (user) {
 	  if (user) {
@@ -150,13 +150,13 @@
 	});
 
 	// Load foundation
-	__webpack_require__(821);
+	__webpack_require__(822);
 	$(document).foundation();
 
-	__webpack_require__(825);
-	__webpack_require__(827);
-	__webpack_require__(829);
-	__webpack_require__(831);
+	__webpack_require__(826);
+	__webpack_require__(828);
+	__webpack_require__(830);
+	__webpack_require__(832);
 
 	ReactDOM.render(React.createElement(
 	  'div',
@@ -14343,7 +14343,7 @@
 	            Bar,
 	            { dataKey: 'value' },
 	            this.props.uptimeData.map(function (entry, index) {
-	              return React.createElement(Cell, { key: 'cell=' + index, fill: colorMap[entry['status']] });
+	              return React.createElement(Cell, { key: 'cell=' + index, stroke: colorMap[entry['status']], fill: colorMap[entry['status']] });
 	            })
 	          )
 	        )
@@ -14385,16 +14385,23 @@
 	      this.retrieveData(3, 30);
 	    }
 	  }, {
+	    key: 'onSubmit',
+	    value: function onSubmit() {
+
+	      var numDays = parseInt(this.refs.numDays.value);
+	      var interval = parseInt(this.refs.interval.value);
+
+	      this.retrieveData(numDays, interval);
+	    }
+	  }, {
 	    key: 'retrieveData',
 	    value: function retrieveData(numDays, interval) {
 
 	      var that = this;
 
-	      console.log("num days", numDays);
-
 	      $('.off-canvas-content').addClass('loading-overlay');
 
-	      retrieveUptimeDataAPI.retrieveUptimeData(this.state.buildingName, numDays, interval).then(function (response) {
+	      retrieveUptimeDataAPI.retrieveUptimeData(that.state.buildingName, numDays, interval).then(function (response) {
 	        // console.log("response", response);
 	        that.setState({
 	          data: response,
@@ -14536,7 +14543,9 @@
 	              ),
 	              React.createElement(
 	                'a',
-	                { className: 'button proceed expanded', onClick: this.retrieveData },
+	                { className: 'button proceed expanded', onClick: function onClick(e) {
+	                    return that.onSubmit();
+	                  } },
 	                'Go'
 	              )
 	            ),
@@ -14579,8 +14588,6 @@
 	    value: function render() {
 
 	      var dataList = this.props.data;
-	      // console.log("dataList", dataList);
-
 	      var rows = [];
 
 	      for (var level in dataList) {
@@ -62773,11 +62780,12 @@
 
 	module.exports = {
 
-	    retrieveUptimeData: function retrieveUptimeData(buildingName, numDays) {
+	    retrieveUptimeData: function retrieveUptimeData(buildingName, numDays, interval) {
 
 	        var data = {
 	            building: buildingName,
-	            days: numDays
+	            days: numDays,
+	            interval: interval
 	        };
 
 	        return $.ajax({
@@ -72538,7 +72546,8 @@
 	var DeleteSensor = __webpack_require__(812);
 	var UnpinSensor = __webpack_require__(814);
 	var RebootSensor = __webpack_require__(815);
-	var Terminal = __webpack_require__(817);
+	var PinSensor = __webpack_require__(817);
+	var Terminal = __webpack_require__(818);
 
 	var _require = __webpack_require__(47);
 
@@ -72733,7 +72742,8 @@
 	                                React.createElement(UnpinSensor, null),
 	                                React.createElement(RebootSensor, null),
 	                                React.createElement(Terminal, null),
-	                                React.createElement(DeleteSensor, null)
+	                                React.createElement(DeleteSensor, null),
+	                                React.createElement(PinSensor, null)
 	                            ),
 	                            React.createElement(
 	                                'div',
@@ -72815,7 +72825,7 @@
 /* 792 */
 /***/ function(module, exports, __webpack_require__) {
 
-	'use strict';
+	/* WEBPACK VAR INJECTION */(function($) {'use strict';
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
@@ -72828,78 +72838,40 @@
 	var React = __webpack_require__(14);
 	var Griddle = __webpack_require__(584);
 
-	var LinkComponent3 = function (_React$Component) {
-	    _inherits(LinkComponent3, _React$Component);
+	var SensorBlockComponent = function (_React$Component) {
+	    _inherits(SensorBlockComponent, _React$Component);
 
-	    function LinkComponent3(props) {
-	        _classCallCheck(this, LinkComponent3);
+	    function SensorBlockComponent() {
+	        _classCallCheck(this, SensorBlockComponent);
 
-	        return _possibleConstructorReturn(this, Object.getPrototypeOf(LinkComponent3).call(this, props));
+	        return _possibleConstructorReturn(this, Object.getPrototypeOf(SensorBlockComponent).apply(this, arguments));
 	    }
 
-	    _createClass(LinkComponent3, [{
-	        key: 'handleClick',
-	        value: function handleClick(data) {
-	            console.log("click", data);
-	        }
-	    }, {
+	    _createClass(SensorBlockComponent, [{
 	        key: 'render',
 	        value: function render() {
+	            // url ="speakers/" + this.props.rowData.state + "/" + this.props.data;
+
+	            var colorMap = {
+	                "ok": "sensorBlock green",
+	                "warning": "sensorBlock orange",
+	                "danger": "sensorBlock red",
+	                "down": "sensorBlock black",
+	                "-": "sensorBlock grey"
+	            };
+
 	            return React.createElement(
-	                'a',
-	                { onClick: this.handleClick(this.props.data), 'data-toggle': 'offCanvas' },
+	                'div',
+	                { className: colorMap[this.props.data] },
 	                this.props.data
 	            );
 	        }
 	    }]);
 
-	    return LinkComponent3;
+	    return SensorBlockComponent;
 	}(React.Component);
 
 	;
-
-	var tableMetaData = [{
-	    "columnName": "building",
-	    "order": 1,
-	    "locked": true,
-	    "visible": true,
-	    "displayName": "Building"
-	}, {
-	    "columnName": "sensor-level-id",
-	    "order": 2,
-	    "locked": true,
-	    "visible": true,
-	    "displayName": "ID"
-	}, {
-	    "columnName": "sensor_status",
-	    "order": 3,
-	    "locked": false,
-	    "visible": true,
-	    "sortable": true,
-	    "displayName": "Sensor Status"
-	}, {
-	    "columnName": "flapping",
-	    "order": 4,
-	    "locked": false,
-	    "visible": true,
-	    "sortable": true,
-	    "displayName": "Flapping"
-	}, {
-	    "columnName": "network_router",
-	    "order": 5,
-	    "locked": false,
-	    "visible": true,
-	    "sortable": true,
-	    "displayName": "Network Router"
-	}, {
-	    "columnName": "pin",
-	    "order": 6,
-	    "locked": false,
-	    "visible": true,
-	    "sortable": true,
-	    "displayName": "Pin",
-	    "customComponent": PinComponent
-	}];
 
 	var PinComponent = function (_React$Component2) {
 	    _inherits(PinComponent, _React$Component2);
@@ -72914,9 +72886,8 @@
 	        key: 'handleClick',
 	        value: function handleClick(macAddress) {
 
-	            // $('#unpinMac').val(macAddress);
-	            // $('#unpin-sensor-modal').foundation('open');
-
+	            $('#pinMac').val(macAddress);
+	            $('#pin-sensor-modal').foundation('open');
 	        }
 	    }, {
 	        key: 'render',
@@ -72941,6 +72912,50 @@
 	}(React.Component);
 
 	;
+
+	var tableMetaData = [{
+	    "columnName": "building",
+	    "order": 1,
+	    "locked": true,
+	    "visible": true,
+	    "displayName": "Building"
+	}, {
+	    "columnName": "sensor-level-id",
+	    "order": 2,
+	    "locked": true,
+	    "visible": true,
+	    "displayName": "ID"
+	}, {
+	    "columnName": "sensor_status",
+	    "order": 5,
+	    "locked": false,
+	    "visible": true,
+	    "sortable": true,
+	    "displayName": "Sensor Status",
+	    "customComponent": SensorBlockComponent
+	}, {
+	    "columnName": "flapping",
+	    "order": 3,
+	    "locked": false,
+	    "visible": true,
+	    "sortable": true,
+	    "displayName": "Flapping"
+	}, {
+	    "columnName": "network_router",
+	    "order": 4,
+	    "locked": false,
+	    "visible": true,
+	    "sortable": true,
+	    "displayName": "Network Router"
+	}, {
+	    "columnName": "pin",
+	    "order": 6,
+	    "locked": false,
+	    "visible": true,
+	    "sortable": true,
+	    "displayName": "Actions",
+	    "customComponent": PinComponent
+	}];
 
 	var Abnormal = function (_React$Component3) {
 	    _inherits(Abnormal, _React$Component3);
@@ -72991,6 +73006,7 @@
 	;
 
 	module.exports = Abnormal;
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(9)))
 
 /***/ },
 /* 793 */
@@ -73247,7 +73263,6 @@
 
 	                    var thePos = areaArray.indexOf(sensorId);
 	                    superTemp[thePos] = [macAdd, status, sensorId, region, building, level, port, reboot];
-	                    //console.log("thePos" + thePos + ", sensor: " + superTemp[thePos]);
 	                }
 
 	                superTemp.forEach(function (sensorData) {
@@ -73770,21 +73785,6 @@
 	          break;
 	        case 'NO_ACTION':
 	          var dropdowns = document.getElementsByClassName("dropdown-pane");
-
-	          // console.log("reboot", this.props.reboot);
-	          //
-	          // var id = `#reboot${this.props.macAdd}`
-	          //
-	          // var that = this;
-	          //
-	          // if(this.props.reboot) {
-	          //   alert("hello" + that.props.reboot +id);
-	          //   $('id').removeClass('inactive-link');
-	          // } else {
-	          //   alert("hello" + that.props.reboot +id);
-	          //   $('id').addClass('inactive-link');
-	          // }
-
 	          var i;
 
 	          for (i = 0; i < dropdowns.length; i++) {
@@ -73803,6 +73803,13 @@
 	          break;
 	        case 'OPEN_CANVAS_ACTION':
 	          document.getElementById("sensorDetailsIFrame").src = "./offCrepe.html?offCanMac=" + macAddress;
+	          break;
+
+	        case 'WATCHLIST_UPDATE_ACTION':
+
+	          $('#pinMac').val(macAddress);
+	          $('#pin-sensor-modal').foundation('open');
+
 	          break;
 	        case 'LAUNCH_TERMINAL_ACTION':
 
@@ -73882,7 +73889,7 @@
 	              React.createElement(
 	                'a',
 	                { onClick: function onClick() {
-	                    return _this2.handleClick(_this2.props.sensorData, 'PIN_ACTION');
+	                    return _this2.handleClick(_this2.props.sensorData, 'WATCHLIST_UPDATE_ACTION');
 	                  } },
 	                'Pin sensor'
 	              )
@@ -73928,7 +73935,7 @@
 	var axios = __webpack_require__(140);
 	var Griddle = __webpack_require__(584);
 	var retrieveSensorDetails = __webpack_require__(797);
-	var removeFromWatchlist = __webpack_require__(798);
+	var updateWatchList = __webpack_require__(798);
 	var ReactDOM = __webpack_require__(490);
 
 	var dataList = [];
@@ -74075,7 +74082,7 @@
 	    "order": 4,
 	    "locked": true,
 	    "visible": true,
-	    "displayName": "Health",
+	    "displayName": "Sensor Status",
 	    "customComponent": SensorBlockComponent
 	}, {
 	    "columnName": "remove",
@@ -74196,16 +74203,16 @@
 
 	var axios = __webpack_require__(140);
 
-	var REMOVE_FROM_WATCHLIST_URL = 'http://opsdev.sence.io/backend/sensor-watchlist-pin.php';
+	var UPDATE_WATCHLIST_URL = 'http://opsdev.sence.io/backend/sensor-watchlist-pin.php';
 
 	module.exports = {
 
-	    removeFromWatchlist: function removeFromWatchlist(macAddress) {
+	    updateWatchList: function updateWatchList(macAddress, pin_status) {
 	        console.log("trying to remove: ", macAddress);
 
 	        var data = {
 	            "MAC": macAddress,
-	            "pin_status": false
+	            "pin_status": pin_status
 	        };
 
 	        return $.ajax({
@@ -74213,7 +74220,7 @@
 	            beforeSend: function beforeSend(request) {
 	                request.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
 	            },
-	            url: REMOVE_FROM_WATCHLIST_URL,
+	            url: UPDATE_WATCHLIST_URL,
 	            data: data,
 	            success: function success(msg) {
 	                console.log("Que pasar?", msg);
@@ -80226,7 +80233,6 @@
 
 	        var _this4 = _possibleConstructorReturn(this, Object.getPrototypeOf(BuildingOverview).call(this, props));
 
-	        console.log("test", _this4.props.filter);
 	        _this4.state = {
 	            filterText: _this4.props.filter
 	        };
@@ -80310,6 +80316,18 @@
 	  }
 
 	  _createClass(AddSensor, [{
+	    key: 'updateRegion',
+	    value: function updateRegion() {
+
+	      var that = this;
+
+	      if ($('#isServer').prop('checked')) {
+	        that.refs.region.value = 'virtual';
+	      } else {
+	        that.refs.region.value = '';
+	      }
+	    }
+	  }, {
 	    key: 'onAddSensor',
 	    value: function onAddSensor(e) {
 	      // console.log("test type: ", this.props.type);
@@ -80371,8 +80389,8 @@
 	            { className: 'row' },
 	            React.createElement(
 	              'div',
-	              { className: 'header', style: { paddingLeft: '0.9375rem' } },
-	              'Add Sensor'
+	              { className: 'page-title', style: { paddingLeft: '0.9375rem' } },
+	              'Add Sensor / Server'
 	            ),
 	            React.createElement(
 	              'div',
@@ -80385,27 +80403,22 @@
 	              ),
 	              React.createElement(
 	                'fieldset',
-	                { className: 'fieldset' },
+	                null,
+	                React.createElement('input', { id: 'isServer', ref: 'isServer', type: 'checkbox', onClick: this.updateRegion.bind(this) }),
 	                React.createElement(
 	                  'label',
 	                  null,
-	                  'Server?',
+	                  'Server?'
+	                ),
+	                React.createElement(
+	                  'div',
+	                  { id: 'port' },
 	                  React.createElement(
-	                    'legend',
+	                    'label',
 	                    null,
-	                    'Server'
-	                  ),
-	                  React.createElement('input', { id: 'isServer', ref: 'isServer', type: 'checkbox' })
-	                )
-	              ),
-	              React.createElement(
-	                'div',
-	                { id: 'port' },
-	                React.createElement(
-	                  'label',
-	                  null,
-	                  'Port',
-	                  React.createElement('input', { type: 'text', name: 'port', id: 'inputPort', ref: 'port', placeholder: 'Port' })
+	                    'Port',
+	                    React.createElement('input', { type: 'text', name: 'port', id: 'inputPort', ref: 'port', placeholder: 'Port' })
+	                  )
 	                )
 	              )
 	            ),
@@ -80455,20 +80468,20 @@
 	              React.createElement(
 	                'label',
 	                null,
-	                'Sensor Location level',
-	                React.createElement('input', { type: 'text', name: 'sensorLocationLevel', ref: 'sensorLocationLevel', placeholder: 'Sensor Location Level' })
+	                'Building level / Group Level',
+	                React.createElement('input', { type: 'text', name: 'sensorLocationLevel', ref: 'sensorLocationLevel', placeholder: 'Building / Group Level' })
 	              ),
 	              React.createElement(
 	                'label',
 	                null,
-	                'Sensor Location ID',
-	                React.createElement('input', { type: 'text', name: 'sensorLocationID', ref: 'sensorLocationID', placeholder: 'Sensor Location ID' })
+	                'Area / Server ID',
+	                React.createElement('input', { type: 'text', name: 'sensorLocationID', ref: 'sensorLocationID', placeholder: 'Area / Server ID' })
 	              ),
 	              React.createElement(
 	                'label',
 	                null,
-	                'Building',
-	                React.createElement('input', { type: 'text', name: 'building', ref: 'building', placeholder: 'Building' })
+	                'Building / Cluster',
+	                React.createElement('input', { type: 'text', name: 'building', ref: 'building', placeholder: 'Building / Cluster Level' })
 	              )
 	            )
 	          ),
@@ -80615,7 +80628,15 @@
 
 	      var that = this;
 
-	      editSensorAPI.editSensor(inputMac, inputRegion, inputLocationLevel, inputLocationID, inputPort, inputBuilding).then(function (response) {
+	      console.log("MAC", inputMac);
+	      console.log("region", inputRegion);
+	      console.log("level", inputLocationLevel);
+	      console.log("id", inputLocationID);
+	      console.log("building", inputBuilding);
+	      console.log("port", inputPort);
+
+	      // editSensorAPI.editSensor(inputMac, inputRegion, inputLocationLevel, inputLocationID, inputPort, inputBuilding).then(function(response){
+	      editSensorAPI.editSensor(inputMac, inputRegion, inputLocationLevel, inputLocationID, inputBuilding, inputPort).then(function (response) {
 
 	        if (response.error) {
 	          that.setState({
@@ -80660,7 +80681,7 @@
 	            { className: 'row' },
 	            React.createElement(
 	              'div',
-	              { className: 'header', style: { paddingLeft: '0.9375rem' } },
+	              { className: 'page-title', style: { paddingLeft: '0.9375rem' } },
 	              'Edit Sensor'
 	            ),
 	            React.createElement(
@@ -80810,15 +80831,18 @@
 
 	module.exports = {
 
-	    editSensor: function editSensor(inputMac, inputRegion, inputLocationLevel, inputLocationID, inputBuilding) {
+	    editSensor: function editSensor(inputMac, inputRegion, inputLocationLevel, inputLocationID, inputBuilding, inputPort) {
 
 	        var data = {
 	            MAC: inputMac,
 	            "geo-region": inputRegion,
 	            "sensor-location-level": inputLocationLevel,
 	            "sensor-location-id": inputLocationID,
-	            "building": inputBuilding
+	            "building": inputBuilding,
+	            "port": inputPort
 	        };
+
+	        console.log("edit data", data);
 
 	        return $.ajax({
 	            type: "POST",
@@ -80925,7 +80949,7 @@
 	              { className: 'large-12 columns' },
 	              React.createElement(
 	                'div',
-	                { className: 'header' },
+	                { className: 'page-title' },
 	                'Delete Sensor'
 	              ),
 	              React.createElement(
@@ -81034,7 +81058,7 @@
 	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 	var React = __webpack_require__(14);
-	var removeFromWatchlist = __webpack_require__(798);
+	var updateWatchList = __webpack_require__(798);
 	var unpinMac = "";
 
 	var UnpinSensor = function (_React$Component) {
@@ -81059,7 +81083,7 @@
 
 	      var macAddress = $('#unpinMac').val();
 
-	      removeFromWatchlist.removeFromWatchlist(macAddress).then(function (response) {
+	      updateWatchList.updateWatchList(macAddress, false).then(function (response) {
 	        console.log("removed sensor?", response);
 
 	        $('#closeUnpin').click();
@@ -81098,7 +81122,7 @@
 	              { className: 'large-12 columns' },
 	              React.createElement(
 	                'div',
-	                { className: 'header' },
+	                { className: 'page-title' },
 	                'Unpin Sensor'
 	              ),
 	              React.createElement(
@@ -81255,7 +81279,7 @@
 	              { className: 'large-12 columns' },
 	              React.createElement(
 	                'div',
-	                { className: 'header' },
+	                { className: 'page-title' },
 	                'Reboot Sensor'
 	              ),
 	              React.createElement(
@@ -81381,6 +81405,147 @@
 	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 	var React = __webpack_require__(14);
+	var updateWatchList = __webpack_require__(798);
+	var pinMac = "";
+
+	var PinSensor = function (_React$Component) {
+	  _inherits(PinSensor, _React$Component);
+
+	  function PinSensor(props) {
+	    _classCallCheck(this, PinSensor);
+
+	    var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(PinSensor).call(this, props));
+
+	    _this.state = {
+	      message: ''
+	    };
+	    return _this;
+	  }
+
+	  _createClass(PinSensor, [{
+	    key: 'onPinSensor',
+	    value: function onPinSensor() {
+
+	      var that = this;
+
+	      var macAddress = $('#pinMac').val();
+
+	      updateWatchList.updateWatchList(macAddress, true).then(function (response) {
+	        console.log("added sensor?", response);
+
+	        $('#closePin').click();
+	      });
+	    }
+	  }, {
+	    key: 'render',
+	    value: function render() {
+	      // console.log("delete sensor state ", this.state);
+	      var message = this.state.message;
+	      var that = this;
+
+	      if ($('#pinMac').val() !== "") {
+	        pinMac = $('#pinMac').val();
+	      }
+
+	      // resets message to empty string on close
+	      $('#pin-sensor-modal').on('closed.zf.reveal', function () {
+	        //console.log("close");
+	        that.setState({
+	          message: ''
+	        });
+	      });
+
+	      return React.createElement(
+	        'div',
+	        { id: 'pin-sensor-modal', className: 'reveal tiny text-center', 'data-reveal': '' },
+	        React.createElement(
+	          'form',
+	          null,
+	          React.createElement(
+	            'div',
+	            { className: 'row' },
+	            React.createElement(
+	              'div',
+	              { className: 'large-12 columns' },
+	              React.createElement(
+	                'div',
+	                { className: 'page-title' },
+	                'Pin Sensor'
+	              ),
+	              React.createElement(
+	                'div',
+	                { className: 'header', style: { color: '#990000' } },
+	                'Pin this sensor, you want to?'
+	              ),
+	              React.createElement('input', { id: 'pinMac', value: '', hidden: true }),
+	              React.createElement(
+	                'div',
+	                { id: 'pinSensorMessage' },
+	                React.createElement(PinSensorMessage, { message: message })
+	              ),
+	              React.createElement(
+	                'a',
+	                { className: 'button proceed expanded', onClick: this.onPinSensor.bind(this) },
+	                'Yes I do'
+	              ),
+	              React.createElement(
+	                'a',
+	                { className: 'button cancel expanded close-reveal-modal', 'data-close': '', 'aria-label': 'Close', id: 'closePin' },
+	                'Slow Down, Cowboy'
+	              )
+	            )
+	          )
+	        )
+	      );
+	    }
+	  }]);
+
+	  return PinSensor;
+	}(React.Component);
+
+	var PinSensorMessage = function (_React$Component2) {
+	  _inherits(PinSensorMessage, _React$Component2);
+
+	  function PinSensorMessage() {
+	    _classCallCheck(this, PinSensorMessage);
+
+	    return _possibleConstructorReturn(this, Object.getPrototypeOf(PinSensorMessage).apply(this, arguments));
+	  }
+
+	  _createClass(PinSensorMessage, [{
+	    key: 'render',
+	    value: function render() {
+	      var message = this.props.message;
+
+	      return React.createElement(
+	        'div',
+	        { className: 'statusText' },
+	        message
+	      );
+	    }
+	  }]);
+
+	  return PinSensorMessage;
+	}(React.Component);
+
+	module.exports = PinSensor;
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(9)))
+
+/***/ },
+/* 818 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/* WEBPACK VAR INJECTION */(function($) {'use strict';
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	var React = __webpack_require__(14);
 	var iframeLink = "http://opsdev.sence.io:4201/";
 	var FontAwesome = __webpack_require__(581);
 
@@ -81410,14 +81575,14 @@
 	    value: function render() {
 	      return React.createElement(
 	        'div',
-	        { id: 'terminal', className: 'reveal large', 'data-reveal': '', style: { padding: '0', border: 'none' } },
+	        { id: 'terminal', className: 'reveal large', 'data-reveal': '', style: { padding: '0', border: 'none', background: '#000' } },
 	        React.createElement(
 	          'div',
 	          { className: 'top-bar' },
 	          React.createElement(
 	            'div',
 	            { className: 'top-bar-title' },
-	            'A Cool Terminal'
+	            'terminal'
 	          ),
 	          React.createElement(
 	            'div',
@@ -81448,7 +81613,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(9)))
 
 /***/ },
-/* 818 */
+/* 819 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -81462,11 +81627,11 @@
 
 	var redux = _interopRequireWildcard(_redux);
 
-	var _reduxThunk = __webpack_require__(819);
+	var _reduxThunk = __webpack_require__(820);
 
 	var _reduxThunk2 = _interopRequireDefault(_reduxThunk);
 
-	var _reducers = __webpack_require__(820);
+	var _reducers = __webpack_require__(821);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -81488,7 +81653,7 @@
 	};
 
 /***/ },
-/* 819 */
+/* 820 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -81516,7 +81681,7 @@
 	exports['default'] = thunk;
 
 /***/ },
-/* 820 */
+/* 821 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -81611,16 +81776,16 @@
 	// };
 
 /***/ },
-/* 821 */
+/* 822 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(822);
+	var content = __webpack_require__(823);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
-	var update = __webpack_require__(824)(content, {});
+	var update = __webpack_require__(825)(content, {});
 	if(content.locals) module.exports = content.locals;
 	// Hot Module Replacement
 	if(false) {
@@ -81637,10 +81802,10 @@
 	}
 
 /***/ },
-/* 822 */
+/* 823 */
 /***/ function(module, exports, __webpack_require__) {
 
-	exports = module.exports = __webpack_require__(823)();
+	exports = module.exports = __webpack_require__(824)();
 	// imports
 
 
@@ -81651,7 +81816,7 @@
 
 
 /***/ },
-/* 823 */
+/* 824 */
 /***/ function(module, exports) {
 
 	/*
@@ -81707,7 +81872,7 @@
 
 
 /***/ },
-/* 824 */
+/* 825 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*
@@ -81959,16 +82124,16 @@
 
 
 /***/ },
-/* 825 */
+/* 826 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(826);
+	var content = __webpack_require__(827);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
-	var update = __webpack_require__(824)(content, {});
+	var update = __webpack_require__(825)(content, {});
 	if(content.locals) module.exports = content.locals;
 	// Hot Module Replacement
 	if(false) {
@@ -81985,32 +82150,32 @@
 	}
 
 /***/ },
-/* 826 */
+/* 827 */
 /***/ function(module, exports, __webpack_require__) {
 
-	exports = module.exports = __webpack_require__(823)();
+	exports = module.exports = __webpack_require__(824)();
 	// imports
 	exports.push([module.id, "@import url(http://fonts.googleapis.com/css?family=Roboto:300,400);", ""]);
 	exports.push([module.id, "@import url(https://fonts.googleapis.com/css?family=Pathway+Gothic+One);", ""]);
 	exports.push([module.id, "@import url(https://fonts.googleapis.com/css?family=Lato:400,900i);", ""]);
 
 	// module
-	exports.push([module.id, "body,\nhtml {\n  background: #f2f2f2;\n  height: 100%;\n  font-family: roboto;\n  color: #1a1b1b; }\n\n.row {\n  max-width: 100rem; }\n\n.loading-overlay {\n  background-color: rgba(10, 10, 10, 0.45) !important;\n  position: fixed;\n  top: 0;\n  bottom: 0;\n  left: 0;\n  right: 0; }\n\ndiv#offCanvas {\n  width: 350px;\n  height: 100%;\n  padding: 1.5rem;\n  background: #e8e8e8; }\n\n.is-open-right {\n  transform: translateX(-350px); }\n\n.off-canvas.position-right {\n  right: -350px; }\n\n.off-canvas-content {\n  background: #f2f2f2; }\n\na {\n  color: #6abedb; }\n\nhr {\n  border-color: #bdbdbd;\n  margin-top: 0.5rem;\n  max-width: 100%; }\n\n@media only screen and (max-width: 480px) {\n  .allSensors,\n  .buildingCharts {\n    display: none; } }\n\n.divider {\n  border-color: #bdbdbd; }\n\n.reveal {\n  top: 100px !important; }\n\ntable thead {\n  background: #d3d3d3;\n  color: #1a1b1b;\n  border: 1px solid #e4e4e4; }\n\ntable tbody {\n  color: #1a1b1b;\n  border: 1px solid #e4e4e4; }\n\n.margin-top-large {\n  margin-top: 4rem; }\n\n.margin-bottom-large {\n  margin-bottom: 4rem; }\n\n.margin-right-small {\n  margin-right: 2rem; }\n\n.margin-left-small {\n  margin-left: 2rem; }\n\n.margin-left-tiny {\n  margin-left: 0.5rem; }\n\n.margin-right-tiny {\n  margin-right: 0.5rem; }\n\n.margin-top-md {\n  margin-top: 2rem; }\n\n.margin-top-small {\n  margin-top: 1rem; }\n\n.margin-bottom-md {\n  margin-bottom: 2rem; }\n\n.margin-bottom-small {\n  margin-bottom: 1rem; }\n\n.textAlignCenter {\n  text-align: center; }\n\nul.header-list {\n  display: inline-block;\n  list-style: none;\n  margin-bottom: 0; }\n\n.sticky {\n  z-index: 10000;\n  left: 0 !important; }\n\n.callout {\n  background-color: #fff; }\n\n.callout-dark {\n  padding: 1.5rem;\n  background-color: #fff;\n  border: 2px solid #bdbdbd;\n  border-top: none;\n  margin-top: 0;\n  border-bottom-right-radius: 4px;\n  border-bottom-left-radius: 4px; }\n\n.scroll {\n  max-height: 100vh;\n  overflow-y: scroll; }\n\n.callout-dark-header {\n  padding: 0.5rem;\n  background-color: #fff;\n  border: 2px solid #bdbdbd;\n  border-bottom: 1px solid #bdbdbd;\n  border-top-left-radius: 4px;\n  border-top-right-radius: 4px;\n  margin-bottom: 0; }\n\n.callout-top-header {\n  padding: 1rem;\n  background-color: #f2f2f2;\n  border: 2px solid #bdbdbd;\n  border-radius: 4px; }\n\n.callout-minimize {\n  margin-bottom: 1rem;\n  border-radius: 4px 4px;\n  padding: 0.5rem; }\n\n.icon-btn-text-small {\n  font-family: 'Pathway Gothic One', sans-serif;\n  text-transform: uppercase;\n  top: 15px;\n  right: 15px;\n  position: absolute;\n  color: #232f32;\n  font-size: 1.2rem; }\n\n.test {\n  font-family: 'Pathway Gothic One', sans-serif;\n  text-transform: uppercase;\n  color: #fff;\n  font-size: 1.2rem;\n  background: #6abedb; }\n\nlabel {\n  text-transform: capitalize;\n  color: #232f32; }\n\n.header {\n  color: #232f32;\n  margin-bottom: 0;\n  font-size: 1.2rem;\n  text-transform: uppercase;\n  font-family: 'Pathway Gothic One', sans-serif; }\n\n.sub-header {\n  color: #232f32;\n  font-size: 1.3rem;\n  font-family: 'Pathway Gothic One', sans-serif; }\n  .sub-header a {\n    text-transform: capitalize; }\n\n#watchList {\n  display: none; }\n\n.page-title {\n  color: #8e8e8e;\n  font-family: 'Lato', sans-serif;\n  font-size: 1.2rem;\n  font-weight: bold; }\n\ninput[type=search] {\n  box-shadow: none; }\n\n.top-bar-upper {\n  color: #333;\n  font-size: 0.5rem; }\n\n.app-header {\n  font-size: 1.3rem; }\n\ntable.overview-custom tbody,\ntable.overview-custom th,\ntable.overview-custom thead,\ntable.overview-custom tr {\n  text-align: center; }\n\ntable.sensor-details-table tbody {\n  text-align: left; }\n\n.statusText {\n  color: red;\n  margin-bottom: 1rem;\n  text-transform: uppercase;\n  font-size: 0.8em;\n  font-weight: bold; }\n\n.notificationHeader {\n  color: #fff;\n  text-transform: uppercase;\n  font-size: 0.5em;\n  font-weight: bold; }\n\n.sensorBlock {\n  height: 30px;\n  border-radius: 30px;\n  width: auto;\n  color: #fff;\n  text-align: center;\n  font-family: 'Pathway Gothic One', sans-serif;\n  text-transform: uppercase; }\n\n.sensorBlockSquare {\n  height: 30px;\n  width: 30px;\n  border-radius: 4px;\n  cursor: pointer;\n  text-align: center;\n  line-height: 28px;\n  color: white;\n  font-weight: bold; }\n\n.sensorBlockSquare:hover {\n  opacity: 0.5; }\n\n.sensorList {\n  display: inline-block;\n  margin-right: 1px; }\n\n.button-custom {\n  height: 30px;\n  width: auto !important;\n  margin: 0;\n  color: #fff !important;\n  text-align: center;\n  font-family: 'Pathway Gothic One', sans-serif;\n  text-transform: uppercase; }\n\n.proceed {\n  background: #6abedb; }\n\n.cancel {\n  background: #990000; }\n\n.cancel:hover {\n  background: #7a0000; }\n\n.remove {\n  border: 1px solid #990000;\n  background-color: #fff;\n  color: #990000 !important; }\n\n.pin {\n  border: 1px solid #990000;\n  background-color: #fff;\n  color: #006600 !important; }\n\n.tableOptions > li > a {\n  color: #323232;\n  font-weight: normal;\n  font-size: 1rem;\n  padding: 0.5rem 0.7rem; }\n\n.menuHeader:hover,\n.tableOptions .menuHeader {\n  background-color: #232f32 !important;\n  color: #fff;\n  padding: 0.3rem 0.7rem;\n  text-transform: uppercase; }\n\n.tableOptions > li {\n  border-bottom: 1px solid #f2f2f2; }\n\n.tableOptions > li:hover {\n  background-color: #f2f2f2; }\n\n.dropdown-pane {\n  padding: 0; }\n\n.panel-grey {\n  background-color: #e4e4e4;\n  padding-top: 1rem; }\n\n#emailPanel,\n#namePanel,\n#passwordPanel {\n  display: none;\n  padding: 1rem;\n  background: #e4e4e4; }\n\ninput[type=checkbox]:checked ~ #port {\n  display: block; }\n\n#port {\n  display: none; }\n\n.inactive-link {\n  display: none; }\n\n.button-cancel {\n  border-color: #990000 !important;\n  color: #990000 !important; }\n\n.green {\n  background-color: #006600; }\n\n.orange {\n  background-color: #cc7a00; }\n\n.red {\n  background-color: #990000; }\n\n.black {\n  background-color: #1a1b1b; }\n\n.grey {\n  background-color: #737373; }\n", ""]);
+	exports.push([module.id, "body,\nhtml {\n  background: #f2f2f2;\n  height: 100%;\n  font-family: roboto;\n  color: #1a1b1b; }\n\nbody {\n  -webkit-animation-delay: 0.1s;\n  -webkit-animation-name: fontfix;\n  -webkit-animation-duration: 0.1s;\n  -webkit-animation-iteration-count: 1;\n  -webkit-animation-timing-function: linear; }\n\n@-webkit-keyframes fontfix {\n  from {\n    opacity: 1; }\n  to {\n    opacity: 1; } }\n\n.row {\n  max-width: 100rem; }\n\n.loading-overlay {\n  background-color: rgba(10, 10, 10, 0.45) !important;\n  position: fixed;\n  top: 0;\n  bottom: 0;\n  left: 0;\n  right: 0; }\n\ndiv#offCanvas {\n  width: 350px;\n  height: 100%;\n  padding: 1.5rem;\n  background: #e8e8e8; }\n\n.is-open-right {\n  transform: translateX(-350px); }\n\n.off-canvas.position-right {\n  right: -350px; }\n\n.off-canvas-content {\n  background: #f2f2f2; }\n\na {\n  color: #6abedb; }\n\nhr {\n  border-color: #bdbdbd;\n  margin-top: 0.5rem;\n  max-width: 100%; }\n\n@media only screen and (max-width: 480px) {\n  .allSensors,\n  .buildingCharts {\n    display: none; } }\n\n.divider {\n  border-color: #bdbdbd; }\n\n.reveal {\n  top: 100px !important; }\n\ntable thead {\n  background: #d3d3d3;\n  color: #1a1b1b;\n  border: 1px solid #e4e4e4; }\n\ntable tbody {\n  color: #1a1b1b;\n  border: 1px solid #e4e4e4; }\n\n.margin-top-large {\n  margin-top: 4rem; }\n\n.margin-bottom-large {\n  margin-bottom: 4rem; }\n\n.margin-right-small {\n  margin-right: 2rem; }\n\n.margin-left-small {\n  margin-left: 2rem; }\n\n.margin-left-tiny {\n  margin-left: 0.5rem; }\n\n.margin-right-tiny {\n  margin-right: 0.5rem; }\n\n.margin-top-md {\n  margin-top: 2rem; }\n\n.margin-top-small {\n  margin-top: 1rem; }\n\n.margin-bottom-md {\n  margin-bottom: 2rem; }\n\n.margin-bottom-small {\n  margin-bottom: 1rem; }\n\n.textAlignCenter {\n  text-align: center; }\n\nul.header-list {\n  display: inline-block;\n  list-style: none;\n  margin-bottom: 0; }\n\n.sticky {\n  z-index: 10000;\n  left: 0 !important; }\n\n.callout {\n  background-color: #fff; }\n\n.callout-dark {\n  padding: 1.5rem;\n  background-color: #fff;\n  border: 2px solid #bdbdbd;\n  border-top: none;\n  margin-top: 0;\n  border-bottom-right-radius: 4px;\n  border-bottom-left-radius: 4px; }\n\n.scroll {\n  max-height: 100vh;\n  overflow-y: scroll; }\n\n.callout-dark-header {\n  padding: 0.5rem;\n  background-color: #fff;\n  border: 2px solid #bdbdbd;\n  border-bottom: 1px solid #bdbdbd;\n  border-top-left-radius: 4px;\n  border-top-right-radius: 4px;\n  margin-bottom: 0; }\n\n.callout-top-header {\n  padding: 1rem;\n  background-color: #f2f2f2;\n  border: 2px solid #bdbdbd;\n  border-radius: 4px; }\n\n.callout-minimize {\n  margin-bottom: 1rem;\n  border-radius: 4px 4px;\n  padding: 0.5rem; }\n\n.icon-btn-text-small {\n  font-family: 'Pathway Gothic One', sans-serif;\n  text-transform: uppercase;\n  top: 15px;\n  right: 15px;\n  position: absolute;\n  color: #232f32;\n  font-size: 1.2rem; }\n\n.test {\n  font-family: 'Pathway Gothic One', sans-serif;\n  text-transform: uppercase;\n  color: #fff;\n  font-size: 1.2rem;\n  background: #6abedb; }\n\nlabel {\n  text-transform: capitalize;\n  color: #232f32; }\n\n.header {\n  color: #232f32;\n  margin-bottom: 0;\n  font-size: 1.2rem;\n  text-transform: uppercase;\n  font-family: 'Pathway Gothic One', sans-serif; }\n\n.sub-header {\n  color: #232f32;\n  font-size: 1.3rem;\n  font-family: 'Pathway Gothic One', sans-serif; }\n  .sub-header a {\n    text-transform: capitalize; }\n\n#watchList {\n  display: none; }\n\n.page-title {\n  color: #8e8e8e;\n  font-family: 'Lato', sans-serif;\n  font-size: 1.2rem;\n  font-weight: bold; }\n\ninput[type=search] {\n  box-shadow: none; }\n\n.top-bar-upper {\n  color: #333;\n  font-size: 0.5rem; }\n\n.app-header {\n  font-size: 1.3rem; }\n\ntable.overview-custom tbody,\ntable.overview-custom th,\ntable.overview-custom thead,\ntable.overview-custom tr {\n  text-align: center; }\n\ntable.sensor-details-table tbody {\n  text-align: left; }\n\n.statusText {\n  color: red;\n  margin-bottom: 1rem;\n  text-transform: uppercase;\n  font-size: 0.8em;\n  font-weight: bold; }\n\n.notificationHeader {\n  color: #fff;\n  text-transform: uppercase;\n  font-size: 0.5em;\n  font-weight: bold; }\n\n.sensorBlock {\n  height: 30px;\n  border-radius: 30px;\n  width: auto;\n  color: #fff;\n  text-align: center;\n  font-family: 'Pathway Gothic One', sans-serif;\n  text-transform: uppercase; }\n\n.sensorBlockSquare {\n  height: 30px;\n  width: 30px;\n  border-radius: 4px;\n  cursor: pointer;\n  text-align: center;\n  line-height: 28px;\n  color: white;\n  font-weight: bold; }\n\n.sensorBlockSquare:hover {\n  opacity: 0.5; }\n\n.sensorList {\n  display: inline-block;\n  margin-right: 1px; }\n\n.button-custom {\n  height: 30px;\n  width: auto !important;\n  margin: 0;\n  color: #fff !important;\n  text-align: center;\n  font-family: 'Pathway Gothic One', sans-serif;\n  text-transform: uppercase; }\n\n.proceed {\n  background: #6abedb; }\n\n.cancel {\n  background: #990000; }\n\n.cancel:hover {\n  background: #7a0000; }\n\n.remove {\n  border: 1px solid #990000;\n  background-color: #fff;\n  color: #990000 !important; }\n\n.pin {\n  border: 1px solid #990000;\n  background-color: #fff;\n  color: #006600 !important; }\n\n.tableOptions > li > a {\n  color: #323232;\n  font-weight: normal;\n  font-size: 1rem;\n  padding: 0.5rem 0.7rem; }\n\n.menuHeader:hover,\n.tableOptions .menuHeader {\n  background-color: #232f32 !important;\n  color: #fff;\n  padding: 0.3rem 0.7rem;\n  text-transform: uppercase; }\n\n.tableOptions > li {\n  border-bottom: 1px solid #f2f2f2; }\n\n.tableOptions > li:hover {\n  background-color: #f2f2f2; }\n\n.dropdown-pane {\n  padding: 0; }\n\n.panel-grey {\n  background-color: #e4e4e4;\n  padding-top: 1rem; }\n\n#emailPanel,\n#namePanel,\n#passwordPanel {\n  display: none;\n  padding: 1rem;\n  background: #e4e4e4; }\n\ninput[type=checkbox]:checked ~ #port {\n  display: block; }\n\n#port {\n  display: none; }\n\n.inactive-link {\n  display: none; }\n\n.button-cancel {\n  border-color: #990000 !important;\n  color: #990000 !important; }\n\n.green {\n  background-color: #006600; }\n\n.orange {\n  background-color: #cc7a00; }\n\n.red {\n  background-color: #990000; }\n\n.black {\n  background-color: #1a1b1b; }\n\n.grey {\n  background-color: #737373; }\n", ""]);
 
 	// exports
 
 
 /***/ },
-/* 827 */
+/* 828 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(828);
+	var content = __webpack_require__(829);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
-	var update = __webpack_require__(824)(content, {});
+	var update = __webpack_require__(825)(content, {});
 	if(content.locals) module.exports = content.locals;
 	// Hot Module Replacement
 	if(false) {
@@ -82027,32 +82192,32 @@
 	}
 
 /***/ },
-/* 828 */
+/* 829 */
 /***/ function(module, exports, __webpack_require__) {
 
-	exports = module.exports = __webpack_require__(823)();
+	exports = module.exports = __webpack_require__(824)();
 	// imports
 	exports.push([module.id, "@import url(http://fonts.googleapis.com/css?family=Roboto:300,400);", ""]);
 	exports.push([module.id, "@import url(https://fonts.googleapis.com/css?family=Pathway+Gothic+One);", ""]);
 	exports.push([module.id, "@import url(https://fonts.googleapis.com/css?family=Lato:400,900i);", ""]);
 
 	// module
-	exports.push([module.id, "body,\nhtml {\n  background: #f2f2f2;\n  height: 100%;\n  font-family: roboto;\n  color: #1a1b1b; }\n\n.row {\n  max-width: 100rem; }\n\n.loading-overlay {\n  background-color: rgba(10, 10, 10, 0.45) !important;\n  position: fixed;\n  top: 0;\n  bottom: 0;\n  left: 0;\n  right: 0; }\n\ndiv#offCanvas {\n  width: 350px;\n  height: 100%;\n  padding: 1.5rem;\n  background: #e8e8e8; }\n\n.is-open-right {\n  transform: translateX(-350px); }\n\n.off-canvas.position-right {\n  right: -350px; }\n\n.off-canvas-content {\n  background: #f2f2f2; }\n\na {\n  color: #6abedb; }\n\nhr {\n  border-color: #bdbdbd;\n  margin-top: 0.5rem;\n  max-width: 100%; }\n\n@media only screen and (max-width: 480px) {\n  .allSensors,\n  .buildingCharts {\n    display: none; } }\n\n.divider {\n  border-color: #bdbdbd; }\n\n.reveal {\n  top: 100px !important; }\n\ntable thead {\n  background: #d3d3d3;\n  color: #1a1b1b;\n  border: 1px solid #e4e4e4; }\n\ntable tbody {\n  color: #1a1b1b;\n  border: 1px solid #e4e4e4; }\n\n.margin-top-large {\n  margin-top: 4rem; }\n\n.margin-bottom-large {\n  margin-bottom: 4rem; }\n\n.margin-right-small {\n  margin-right: 2rem; }\n\n.margin-left-small {\n  margin-left: 2rem; }\n\n.margin-left-tiny {\n  margin-left: 0.5rem; }\n\n.margin-right-tiny {\n  margin-right: 0.5rem; }\n\n.margin-top-md {\n  margin-top: 2rem; }\n\n.margin-top-small {\n  margin-top: 1rem; }\n\n.margin-bottom-md {\n  margin-bottom: 2rem; }\n\n.margin-bottom-small {\n  margin-bottom: 1rem; }\n\n.textAlignCenter {\n  text-align: center; }\n\nul.header-list {\n  display: inline-block;\n  list-style: none;\n  margin-bottom: 0; }\n\n.sticky {\n  z-index: 10000;\n  left: 0 !important; }\n\n.callout {\n  background-color: #fff; }\n\n.callout-dark {\n  padding: 1.5rem;\n  background-color: #fff;\n  border: 2px solid #bdbdbd;\n  border-top: none;\n  margin-top: 0;\n  border-bottom-right-radius: 4px;\n  border-bottom-left-radius: 4px; }\n\n.scroll {\n  max-height: 100vh;\n  overflow-y: scroll; }\n\n.callout-dark-header {\n  padding: 0.5rem;\n  background-color: #fff;\n  border: 2px solid #bdbdbd;\n  border-bottom: 1px solid #bdbdbd;\n  border-top-left-radius: 4px;\n  border-top-right-radius: 4px;\n  margin-bottom: 0; }\n\n.callout-top-header {\n  padding: 1rem;\n  background-color: #f2f2f2;\n  border: 2px solid #bdbdbd;\n  border-radius: 4px; }\n\n.callout-minimize {\n  margin-bottom: 1rem;\n  border-radius: 4px 4px;\n  padding: 0.5rem; }\n\n.icon-btn-text-small {\n  font-family: 'Pathway Gothic One', sans-serif;\n  text-transform: uppercase;\n  top: 15px;\n  right: 15px;\n  position: absolute;\n  color: #232f32;\n  font-size: 1.2rem; }\n\n.test {\n  font-family: 'Pathway Gothic One', sans-serif;\n  text-transform: uppercase;\n  color: #fff;\n  font-size: 1.2rem;\n  background: #6abedb; }\n\nlabel {\n  text-transform: capitalize;\n  color: #232f32; }\n\n.header {\n  color: #232f32;\n  margin-bottom: 0;\n  font-size: 1.2rem;\n  text-transform: uppercase;\n  font-family: 'Pathway Gothic One', sans-serif; }\n\n.sub-header {\n  color: #232f32;\n  font-size: 1.3rem;\n  font-family: 'Pathway Gothic One', sans-serif; }\n  .sub-header a {\n    text-transform: capitalize; }\n\n#watchList {\n  display: none; }\n\n.page-title {\n  color: #8e8e8e;\n  font-family: 'Lato', sans-serif;\n  font-size: 1.2rem;\n  font-weight: bold; }\n\ninput[type=search] {\n  box-shadow: none; }\n\n.top-bar-upper {\n  color: #333;\n  font-size: 0.5rem; }\n\n.app-header {\n  font-size: 1.3rem; }\n\ntable.overview-custom tbody,\ntable.overview-custom th,\ntable.overview-custom thead,\ntable.overview-custom tr {\n  text-align: center; }\n\ntable.sensor-details-table tbody {\n  text-align: left; }\n\n.statusText {\n  color: red;\n  margin-bottom: 1rem;\n  text-transform: uppercase;\n  font-size: 0.8em;\n  font-weight: bold; }\n\n.notificationHeader {\n  color: #fff;\n  text-transform: uppercase;\n  font-size: 0.5em;\n  font-weight: bold; }\n\n.sensorBlock {\n  height: 30px;\n  border-radius: 30px;\n  width: auto;\n  color: #fff;\n  text-align: center;\n  font-family: 'Pathway Gothic One', sans-serif;\n  text-transform: uppercase; }\n\n.sensorBlockSquare {\n  height: 30px;\n  width: 30px;\n  border-radius: 4px;\n  cursor: pointer;\n  text-align: center;\n  line-height: 28px;\n  color: white;\n  font-weight: bold; }\n\n.sensorBlockSquare:hover {\n  opacity: 0.5; }\n\n.sensorList {\n  display: inline-block;\n  margin-right: 1px; }\n\n.button-custom {\n  height: 30px;\n  width: auto !important;\n  margin: 0;\n  color: #fff !important;\n  text-align: center;\n  font-family: 'Pathway Gothic One', sans-serif;\n  text-transform: uppercase; }\n\n.proceed {\n  background: #6abedb; }\n\n.cancel {\n  background: #990000; }\n\n.cancel:hover {\n  background: #7a0000; }\n\n.remove {\n  border: 1px solid #990000;\n  background-color: #fff;\n  color: #990000 !important; }\n\n.pin {\n  border: 1px solid #990000;\n  background-color: #fff;\n  color: #006600 !important; }\n\n.tableOptions > li > a {\n  color: #323232;\n  font-weight: normal;\n  font-size: 1rem;\n  padding: 0.5rem 0.7rem; }\n\n.menuHeader:hover,\n.tableOptions .menuHeader {\n  background-color: #232f32 !important;\n  color: #fff;\n  padding: 0.3rem 0.7rem;\n  text-transform: uppercase; }\n\n.tableOptions > li {\n  border-bottom: 1px solid #f2f2f2; }\n\n.tableOptions > li:hover {\n  background-color: #f2f2f2; }\n\n.dropdown-pane {\n  padding: 0; }\n\n.panel-grey {\n  background-color: #e4e4e4;\n  padding-top: 1rem; }\n\n#emailPanel,\n#namePanel,\n#passwordPanel {\n  display: none;\n  padding: 1rem;\n  background: #e4e4e4; }\n\ninput[type=checkbox]:checked ~ #port {\n  display: block; }\n\n#port {\n  display: none; }\n\n.inactive-link {\n  display: none; }\n\n.button-cancel {\n  border-color: #990000 !important;\n  color: #990000 !important; }\n\n.green {\n  background-color: #006600; }\n\n.orange {\n  background-color: #cc7a00; }\n\n.red {\n  background-color: #990000; }\n\n.black {\n  background-color: #1a1b1b; }\n\n.grey {\n  background-color: #737373; }\n\n.top-bar-left {\n  margin-top: 1.5rem; }\n\n.top-bar-right {\n  margin-top: 1.5rem;\n  text-align: right; }\n\n.top-bar {\n  padding: 0rem 2rem 0rem 2rem;\n  background: #232f32;\n  height: 4rem;\n  box-shadow: 0.5px 0.5px 5px #373837; }\n\n.top-bar ul {\n  background: #232f32;\n  /* temporary fix */\n  position: absolute;\n  top: 15px;\n  right: 15px; }\n\n.top-bar.lower {\n  padding-top: 0px; }\n\n.top-bar-title {\n  font-size: 1.5rem;\n  font-family: 'Lato', sans-serif;\n  font-weight: bold;\n  position: absolute;\n  top: 15px;\n  left: 15px;\n  color: #6abedb; }\n\n.menu > li > a {\n  color: #fafafa;\n  font-weight: bold;\n  font-size: 0.9rem;\n  text-transform: capitalize; }\n\n.is-dropdown-submenu {\n  border: 1px solid #373737; }\n", ""]);
+	exports.push([module.id, "body,\nhtml {\n  background: #f2f2f2;\n  height: 100%;\n  font-family: roboto;\n  color: #1a1b1b; }\n\nbody {\n  -webkit-animation-delay: 0.1s;\n  -webkit-animation-name: fontfix;\n  -webkit-animation-duration: 0.1s;\n  -webkit-animation-iteration-count: 1;\n  -webkit-animation-timing-function: linear; }\n\n@-webkit-keyframes fontfix {\n  from {\n    opacity: 1; }\n  to {\n    opacity: 1; } }\n\n.row {\n  max-width: 100rem; }\n\n.loading-overlay {\n  background-color: rgba(10, 10, 10, 0.45) !important;\n  position: fixed;\n  top: 0;\n  bottom: 0;\n  left: 0;\n  right: 0; }\n\ndiv#offCanvas {\n  width: 350px;\n  height: 100%;\n  padding: 1.5rem;\n  background: #e8e8e8; }\n\n.is-open-right {\n  transform: translateX(-350px); }\n\n.off-canvas.position-right {\n  right: -350px; }\n\n.off-canvas-content {\n  background: #f2f2f2; }\n\na {\n  color: #6abedb; }\n\nhr {\n  border-color: #bdbdbd;\n  margin-top: 0.5rem;\n  max-width: 100%; }\n\n@media only screen and (max-width: 480px) {\n  .allSensors,\n  .buildingCharts {\n    display: none; } }\n\n.divider {\n  border-color: #bdbdbd; }\n\n.reveal {\n  top: 100px !important; }\n\ntable thead {\n  background: #d3d3d3;\n  color: #1a1b1b;\n  border: 1px solid #e4e4e4; }\n\ntable tbody {\n  color: #1a1b1b;\n  border: 1px solid #e4e4e4; }\n\n.margin-top-large {\n  margin-top: 4rem; }\n\n.margin-bottom-large {\n  margin-bottom: 4rem; }\n\n.margin-right-small {\n  margin-right: 2rem; }\n\n.margin-left-small {\n  margin-left: 2rem; }\n\n.margin-left-tiny {\n  margin-left: 0.5rem; }\n\n.margin-right-tiny {\n  margin-right: 0.5rem; }\n\n.margin-top-md {\n  margin-top: 2rem; }\n\n.margin-top-small {\n  margin-top: 1rem; }\n\n.margin-bottom-md {\n  margin-bottom: 2rem; }\n\n.margin-bottom-small {\n  margin-bottom: 1rem; }\n\n.textAlignCenter {\n  text-align: center; }\n\nul.header-list {\n  display: inline-block;\n  list-style: none;\n  margin-bottom: 0; }\n\n.sticky {\n  z-index: 10000;\n  left: 0 !important; }\n\n.callout {\n  background-color: #fff; }\n\n.callout-dark {\n  padding: 1.5rem;\n  background-color: #fff;\n  border: 2px solid #bdbdbd;\n  border-top: none;\n  margin-top: 0;\n  border-bottom-right-radius: 4px;\n  border-bottom-left-radius: 4px; }\n\n.scroll {\n  max-height: 100vh;\n  overflow-y: scroll; }\n\n.callout-dark-header {\n  padding: 0.5rem;\n  background-color: #fff;\n  border: 2px solid #bdbdbd;\n  border-bottom: 1px solid #bdbdbd;\n  border-top-left-radius: 4px;\n  border-top-right-radius: 4px;\n  margin-bottom: 0; }\n\n.callout-top-header {\n  padding: 1rem;\n  background-color: #f2f2f2;\n  border: 2px solid #bdbdbd;\n  border-radius: 4px; }\n\n.callout-minimize {\n  margin-bottom: 1rem;\n  border-radius: 4px 4px;\n  padding: 0.5rem; }\n\n.icon-btn-text-small {\n  font-family: 'Pathway Gothic One', sans-serif;\n  text-transform: uppercase;\n  top: 15px;\n  right: 15px;\n  position: absolute;\n  color: #232f32;\n  font-size: 1.2rem; }\n\n.test {\n  font-family: 'Pathway Gothic One', sans-serif;\n  text-transform: uppercase;\n  color: #fff;\n  font-size: 1.2rem;\n  background: #6abedb; }\n\nlabel {\n  text-transform: capitalize;\n  color: #232f32; }\n\n.header {\n  color: #232f32;\n  margin-bottom: 0;\n  font-size: 1.2rem;\n  text-transform: uppercase;\n  font-family: 'Pathway Gothic One', sans-serif; }\n\n.sub-header {\n  color: #232f32;\n  font-size: 1.3rem;\n  font-family: 'Pathway Gothic One', sans-serif; }\n  .sub-header a {\n    text-transform: capitalize; }\n\n#watchList {\n  display: none; }\n\n.page-title {\n  color: #8e8e8e;\n  font-family: 'Lato', sans-serif;\n  font-size: 1.2rem;\n  font-weight: bold; }\n\ninput[type=search] {\n  box-shadow: none; }\n\n.top-bar-upper {\n  color: #333;\n  font-size: 0.5rem; }\n\n.app-header {\n  font-size: 1.3rem; }\n\ntable.overview-custom tbody,\ntable.overview-custom th,\ntable.overview-custom thead,\ntable.overview-custom tr {\n  text-align: center; }\n\ntable.sensor-details-table tbody {\n  text-align: left; }\n\n.statusText {\n  color: red;\n  margin-bottom: 1rem;\n  text-transform: uppercase;\n  font-size: 0.8em;\n  font-weight: bold; }\n\n.notificationHeader {\n  color: #fff;\n  text-transform: uppercase;\n  font-size: 0.5em;\n  font-weight: bold; }\n\n.sensorBlock {\n  height: 30px;\n  border-radius: 30px;\n  width: auto;\n  color: #fff;\n  text-align: center;\n  font-family: 'Pathway Gothic One', sans-serif;\n  text-transform: uppercase; }\n\n.sensorBlockSquare {\n  height: 30px;\n  width: 30px;\n  border-radius: 4px;\n  cursor: pointer;\n  text-align: center;\n  line-height: 28px;\n  color: white;\n  font-weight: bold; }\n\n.sensorBlockSquare:hover {\n  opacity: 0.5; }\n\n.sensorList {\n  display: inline-block;\n  margin-right: 1px; }\n\n.button-custom {\n  height: 30px;\n  width: auto !important;\n  margin: 0;\n  color: #fff !important;\n  text-align: center;\n  font-family: 'Pathway Gothic One', sans-serif;\n  text-transform: uppercase; }\n\n.proceed {\n  background: #6abedb; }\n\n.cancel {\n  background: #990000; }\n\n.cancel:hover {\n  background: #7a0000; }\n\n.remove {\n  border: 1px solid #990000;\n  background-color: #fff;\n  color: #990000 !important; }\n\n.pin {\n  border: 1px solid #990000;\n  background-color: #fff;\n  color: #006600 !important; }\n\n.tableOptions > li > a {\n  color: #323232;\n  font-weight: normal;\n  font-size: 1rem;\n  padding: 0.5rem 0.7rem; }\n\n.menuHeader:hover,\n.tableOptions .menuHeader {\n  background-color: #232f32 !important;\n  color: #fff;\n  padding: 0.3rem 0.7rem;\n  text-transform: uppercase; }\n\n.tableOptions > li {\n  border-bottom: 1px solid #f2f2f2; }\n\n.tableOptions > li:hover {\n  background-color: #f2f2f2; }\n\n.dropdown-pane {\n  padding: 0; }\n\n.panel-grey {\n  background-color: #e4e4e4;\n  padding-top: 1rem; }\n\n#emailPanel,\n#namePanel,\n#passwordPanel {\n  display: none;\n  padding: 1rem;\n  background: #e4e4e4; }\n\ninput[type=checkbox]:checked ~ #port {\n  display: block; }\n\n#port {\n  display: none; }\n\n.inactive-link {\n  display: none; }\n\n.button-cancel {\n  border-color: #990000 !important;\n  color: #990000 !important; }\n\n.green {\n  background-color: #006600; }\n\n.orange {\n  background-color: #cc7a00; }\n\n.red {\n  background-color: #990000; }\n\n.black {\n  background-color: #1a1b1b; }\n\n.grey {\n  background-color: #737373; }\n\n.top-bar-left {\n  margin-top: 1.5rem; }\n\n.top-bar-right {\n  margin-top: 1.5rem;\n  text-align: right; }\n\n.top-bar {\n  padding: 0rem 2rem 0rem 2rem;\n  background: #232f32;\n  height: 4rem;\n  box-shadow: 0.5px 0.5px 5px #373837; }\n\n.top-bar ul {\n  background: #232f32;\n  /* temporary fix */\n  position: absolute;\n  top: 15px;\n  right: 15px; }\n\n.top-bar.lower {\n  padding-top: 0px; }\n\n.top-bar-title {\n  font-size: 1.5rem;\n  font-family: 'Lato', sans-serif;\n  font-weight: bold;\n  position: absolute;\n  top: 15px;\n  left: 15px;\n  color: #6abedb; }\n\n.menu > li > a {\n  color: #fafafa;\n  font-weight: bold;\n  font-size: 0.9rem;\n  text-transform: capitalize; }\n\n.is-dropdown-submenu {\n  border: 1px solid #373737; }\n", ""]);
 
 	// exports
 
 
 /***/ },
-/* 829 */
+/* 830 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(830);
+	var content = __webpack_require__(831);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
-	var update = __webpack_require__(824)(content, {});
+	var update = __webpack_require__(825)(content, {});
 	if(content.locals) module.exports = content.locals;
 	// Hot Module Replacement
 	if(false) {
@@ -82069,10 +82234,10 @@
 	}
 
 /***/ },
-/* 830 */
+/* 831 */
 /***/ function(module, exports, __webpack_require__) {
 
-	exports = module.exports = __webpack_require__(823)();
+	exports = module.exports = __webpack_require__(824)();
 	// imports
 
 
@@ -82083,16 +82248,16 @@
 
 
 /***/ },
-/* 831 */
+/* 832 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(832);
+	var content = __webpack_require__(833);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
-	var update = __webpack_require__(824)(content, {});
+	var update = __webpack_require__(825)(content, {});
 	if(content.locals) module.exports = content.locals;
 	// Hot Module Replacement
 	if(false) {
@@ -82109,17 +82274,17 @@
 	}
 
 /***/ },
-/* 832 */
+/* 833 */
 /***/ function(module, exports, __webpack_require__) {
 
-	exports = module.exports = __webpack_require__(823)();
+	exports = module.exports = __webpack_require__(824)();
 	// imports
 	exports.push([module.id, "@import url(http://fonts.googleapis.com/css?family=Roboto:300,400);", ""]);
 	exports.push([module.id, "@import url(https://fonts.googleapis.com/css?family=Pathway+Gothic+One);", ""]);
 	exports.push([module.id, "@import url(https://fonts.googleapis.com/css?family=Lato:400,900i);", ""]);
 
 	// module
-	exports.push([module.id, "body,\nhtml {\n  background: #f2f2f2;\n  height: 100%;\n  font-family: roboto;\n  color: #1a1b1b; }\n\n.row {\n  max-width: 100rem; }\n\n.loading-overlay {\n  background-color: rgba(10, 10, 10, 0.45) !important;\n  position: fixed;\n  top: 0;\n  bottom: 0;\n  left: 0;\n  right: 0; }\n\ndiv#offCanvas {\n  width: 350px;\n  height: 100%;\n  padding: 1.5rem;\n  background: #e8e8e8; }\n\n.is-open-right {\n  transform: translateX(-350px); }\n\n.off-canvas.position-right {\n  right: -350px; }\n\n.off-canvas-content {\n  background: #f2f2f2; }\n\na {\n  color: #6abedb; }\n\nhr {\n  border-color: #bdbdbd;\n  margin-top: 0.5rem;\n  max-width: 100%; }\n\n@media only screen and (max-width: 480px) {\n  .allSensors,\n  .buildingCharts {\n    display: none; } }\n\n.divider {\n  border-color: #bdbdbd; }\n\n.reveal {\n  top: 100px !important; }\n\ntable thead {\n  background: #d3d3d3;\n  color: #1a1b1b;\n  border: 1px solid #e4e4e4; }\n\ntable tbody {\n  color: #1a1b1b;\n  border: 1px solid #e4e4e4; }\n\n.margin-top-large {\n  margin-top: 4rem; }\n\n.margin-bottom-large {\n  margin-bottom: 4rem; }\n\n.margin-right-small {\n  margin-right: 2rem; }\n\n.margin-left-small {\n  margin-left: 2rem; }\n\n.margin-left-tiny {\n  margin-left: 0.5rem; }\n\n.margin-right-tiny {\n  margin-right: 0.5rem; }\n\n.margin-top-md {\n  margin-top: 2rem; }\n\n.margin-top-small {\n  margin-top: 1rem; }\n\n.margin-bottom-md {\n  margin-bottom: 2rem; }\n\n.margin-bottom-small {\n  margin-bottom: 1rem; }\n\n.textAlignCenter {\n  text-align: center; }\n\nul.header-list {\n  display: inline-block;\n  list-style: none;\n  margin-bottom: 0; }\n\n.sticky {\n  z-index: 10000;\n  left: 0 !important; }\n\n.callout {\n  background-color: #fff; }\n\n.callout-dark {\n  padding: 1.5rem;\n  background-color: #fff;\n  border: 2px solid #bdbdbd;\n  border-top: none;\n  margin-top: 0;\n  border-bottom-right-radius: 4px;\n  border-bottom-left-radius: 4px; }\n\n.scroll {\n  max-height: 100vh;\n  overflow-y: scroll; }\n\n.callout-dark-header {\n  padding: 0.5rem;\n  background-color: #fff;\n  border: 2px solid #bdbdbd;\n  border-bottom: 1px solid #bdbdbd;\n  border-top-left-radius: 4px;\n  border-top-right-radius: 4px;\n  margin-bottom: 0; }\n\n.callout-top-header {\n  padding: 1rem;\n  background-color: #f2f2f2;\n  border: 2px solid #bdbdbd;\n  border-radius: 4px; }\n\n.callout-minimize {\n  margin-bottom: 1rem;\n  border-radius: 4px 4px;\n  padding: 0.5rem; }\n\n.icon-btn-text-small {\n  font-family: 'Pathway Gothic One', sans-serif;\n  text-transform: uppercase;\n  top: 15px;\n  right: 15px;\n  position: absolute;\n  color: #232f32;\n  font-size: 1.2rem; }\n\n.test {\n  font-family: 'Pathway Gothic One', sans-serif;\n  text-transform: uppercase;\n  color: #fff;\n  font-size: 1.2rem;\n  background: #6abedb; }\n\nlabel {\n  text-transform: capitalize;\n  color: #232f32; }\n\n.header {\n  color: #232f32;\n  margin-bottom: 0;\n  font-size: 1.2rem;\n  text-transform: uppercase;\n  font-family: 'Pathway Gothic One', sans-serif; }\n\n.sub-header {\n  color: #232f32;\n  font-size: 1.3rem;\n  font-family: 'Pathway Gothic One', sans-serif; }\n  .sub-header a {\n    text-transform: capitalize; }\n\n#watchList {\n  display: none; }\n\n.page-title {\n  color: #8e8e8e;\n  font-family: 'Lato', sans-serif;\n  font-size: 1.2rem;\n  font-weight: bold; }\n\ninput[type=search] {\n  box-shadow: none; }\n\n.top-bar-upper {\n  color: #333;\n  font-size: 0.5rem; }\n\n.app-header {\n  font-size: 1.3rem; }\n\ntable.overview-custom tbody,\ntable.overview-custom th,\ntable.overview-custom thead,\ntable.overview-custom tr {\n  text-align: center; }\n\ntable.sensor-details-table tbody {\n  text-align: left; }\n\n.statusText {\n  color: red;\n  margin-bottom: 1rem;\n  text-transform: uppercase;\n  font-size: 0.8em;\n  font-weight: bold; }\n\n.notificationHeader {\n  color: #fff;\n  text-transform: uppercase;\n  font-size: 0.5em;\n  font-weight: bold; }\n\n.sensorBlock {\n  height: 30px;\n  border-radius: 30px;\n  width: auto;\n  color: #fff;\n  text-align: center;\n  font-family: 'Pathway Gothic One', sans-serif;\n  text-transform: uppercase; }\n\n.sensorBlockSquare {\n  height: 30px;\n  width: 30px;\n  border-radius: 4px;\n  cursor: pointer;\n  text-align: center;\n  line-height: 28px;\n  color: white;\n  font-weight: bold; }\n\n.sensorBlockSquare:hover {\n  opacity: 0.5; }\n\n.sensorList {\n  display: inline-block;\n  margin-right: 1px; }\n\n.button-custom {\n  height: 30px;\n  width: auto !important;\n  margin: 0;\n  color: #fff !important;\n  text-align: center;\n  font-family: 'Pathway Gothic One', sans-serif;\n  text-transform: uppercase; }\n\n.proceed {\n  background: #6abedb; }\n\n.cancel {\n  background: #990000; }\n\n.cancel:hover {\n  background: #7a0000; }\n\n.remove {\n  border: 1px solid #990000;\n  background-color: #fff;\n  color: #990000 !important; }\n\n.pin {\n  border: 1px solid #990000;\n  background-color: #fff;\n  color: #006600 !important; }\n\n.tableOptions > li > a {\n  color: #323232;\n  font-weight: normal;\n  font-size: 1rem;\n  padding: 0.5rem 0.7rem; }\n\n.menuHeader:hover,\n.tableOptions .menuHeader {\n  background-color: #232f32 !important;\n  color: #fff;\n  padding: 0.3rem 0.7rem;\n  text-transform: uppercase; }\n\n.tableOptions > li {\n  border-bottom: 1px solid #f2f2f2; }\n\n.tableOptions > li:hover {\n  background-color: #f2f2f2; }\n\n.dropdown-pane {\n  padding: 0; }\n\n.panel-grey {\n  background-color: #e4e4e4;\n  padding-top: 1rem; }\n\n#emailPanel,\n#namePanel,\n#passwordPanel {\n  display: none;\n  padding: 1rem;\n  background: #e4e4e4; }\n\ninput[type=checkbox]:checked ~ #port {\n  display: block; }\n\n#port {\n  display: none; }\n\n.inactive-link {\n  display: none; }\n\n.button-cancel {\n  border-color: #990000 !important;\n  color: #990000 !important; }\n\n.green {\n  background-color: #006600; }\n\n.orange {\n  background-color: #cc7a00; }\n\n.red {\n  background-color: #990000; }\n\n.black {\n  background-color: #1a1b1b; }\n\n.grey {\n  background-color: #737373; }\n\n.griddle-container {\n  border: none !important; }\n\n.griddle .top-section {\n  clear: both;\n  display: table;\n  width: 100%; }\n\n.griddle .griddle-filter {\n  float: left;\n  width: 50%;\n  text-align: left;\n  color: #222;\n  min-height: 1px; }\n\n.griddle-body {\n  font-size: 1em;\n  overflow-x: scroll; }\n\n.griddle .griddle-settings-toggle {\n  float: left;\n  width: 50%;\n  text-align: right;\n  color: #f8f8f8; }\n\n.griddle .griddle-settings {\n  background-color: #FFF;\n  border: 1px solid #DDD;\n  color: #222;\n  padding: 10px;\n  margin-bottom: 10px; }\n\n.griddle .griddle-settings .settings {\n  color: #f8f8f8; }\n\n.griddle .griddle-settings .griddle-columns {\n  clear: both;\n  display: table;\n  width: 100%;\n  border-bottom: 1px solid #EDEDED;\n  margin-bottom: 10px; }\n\n.griddle .griddle-settings .griddle-column-selection {\n  float: left;\n  width: 20%; }\n\n.griddle table {\n  width: 100%;\n  table-layout: auto !important; }\n\n.griddle th {\n  background-color: #EDEDEF;\n  border: 0px;\n  border-bottom: 1px solid #DDD;\n  color: #222;\n  padding: 5px; }\n\n.griddle td {\n  padding: 5px;\n  background-color: #FFF;\n  border-top-color: #DDD;\n  color: #222; }\n\n.griddle .footer-container {\n  padding: 0px;\n  background-color: #EDEDED;\n  border: 0px;\n  color: #222; }\n\n.griddle button {\n  font-weight: bold;\n  color: #232f32; }\n\n.griddle .griddle-previous, .griddle .griddle-page, .griddle .griddle-next {\n  float: left;\n  width: 33%;\n  min-height: 1px;\n  margin-top: 5px; }\n\n.griddle .griddle-page {\n  text-align: center; }\n\n.griddle .griddle-next {\n  text-align: right; }\n", ""]);
+	exports.push([module.id, "body,\nhtml {\n  background: #f2f2f2;\n  height: 100%;\n  font-family: roboto;\n  color: #1a1b1b; }\n\nbody {\n  -webkit-animation-delay: 0.1s;\n  -webkit-animation-name: fontfix;\n  -webkit-animation-duration: 0.1s;\n  -webkit-animation-iteration-count: 1;\n  -webkit-animation-timing-function: linear; }\n\n@-webkit-keyframes fontfix {\n  from {\n    opacity: 1; }\n  to {\n    opacity: 1; } }\n\n.row {\n  max-width: 100rem; }\n\n.loading-overlay {\n  background-color: rgba(10, 10, 10, 0.45) !important;\n  position: fixed;\n  top: 0;\n  bottom: 0;\n  left: 0;\n  right: 0; }\n\ndiv#offCanvas {\n  width: 350px;\n  height: 100%;\n  padding: 1.5rem;\n  background: #e8e8e8; }\n\n.is-open-right {\n  transform: translateX(-350px); }\n\n.off-canvas.position-right {\n  right: -350px; }\n\n.off-canvas-content {\n  background: #f2f2f2; }\n\na {\n  color: #6abedb; }\n\nhr {\n  border-color: #bdbdbd;\n  margin-top: 0.5rem;\n  max-width: 100%; }\n\n@media only screen and (max-width: 480px) {\n  .allSensors,\n  .buildingCharts {\n    display: none; } }\n\n.divider {\n  border-color: #bdbdbd; }\n\n.reveal {\n  top: 100px !important; }\n\ntable thead {\n  background: #d3d3d3;\n  color: #1a1b1b;\n  border: 1px solid #e4e4e4; }\n\ntable tbody {\n  color: #1a1b1b;\n  border: 1px solid #e4e4e4; }\n\n.margin-top-large {\n  margin-top: 4rem; }\n\n.margin-bottom-large {\n  margin-bottom: 4rem; }\n\n.margin-right-small {\n  margin-right: 2rem; }\n\n.margin-left-small {\n  margin-left: 2rem; }\n\n.margin-left-tiny {\n  margin-left: 0.5rem; }\n\n.margin-right-tiny {\n  margin-right: 0.5rem; }\n\n.margin-top-md {\n  margin-top: 2rem; }\n\n.margin-top-small {\n  margin-top: 1rem; }\n\n.margin-bottom-md {\n  margin-bottom: 2rem; }\n\n.margin-bottom-small {\n  margin-bottom: 1rem; }\n\n.textAlignCenter {\n  text-align: center; }\n\nul.header-list {\n  display: inline-block;\n  list-style: none;\n  margin-bottom: 0; }\n\n.sticky {\n  z-index: 10000;\n  left: 0 !important; }\n\n.callout {\n  background-color: #fff; }\n\n.callout-dark {\n  padding: 1.5rem;\n  background-color: #fff;\n  border: 2px solid #bdbdbd;\n  border-top: none;\n  margin-top: 0;\n  border-bottom-right-radius: 4px;\n  border-bottom-left-radius: 4px; }\n\n.scroll {\n  max-height: 100vh;\n  overflow-y: scroll; }\n\n.callout-dark-header {\n  padding: 0.5rem;\n  background-color: #fff;\n  border: 2px solid #bdbdbd;\n  border-bottom: 1px solid #bdbdbd;\n  border-top-left-radius: 4px;\n  border-top-right-radius: 4px;\n  margin-bottom: 0; }\n\n.callout-top-header {\n  padding: 1rem;\n  background-color: #f2f2f2;\n  border: 2px solid #bdbdbd;\n  border-radius: 4px; }\n\n.callout-minimize {\n  margin-bottom: 1rem;\n  border-radius: 4px 4px;\n  padding: 0.5rem; }\n\n.icon-btn-text-small {\n  font-family: 'Pathway Gothic One', sans-serif;\n  text-transform: uppercase;\n  top: 15px;\n  right: 15px;\n  position: absolute;\n  color: #232f32;\n  font-size: 1.2rem; }\n\n.test {\n  font-family: 'Pathway Gothic One', sans-serif;\n  text-transform: uppercase;\n  color: #fff;\n  font-size: 1.2rem;\n  background: #6abedb; }\n\nlabel {\n  text-transform: capitalize;\n  color: #232f32; }\n\n.header {\n  color: #232f32;\n  margin-bottom: 0;\n  font-size: 1.2rem;\n  text-transform: uppercase;\n  font-family: 'Pathway Gothic One', sans-serif; }\n\n.sub-header {\n  color: #232f32;\n  font-size: 1.3rem;\n  font-family: 'Pathway Gothic One', sans-serif; }\n  .sub-header a {\n    text-transform: capitalize; }\n\n#watchList {\n  display: none; }\n\n.page-title {\n  color: #8e8e8e;\n  font-family: 'Lato', sans-serif;\n  font-size: 1.2rem;\n  font-weight: bold; }\n\ninput[type=search] {\n  box-shadow: none; }\n\n.top-bar-upper {\n  color: #333;\n  font-size: 0.5rem; }\n\n.app-header {\n  font-size: 1.3rem; }\n\ntable.overview-custom tbody,\ntable.overview-custom th,\ntable.overview-custom thead,\ntable.overview-custom tr {\n  text-align: center; }\n\ntable.sensor-details-table tbody {\n  text-align: left; }\n\n.statusText {\n  color: red;\n  margin-bottom: 1rem;\n  text-transform: uppercase;\n  font-size: 0.8em;\n  font-weight: bold; }\n\n.notificationHeader {\n  color: #fff;\n  text-transform: uppercase;\n  font-size: 0.5em;\n  font-weight: bold; }\n\n.sensorBlock {\n  height: 30px;\n  border-radius: 30px;\n  width: auto;\n  color: #fff;\n  text-align: center;\n  font-family: 'Pathway Gothic One', sans-serif;\n  text-transform: uppercase; }\n\n.sensorBlockSquare {\n  height: 30px;\n  width: 30px;\n  border-radius: 4px;\n  cursor: pointer;\n  text-align: center;\n  line-height: 28px;\n  color: white;\n  font-weight: bold; }\n\n.sensorBlockSquare:hover {\n  opacity: 0.5; }\n\n.sensorList {\n  display: inline-block;\n  margin-right: 1px; }\n\n.button-custom {\n  height: 30px;\n  width: auto !important;\n  margin: 0;\n  color: #fff !important;\n  text-align: center;\n  font-family: 'Pathway Gothic One', sans-serif;\n  text-transform: uppercase; }\n\n.proceed {\n  background: #6abedb; }\n\n.cancel {\n  background: #990000; }\n\n.cancel:hover {\n  background: #7a0000; }\n\n.remove {\n  border: 1px solid #990000;\n  background-color: #fff;\n  color: #990000 !important; }\n\n.pin {\n  border: 1px solid #990000;\n  background-color: #fff;\n  color: #006600 !important; }\n\n.tableOptions > li > a {\n  color: #323232;\n  font-weight: normal;\n  font-size: 1rem;\n  padding: 0.5rem 0.7rem; }\n\n.menuHeader:hover,\n.tableOptions .menuHeader {\n  background-color: #232f32 !important;\n  color: #fff;\n  padding: 0.3rem 0.7rem;\n  text-transform: uppercase; }\n\n.tableOptions > li {\n  border-bottom: 1px solid #f2f2f2; }\n\n.tableOptions > li:hover {\n  background-color: #f2f2f2; }\n\n.dropdown-pane {\n  padding: 0; }\n\n.panel-grey {\n  background-color: #e4e4e4;\n  padding-top: 1rem; }\n\n#emailPanel,\n#namePanel,\n#passwordPanel {\n  display: none;\n  padding: 1rem;\n  background: #e4e4e4; }\n\ninput[type=checkbox]:checked ~ #port {\n  display: block; }\n\n#port {\n  display: none; }\n\n.inactive-link {\n  display: none; }\n\n.button-cancel {\n  border-color: #990000 !important;\n  color: #990000 !important; }\n\n.green {\n  background-color: #006600; }\n\n.orange {\n  background-color: #cc7a00; }\n\n.red {\n  background-color: #990000; }\n\n.black {\n  background-color: #1a1b1b; }\n\n.grey {\n  background-color: #737373; }\n\n.griddle-container {\n  border: none !important; }\n\n.griddle .top-section {\n  clear: both;\n  display: table;\n  width: 100%; }\n\n.griddle .griddle-filter {\n  float: left;\n  width: 50%;\n  text-align: left;\n  color: #222;\n  min-height: 1px; }\n\n.griddle-body {\n  font-size: 1em;\n  overflow-x: scroll; }\n\n.griddle .griddle-settings-toggle {\n  float: left;\n  width: 50%;\n  text-align: right;\n  color: #f8f8f8; }\n\n.griddle .griddle-settings {\n  background-color: #FFF;\n  border: 1px solid #DDD;\n  color: #222;\n  padding: 10px;\n  margin-bottom: 10px; }\n\n.griddle .griddle-settings .settings {\n  color: #f8f8f8; }\n\n.griddle .griddle-settings .griddle-columns {\n  clear: both;\n  display: table;\n  width: 100%;\n  border-bottom: 1px solid #EDEDED;\n  margin-bottom: 10px; }\n\n.griddle .griddle-settings .griddle-column-selection {\n  float: left;\n  width: 20%; }\n\n.griddle table {\n  width: 100%;\n  table-layout: auto !important; }\n\n.griddle th {\n  background-color: #EDEDEF;\n  border: 0px;\n  border-bottom: 1px solid #DDD;\n  color: #222;\n  padding: 5px; }\n\n.griddle td {\n  padding: 5px;\n  background-color: #FFF;\n  border-top-color: #DDD;\n  color: #222; }\n\n.griddle .footer-container {\n  padding: 0px;\n  background-color: #EDEDED;\n  border: 0px;\n  color: #222; }\n\n.griddle button {\n  font-weight: bold;\n  color: #232f32; }\n\n.griddle .griddle-previous, .griddle .griddle-page, .griddle .griddle-next {\n  float: left;\n  width: 33%;\n  min-height: 1px;\n  margin-top: 5px; }\n\n.griddle .griddle-page {\n  text-align: center; }\n\n.griddle .griddle-next {\n  text-align: right; }\n", ""]);
 
 	// exports
 
