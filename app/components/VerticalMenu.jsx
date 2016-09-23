@@ -1,4 +1,5 @@
 var React = require('react');
+const HOST = 'http://opsdev.sence.io:4201/';
 
 class VerticalMenu extends React.Component {
 
@@ -103,7 +104,7 @@ class VerticalMenu extends React.Component {
                    <li><a onClick={() => this.handleClick(this.props.sensorData, 'OPEN_CANVAS_ACTION')} data-toggle="offCanvas">More details &raquo;</a></li>
                    <li><a onClick={() => this.handleClick(this.props.sensorData, 'EDIT_ACTION')}>Edit sensor</a></li>
                    <li><a onClick={() => this.handleClick(this.props.sensorData, 'DELETE_ACTION')}>Delete sensor</a></li>
-                   <li><a onClick={() => this.handleClick(this.props.sensorData, 'REBOOT_ACTION')}>Reboot sensor</a></li>
+                   <li><a onClick={() => this.handleClick(this.props.sensorData, 'PIN_ACTION')}>Pin sensor</a></li>
                    <li><a onClick={() => this.handleClick(this.props.sensorData, 'LAUNCH_TERMINAL_ACTION')}>Launch terminal</a></li>
                  </ul>
                </div>

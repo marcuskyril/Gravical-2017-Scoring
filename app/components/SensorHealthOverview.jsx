@@ -240,7 +240,7 @@ render() {
 
             <BuildingListV2 data={this.props.data} filterText={this.state.filterText}/>
 
-            <div className="pgae-title">Servers</div>
+            <div className="page-title">Servers</div>
             <hr className="divider"/>
 
             <ServerList data={this.props.serverData}/>

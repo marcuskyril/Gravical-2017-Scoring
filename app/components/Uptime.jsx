@@ -98,18 +98,18 @@ class Uptime extends React.Component {
       isLoading: true
     });
 
-    this.retrieveData(3);
-
+    this.retrieveData(3, 30);
   }
 
-  retrieveData(numDays) {
+  retrieveData(numDays, interval) {
 
     var that = this;
 
     console.log("num days", numDays);
 
+    $('.off-canvas-content').addClass('loading-overlay');
 
-    retrieveUptimeDataAPI.retrieveUptimeData(this.state.buildingName, numDays).then(function(response) {
+    retrieveUptimeDataAPI.retrieveUptimeData(this.state.buildingName, numDays, interval).then(function(response) {
         // console.log("response", response);
         that.setState({
           data: response,
@@ -118,11 +118,6 @@ class Uptime extends React.Component {
 
         $('.off-canvas-content').removeClass('loading-overlay');
     });
-  }
-
-  handleChange(ev) {
-    alert("hello");
-    retrieveData(this.refs.numDays.value).bind(this);
   }
 
   minimizeAll() {
@@ -160,8 +155,8 @@ class Uptime extends React.Component {
                 }}/>
               Show/Hide all
             </button>
-
-              <select ref="numDays" onChange={that.handleChange}>
+            <form>
+              <select ref="numDays">
                 <option value="0">Select number of days</option>
                 <option value="1">1</option>
                 <option value="2">2</option>
@@ -172,6 +167,16 @@ class Uptime extends React.Component {
                 <option value="7">7</option>
               </select>
 
+              <select ref="interval">
+                <option value="0">Select interval</option>
+                <option value="30">30 mins</option>
+                <option value="25">25 mins</option>
+                <option value="20">20 mins</option>
+                <option value="15">15 mins</option>
+                <option value="10">10 mins</option>
+              </select>
+              <a className="button proceed expanded" onClick={this.retrieveData}>Go</a>
+            </form>
             <hr/>
           </div>
         );

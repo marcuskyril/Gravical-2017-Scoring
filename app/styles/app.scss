@@ -240,7 +240,7 @@ label {
 }
 
 .page-title {
-    color: $night-ocean;
+    color: #8e8e8e;
     font-family: 'Lato', sans-serif;
     font-size: 1.2rem;
     font-weight: bold;
@@ -345,6 +345,11 @@ table.sensor-details-table {
     border: 1px solid $red;
     background-color: #fff;
     color: $red !important;
+}
+.pin {
+    border: 1px solid $red;
+    background-color: #fff;
+    color: $green !important;
 }
 
 .tableOptions > li > a {
