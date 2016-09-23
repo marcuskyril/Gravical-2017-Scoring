@@ -184,9 +184,6 @@ class VerticalMenu extends React.Component {
 
     }
     render() {
-
-      console.log("mac", this.props.macAdd);
-
        return (
 
            <li className="sensorList">
@@ -195,8 +192,8 @@ class VerticalMenu extends React.Component {
                  <ul className="vertical menu tableOptions">
                    <li className="menuHeader">{this.props.macAdd}</li>
                    <li><a onClick={() => this.handleClick(this.props.serverData, 'OPEN_CANVAS_ACTION')} data-toggle="offCanvas">More details &raquo;</a></li>
-                   <li><a onClick={() => this.handleClick(this.props.serverData, 'EDIT_ACTION')}>Edit sensor</a></li>
-                   <li><a onClick={() => this.handleClick(this.props.serverData, 'DELETE_ACTION')}>Delete sensor</a></li>
+                   <li><a onClick={() => this.handleClick(this.props.serverData, 'EDIT_ACTION')}>Edit server</a></li>
+                   <li><a onClick={() => this.handleClick(this.props.serverData, 'DELETE_ACTION')}>Delete server</a></li>
                  </ul>
                </div>
            </li>

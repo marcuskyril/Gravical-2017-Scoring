@@ -30,7 +30,8 @@ class Dashboard extends React.Component {
             sensorHealthOverviewV2: [],
             currentTime: '-',
             userDisplayName: '',
-            notificationData: {}
+            notificationData: {},
+            filterParam: props.params.buildingName
         }
     }
 
@@ -136,7 +137,7 @@ class Dashboard extends React.Component {
             <div className="dashboard margin-top-md">
                 <div className="row">
                     <div className="columns small-12 medium-12 large-3 margin-bottom-small">
-                        <BuildingOverview data={this.state.overall}/>
+                        <BuildingOverview filter={this.state.filterParam} data={this.state.overall}/>
                     </div>
                     <div className="columns small-12 medium-12 large-9">
                         <div>
@@ -168,7 +169,7 @@ class Dashboard extends React.Component {
                                 <DeleteSensor/>
                             </div>
                             <div className="callout callout-dark">
-                                <SensorHealthOverview data={this.state.sensorHealthOverviewV2} serverData={this.state.serverOverview}/>
+                                <SensorHealthOverview filter={this.state.filterParam} data={this.state.sensorHealthOverviewV2} serverData={this.state.serverOverview}/>
                             </div>
                         </div>
 
@@ -188,7 +189,7 @@ class Dashboard extends React.Component {
                             <div className="page-title">All Sensors</div>
                         </div>
                         <div className="callout callout-dark" id="bfg">
-                            <Tableaux data={this.state.bfg}/>
+                            <Tableaux filter={this.state.filterParam} data={this.state.bfg}/>
                         </div>
                     </div>
                 </div>

@@ -24,6 +24,7 @@
 // }
 .griddle-body{
   font-size: 1em;
+  overflow-x: scroll;
 }
 
 .griddle .griddle-settings-toggle{
@@ -58,7 +59,8 @@
   width:20%;
 }
 .griddle table{
-  width:100%;table-layout:fixed;
+  width:100%;
+  table-layout: auto !important;
 }
 
 .griddle th{

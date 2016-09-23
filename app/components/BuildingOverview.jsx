@@ -40,7 +40,7 @@ class Building extends React.Component {
                        <Bar dataKey="down" stackId="a" fill="#1a1b1b" isAnimationActive={false}/>
                        <Bar dataKey="noData" stackId="a" fill="#737373" isAnimationActive={false}/>
                       </BarChart>
-                      
+
                      </ResponsiveContainer>
                    </div>
 
@@ -125,10 +125,18 @@ class BuildingList extends React.Component {
 class BuildingOverview extends React.Component {
     constructor(props) {
         super(props);
-
+        console.log("test", this.props.filter);
         this.state = {
-            filterText: ''
+            filterText: this.props.filter
         };
+    }
+
+    componentDidMount() {
+        if(this.state.filterText === undefined) {
+          this.setState({
+            filterText: ''
+          });
+        }
     }
 
     handleUserInput(filterText) {

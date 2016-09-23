@@ -137,9 +137,6 @@ class LevelList extends React.Component {
         var port;
 
         var tableRows = [];
-
-        // console.log("whhhhhy", this.props.areaArray);
-
         var areaArray = this.props.areaArray;
         var levelArray = this.props.levelArray;
         var sensors = this.props.sensors;
@@ -158,12 +155,13 @@ class LevelList extends React.Component {
               var building = sensorsOnThisFloor[j]['building'];
               var level = sensorsOnThisFloor[j]['level'];
               var port = sensorsOnThisFloor[j]['port'];
+              var reboot = sensorsOnThisFloor[j]['reboot_available'];
               //console.log("macAdd", macAdd);
 
               // console.log("areaArray", areaArray);
 
               var thePos = areaArray.indexOf(sensorId);
-              superTemp[thePos] = [macAdd, status, sensorId, region, building, level, port];
+              superTemp[thePos] = [macAdd, status, sensorId, region, building, level, port, reboot];
               //console.log("thePos" + thePos + ", sensor: " + superTemp[thePos]);
             }
 
@@ -176,8 +174,9 @@ class LevelList extends React.Component {
               var building = sensorData[4];
               level = sensorData[5];
               port = sensorData[6];
+              var reboot = sensorData[7];
 
-              temp.push(<VerticalMenu key={macAdd} macAdd={macAdd} sensorData={sensorData} class={colorMap[status]} id={id}/>);
+              temp.push(<VerticalMenu key={macAdd} macAdd={macAdd} sensorData={sensorData} class={colorMap[status]} id={id} reboot={reboot}/>);
 
           });
 
@@ -208,8 +207,16 @@ class SensorHealthOverview extends React.Component {
 constructor(props) {
     super(props);
     this.state = {
-        filterText: ''
+        filterText: this.props.filter
     };
+}
+
+componentDidMount() {
+  if(this.state.filterText === undefined) {
+    this.setState({
+      filterText: ''
+    });
+  }
 }
 
 handleUserInput(filterText) {
@@ -228,12 +235,12 @@ render() {
         <div>
             <SearchBar filterText={this.state.filterText} onUserInput={this.handleUserInput.bind(this)}/>
 
-            <div className="header">Sensors</div>
+            <div className="page-title">Sensors</div>
             <hr className="divider"/>
 
             <BuildingListV2 data={this.props.data} filterText={this.state.filterText}/>
 
-            <div className="header">Servers</div>
+            <div className="pgae-title">Servers</div>
             <hr className="divider"/>
 
             <ServerList data={this.props.serverData}/>

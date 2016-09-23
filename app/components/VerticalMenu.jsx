@@ -45,6 +45,20 @@ class VerticalMenu extends React.Component {
           case 'NO_ACTION':
               var dropdowns = document.getElementsByClassName("dropdown-pane");
 
+              // console.log("reboot", this.props.reboot);
+              //
+              // var id = `#reboot${this.props.macAdd}`
+              //
+              // var that = this;
+              //
+              // if(this.props.reboot) {
+              //   alert("hello" + that.props.reboot +id);
+              //   $('id').removeClass('inactive-link');
+              // } else {
+              //   alert("hello" + that.props.reboot +id);
+              //   $('id').addClass('inactive-link');
+              // }
+
               var i;
 
               for (i = 0; i < dropdowns.length; i++) {

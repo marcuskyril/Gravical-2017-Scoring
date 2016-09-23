@@ -94,16 +94,22 @@ class Uptime extends React.Component {
 
   componentDidMount() {
 
-    var that = this;
-    //console.log("buildingName", this.state.buildingName);
-    // call API here
-
     this.setState({
       isLoading: true
     });
 
+    this.retrieveData(3);
 
-    retrieveUptimeDataAPI.retrieveUptimeData(this.state.buildingName, 3).then(function(response) {
+  }
+
+  retrieveData(numDays) {
+
+    var that = this;
+
+    console.log("num days", numDays);
+
+
+    retrieveUptimeDataAPI.retrieveUptimeData(this.state.buildingName, numDays).then(function(response) {
         // console.log("response", response);
         that.setState({
           data: response,
@@ -112,7 +118,11 @@ class Uptime extends React.Component {
 
         $('.off-canvas-content').removeClass('loading-overlay');
     });
+  }
 
+  handleChange(ev) {
+    alert("hello");
+    retrieveData(this.refs.numDays.value).bind(this);
   }
 
   minimizeAll() {
@@ -150,6 +160,18 @@ class Uptime extends React.Component {
                 }}/>
               Show/Hide all
             </button>
+
+              <select ref="numDays" onChange={that.handleChange}>
+                <option value="0">Select number of days</option>
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
+                <option value="6">6</option>
+                <option value="7">7</option>
+              </select>
+
             <hr/>
           </div>
         );

@@ -395,6 +395,10 @@ input[type=checkbox]:checked ~ #port {
     display: none;
 }
 
+.inactive-link {
+  display: none;
+}
+
 .button-cancel {
     border-color: $red !important;
     color: $red !important;
