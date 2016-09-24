@@ -11,29 +11,66 @@ class Building extends React.Component {
 
     render() {
 
+        var totalSensors = this.props.ok + this.props.warning + this.props.danger + this.props.down + this.props.noData;
+
         var data = [{
           name: this.props.buildingName,
-          ok: this.props.ok,
-          warning: this.props.warning,
-          danger: this.props.danger,
-          down: this.props.down,
-          noData: this.props.noData
+          ok: (this.props.ok/totalSensors),
+          warning: (this.props.warning/totalSensors),
+          danger: (this.props.danger/totalSensors),
+          down: (this.props.down/totalSensors),
+          noData: (this.props.noData/totalSensors)
         }];
-
         return (
-            <div className="column row">
-                <div className="header">{this.props.buildingName}</div>
-                  <div className="buildingCharts" style={{height: '70px', width: '100%'}}>
+            <div className="column row" style={{'margin-bottom':'30px'}}>
+                <div className="header">
+                    <div>
+                        {this.props.buildingName}
+                        <div style={{'float':'right'}}>
+                            <span style={{'color':'#006600'}}>{this.props.ok}</span>
+                            &nbsp;|&nbsp;
+                            <span style={{'color':'#cc7a00'}}>{this.props.warning}</span>
+                            &nbsp;|&nbsp;
+                            <span style={{'color':'#990000'}}>{this.props.danger}</span>
+                            &nbsp;|&nbsp;
+                            <span style={{'color':'#1a1b1b'}}>{this.props.down}</span>
+                            &nbsp;|&nbsp;
+                            <span style={{'color':'#737373'}}>{this.props.noData}</span>
+                        </div>
+                    </div>
+                </div>
+                  <div className="buildingCharts" style={{height: '50px', width: '100%'}}>
                     <ResponsiveContainer>
 
-                      <BarChart width={400} height={30}
+                      <BarChart width={400} height={10}
                                 data={data}
                                 layout='vertical'
                                 margin={{top: 20, right: 30, left: 20, bottom: 5}} >
                        <XAxis hide={true} type="number"/>
                        <YAxis hide={true} dataKey="name" type="category"/>
                        <CartesianGrid strokeDasharray="3 3"/>
-                       <Tooltip/>
+                       <Tooltip coordinate={{ x: 1000, y: 100 }} content={
+                           <div style={{'background-color':'white', 'padding':'10px', 'padding-bottom':'5px'}}>
+                               <div>{this.props.buildingName}</div>
+                               <table style={{'min-width':'100px'}}>
+                                   <tr style={{'color':'#006600'}}>
+                                       <td>ok</td><td>{this.props.ok}</td>
+                                   </tr>
+                                   <tr style={{'color':'#cc7a00'}}>
+                                       <td>warning</td><td>{this.props.warning}</td>
+                                   </tr>
+                                   <tr style={{'color':'#990000'}}>
+                                       <td>danger</td><td>{this.props.danger}</td>
+                                   </tr>
+                                   <tr style={{'color':'#1a1b1b'}}>
+                                       <td>down</td><td>{this.props.down}</td>
+                                   </tr>
+                                   <tr style={{'color':'#737373'}}>
+                                       <td>no data</td><td>{this.props.noData}</td>
+                                   </tr>
+                               </table>
+                           </div>
+                       }/>
                        <Bar dataKey="ok" stackId="a" fill="#006600" isAnimationActive={false}/>
                        <Bar dataKey="warning" stackId="a" fill="#cc7a00" isAnimationActive={false}/>
                        <Bar dataKey="danger" stackId="a" fill="#990000" isAnimationActive={false}/>

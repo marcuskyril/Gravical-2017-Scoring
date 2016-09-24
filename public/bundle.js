@@ -80085,39 +80085,159 @@
 	        key: 'render',
 	        value: function render() {
 
+	            var totalSensors = this.props.ok + this.props.warning + this.props.danger + this.props.down + this.props.noData;
+
 	            var data = [{
 	                name: this.props.buildingName,
-	                ok: this.props.ok,
-	                warning: this.props.warning,
-	                danger: this.props.danger,
-	                down: this.props.down,
-	                noData: this.props.noData
+	                ok: this.props.ok / totalSensors,
+	                warning: this.props.warning / totalSensors,
+	                danger: this.props.danger / totalSensors,
+	                down: this.props.down / totalSensors,
+	                noData: this.props.noData / totalSensors
 	            }];
-
 	            return React.createElement(
 	                'div',
-	                { className: 'column row' },
+	                { className: 'column row', style: { 'margin-bottom': '30px' } },
 	                React.createElement(
 	                    'div',
 	                    { className: 'header' },
-	                    this.props.buildingName
+	                    React.createElement(
+	                        'div',
+	                        null,
+	                        this.props.buildingName,
+	                        React.createElement(
+	                            'div',
+	                            { style: { 'float': 'right' } },
+	                            React.createElement(
+	                                'span',
+	                                { style: { 'color': '#006600' } },
+	                                this.props.ok
+	                            ),
+	                            ' | ',
+	                            React.createElement(
+	                                'span',
+	                                { style: { 'color': '#cc7a00' } },
+	                                this.props.warning
+	                            ),
+	                            ' | ',
+	                            React.createElement(
+	                                'span',
+	                                { style: { 'color': '#990000' } },
+	                                this.props.danger
+	                            ),
+	                            ' | ',
+	                            React.createElement(
+	                                'span',
+	                                { style: { 'color': '#1a1b1b' } },
+	                                this.props.down
+	                            ),
+	                            ' | ',
+	                            React.createElement(
+	                                'span',
+	                                { style: { 'color': '#737373' } },
+	                                this.props.noData
+	                            )
+	                        )
+	                    )
 	                ),
 	                React.createElement(
 	                    'div',
-	                    { className: 'buildingCharts', style: { height: '70px', width: '100%' } },
+	                    { className: 'buildingCharts', style: { height: '50px', width: '100%' } },
 	                    React.createElement(
 	                        ResponsiveContainer,
 	                        null,
 	                        React.createElement(
 	                            BarChart,
-	                            { width: 400, height: 30,
+	                            { width: 400, height: 10,
 	                                data: data,
 	                                layout: 'vertical',
 	                                margin: { top: 20, right: 30, left: 20, bottom: 5 } },
 	                            React.createElement(XAxis, { hide: true, type: 'number' }),
 	                            React.createElement(YAxis, { hide: true, dataKey: 'name', type: 'category' }),
 	                            React.createElement(CartesianGrid, { strokeDasharray: '3 3' }),
-	                            React.createElement(Tooltip, null),
+	                            React.createElement(Tooltip, { coordinate: { x: 1000, y: 100 }, content: React.createElement(
+	                                    'div',
+	                                    { style: { 'background-color': 'white', 'padding': '10px', 'padding-bottom': '5px' } },
+	                                    React.createElement(
+	                                        'div',
+	                                        null,
+	                                        this.props.buildingName
+	                                    ),
+	                                    React.createElement(
+	                                        'table',
+	                                        { style: { 'min-width': '100px' } },
+	                                        React.createElement(
+	                                            'tr',
+	                                            { style: { 'color': '#006600' } },
+	                                            React.createElement(
+	                                                'td',
+	                                                null,
+	                                                'ok'
+	                                            ),
+	                                            React.createElement(
+	                                                'td',
+	                                                null,
+	                                                this.props.ok
+	                                            )
+	                                        ),
+	                                        React.createElement(
+	                                            'tr',
+	                                            { style: { 'color': '#cc7a00' } },
+	                                            React.createElement(
+	                                                'td',
+	                                                null,
+	                                                'warning'
+	                                            ),
+	                                            React.createElement(
+	                                                'td',
+	                                                null,
+	                                                this.props.warning
+	                                            )
+	                                        ),
+	                                        React.createElement(
+	                                            'tr',
+	                                            { style: { 'color': '#990000' } },
+	                                            React.createElement(
+	                                                'td',
+	                                                null,
+	                                                'danger'
+	                                            ),
+	                                            React.createElement(
+	                                                'td',
+	                                                null,
+	                                                this.props.danger
+	                                            )
+	                                        ),
+	                                        React.createElement(
+	                                            'tr',
+	                                            { style: { 'color': '#1a1b1b' } },
+	                                            React.createElement(
+	                                                'td',
+	                                                null,
+	                                                'down'
+	                                            ),
+	                                            React.createElement(
+	                                                'td',
+	                                                null,
+	                                                this.props.down
+	                                            )
+	                                        ),
+	                                        React.createElement(
+	                                            'tr',
+	                                            { style: { 'color': '#737373' } },
+	                                            React.createElement(
+	                                                'td',
+	                                                null,
+	                                                'no data'
+	                                            ),
+	                                            React.createElement(
+	                                                'td',
+	                                                null,
+	                                                this.props.noData
+	                                            )
+	                                        )
+	                                    )
+	                                ) }),
 	                            React.createElement(Bar, { dataKey: 'ok', stackId: 'a', fill: '#006600', isAnimationActive: false }),
 	                            React.createElement(Bar, { dataKey: 'warning', stackId: 'a', fill: '#cc7a00', isAnimationActive: false }),
 	                            React.createElement(Bar, { dataKey: 'danger', stackId: 'a', fill: '#990000', isAnimationActive: false }),
