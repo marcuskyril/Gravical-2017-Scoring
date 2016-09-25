@@ -224,9 +224,10 @@ class Dashboard extends React.Component {
 
 // module.exports = Dashboard;
 function mapStateToProps(state, ownProps) {
-    // console.log("ownprops", ownProps);
-    // console.log("state", state);
-    return { deleteMac: state.macAddress }
+    return {
+        deleteMac: state.macAddress,
+        pin_mac: state.pin_mac
+    }
 }
 
 module.exports = connect(mapStateToProps)(Dashboard);

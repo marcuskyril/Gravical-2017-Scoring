@@ -1,5 +1,8 @@
 var React = require('react');
 var Griddle = require('griddle-react');
+import * as Redux from 'react-redux';
+import * as actions from 'actions';
+import {connect} from 'react-redux';
 
 class SensorBlockComponent extends React.Component {
 
@@ -22,11 +25,15 @@ class SensorBlockComponent extends React.Component {
 
 class PinComponent extends React.Component {
 
+    constructor(props) {
+        super(props);
+    }
+
     handleClick(macAddress) {
-
-      $('#pinMac').val(macAddress);
-      $('#pin-sensor-modal').foundation('open');
-
+        var {dispatch} = this.props;
+        dispatch(actions.startUpdateWatchList(macAddress));
+        // $('#pinMac').val(macAddress);
+        $('#pin-sensor-modal').foundation('open');
     }
 
     render() {
@@ -125,4 +132,4 @@ class Abnormal extends React.Component {
 
 };
 
-module.exports = Abnormal;
+module.exports = connect()(Abnormal);

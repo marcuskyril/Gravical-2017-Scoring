@@ -29,6 +29,11 @@ export var completeDeleteSensor = (macAddress) => {
     return {type: 'COMPLETE_DELETE_SENSOR', macAddress}
 }
 
+export var completeUpdateWatchList = (pin_mac) => {
+    console.log("completeUpdateWatchList", pin_mac);
+    return {type: 'COMPLETE_UPDATE_WATCHLIST', pin_mac}
+}
+
 export var login = (uid) => {
     return {type: 'LOGIN', uid};
 };
@@ -59,10 +64,18 @@ export var startAddSensor = (inputMac, inputRegion, inputLocationLevel, inputLoc
 };
 
 export var startDeleteSensor = (macAddress) => {
-  console.log("deleting sensor from actions.jsx");
+  console.log("deleting " +macAddress +" from actions.jsx");
 
   return (dispatch, getState) => {
     dispatch(completeDeleteSensor(macAddress));
+  };
+};
+
+export var startUpdateWatchList = (pin_mac) => {
+  console.log("adding/removing " +pin_mac +" from actions.jsx");
+
+  return (dispatch, getState) => {
+    dispatch(completeUpdateWatchList(pin_mac));
   };
 };
 

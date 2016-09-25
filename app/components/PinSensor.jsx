@@ -1,5 +1,6 @@
 var React = require('react');
 var updateWatchList = require('updateWatchList');
+var {connect} = require('react-redux');
 var pinMac = "";
 
 class PinSensor extends React.Component {
@@ -13,14 +14,14 @@ class PinSensor extends React.Component {
 
   onPinSensor() {
 
+    var macAdd = this.props.pin_mac.pin_mac;
     var that = this;
 
-    var macAddress = $('#pinMac').val();
+    updateWatchList.updateWatchList(macAdd, true).then(function (response) {
+      console.log("Added sensor to watchlist", response);
 
-    updateWatchList.updateWatchList(macAddress, true).then(function (response) {
-      console.log("added sensor?", response);
+      $('#pin-sensor-modal').foundation('close');
 
-      $('#closePin').click();
     });
   }
 
@@ -28,10 +29,6 @@ class PinSensor extends React.Component {
     // console.log("delete sensor state ", this.state);
     var message = this.state.message;
     var that = this;
-
-    if ($('#pinMac').val() !== "") {
-        pinMac = $('#pinMac').val();
-    }
 
     // resets message to empty string on close
     $('#pin-sensor-modal').on('closed.zf.reveal', function() {
@@ -75,4 +72,10 @@ class PinSensorMessage extends React.Component {
   }
 }
 
-module.exports = PinSensor;
+
+function mapStateToProps(state, ownProps) {
+    console.log("state", state);
+    return { pin_mac: state.pin_mac }
+}
+
+module.exports = connect(mapStateToProps)(PinSensor);

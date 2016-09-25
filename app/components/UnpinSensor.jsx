@@ -1,6 +1,7 @@
 var React = require('react');
 var updateWatchList = require('updateWatchList');
 var unpinMac = "";
+var {connect} = require('react-redux');
 var store = require('configureStore').configure();
 
 class UnpinSensor extends React.Component {
@@ -14,15 +15,13 @@ class UnpinSensor extends React.Component {
 
   onUnpinSensor() {
 
-    console.log('Unpin', store.getState().sensorData.isFetching);
+    var macAdd = this.props.pin_mac.macAddress;
     var that = this;
 
-    var macAddress = $('#unpinMac').val();
+    updateWatchList.updateWatchList(macAdd, false).then(function (response) {
+        console.log("removed sensor?", response);
 
-    updateWatchList.updateWatchList(macAddress, false).then(function (response) {
-      console.log("removed sensor?", response);
-
-      $('#closeUnpin').click();
+        $('#unpin-sensor-modal').foundation('close');
     });
   }
 
@@ -77,4 +76,9 @@ class UnpinSensorMessage extends React.Component {
   }
 }
 
-module.exports = UnpinSensor;
+function mapStateToProps(state, ownProps) {
+    console.log("state", state);
+    return { pin_mac: state.macAddress }
+}
+
+module.exports = connect(mapStateToProps)(UnpinSensor);

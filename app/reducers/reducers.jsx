@@ -15,6 +15,19 @@ export var deleteSensorReducer = (state = {macAddress: 'something_stupid'}, acti
   }
 };
 
+export var updateWatchListReducer = (state = {pin_mac : ''}, action) => {
+    switch(action.type) {
+        case 'COMPLETE_UPDATE_WATCHLIST':
+            console.log("macAdd", action.pin_mac);
+
+            return {
+                pin_mac: action.pin_mac
+            }
+        default:
+            return state;
+    }
+};
+
 export var sensorDataReducer = (state = {isFetching: false, data: undefined}, action) => {
 
   switch (action.type) {

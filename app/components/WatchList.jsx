@@ -4,6 +4,9 @@ var Griddle = require('griddle-react');
 var retrieveSensorDetails = require('retrieveSensorDetails');
 var updateWatchList = require('updateWatchList');
 var ReactDOM = require('react-dom');
+import * as Redux from 'react-redux';
+import * as actions from 'actions';
+import {connect} from 'react-redux';
 
 var dataList = [];
 
@@ -11,8 +14,9 @@ class RemoveComponent extends React.Component {
 
     handleClick(macAddress) {
 
-      $('#unpinMac').val(macAddress);
-      $('#unpin-sensor-modal').foundation('open');
+        var {dispatch} = this.props;
+        dispatch(actions.startUpdateWatchList(macAddress));
+        $('#unpin-sensor-modal').foundation('open');
     }
 
     render() {
@@ -28,7 +32,6 @@ class RemoveComponent extends React.Component {
 class SensorBlockComponent extends React.Component {
 
     render() {
-        // url ="speakers/" + this.props.rowData.state + "/" + this.props.data;
 
         var colorMap = {
           "ok" : "sensorBlock green",
@@ -50,7 +53,6 @@ class LinkComponent extends React.Component {
     }
 
     handleClick(macAddress) {
-        // console.log("event", macAddress);
         document.getElementById("sensorDetailsIFrame").src = "./offCrepe.html?offCanMac=" + macAddress;
     }
 
@@ -143,7 +145,6 @@ class WatchList extends React.Component {
                 var mac = sensor;
                 var row = {
                     "mac_address": mac,
-                    // "geo-region": allSensorData[sensor]["geo-region"],
                     "building": allSensorData[sensor]["building"],
                     "sensor-level-id": allSensorData[sensor]["sensor-location-level"] + allSensorData[sensor]["sensor-location-id"],
                     "sensor_status": allSensorData[sensor]["sensor_status"],

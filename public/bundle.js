@@ -12916,7 +12916,7 @@
 	Object.defineProperty(exports, "__esModule", {
 	    value: true
 	});
-	exports.startCreateAccount = exports.startLogout = exports.startLogin = exports.startResetPassword = exports.startDeleteSensor = exports.startAddSensor = exports.logout = exports.login = exports.completeDeleteSensor = exports.completeSensorDataFetch = exports.startSensorDataFetch = exports.fetchSensorData = undefined;
+	exports.startCreateAccount = exports.startLogout = exports.startLogin = exports.startResetPassword = exports.startUpdateWatchList = exports.startDeleteSensor = exports.startAddSensor = exports.logout = exports.login = exports.completeUpdateWatchList = exports.completeDeleteSensor = exports.completeSensorDataFetch = exports.startSensorDataFetch = exports.fetchSensorData = undefined;
 
 	var _firebase = __webpack_require__(10);
 
@@ -12954,6 +12954,11 @@
 	    return { type: 'COMPLETE_DELETE_SENSOR', macAddress: macAddress };
 	};
 
+	var completeUpdateWatchList = exports.completeUpdateWatchList = function completeUpdateWatchList(pin_mac) {
+	    console.log("completeUpdateWatchList", pin_mac);
+	    return { type: 'COMPLETE_UPDATE_WATCHLIST', pin_mac: pin_mac };
+	};
+
 	var login = exports.login = function login(uid) {
 	    return { type: 'LOGIN', uid: uid };
 	};
@@ -12983,10 +12988,18 @@
 	};
 
 	var startDeleteSensor = exports.startDeleteSensor = function startDeleteSensor(macAddress) {
-	    console.log("deleting sensor from actions.jsx");
+	    console.log("deleting " + macAddress + " from actions.jsx");
 
 	    return function (dispatch, getState) {
 	        dispatch(completeDeleteSensor(macAddress));
+	    };
+	};
+
+	var startUpdateWatchList = exports.startUpdateWatchList = function startUpdateWatchList(pin_mac) {
+	    console.log("adding/removing " + pin_mac + " from actions.jsx");
+
+	    return function (dispatch, getState) {
+	        dispatch(completeUpdateWatchList(pin_mac));
 	    };
 	};
 
@@ -72811,9 +72824,10 @@
 
 	// module.exports = Dashboard;
 	function mapStateToProps(state, ownProps) {
-	    // console.log("ownprops", ownProps);
-	    // console.log("state", state);
-	    return { deleteMac: state.macAddress };
+	    return {
+	        deleteMac: state.macAddress,
+	        pin_mac: state.pin_mac
+	    };
 	}
 
 	module.exports = connect(mapStateToProps)(Dashboard);
@@ -72826,6 +72840,16 @@
 	/* WEBPACK VAR INJECTION */(function($) {'use strict';
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	var _reactRedux = __webpack_require__(111);
+
+	var Redux = _interopRequireWildcard(_reactRedux);
+
+	var _actions = __webpack_require__(139);
+
+	var actions = _interopRequireWildcard(_actions);
+
+	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -72874,17 +72898,19 @@
 	var PinComponent = function (_React$Component2) {
 	    _inherits(PinComponent, _React$Component2);
 
-	    function PinComponent() {
+	    function PinComponent(props) {
 	        _classCallCheck(this, PinComponent);
 
-	        return _possibleConstructorReturn(this, Object.getPrototypeOf(PinComponent).apply(this, arguments));
+	        return _possibleConstructorReturn(this, Object.getPrototypeOf(PinComponent).call(this, props));
 	    }
 
 	    _createClass(PinComponent, [{
 	        key: 'handleClick',
 	        value: function handleClick(macAddress) {
+	            var dispatch = this.props.dispatch;
 
-	            $('#pinMac').val(macAddress);
+	            dispatch(actions.startUpdateWatchList(macAddress));
+	            // $('#pinMac').val(macAddress);
 	            $('#pin-sensor-modal').foundation('open');
 	        }
 	    }, {
@@ -73003,7 +73029,7 @@
 
 	;
 
-	module.exports = Abnormal;
+	module.exports = (0, _reactRedux.connect)()(Abnormal);
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(9)))
 
 /***/ },
@@ -73377,15 +73403,14 @@
 	}(React.Component);
 
 	// module.exports = SensorHealthOverview;
+	// function mapStateToProps(state, ownProps) {
+	//     return {
+	//         deleteMac: state.macAddress,
+	//         pin_mac: state.pin_mac
+	//     }
+	// }
 
-
-	function mapStateToProps(state, ownProps) {
-	    console.log("ownprops", ownProps);
-	    console.log("state", state);
-	    return { deleteMac: state.macAddress };
-	}
-
-	module.exports = (0, _reactRedux.connect)(mapStateToProps)(SensorHealthOverview);
+	module.exports = (0, _reactRedux.connect)()(SensorHealthOverview);
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(9)))
 
 /***/ },
@@ -73842,7 +73867,7 @@
 
 	        case 'WATCHLIST_UPDATE_ACTION':
 
-	          $('#pinMac').val(macAddress);
+	          dispatch(actions.startUpdateWatchList(macAddress));
 	          $('#pin-sensor-modal').foundation('open');
 
 	          break;
@@ -73961,7 +73986,6 @@
 	}(React.Component);
 
 	module.exports = (0, _reactRedux.connect)()(VerticalMenu);
-	// export default Redux.connect()(VerticalMenu);
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(9)))
 
 /***/ },
@@ -73971,6 +73995,16 @@
 	/* WEBPACK VAR INJECTION */(function($) {'use strict';
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	var _reactRedux = __webpack_require__(111);
+
+	var Redux = _interopRequireWildcard(_reactRedux);
+
+	var _actions = __webpack_require__(139);
+
+	var actions = _interopRequireWildcard(_actions);
+
+	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -73984,6 +74018,7 @@
 	var retrieveSensorDetails = __webpack_require__(797);
 	var updateWatchList = __webpack_require__(798);
 	var ReactDOM = __webpack_require__(490);
+
 
 	var dataList = [];
 
@@ -73999,8 +74034,9 @@
 	    _createClass(RemoveComponent, [{
 	        key: 'handleClick',
 	        value: function handleClick(macAddress) {
+	            var dispatch = this.props.dispatch;
 
-	            $('#unpinMac').val(macAddress);
+	            dispatch(actions.startUpdateWatchList(macAddress));
 	            $('#unpin-sensor-modal').foundation('open');
 	        }
 	    }, {
@@ -74039,7 +74075,6 @@
 	    _createClass(SensorBlockComponent, [{
 	        key: 'render',
 	        value: function render() {
-	            // url ="speakers/" + this.props.rowData.state + "/" + this.props.data;
 
 	            var colorMap = {
 	                "ok": "sensorBlock green",
@@ -74074,7 +74109,6 @@
 	    _createClass(LinkComponent, [{
 	        key: 'handleClick',
 	        value: function handleClick(macAddress) {
-	            // console.log("event", macAddress);
 	            document.getElementById("sensorDetailsIFrame").src = "./offCrepe.html?offCanMac=" + macAddress;
 	        }
 	    }, {
@@ -74181,7 +74215,6 @@
 	                        var mac = sensor;
 	                        var row = {
 	                            "mac_address": mac,
-	                            // "geo-region": allSensorData[sensor]["geo-region"],
 	                            "building": allSensorData[sensor]["building"],
 	                            "sensor-level-id": allSensorData[sensor]["sensor-location-level"] + allSensorData[sensor]["sensor-location-id"],
 	                            "sensor_status": allSensorData[sensor]["sensor_status"],
@@ -74255,7 +74288,7 @@
 	module.exports = {
 
 	    updateWatchList: function updateWatchList(macAddress, pin_status) {
-	        console.log("trying to remove: ", macAddress);
+	        console.log("trying to update: ", macAddress, pin_status);
 
 	        var data = {
 	            "MAC": macAddress,
@@ -81068,8 +81101,7 @@
 	    var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(DeleteSensor).call(this, props));
 
 	    _this.state = {
-	      message: '',
-	      deleteMac: store.getState().macAddress.macAddress
+	      message: ''
 	    };
 	    return _this;
 	  }
@@ -81105,8 +81137,6 @@
 	      // console.log("delete sensor state ", this.state);
 	      var message = this.state.message;
 	      var that = this;
-
-	      deleteMac = this.state.macAdd;
 
 	      // resets message to empty string on close
 	      $('#delete-sensor-modal').on('closed.zf.reveal', function () {
@@ -81246,6 +81276,11 @@
 	var React = __webpack_require__(14);
 	var updateWatchList = __webpack_require__(798);
 	var unpinMac = "";
+
+	var _require = __webpack_require__(111);
+
+	var connect = _require.connect;
+
 	var store = __webpack_require__(819).configure();
 
 	var UnpinSensor = function (_React$Component) {
@@ -81266,15 +81301,13 @@
 	    key: 'onUnpinSensor',
 	    value: function onUnpinSensor() {
 
-	      console.log('Unpin', store.getState().sensorData.isFetching);
+	      var macAdd = this.props.pin_mac.macAddress;
 	      var that = this;
 
-	      var macAddress = $('#unpinMac').val();
-
-	      updateWatchList.updateWatchList(macAddress, false).then(function (response) {
+	      updateWatchList.updateWatchList(macAdd, false).then(function (response) {
 	        console.log("removed sensor?", response);
 
-	        $('#closeUnpin').click();
+	        $('#unpin-sensor-modal').foundation('close');
 	      });
 	    }
 	  }, {
@@ -81369,7 +81402,12 @@
 	  return UnpinSensorMessage;
 	}(React.Component);
 
-	module.exports = UnpinSensor;
+	function mapStateToProps(state, ownProps) {
+	  console.log("state", state);
+	  return { pin_mac: state.macAddress };
+	}
+
+	module.exports = connect(mapStateToProps)(UnpinSensor);
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(9)))
 
 /***/ },
@@ -81594,6 +81632,11 @@
 
 	var React = __webpack_require__(14);
 	var updateWatchList = __webpack_require__(798);
+
+	var _require = __webpack_require__(111);
+
+	var connect = _require.connect;
+
 	var pinMac = "";
 
 	var PinSensor = function (_React$Component) {
@@ -81614,14 +81657,13 @@
 	    key: 'onPinSensor',
 	    value: function onPinSensor() {
 
+	      var macAdd = this.props.pin_mac.pin_mac;
 	      var that = this;
 
-	      var macAddress = $('#pinMac').val();
+	      updateWatchList.updateWatchList(macAdd, true).then(function (response) {
+	        console.log("Added sensor to watchlist", response);
 
-	      updateWatchList.updateWatchList(macAddress, true).then(function (response) {
-	        console.log("added sensor?", response);
-
-	        $('#closePin').click();
+	        $('#pin-sensor-modal').foundation('close');
 	      });
 	    }
 	  }, {
@@ -81630,10 +81672,6 @@
 	      // console.log("delete sensor state ", this.state);
 	      var message = this.state.message;
 	      var that = this;
-
-	      if ($('#pinMac').val() !== "") {
-	        pinMac = $('#pinMac').val();
-	      }
 
 	      // resets message to empty string on close
 	      $('#pin-sensor-modal').on('closed.zf.reveal', function () {
@@ -81716,7 +81754,12 @@
 	  return PinSensorMessage;
 	}(React.Component);
 
-	module.exports = PinSensor;
+	function mapStateToProps(state, ownProps) {
+	  console.log("state", state);
+	  return { pin_mac: state.pin_mac };
+	}
+
+	module.exports = connect(mapStateToProps)(PinSensor);
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(9)))
 
 /***/ },
@@ -81831,7 +81874,8 @@
 	  var reducer = redux.combineReducers({
 	    sensorData: _reducers.sensorDataReducer,
 	    auth: _reducers.authReducer,
-	    macAddress: _reducers.deleteSensorReducer
+	    macAddress: _reducers.deleteSensorReducer,
+	    pin_mac: _reducers.updateWatchListReducer
 	  });
 
 	  var store = redux.createStore(reducer, initialState, redux.compose(redux.applyMiddleware(_reduxThunk2.default), window.devToolsExtension ? window.devToolsExtension() : function (f) {
@@ -81892,6 +81936,22 @@
 
 	      return {
 	        macAddress: action.macAddress
+	      };
+	    default:
+	      return state;
+	  }
+	};
+
+	var updateWatchListReducer = exports.updateWatchListReducer = function updateWatchListReducer() {
+	  var state = arguments.length <= 0 || arguments[0] === undefined ? { pin_mac: '' } : arguments[0];
+	  var action = arguments[1];
+
+	  switch (action.type) {
+	    case 'COMPLETE_UPDATE_WATCHLIST':
+	      console.log("macAdd", action.pin_mac);
+
+	      return {
+	        pin_mac: action.pin_mac
 	      };
 	    default:
 	      return state;

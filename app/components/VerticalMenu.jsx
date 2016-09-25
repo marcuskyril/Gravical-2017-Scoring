@@ -81,7 +81,7 @@ class VerticalMenu extends React.Component {
 
           case 'WATCHLIST_UPDATE_ACTION':
 
-            $('#pinMac').val(macAddress);
+            dispatch(actions.startUpdateWatchList(macAddress));
             $('#pin-sensor-modal').foundation('open');
 
             break;
@@ -130,4 +130,3 @@ class VerticalMenu extends React.Component {
 }
 
 module.exports = connect()(VerticalMenu);
-// export default Redux.connect()(VerticalMenu);

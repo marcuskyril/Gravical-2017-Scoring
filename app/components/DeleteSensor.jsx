@@ -9,8 +9,7 @@ class DeleteSensor extends React.Component {
     super(props);
 
     this.state = {
-      message: '',
-      deleteMac: store.getState().macAddress.macAddress
+      message: ''
     }
   }
 
@@ -43,8 +42,6 @@ class DeleteSensor extends React.Component {
     // console.log("delete sensor state ", this.state);
     var message = this.state.message;
     var that = this;
-
-    deleteMac = this.state.macAdd;
 
     // resets message to empty string on close
     $('#delete-sensor-modal').on('closed.zf.reveal', function() {

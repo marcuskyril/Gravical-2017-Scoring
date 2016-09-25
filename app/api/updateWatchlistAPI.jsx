@@ -5,7 +5,7 @@ const UPDATE_WATCHLIST_URL = 'http://opsdev.sence.io/backend/sensor-watchlist-pi
 module.exports = {
 
     updateWatchList: function(macAddress, pin_status) {
-        console.log("trying to remove: ", macAddress);
+        console.log("trying to update: ", macAddress, pin_status);
 
         var data = {
             "MAC": macAddress,
