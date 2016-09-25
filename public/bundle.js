@@ -72809,7 +72809,14 @@
 
 	;
 
-	module.exports = Dashboard;
+	// module.exports = Dashboard;
+	function mapStateToProps(state, ownProps) {
+	    // console.log("ownprops", ownProps);
+	    // console.log("state", state);
+	    return { deleteMac: state.macAddress };
+	}
+
+	module.exports = connect(mapStateToProps)(Dashboard);
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(9)))
 
 /***/ },
@@ -73006,6 +73013,8 @@
 	/* WEBPACK VAR INJECTION */(function($) {'use strict';
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	var _reactRedux = __webpack_require__(111);
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -73367,7 +73376,16 @@
 	    return SensorHealthOverview;
 	}(React.Component);
 
-	module.exports = SensorHealthOverview;
+	// module.exports = SensorHealthOverview;
+
+
+	function mapStateToProps(state, ownProps) {
+	    console.log("ownprops", ownProps);
+	    console.log("state", state);
+	    return { deleteMac: state.macAddress };
+	}
+
+	module.exports = (0, _reactRedux.connect)(mapStateToProps)(SensorHealthOverview);
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(9)))
 
 /***/ },
@@ -81051,7 +81069,7 @@
 
 	    _this.state = {
 	      message: '',
-	      deleteMac: ''
+	      deleteMac: store.getState().macAddress.macAddress
 	    };
 	    return _this;
 	  }
@@ -81063,10 +81081,10 @@
 	      event.preventDefault();
 
 	      var that = this;
-	      var deleteMac = store.getState().macAddress;
-	      console.log("deleteMac", store.getState().macAddress);
+	      //var deleteMac = store.getState().macAddress;
+	      var macAdd = that.props.deleteMac.macAddress;
 
-	      deleteSensorAPI.deleteSensor(deleteMac).then(function (response) {
+	      deleteSensorAPI.deleteSensor(macAdd).then(function (response) {
 
 	        if (response.error) {
 	          that.setState({
@@ -81173,11 +81191,12 @@
 	  return DeleteSensorMessage;
 	}(React.Component);
 
-	module.exports = connect(function (state) {
-	  return {
-	    macAddress: state.macAddress
-	  };
-	})(DeleteSensor);
+	function mapStateToProps(state, ownProps) {
+	  console.log("state", state);
+	  return { deleteMac: state.macAddress };
+	}
+
+	module.exports = connect(mapStateToProps)(DeleteSensor);
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(9)))
 
 /***/ },

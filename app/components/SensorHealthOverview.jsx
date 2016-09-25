@@ -7,6 +7,7 @@ var editModal = null;
 var rebootModal = null;
 var terminal = null;
 var {Link, IndexLink} = require('react-router');
+import {connect} from 'react-redux';
 const HOST = 'http://opsdev.sence.io:4201/';
 
 var colorMap = {
@@ -251,4 +252,11 @@ render() {
   }
 }
 
-module.exports = SensorHealthOverview;
+// module.exports = SensorHealthOverview;
+function mapStateToProps(state, ownProps) {
+    console.log("ownprops", ownProps);
+    console.log("state", state);
+    return { deleteMac: state.macAddress }
+}
+
+module.exports = connect(mapStateToProps)(SensorHealthOverview);

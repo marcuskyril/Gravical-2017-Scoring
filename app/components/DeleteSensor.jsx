@@ -10,7 +10,7 @@ class DeleteSensor extends React.Component {
 
     this.state = {
       message: '',
-      deleteMac: ''
+      deleteMac: store.getState().macAddress.macAddress
     }
   }
 
@@ -19,10 +19,10 @@ class DeleteSensor extends React.Component {
     event.preventDefault();
 
     var that = this;
-    var deleteMac = store.getState().macAddress;
-    console.log("deleteMac", store.getState().macAddress);
+    //var deleteMac = store.getState().macAddress;
+    var macAdd = that.props.deleteMac.macAddress;
 
-    deleteSensorAPI.deleteSensor(deleteMac).then(function(response){
+    deleteSensorAPI.deleteSensor(macAdd).then(function(response){
 
       if(response.error) {
         that.setState({
@@ -90,10 +90,9 @@ class DeleteSensorMessage extends React.Component {
   }
 }
 
-module.exports = connect(
-  (state) => {
-    return {
-      macAddress: state.macAddress
-    }
-  }
-)(DeleteSensor);
+function mapStateToProps(state, ownProps) {
+    console.log("state", state);
+    return { deleteMac: state.macAddress }
+}
+
+module.exports = connect(mapStateToProps)(DeleteSensor);
