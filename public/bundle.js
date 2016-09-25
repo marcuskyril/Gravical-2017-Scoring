@@ -12916,7 +12916,7 @@
 	Object.defineProperty(exports, "__esModule", {
 	    value: true
 	});
-	exports.startCreateAccount = exports.startLogout = exports.startLogin = exports.startResetPassword = exports.startAddSensor = exports.logout = exports.login = exports.completeSensorDataFetch = exports.startSensorDataFetch = exports.fetchSensorData = undefined;
+	exports.startCreateAccount = exports.startLogout = exports.startLogin = exports.startResetPassword = exports.startDeleteSensor = exports.startAddSensor = exports.logout = exports.login = exports.completeDeleteSensor = exports.completeSensorDataFetch = exports.startSensorDataFetch = exports.fetchSensorData = undefined;
 
 	var _firebase = __webpack_require__(10);
 
@@ -12949,6 +12949,11 @@
 	    return { type: 'COMPLETE_SENSOR_DATA_FETCH', data: data };
 	};
 
+	var completeDeleteSensor = exports.completeDeleteSensor = function completeDeleteSensor(macAddress) {
+	    console.log("completeDeleteSensor", macAddress);
+	    return { type: 'COMPLETE_DELETE_SENSOR', macAddress: macAddress };
+	};
+
 	var login = exports.login = function login(uid) {
 	    return { type: 'LOGIN', uid: uid };
 	};
@@ -12974,6 +12979,14 @@
 	        }).catch(function (error) {
 	            console.log("Problem siol", error);
 	        });
+	    };
+	};
+
+	var startDeleteSensor = exports.startDeleteSensor = function startDeleteSensor(macAddress) {
+	    console.log("deleting sensor from actions.jsx");
+
+	    return function (dispatch, getState) {
+	        dispatch(completeDeleteSensor(macAddress));
 	    };
 	};
 
@@ -14267,47 +14280,6 @@
 	  "no data": "#737373"
 	};
 
-	// const CustomTooltip  = React.createClass({
-	//   propTypes: {
-	//     type: PropTypes.string,
-	//     payload: PropTypes.array,
-	//     label: PropTypes.string,
-	//   },
-	//
-	//   getIntroOfPage(label) {
-	//     if (label === 'Page A') {
-	//       return "Page A is about men's clothing";
-	//     } else if (label === 'Page B') {
-	//       return "Page B is about women's dress";
-	//     } else if (label === 'Page C') {
-	//       return "Page C is about women's bag";
-	//     } else if (label === 'Page D') {
-	//       return "Page D is about household goods";
-	//     } else if (label === 'Page E') {
-	//       return "Page E is about food";
-	//     } else if (label === 'Page F') {
-	//       return "Page F is about baby food";
-	//     }
-	//   },
-	//
-	//   render() {
-	//     const { active } = this.props;
-	//
-	//     if (active) {
-	//       const { payload, label } = this.props;
-	//       return (
-	//         <div className="custom-tooltip">
-	//           <p className="label">{`${label} : ${payload[0].value}`}</p>
-	//           <p className="intro">{this.getIntroOfPage(label)}</p>
-	//           <p className="desc">Anything you want can be displayed here.</p>
-	//         </div>
-	//       );
-	//     }
-	//
-	//     return null;
-	//   }
-	// });
-
 	var SimpleBarChart = function (_React$Component) {
 	  _inherits(SimpleBarChart, _React$Component);
 
@@ -14322,6 +14294,8 @@
 	    value: function render() {
 
 	      // console.log("uptime data", this.props.uptimeData);
+	      var width = $('.row').width() * 0.95;
+	      console.log("width", width);
 
 	      return React.createElement(
 	        'div',
@@ -14335,7 +14309,7 @@
 	        ),
 	        React.createElement(
 	          BarChart,
-	          { width: 1200, height: 50, data: this.props.uptimeData, syncId: this.props.level,
+	          { width: width, height: 50, data: this.props.uptimeData, syncId: this.props.level,
 	            margin: { top: 5, right: 30, left: 20, bottom: 5 }, barGap: 0, barCategoryGap: 0 },
 	          React.createElement(CartesianGrid, { strokeDasharray: '3 3' }),
 	          React.createElement(Tooltip, null),
@@ -72526,6 +72500,16 @@
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
+	var _reactRedux = __webpack_require__(111);
+
+	var Redux = _interopRequireWildcard(_reactRedux);
+
+	var _actions = __webpack_require__(139);
+
+	var actions = _interopRequireWildcard(_actions);
+
+	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
@@ -72549,10 +72533,14 @@
 	var PinSensor = __webpack_require__(817);
 	var Terminal = __webpack_require__(818);
 
-	var _require = __webpack_require__(47);
+	var _require = __webpack_require__(111);
 
-	var Link = _require.Link;
-	var IndexLink = _require.IndexLink;
+	var connect = _require.connect;
+
+	var _require2 = __webpack_require__(47);
+
+	var Link = _require2.Link;
+	var IndexLink = _require2.IndexLink;
 
 	var HOST = 'ws://opsdev.sence.io:9000';
 
@@ -72563,6 +72551,10 @@
 	        _classCallCheck(this, Dashboard);
 
 	        var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(Dashboard).call(this, props));
+
+	        var dispatch = _this.props.dispatch;
+
+	        console.log("dashboard props", dispatch);
 
 	        _this.state = {
 	            connection: null,
@@ -72622,7 +72614,6 @@
 	            }, { 'skipSubprotocolCheck': true });
 
 	            // close dropdowns
-
 	            window.addEventListener('click', function (e) {
 
 	                var pane = e.srcElement;
@@ -73123,16 +73114,16 @@
 	    return SearchBar;
 	}(React.Component);
 
-	var BuildingListV2 = function (_React$Component3) {
-	    _inherits(BuildingListV2, _React$Component3);
+	var BuildingList = function (_React$Component3) {
+	    _inherits(BuildingList, _React$Component3);
 
-	    function BuildingListV2() {
-	        _classCallCheck(this, BuildingListV2);
+	    function BuildingList() {
+	        _classCallCheck(this, BuildingList);
 
-	        return _possibleConstructorReturn(this, Object.getPrototypeOf(BuildingListV2).apply(this, arguments));
+	        return _possibleConstructorReturn(this, Object.getPrototypeOf(BuildingList).apply(this, arguments));
 	    }
 
-	    _createClass(BuildingListV2, [{
+	    _createClass(BuildingList, [{
 	        key: 'render',
 	        value: function render() {
 
@@ -73181,7 +73172,7 @@
 	        }
 	    }]);
 
-	    return BuildingListV2;
+	    return BuildingList;
 	}(React.Component);
 
 	var BuildingHeader = function (_React$Component4) {
@@ -73352,14 +73343,16 @@
 	            return React.createElement(
 	                'div',
 	                null,
-	                React.createElement(SearchBar, { filterText: this.state.filterText, onUserInput: this.handleUserInput.bind(this) }),
+	                React.createElement(SearchBar, { filterText: this.state.filterText,
+	                    onUserInput: this.handleUserInput.bind(this) }),
 	                React.createElement(
 	                    'div',
 	                    { className: 'page-title' },
 	                    'Sensors'
 	                ),
 	                React.createElement('hr', { className: 'divider' }),
-	                React.createElement(BuildingListV2, { data: this.props.data, filterText: this.state.filterText }),
+	                React.createElement(BuildingList, { data: this.props.data,
+	                    filterText: this.state.filterText }),
 	                React.createElement(
 	                    'div',
 	                    { className: 'page-title' },
@@ -73727,6 +73720,16 @@
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
+	var _reactRedux = __webpack_require__(111);
+
+	var Redux = _interopRequireWildcard(_reactRedux);
+
+	var _actions = __webpack_require__(139);
+
+	var actions = _interopRequireWildcard(_actions);
+
+	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
@@ -73734,7 +73737,9 @@
 	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 	var React = __webpack_require__(14);
+
 	var HOST = 'http://opsdev.sence.io:4201/';
+	var store = __webpack_require__(819).configure();
 
 	var VerticalMenu = function (_React$Component) {
 	  _inherits(VerticalMenu, _React$Component);
@@ -73742,12 +73747,20 @@
 	  function VerticalMenu(props) {
 	    _classCallCheck(this, VerticalMenu);
 
-	    return _possibleConstructorReturn(this, Object.getPrototypeOf(VerticalMenu).call(this, props));
+	    var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(VerticalMenu).call(this, props));
+
+	    _this.state = {
+	      reboot_available: _this.props.reboot
+	    };
+	    return _this;
 	  }
 
 	  _createClass(VerticalMenu, [{
 	    key: 'handleClick',
 	    value: function handleClick(sensorData, action) {
+	      var dispatch = this.props.dispatch;
+
+
 	      var macAddress = sensorData[0];
 	      var region = sensorData[3];
 	      var level = sensorData[5];
@@ -73765,6 +73778,7 @@
 	          $('#inputBuildingName').val(buildingName);
 
 	          // editModal.open();
+	          //store.dispatch(actions.startEditSensor(macAddress, region.toLowerCase(), level, areaID, buildingName));
 	          $('#edit-sensor-modal').foundation('open');
 
 	          break;
@@ -73774,6 +73788,9 @@
 	          document.getElementById('deleteMac').innerHTML = macAddress;
 
 	          // deleteModal.open();
+	          dispatch(actions.startDeleteSensor(macAddress));
+	          console.log("DELETE_ACTION", store.getState());
+
 	          $('#delete-sensor-modal').foundation('open');
 
 	          break;
@@ -73827,7 +73844,28 @@
 	  }, {
 	    key: 'render',
 	    value: function render() {
-	      var _this2 = this;
+	      var _this3 = this;
+
+	      var reboot_available = this.state.reboot_available;
+
+
+	      function renderTerminalLink() {
+	        var _this2 = this;
+
+	        if (reboot_available) {
+	          return React.createElement(
+	            'li',
+	            null,
+	            React.createElement(
+	              'a',
+	              { onClick: function onClick() {
+	                  return _this2.handleClick(_this2.props.sensorData, 'LAUNCH_TERMINAL_ACTION');
+	                } },
+	              'Launch terminal'
+	            )
+	          );
+	        }
+	      }
 
 	      return React.createElement(
 	        'li',
@@ -73835,7 +73873,7 @@
 	        React.createElement(
 	          'div',
 	          { className: this.props.class, onClick: function onClick() {
-	              return _this2.handleClick(_this2.props.sensorData, 'NO_ACTION');
+	              return _this3.handleClick(_this3.props.sensorData, 'NO_ACTION');
 	            } },
 	          this.props.id
 	        ),
@@ -73856,7 +73894,7 @@
 	              React.createElement(
 	                'a',
 	                { onClick: function onClick() {
-	                    return _this2.handleClick(_this2.props.sensorData, 'OPEN_CANVAS_ACTION');
+	                    return _this3.handleClick(_this3.props.sensorData, 'OPEN_CANVAS_ACTION');
 	                  }, 'data-toggle': 'offCanvas' },
 	                'More details »'
 	              )
@@ -73867,7 +73905,7 @@
 	              React.createElement(
 	                'a',
 	                { onClick: function onClick() {
-	                    return _this2.handleClick(_this2.props.sensorData, 'EDIT_ACTION');
+	                    return _this3.handleClick(_this3.props.sensorData, 'EDIT_ACTION');
 	                  } },
 	                'Edit sensor'
 	              )
@@ -73878,7 +73916,7 @@
 	              React.createElement(
 	                'a',
 	                { onClick: function onClick() {
-	                    return _this2.handleClick(_this2.props.sensorData, 'DELETE_ACTION');
+	                    return _this3.handleClick(_this3.props.sensorData, 'DELETE_ACTION');
 	                  } },
 	                'Delete sensor'
 	              )
@@ -73889,22 +73927,12 @@
 	              React.createElement(
 	                'a',
 	                { onClick: function onClick() {
-	                    return _this2.handleClick(_this2.props.sensorData, 'WATCHLIST_UPDATE_ACTION');
+	                    return _this3.handleClick(_this3.props.sensorData, 'WATCHLIST_UPDATE_ACTION');
 	                  } },
 	                'Pin sensor'
 	              )
 	            ),
-	            React.createElement(
-	              'li',
-	              null,
-	              React.createElement(
-	                'a',
-	                { onClick: function onClick() {
-	                    return _this2.handleClick(_this2.props.sensorData, 'LAUNCH_TERMINAL_ACTION');
-	                  } },
-	                'Launch terminal'
-	              )
-	            )
+	            renderTerminalLink()
 	          )
 	        )
 	      );
@@ -73914,7 +73942,8 @@
 	  return VerticalMenu;
 	}(React.Component);
 
-	module.exports = VerticalMenu;
+	module.exports = (0, _reactRedux.connect)()(VerticalMenu);
+	// export default Redux.connect()(VerticalMenu);
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(9)))
 
 /***/ },
@@ -80097,7 +80126,7 @@
 	            }];
 	            return React.createElement(
 	                'div',
-	                { className: 'column row', style: { 'margin-bottom': '30px' } },
+	                { className: 'column row', style: { 'marginBottom': '30px' } },
 	                React.createElement(
 	                    'div',
 	                    { className: 'header' },
@@ -80157,7 +80186,7 @@
 	                            React.createElement(CartesianGrid, { strokeDasharray: '3 3' }),
 	                            React.createElement(Tooltip, { coordinate: { x: 1000, y: 100 }, content: React.createElement(
 	                                    'div',
-	                                    { style: { 'background-color': 'white', 'padding': '10px', 'padding-bottom': '5px' } },
+	                                    { style: { 'backgroundColor': 'white', 'padding': '10px', 'paddingBottom': '5px' } },
 	                                    React.createElement(
 	                                        'div',
 	                                        null,
@@ -80165,75 +80194,79 @@
 	                                    ),
 	                                    React.createElement(
 	                                        'table',
-	                                        { style: { 'min-width': '100px' } },
+	                                        { style: { 'minWidth': '100px' } },
 	                                        React.createElement(
-	                                            'tr',
-	                                            { style: { 'color': '#006600' } },
+	                                            'tbody',
+	                                            null,
 	                                            React.createElement(
-	                                                'td',
-	                                                null,
-	                                                'ok'
+	                                                'tr',
+	                                                { style: { 'color': '#006600' } },
+	                                                React.createElement(
+	                                                    'td',
+	                                                    null,
+	                                                    'ok'
+	                                                ),
+	                                                React.createElement(
+	                                                    'td',
+	                                                    null,
+	                                                    this.props.ok
+	                                                )
 	                                            ),
 	                                            React.createElement(
-	                                                'td',
-	                                                null,
-	                                                this.props.ok
-	                                            )
-	                                        ),
-	                                        React.createElement(
-	                                            'tr',
-	                                            { style: { 'color': '#cc7a00' } },
-	                                            React.createElement(
-	                                                'td',
-	                                                null,
-	                                                'warning'
+	                                                'tr',
+	                                                { style: { 'color': '#cc7a00' } },
+	                                                React.createElement(
+	                                                    'td',
+	                                                    null,
+	                                                    'warning'
+	                                                ),
+	                                                React.createElement(
+	                                                    'td',
+	                                                    null,
+	                                                    this.props.warning
+	                                                )
 	                                            ),
 	                                            React.createElement(
-	                                                'td',
-	                                                null,
-	                                                this.props.warning
-	                                            )
-	                                        ),
-	                                        React.createElement(
-	                                            'tr',
-	                                            { style: { 'color': '#990000' } },
-	                                            React.createElement(
-	                                                'td',
-	                                                null,
-	                                                'danger'
+	                                                'tr',
+	                                                { style: { 'color': '#990000' } },
+	                                                React.createElement(
+	                                                    'td',
+	                                                    null,
+	                                                    'danger'
+	                                                ),
+	                                                React.createElement(
+	                                                    'td',
+	                                                    null,
+	                                                    this.props.danger
+	                                                )
 	                                            ),
 	                                            React.createElement(
-	                                                'td',
-	                                                null,
-	                                                this.props.danger
-	                                            )
-	                                        ),
-	                                        React.createElement(
-	                                            'tr',
-	                                            { style: { 'color': '#1a1b1b' } },
-	                                            React.createElement(
-	                                                'td',
-	                                                null,
-	                                                'down'
+	                                                'tr',
+	                                                { style: { 'color': '#1a1b1b' } },
+	                                                React.createElement(
+	                                                    'td',
+	                                                    null,
+	                                                    'down'
+	                                                ),
+	                                                React.createElement(
+	                                                    'td',
+	                                                    null,
+	                                                    this.props.down
+	                                                )
 	                                            ),
 	                                            React.createElement(
-	                                                'td',
-	                                                null,
-	                                                this.props.down
-	                                            )
-	                                        ),
-	                                        React.createElement(
-	                                            'tr',
-	                                            { style: { 'color': '#737373' } },
-	                                            React.createElement(
-	                                                'td',
-	                                                null,
-	                                                'no data'
-	                                            ),
-	                                            React.createElement(
-	                                                'td',
-	                                                null,
-	                                                this.props.noData
+	                                                'tr',
+	                                                { style: { 'color': '#737373' } },
+	                                                React.createElement(
+	                                                    'td',
+	                                                    null,
+	                                                    'no data'
+	                                                ),
+	                                                React.createElement(
+	                                                    'td',
+	                                                    null,
+	                                                    this.props.noData
+	                                                )
 	                                            )
 	                                        )
 	                                    )
@@ -80392,8 +80425,10 @@
 	                React.createElement(
 	                    'div',
 	                    { className: 'callout-dark' },
-	                    React.createElement(SearchBar, { filterText: this.state.filterText, onUserInput: this.handleUserInput.bind(this) }),
-	                    React.createElement(BuildingList, { data: this.props.data, filterText: this.state.filterText })
+	                    React.createElement(SearchBar, { filterText: this.state.filterText,
+	                        onUserInput: this.handleUserInput.bind(this) }),
+	                    React.createElement(BuildingList, { data: this.props.data,
+	                        filterText: this.state.filterText })
 	                )
 	            );
 	        }
@@ -81000,6 +81035,12 @@
 	var deleteSensorAPI = __webpack_require__(813);
 	var deleteMac = "";
 
+	var _require = __webpack_require__(111);
+
+	var connect = _require.connect;
+
+	var store = __webpack_require__(819).configure();
+
 	var DeleteSensor = function (_React$Component) {
 	  _inherits(DeleteSensor, _React$Component);
 
@@ -81009,7 +81050,8 @@
 	    var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(DeleteSensor).call(this, props));
 
 	    _this.state = {
-	      message: ''
+	      message: '',
+	      deleteMac: ''
 	    };
 	    return _this;
 	  }
@@ -81021,7 +81063,8 @@
 	      event.preventDefault();
 
 	      var that = this;
-	      var deleteMac = $('#deleteMac').text();
+	      var deleteMac = store.getState().macAddress;
+	      console.log("deleteMac", store.getState().macAddress);
 
 	      deleteSensorAPI.deleteSensor(deleteMac).then(function (response) {
 
@@ -81130,7 +81173,11 @@
 	  return DeleteSensorMessage;
 	}(React.Component);
 
-	module.exports = DeleteSensor;
+	module.exports = connect(function (state) {
+	  return {
+	    macAddress: state.macAddress
+	  };
+	})(DeleteSensor);
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(9)))
 
 /***/ },
@@ -81180,6 +81227,7 @@
 	var React = __webpack_require__(14);
 	var updateWatchList = __webpack_require__(798);
 	var unpinMac = "";
+	var store = __webpack_require__(819).configure();
 
 	var UnpinSensor = function (_React$Component) {
 	  _inherits(UnpinSensor, _React$Component);
@@ -81199,6 +81247,7 @@
 	    key: 'onUnpinSensor',
 	    value: function onUnpinSensor() {
 
+	      console.log('Unpin', store.getState().sensorData.isFetching);
 	      var that = this;
 
 	      var macAddress = $('#unpinMac').val();
@@ -81762,7 +81811,8 @@
 
 	  var reducer = redux.combineReducers({
 	    sensorData: _reducers.sensorDataReducer,
-	    auth: _reducers.authReducer
+	    auth: _reducers.authReducer,
+	    macAddress: _reducers.deleteSensorReducer
 	  });
 
 	  var store = redux.createStore(reducer, initialState, redux.compose(redux.applyMiddleware(_reduxThunk2.default), window.devToolsExtension ? window.devToolsExtension() : function (f) {
@@ -81811,9 +81861,28 @@
 	});
 	// string
 
+	var deleteSensorReducer = exports.deleteSensorReducer = function deleteSensorReducer() {
+	  var state = arguments.length <= 0 || arguments[0] === undefined ? { macAddress: 'something_stupid' } : arguments[0];
+	  var action = arguments[1];
+
+
+	  switch (action.type) {
+	    case 'COMPLETE_DELETE_SENSOR':
+
+	      console.log("macAdd", action.macAddress);
+
+	      return {
+	        macAddress: action.macAddress
+	      };
+	    default:
+	      return state;
+	  }
+	};
+
 	var sensorDataReducer = exports.sensorDataReducer = function sensorDataReducer() {
 	  var state = arguments.length <= 0 || arguments[0] === undefined ? { isFetching: false, data: undefined } : arguments[0];
 	  var action = arguments[1];
+
 
 	  switch (action.type) {
 	    case 'START_SENSOR_DATA_FETCH':
@@ -81848,52 +81917,6 @@
 	      return state;
 	  }
 	};
-
-	// export var searchTextReducer = (state = '', action) => {
-	//   switch(action.type) {
-	//     case 'SET_SEARCH_TEXT':
-	//       return action.searchText;
-	//     default:
-	//       return state;
-	//   };
-	// };
-	//
-	// // boolean
-	//
-	// export var showCompletedReducer = (state = false, action) => {
-	//   switch(action.type) {
-	//     case 'TOGGLE_SHOW_COMPLETED':
-	//       return !state;
-	//     default:
-	//       return state;
-	//   };
-	// };
-	//
-	// // array
-	//
-	// export var todosReducer = (state = [], action) => {
-	//   switch(action.type) {
-	//     case 'ADD_TODO':
-	//       return [
-	//         ...state,
-	//         action.todo
-	//       ];
-	//     case 'TOGGLE_TODO':
-	//       return state.map((todo) => {
-	//         if(todo.id === action.id) {
-	//           var nextCompleted = !todo.completed;
-	//
-	//           return  {
-	//             ...todo,
-	//             completed: nextCompleted,
-	//             completedAt: nextCompleted ? moment().unix() : undefined
-	//           };
-	//         }
-	//       });
-	//     default:
-	//       return state;
-	//   };
-	// };
 
 /***/ },
 /* 822 */

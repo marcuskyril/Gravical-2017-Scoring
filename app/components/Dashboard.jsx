@@ -14,6 +14,9 @@ var UnpinSensor = require('UnpinSensor');
 var RebootSensor = require('RebootSensor');
 var PinSensor = require('PinSensor');
 var Terminal = require('Terminal');
+import * as Redux from 'react-redux';
+import * as actions from 'actions';
+var {connect} = require('react-redux');
 var {Link, IndexLink} = require('react-router');
 const HOST = 'ws://opsdev.sence.io:9000';
 
@@ -21,6 +24,9 @@ class Dashboard extends React.Component {
 
     constructor(props) {
         super(props);
+
+        var {dispatch} = this.props;
+        console.log("dashboard props", dispatch);
 
         this.state = {
             connection: null,
@@ -79,7 +85,6 @@ class Dashboard extends React.Component {
         }, {'skipSubprotocolCheck': true});
 
         // close dropdowns
-
         window.addEventListener('click', function(e) {
 
             var pane = e.srcElement;

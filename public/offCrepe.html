@@ -158,24 +158,28 @@
 
         <!-- Gotta find a way to reuse these modals, yes? -->
         <div class="reveal tiny text-center" id="rebootSensorModal" data-reveal>
-            <form>
+            <form id="reboot-modal-submit">
                 <div class="row">
                     <div class="large-12 columns">
                         <div class="header">Reboot Sensor</div>
 
                         <div class="header" style='font-size:1.2rem;color:#990000;margin-bottom:1rem;font-weight:normal'>Hold up. You really wanna reboot this sensor?</div>
 
+                        <label>Mac Address
+                          <input name="MAC" id="rebootMAC" type="text" />
+                        </label>
+
                         <label>Username
-                            <input type="text" placeholder="Username"></input>
+                            <input name="username" type="text" placeholder="Username" />
                         </label>
 
                         <label>Password
-                            <input type="password" placeholder="Password"></input>
+                            <input name="password" type="password" placeholder="Password" />
                         </label>
 
-                        <div id="rebootSensorMessage"></div>
+                        <div class="header" style='font-size:1rem;color:#990000;margin-bottom:1rem;font-weight:normal' id="rebootSensorMessage"></div>
 
-                        <a id="pinBtn" onclick="reboot(macAddress)" class="button expanded proceed">Reboot Sensor</a>
+                        <input type="submit" class="button expanded proceed" value="Reboot Sensor" />
                         <a class="button expanded cancel close-reveal-modal" data-close aria-label="Close modal">Slow Down, Cowboy</a>
                     </div>
                 </div>
@@ -224,7 +228,7 @@
 
         <div class="buttons margin-top-md">
             <a onClick="scroll('DELETE_ACTION')" class="button expanded cancel">Delete Sensor</a>
-            <a id="bootyCall" onclick="scroll('REBOOT_ACTION')" class="button expanded proceed disabled">Reboot</a>
+            <a id="bootyCall" onclick="scroll('REBOOT_ACTION', macAddress)" class="button expanded proceed disabled">Reboot</a>
             <a id="pinBtnMain" onclick="scroll('PIN_ACTION')" style="border: 1px solid #990000; color: #990000" class="button hollow expanded">Pin to watch list</a>
         </div>
 

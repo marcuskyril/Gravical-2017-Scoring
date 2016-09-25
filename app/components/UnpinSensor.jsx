@@ -1,6 +1,7 @@
 var React = require('react');
 var updateWatchList = require('updateWatchList');
 var unpinMac = "";
+var store = require('configureStore').configure();
 
 class UnpinSensor extends React.Component {
   constructor(props) {
@@ -13,6 +14,7 @@ class UnpinSensor extends React.Component {
 
   onUnpinSensor() {
 
+    console.log('Unpin', store.getState().sensorData.isFetching);
     var that = this;
 
     var macAddress = $('#unpinMac').val();

@@ -1,6 +1,10 @@
+const REBOOT_SENSOR_URL = "http://opsdev.sence.io/backend/initialize_reboot_sequence.php";
+
+
 var deleteSensorModal;
 var unpinSensorModal;
 var rebootSensorModal;
+
 
 $(document).ready(function() {
     deleteSensorModal = new Foundation.Reveal($('#deleteSensorModal'));
@@ -9,7 +13,7 @@ $(document).ready(function() {
 });
 
 
-function scroll(action) {
+function scroll(action, macAddress) {
 
   switch(action) {
     case 'DELETE_ACTION':
@@ -19,6 +23,7 @@ function scroll(action) {
         unpinSensorModal.open();
     break;
     case 'REBOOT_ACTION':
+        $('#rebootMAC').val(macAddress);
         rebootSensorModal.open();
     break;
     default:
@@ -28,7 +33,6 @@ function scroll(action) {
 
   parent.window.scrollTo(0,0);
 }
-
 
 var socket;
 var macAddress;
@@ -199,6 +203,40 @@ try {
 
 document.getElementById("mac_address").innerHTML = macAddress;
 
+$("#reboot-modal-submit").on('submit', function (e) {
+
+    console.log($(this).serialize());
+
+    e.preventDefault();
+
+    var form = $(this);
+
+    $.ajax({
+        type: "POST",
+        url: REBOOT_SENSOR_URL,
+        data: $(this).serialize(),
+        success: function (response) {
+          // console.log("success", response);
+
+          if(response.error) {
+            document.getElementById('rebootSensorMessage').innerHTML = response.error;
+          } else {
+            document.getElementById('rebootSensorMessage').innerHTML = response.message;
+          }
+
+        },
+        error: function (xhr, ajaxOptions, thrownError) {
+            var data = JSON.parse(xhr.responseText);
+
+            console.console.log("error", data);
+
+            // console.log(form.find('#errMsgPopup'));
+            // form.find('#errMsgPopup').html(data['emailTxt']);
+            // form.find('#errMsgFooter').html(data['emailTxt']);
+        }
+    });
+});
+
 function updatePinButton(isPinned) {
   if(isPinned) {
 
@@ -262,30 +300,10 @@ function deleteSensor(macAddress) {
     parent.document.getElementsByClassName("js-off-canvas-exit")[0].dispatchEvent(oEvent);
 }
 
-function reboot(macAddress) {
-  const REBOOT_SENSOR_URL = "http://opsdev.sence.io/backend/initialize_reboot_sequence.php";
 
-  var data = {
-      "MAC": macAddress
-  }
-
-  $.ajax({
-      type: "POST",
-      beforeSend: function(request) {
-          request.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-      },
-      url: REBOOT_SENSOR_URL,
-      data: data,
-      success: function(msg) {
-          console.log("Que pasar?", msg);
-          rebootSensorModal.close();
-      },
-      error: function(e) {
-          console.warn("Remove sensor", e);
-      }
-  });
-
-}
+$(document).on('closed.zf.reveal', function() {
+  document.getElementById('rebootSensorMessage').innerHTML = "";
+});
 
 function pinToWatchList(macAddress, pin) {
     const PIN_TO_WATCHLIST_URL = "http://opsdev.sence.io/backend/sensor-watchlist-pin.php";

@@ -19,6 +19,7 @@ html {
 
 .button.disabled, .button[disabled], .button.disabled:hover {
     background: #000;
+    pointer-events: none;
 }
 
 

@@ -22,7 +22,7 @@ class Building extends React.Component {
           noData: (this.props.noData/totalSensors)
         }];
         return (
-            <div className="column row" style={{'margin-bottom':'30px'}}>
+            <div className="column row" style={{'marginBottom':'30px'}}>
                 <div className="header">
                     <div>
                         {this.props.buildingName}
@@ -50,9 +50,10 @@ class Building extends React.Component {
                        <YAxis hide={true} dataKey="name" type="category"/>
                        <CartesianGrid strokeDasharray="3 3"/>
                        <Tooltip coordinate={{ x: 1000, y: 100 }} content={
-                           <div style={{'background-color':'white', 'padding':'10px', 'padding-bottom':'5px'}}>
+                           <div style={{'backgroundColor':'white', 'padding':'10px', 'paddingBottom':'5px'}}>
                                <div>{this.props.buildingName}</div>
-                               <table style={{'min-width':'100px'}}>
+                               <table style={{'minWidth':'100px'}}>
+                                 <tbody>
                                    <tr style={{'color':'#006600'}}>
                                        <td>ok</td><td>{this.props.ok}</td>
                                    </tr>
@@ -68,6 +69,7 @@ class Building extends React.Component {
                                    <tr style={{'color':'#737373'}}>
                                        <td>no data</td><td>{this.props.noData}</td>
                                    </tr>
+                                 </tbody>
                                </table>
                            </div>
                        }/>
@@ -188,8 +190,10 @@ class BuildingOverview extends React.Component {
                   <div className="page-title">At A Glance</div>
                 </div>
                 <div className="callout-dark">
-                  <SearchBar filterText={this.state.filterText} onUserInput={this.handleUserInput.bind(this)}/>
-                  <BuildingList data={this.props.data} filterText={this.state.filterText}/>
+                  <SearchBar filterText={this.state.filterText}
+                              onUserInput={this.handleUserInput.bind(this)}/>
+                  <BuildingList data={this.props.data}
+                                filterText={this.state.filterText}/>
                 </div>
             </div>
         );

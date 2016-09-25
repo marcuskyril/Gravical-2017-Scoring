@@ -24,6 +24,11 @@ export var completeSensorDataFetch = (data) => {
     return {type: 'COMPLETE_SENSOR_DATA_FETCH', data};
 };
 
+export var completeDeleteSensor = (macAddress) => {
+    console.log("completeDeleteSensor", macAddress);
+    return {type: 'COMPLETE_DELETE_SENSOR', macAddress}
+}
+
 export var login = (uid) => {
     return {type: 'LOGIN', uid};
 };
@@ -51,6 +56,14 @@ export var startAddSensor = (inputMac, inputRegion, inputLocationLevel, inputLoc
         });
 
     };
+};
+
+export var startDeleteSensor = (macAddress) => {
+  console.log("deleting sensor from actions.jsx");
+
+  return (dispatch, getState) => {
+    dispatch(completeDeleteSensor(macAddress));
+  };
 };
 
 export var startResetPassword = (userEmailAddress) => {

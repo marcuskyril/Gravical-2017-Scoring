@@ -58,7 +58,7 @@ class SearchBar extends React.Component {
     }
 }
 
-class BuildingListV2 extends React.Component {
+class BuildingList extends React.Component {
     render() {
 
         var rows = [];
@@ -232,12 +232,14 @@ render() {
 
     return (
         <div>
-            <SearchBar filterText={this.state.filterText} onUserInput={this.handleUserInput.bind(this)}/>
+            <SearchBar filterText={this.state.filterText}
+                        onUserInput={this.handleUserInput.bind(this)}/>
 
             <div className="page-title">Sensors</div>
             <hr className="divider"/>
 
-            <BuildingListV2 data={this.props.data} filterText={this.state.filterText}/>
+            <BuildingList data={this.props.data}
+                            filterText={this.state.filterText}/>
 
             <div className="page-title">Servers</div>
             <hr className="divider"/>

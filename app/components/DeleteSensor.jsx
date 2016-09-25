@@ -1,13 +1,16 @@
 var React = require('react');
 var deleteSensorAPI = require('deleteSensorAPI');
 var deleteMac = "";
+var {connect} = require('react-redux');
+var store = require('configureStore').configure();
 
 class DeleteSensor extends React.Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      message: ''
+      message: '',
+      deleteMac: ''
     }
   }
 
@@ -16,7 +19,8 @@ class DeleteSensor extends React.Component {
     event.preventDefault();
 
     var that = this;
-    var deleteMac = $('#deleteMac').text();
+    var deleteMac = store.getState().macAddress;
+    console.log("deleteMac", store.getState().macAddress);
 
     deleteSensorAPI.deleteSensor(deleteMac).then(function(response){
 
@@ -86,4 +90,10 @@ class DeleteSensorMessage extends React.Component {
   }
 }
 
-module.exports = DeleteSensor;
+module.exports = connect(
+  (state) => {
+    return {
+      macAddress: state.macAddress
+    }
+  }
+)(DeleteSensor);

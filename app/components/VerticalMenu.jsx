@@ -1,13 +1,23 @@
 var React = require('react');
+import * as Redux from 'react-redux';
+import * as actions from 'actions';
+import {connect} from 'react-redux';
 const HOST = 'http://opsdev.sence.io:4201/';
+var store = require('configureStore').configure();
 
 class VerticalMenu extends React.Component {
 
     constructor(props) {
       super(props);
+
+      this.state = {
+        reboot_available : this.props.reboot
+      }
     }
 
     handleClick(sensorData, action) {
+        var {dispatch} = this.props;
+
         var macAddress = sensorData[0];
         var region = sensorData[3];
         var level = sensorData[5];
@@ -25,6 +35,7 @@ class VerticalMenu extends React.Component {
             $('#inputBuildingName').val(buildingName);
 
             // editModal.open();
+            //store.dispatch(actions.startEditSensor(macAddress, region.toLowerCase(), level, areaID, buildingName));
             $('#edit-sensor-modal').foundation('open');
 
             break;
@@ -34,6 +45,9 @@ class VerticalMenu extends React.Component {
             document.getElementById('deleteMac').innerHTML = macAddress;
 
             // deleteModal.open();
+            dispatch(actions.startDeleteSensor(macAddress));
+            console.log("DELETE_ACTION", store.getState());
+
             $('#delete-sensor-modal').foundation('open');
 
             break;
@@ -86,6 +100,16 @@ class VerticalMenu extends React.Component {
 
     }
     render() {
+      var {reboot_available} = this.state;
+
+      function renderTerminalLink() {
+        if(reboot_available) {
+          return (
+            <li><a onClick={() => this.handleClick(this.props.sensorData, 'LAUNCH_TERMINAL_ACTION')}>Launch terminal</a></li>
+          );
+        }
+      }
+
        return (
 
            <li className="sensorList">
@@ -97,7 +121,7 @@ class VerticalMenu extends React.Component {
                    <li><a onClick={() => this.handleClick(this.props.sensorData, 'EDIT_ACTION')}>Edit sensor</a></li>
                    <li><a onClick={() => this.handleClick(this.props.sensorData, 'DELETE_ACTION')}>Delete sensor</a></li>
                    <li><a onClick={() => this.handleClick(this.props.sensorData, 'WATCHLIST_UPDATE_ACTION')}>Pin sensor</a></li>
-                   <li><a onClick={() => this.handleClick(this.props.sensorData, 'LAUNCH_TERMINAL_ACTION')}>Launch terminal</a></li>
+                   {renderTerminalLink()}
                  </ul>
                </div>
            </li>
@@ -105,4 +129,5 @@ class VerticalMenu extends React.Component {
     }
 }
 
-module.exports = VerticalMenu;
+module.exports = connect()(VerticalMenu);
+// export default Redux.connect()(VerticalMenu);
