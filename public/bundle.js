@@ -73271,12 +73271,13 @@
 	                    var level = sensorsOnThisFloor[j]['level'];
 	                    var port = sensorsOnThisFloor[j]['port'];
 	                    var reboot = sensorsOnThisFloor[j]['reboot_available'];
+	                    var watchlist = sensorsOnThisFloor[j]['watchlist'];
 	                    //console.log("macAdd", macAdd);
 
 	                    // console.log("areaArray", areaArray);
 
 	                    var thePos = areaArray.indexOf(sensorId);
-	                    superTemp[thePos] = [macAdd, status, sensorId, region, building, level, port, reboot];
+	                    superTemp[thePos] = [macAdd, status, sensorId, region, building, level, port, reboot, watchlist];
 	                }
 
 	                superTemp.forEach(function (sensorData) {
@@ -73289,8 +73290,9 @@
 	                    level = sensorData[5];
 	                    port = sensorData[6];
 	                    var reboot = sensorData[7];
+	                    var watchlist = sensorData[8];
 
-	                    temp.push(React.createElement(VerticalMenu, { key: macAdd, macAdd: macAdd, sensorData: sensorData, 'class': colorMap[status], id: id, reboot: reboot }));
+	                    temp.push(React.createElement(VerticalMenu, { key: macAdd, macAdd: macAdd, sensorData: sensorData, 'class': colorMap[status], id: id, reboot: reboot, watchlist: watchlist }));
 	                });
 
 	                tableRows.push(React.createElement(
@@ -73773,7 +73775,8 @@
 	    var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(VerticalMenu).call(this, props));
 
 	    _this.state = {
-	      reboot_available: _this.props.reboot
+	      reboot_available: _this.props.reboot,
+	      isWatched: _this.props.watchlist
 	    };
 	    return _this;
 	  }
@@ -73790,6 +73793,7 @@
 	      var areaID = sensorData[2];
 	      var buildingName = sensorData[4];
 	      var port = sensorData[6];
+	      var watchlist = sensorData[8];
 
 	      switch (action) {
 	        case 'EDIT_ACTION':
@@ -73835,10 +73839,17 @@
 	          document.getElementById("sensorDetailsIFrame").src = "./offCrepe.html?offCanMac=" + macAddress;
 	          break;
 
-	        case 'WATCHLIST_UPDATE_ACTION':
+	        case 'PIN_WATCHLIST_ACTION':
 
 	          dispatch(actions.startUpdateWatchList(macAddress));
 	          $('#pin-sensor-modal').foundation('open');
+
+	          break;
+
+	        case 'UNPIN_WATCHLIST_ACTION':
+
+	          dispatch(actions.startUpdateWatchList(macAddress));
+	          $('#unpin-sensor-modal').foundation('open');
 
 	          break;
 
@@ -73882,9 +73893,43 @@
 	      }
 	    }
 	  }, {
+	    key: 'renderWatchlistLink',
+	    value: function renderWatchlistLink() {
+	      var _this3 = this;
+
+	      var isWatched = this.state.isWatched;
+
+
+	      if (isWatched) {
+	        return React.createElement(
+	          'li',
+	          null,
+	          React.createElement(
+	            'a',
+	            { onClick: function onClick() {
+	                return _this3.handleClick(_this3.props.sensorData, 'UNPIN_WATCHLIST_ACTION');
+	              } },
+	            'Unpin sensor'
+	          )
+	        );
+	      } else {
+	        return React.createElement(
+	          'li',
+	          null,
+	          React.createElement(
+	            'a',
+	            { onClick: function onClick() {
+	                return _this3.handleClick(_this3.props.sensorData, 'PIN_WATCHLIST_ACTION');
+	              } },
+	            'Pin sensor'
+	          )
+	        );
+	      }
+	    }
+	  }, {
 	    key: 'render',
 	    value: function render() {
-	      var _this3 = this;
+	      var _this4 = this;
 
 	      return React.createElement(
 	        'li',
@@ -73892,7 +73937,7 @@
 	        React.createElement(
 	          'div',
 	          { className: this.props.class, onClick: function onClick() {
-	              return _this3.handleClick(_this3.props.sensorData, 'NO_ACTION');
+	              return _this4.handleClick(_this4.props.sensorData, 'NO_ACTION');
 	            } },
 	          this.props.id
 	        ),
@@ -73913,7 +73958,7 @@
 	              React.createElement(
 	                'a',
 	                { onClick: function onClick() {
-	                    return _this3.handleClick(_this3.props.sensorData, 'OPEN_CANVAS_ACTION');
+	                    return _this4.handleClick(_this4.props.sensorData, 'OPEN_CANVAS_ACTION');
 	                  }, 'data-toggle': 'offCanvas' },
 	                'More details »'
 	              )
@@ -73924,7 +73969,7 @@
 	              React.createElement(
 	                'a',
 	                { onClick: function onClick() {
-	                    return _this3.handleClick(_this3.props.sensorData, 'EDIT_ACTION');
+	                    return _this4.handleClick(_this4.props.sensorData, 'EDIT_ACTION');
 	                  } },
 	                'Edit sensor'
 	              )
@@ -73935,22 +73980,12 @@
 	              React.createElement(
 	                'a',
 	                { onClick: function onClick() {
-	                    return _this3.handleClick(_this3.props.sensorData, 'DELETE_ACTION');
+	                    return _this4.handleClick(_this4.props.sensorData, 'DELETE_ACTION');
 	                  } },
 	                'Delete sensor'
 	              )
 	            ),
-	            React.createElement(
-	              'li',
-	              null,
-	              React.createElement(
-	                'a',
-	                { onClick: function onClick() {
-	                    return _this3.handleClick(_this3.props.sensorData, 'WATCHLIST_UPDATE_ACTION');
-	                  } },
-	                'Pin sensor'
-	              )
-	            ),
+	            this.renderWatchlistLink(),
 	            this.renderTerminalLink()
 	          )
 	        )
@@ -80152,6 +80187,7 @@
 	                down: this.props.down / totalSensors,
 	                noData: this.props.noData / totalSensors
 	            }];
+
 	            return React.createElement(
 	                'div',
 	                { className: 'column row', style: { 'marginBottom': '30px' } },

@@ -157,12 +157,13 @@ class LevelList extends React.Component {
               var level = sensorsOnThisFloor[j]['level'];
               var port = sensorsOnThisFloor[j]['port'];
               var reboot = sensorsOnThisFloor[j]['reboot_available'];
+              var watchlist = sensorsOnThisFloor[j]['watchlist'];
               //console.log("macAdd", macAdd);
 
               // console.log("areaArray", areaArray);
 
               var thePos = areaArray.indexOf(sensorId);
-              superTemp[thePos] = [macAdd, status, sensorId, region, building, level, port, reboot];
+              superTemp[thePos] = [macAdd, status, sensorId, region, building, level, port, reboot, watchlist];
             }
 
             superTemp.forEach(function(sensorData) {
@@ -175,8 +176,9 @@ class LevelList extends React.Component {
               level = sensorData[5];
               port = sensorData[6];
               var reboot = sensorData[7];
+              var watchlist = sensorData[8];
 
-              temp.push(<VerticalMenu key={macAdd} macAdd={macAdd} sensorData={sensorData} class={colorMap[status]} id={id} reboot={reboot}/>);
+              temp.push(<VerticalMenu key={macAdd} macAdd={macAdd} sensorData={sensorData} class={colorMap[status]} id={id} reboot={reboot} watchlist={watchlist}/>);
 
           });
 

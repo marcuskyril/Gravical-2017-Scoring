@@ -11,7 +11,8 @@ class VerticalMenu extends React.Component {
       super(props);
 
       this.state = {
-        reboot_available : this.props.reboot
+        reboot_available : this.props.reboot,
+        isWatched: this.props.watchlist
       }
     }
 
@@ -24,6 +25,7 @@ class VerticalMenu extends React.Component {
         var areaID = sensorData[2];
         var buildingName = sensorData[4];
         var port = sensorData[6];
+        var watchlist = sensorData[8];
 
         switch(action){
           case 'EDIT_ACTION':
@@ -69,10 +71,17 @@ class VerticalMenu extends React.Component {
             document.getElementById("sensorDetailsIFrame").src = "./offCrepe.html?offCanMac=" + macAddress;
             break;
 
-          case 'WATCHLIST_UPDATE_ACTION':
+          case 'PIN_WATCHLIST_ACTION':
 
             dispatch(actions.startUpdateWatchList(macAddress));
             $('#pin-sensor-modal').foundation('open');
+
+            break;
+
+          case 'UNPIN_WATCHLIST_ACTION':
+
+            dispatch(actions.startUpdateWatchList(macAddress));
+            $('#unpin-sensor-modal').foundation('open');
 
             break;
 
@@ -103,6 +112,21 @@ class VerticalMenu extends React.Component {
             );
         }
     }
+
+    renderWatchlistLink() {
+        var {isWatched} = this.state;
+
+        if(isWatched) {
+            return (
+              <li><a onClick={() => this.handleClick(this.props.sensorData, 'UNPIN_WATCHLIST_ACTION')}>Unpin sensor</a></li>
+            );
+        } else {
+            return (
+              <li><a onClick={() => this.handleClick(this.props.sensorData, 'PIN_WATCHLIST_ACTION')}>Pin sensor</a></li>
+            );
+        }
+    }
+
     render() {
         return (
 
@@ -114,7 +138,7 @@ class VerticalMenu extends React.Component {
                        <li><a onClick={() => this.handleClick(this.props.sensorData, 'OPEN_CANVAS_ACTION')} data-toggle="offCanvas">More details &raquo;</a></li>
                        <li><a onClick={() => this.handleClick(this.props.sensorData, 'EDIT_ACTION')}>Edit sensor</a></li>
                        <li><a onClick={() => this.handleClick(this.props.sensorData, 'DELETE_ACTION')}>Delete sensor</a></li>
-                       <li><a onClick={() => this.handleClick(this.props.sensorData, 'WATCHLIST_UPDATE_ACTION')}>Pin sensor</a></li>
+                       {this.renderWatchlistLink()}
                        {this.renderTerminalLink()}
                     </ul>
                </div>

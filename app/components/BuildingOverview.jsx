@@ -19,6 +19,7 @@ class Building extends React.Component {
           down: (this.props.down/totalSensors),
           noData: (this.props.noData/totalSensors)
         }];
+        
         return (
             <div className="column row" style={{'marginBottom':'30px'}}>
                 <div className="header">
