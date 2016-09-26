@@ -15,7 +15,7 @@ class UnpinSensor extends React.Component {
 
   onUnpinSensor() {
 
-    var macAdd = this.props.pin_mac.macAddress;
+    var macAdd = this.props.pin_mac.pin_mac;
     var that = this;
 
     updateWatchList.updateWatchList(macAdd, false).then(function (response) {
@@ -29,10 +29,6 @@ class UnpinSensor extends React.Component {
     // console.log("delete sensor state ", this.state);
     var message = this.state.message;
     var that = this;
-
-    if ($('#unpinMac').val() !== "") {
-        unpinMac = $('#unpinMac').val();
-    }
 
     // resets message to empty string on close
     $('#unpin-sensor-modal').on('closed.zf.reveal', function() {
@@ -78,7 +74,7 @@ class UnpinSensorMessage extends React.Component {
 
 function mapStateToProps(state, ownProps) {
     console.log("state", state);
-    return { pin_mac: state.macAddress }
+    return { pin_mac: state.pin_mac }
 }
 
 module.exports = connect(mapStateToProps)(UnpinSensor);

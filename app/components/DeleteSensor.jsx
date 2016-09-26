@@ -60,7 +60,7 @@ class DeleteSensor extends React.Component {
 
                       <div className="header" style={{color: '#990000'}}>Hold up. You really wanna delete this bad boy?</div>
                       <div className="header" id="deleteDetails"></div>
-                      <div className="header" id="deleteMac"></div>
+                      <div className="header" id="deleteMac">{this.props.deleteMac.macAddress}</div>
 
                       <div id="deleteSensorMessage"><DeleteSensorMessage message={message}/></div>
 

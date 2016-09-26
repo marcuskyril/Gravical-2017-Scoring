@@ -2,8 +2,6 @@ var React = require('react');
 var Recharts = require('recharts');
 const {ResponsiveContainer, BarChart, Bar, XAxis, YAxis, CartesianGrid, Legend, Tooltip} = Recharts;
 
-var myColors = ["#006600", "#cc7a00", "#990000", "#1a1b1b", "#737373"];
-
 class Building extends React.Component {
     constructor(props) {
         super(props);
@@ -27,13 +25,13 @@ class Building extends React.Component {
                     <div>
                         {this.props.buildingName}
                         <div style={{'float':'right'}}>
-                            <span style={{'color':'#006600'}}>{this.props.ok}</span>
+                            <span style={{'color':'#008000'}}>{this.props.ok}</span>
                             &nbsp;|&nbsp;
-                            <span style={{'color':'#cc7a00'}}>{this.props.warning}</span>
+                            <span style={{'color':'#ffcc00'}}>{this.props.warning}</span>
                             &nbsp;|&nbsp;
-                            <span style={{'color':'#990000'}}>{this.props.danger}</span>
+                            <span style={{'color':'#cc7a00'}}>{this.props.danger}</span>
                             &nbsp;|&nbsp;
-                            <span style={{'color':'#1a1b1b'}}>{this.props.down}</span>
+                            <span style={{'color':'#990000'}}>{this.props.down}</span>
                             &nbsp;|&nbsp;
                             <span style={{'color':'#737373'}}>{this.props.noData}</span>
                         </div>
@@ -50,20 +48,21 @@ class Building extends React.Component {
                        <YAxis hide={true} dataKey="name" type="category"/>
                        <CartesianGrid strokeDasharray="3 3"/>
                        <Tooltip coordinate={{ x: 1000, y: 100 }} content={
-                           <div style={{'backgroundColor':'white', 'padding':'10px', 'paddingBottom':'5px'}}>
+                           <div style={{'backgroundColor':'#fff', 'padding':'10px', 'paddingBottom':'5px'}}>
                                <div>{this.props.buildingName}</div>
-                               <table style={{'minWidth':'100px'}}>
+
+                               <table id="glance-tooltip" style={{'minWidth':'100px'}}>
                                  <tbody>
-                                   <tr style={{'color':'#006600'}}>
+                                   <tr style={{'color':'#008000'}}>
                                        <td>ok</td><td>{this.props.ok}</td>
                                    </tr>
-                                   <tr style={{'color':'#cc7a00'}}>
+                                   <tr style={{'color':'#ffcc00'}}>
                                        <td>warning</td><td>{this.props.warning}</td>
                                    </tr>
-                                   <tr style={{'color':'#990000'}}>
+                                   <tr style={{'color':'#cc7a00'}}>
                                        <td>danger</td><td>{this.props.danger}</td>
                                    </tr>
-                                   <tr style={{'color':'#1a1b1b'}}>
+                                   <tr style={{'color':'#990000'}}>
                                        <td>down</td><td>{this.props.down}</td>
                                    </tr>
                                    <tr style={{'color':'#737373'}}>
@@ -73,10 +72,10 @@ class Building extends React.Component {
                                </table>
                            </div>
                        }/>
-                       <Bar dataKey="ok" stackId="a" fill="#006600" isAnimationActive={false}/>
-                       <Bar dataKey="warning" stackId="a" fill="#cc7a00" isAnimationActive={false}/>
-                       <Bar dataKey="danger" stackId="a" fill="#990000" isAnimationActive={false}/>
-                       <Bar dataKey="down" stackId="a" fill="#1a1b1b" isAnimationActive={false}/>
+                       <Bar dataKey="ok" stackId="a" fill="#008000" isAnimationActive={false}/>
+                       <Bar dataKey="warning" stackId="a" fill="#ffcc00" isAnimationActive={false}/>
+                       <Bar dataKey="danger" stackId="a" fill="#cc7a00" isAnimationActive={false}/>
+                       <Bar dataKey="down" stackId="a" fill="#990000" isAnimationActive={false}/>
                        <Bar dataKey="noData" stackId="a" fill="#737373" isAnimationActive={false}/>
                       </BarChart>
 

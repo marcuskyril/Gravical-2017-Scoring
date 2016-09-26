@@ -13,9 +13,10 @@ $light-grey: #373837;
 $not-so-dark-grey: #e8e8e8;
 $crazy-light-grey: #f2f2f2;
 // Chart colors
-$green: #006600;
+$green: #008000;
 $orange: #cc7a00;
 $red: #990000;
+$yellow: #ffcc00;
 $black: #1a1b1b;
 $grey: #737373;
 
@@ -206,13 +207,13 @@ ul.header-list {
 }
 
 .icon-btn-text-small {
-    font-family: 'Pathway Gothic One', sans-serif;
-    text-transform: uppercase;
+    font-family: 'Roboto', sans-serif;
+    text-transform: Captitalize;
     top: 15px;
     right: 15px;
     position: absolute;
     color: $night-ocean;
-    font-size: 1.2rem;
+    font-size: 1.1rem;
 }
 
 .test {
@@ -231,9 +232,8 @@ label {
 .header {
     color: $night-ocean;
     margin-bottom: 0;
-    font-size: 1.2rem;
-    text-transform: uppercase;
-    font-family: 'Pathway Gothic One', sans-serif;
+    text-transform: capitalize;
+    font-family: 'Roboto', sans-serif;
 }
 
 .sub-header {
@@ -328,6 +328,19 @@ table.sensor-details-table {
 .sensorList {
     display: inline-block;
     margin-right: 1px;
+}
+
+#uptime-form select {
+    margin-right: 2rem;
+}
+
+.recharts-tooltip-wrapper {
+    z-index: 1000;
+    box-shadow: 1px 1px 4px $dark-grey;
+}
+
+#glance-tooltip > table tr:nth-of-type(even) {
+    background-color: transparent !important;
 }
 
 .button-custom {
@@ -434,6 +447,10 @@ input[type=checkbox]:checked ~ #port {
 
 .black {
     background-color: $black;
+}
+
+.yellow {
+    background-color: $yellow;
 }
 
 .grey {

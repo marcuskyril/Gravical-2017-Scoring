@@ -33,9 +33,6 @@ class VerticalMenu extends React.Component {
             $('#inputLocationLevel').val(level);
             $('#inputSensorLocationID').val(areaID);
             $('#inputBuildingName').val(buildingName);
-
-            // editModal.open();
-            //store.dispatch(actions.startEditSensor(macAddress, region.toLowerCase(), level, areaID, buildingName));
             $('#edit-sensor-modal').foundation('open');
 
             break;
@@ -44,19 +41,11 @@ class VerticalMenu extends React.Component {
             document.getElementById('deleteDetails').innerHTML = buildingName +": " +level +areaID;
             document.getElementById('deleteMac').innerHTML = macAddress;
 
-            // deleteModal.open();
             dispatch(actions.startDeleteSensor(macAddress));
-            console.log("DELETE_ACTION", store.getState());
-
             $('#delete-sensor-modal').foundation('open');
 
             break;
-          case 'REBOOT_ACTION':
 
-            $('#rebootMac').val(macAddress);
-            $('#reboot-sensor-modal').foundation('open');
-
-            break;
           case 'NO_ACTION':
               var dropdowns = document.getElementsByClassName("dropdown-pane");
               var i;
@@ -75,6 +64,7 @@ class VerticalMenu extends React.Component {
               }
 
               break;
+
           case 'OPEN_CANVAS_ACTION':
             document.getElementById("sensorDetailsIFrame").src = "./offCrepe.html?offCanMac=" + macAddress;
             break;
@@ -85,14 +75,19 @@ class VerticalMenu extends React.Component {
             $('#pin-sensor-modal').foundation('open');
 
             break;
+
           case 'LAUNCH_TERMINAL_ACTION':
+
+            console.log("port", port);
 
             if(port.length > 0){
               document.getElementById("terminalIFrame").src = `${HOST}?username=pi&port=${port}`;
             }
 
             $('#terminal').foundation('open');
+
             break;
+
           default:
             console.warn('Invalid request.');
             break;

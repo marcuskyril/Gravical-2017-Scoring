@@ -14287,9 +14287,9 @@
 
 	var colorMap = {
 	  "ok": "#006600",
-	  "warning": "#cc7a00",
-	  "danger": "#990000",
-	  "down": "#1a1b1b",
+	  "warning": "#ffff1a",
+	  "danger": "#cc7a00",
+	  "down": "#990000",
 	  "no data": "#737373"
 	};
 
@@ -14445,7 +14445,7 @@
 	            ),
 	            React.createElement(
 	              'form',
-	              null,
+	              { id: 'uptime-form', style: { display: 'flex' } },
 	              React.createElement(
 	                'select',
 	                { ref: 'numDays' },
@@ -71998,8 +71998,6 @@
 	        key: 'componentDidMount',
 	        value: function componentDidMount() {
 	            $(document).foundation();
-
-	            // listen for terminal modal close
 	        }
 	    }, {
 	        key: 'render',
@@ -72890,8 +72888,7 @@
 	    _createClass(PinComponent, [{
 	        key: 'handleClick',
 	        value: function handleClick(macAddress) {
-	            var dispatch = this.props.dispatch;
-
+	            var dispatch = this.props.data.dispatch;
 	            dispatch(actions.startUpdateWatchList(macAddress));
 	            $('#pin-sensor-modal').foundation('open');
 	        }
@@ -72903,7 +72900,7 @@
 	            return React.createElement(
 	                'a',
 	                { onClick: function onClick() {
-	                        return _this3.handleClick(_this3.props.data);
+	                        return _this3.handleClick(_this3.props.data.mac);
 	                    } },
 	                React.createElement(
 	                    'div',
@@ -72956,9 +72953,9 @@
 	}, {
 	    "columnName": "pin",
 	    "order": 6,
-	    "locked": false,
+	    "locked": true,
 	    "visible": true,
-	    "sortable": true,
+	    "sortable": false,
 	    "displayName": "Actions",
 	    "customComponent": PinComponent
 	}];
@@ -72977,10 +72974,17 @@
 	        value: function render() {
 	            var allSensorData = this.props.data;
 	            var dataList = [];
+	            var dispatch = this.props.dispatch;
+
 
 	            for (var sensor in allSensorData) {
 	                if (allSensorData.hasOwnProperty(sensor)) {
-	                    var mac = sensor;
+
+	                    var coolStuff = {
+	                        dispatch: dispatch,
+	                        mac: sensor
+	                    };
+
 	                    if (allSensorData[sensor]["flapping"]) {
 	                        var row = {
 	                            "building": allSensorData[sensor]["building"],
@@ -72988,7 +72992,7 @@
 	                            "sensor_status": allSensorData[sensor]["sensor_status"],
 	                            "flapping": allSensorData[sensor]["flapping"],
 	                            "network_router": allSensorData[sensor]["network_router"],
-	                            "pin": mac
+	                            "pin": coolStuff
 	                        };
 
 	                        if (allSensorData[sensor]["flapping"] != "false") {
@@ -73001,7 +73005,9 @@
 	            return React.createElement(
 	                'div',
 	                null,
-	                React.createElement(Griddle, { results: dataList, columnMetadata: tableMetaData, tableClassName: 'table', columns: ["building", "sensor-level-id", "sensor_status", "flapping", "network_router", "pin"] })
+	                React.createElement(Griddle, { results: dataList,
+	                    columnMetadata: tableMetaData,
+	                    tableClassName: 'table', columns: ["building", "sensor-level-id", "sensor_status", "flapping", "network_router", "pin"] })
 	            );
 	        }
 	    }]);
@@ -73048,9 +73054,9 @@
 
 	var colorMap = {
 	    "ok": "sensorBlockSquare green sensorList",
-	    "warning": "sensorBlockSquare orange sensorList",
-	    "danger": "sensorBlockSquare red sensorList",
-	    "down": "sensorBlockSquare black sensorList",
+	    "warning": "sensorBlockSquare yellow sensorList",
+	    "danger": "sensorBlockSquare orange sensorList",
+	    "down": "sensorBlockSquare red sensorList",
 	    "no data": "sensorBlockSquare grey sensorList"
 	};
 
@@ -73793,9 +73799,6 @@
 	          $('#inputLocationLevel').val(level);
 	          $('#inputSensorLocationID').val(areaID);
 	          $('#inputBuildingName').val(buildingName);
-
-	          // editModal.open();
-	          //store.dispatch(actions.startEditSensor(macAddress, region.toLowerCase(), level, areaID, buildingName));
 	          $('#edit-sensor-modal').foundation('open');
 
 	          break;
@@ -73804,19 +73807,11 @@
 	          document.getElementById('deleteDetails').innerHTML = buildingName + ": " + level + areaID;
 	          document.getElementById('deleteMac').innerHTML = macAddress;
 
-	          // deleteModal.open();
 	          dispatch(actions.startDeleteSensor(macAddress));
-	          console.log("DELETE_ACTION", store.getState());
-
 	          $('#delete-sensor-modal').foundation('open');
 
 	          break;
-	        case 'REBOOT_ACTION':
 
-	          $('#rebootMac').val(macAddress);
-	          $('#reboot-sensor-modal').foundation('open');
-
-	          break;
 	        case 'NO_ACTION':
 	          var dropdowns = document.getElementsByClassName("dropdown-pane");
 	          var i;
@@ -73835,6 +73830,7 @@
 	          }
 
 	          break;
+
 	        case 'OPEN_CANVAS_ACTION':
 	          document.getElementById("sensorDetailsIFrame").src = "./offCrepe.html?offCanMac=" + macAddress;
 	          break;
@@ -73845,14 +73841,19 @@
 	          $('#pin-sensor-modal').foundation('open');
 
 	          break;
+
 	        case 'LAUNCH_TERMINAL_ACTION':
+
+	          console.log("port", port);
 
 	          if (port.length > 0) {
 	            document.getElementById("terminalIFrame").src = HOST + '?username=pi&port=' + port;
 	          }
 
 	          $('#terminal').foundation('open');
+
 	          break;
+
 	        default:
 	          console.warn('Invalid request.');
 	          break;
@@ -73997,49 +73998,8 @@
 
 	var dataList = [];
 
-	var RemoveComponent = function (_React$Component) {
-	    _inherits(RemoveComponent, _React$Component);
-
-	    function RemoveComponent() {
-	        _classCallCheck(this, RemoveComponent);
-
-	        return _possibleConstructorReturn(this, Object.getPrototypeOf(RemoveComponent).apply(this, arguments));
-	    }
-
-	    _createClass(RemoveComponent, [{
-	        key: 'handleClick',
-	        value: function handleClick(macAddress) {
-	            var dispatch = this.props.dispatch;
-
-	            dispatch(actions.startUpdateWatchList(macAddress));
-	            $('#unpin-sensor-modal').foundation('open');
-	        }
-	    }, {
-	        key: 'render',
-	        value: function render() {
-	            var _this2 = this;
-
-	            return React.createElement(
-	                'a',
-	                { onClick: function onClick() {
-	                        return _this2.handleClick(_this2.props.data);
-	                    } },
-	                React.createElement(
-	                    'div',
-	                    { id: 'unpin-btn', className: 'sensorBlock remove' },
-	                    'Un-Pin'
-	                )
-	            );
-	        }
-	    }]);
-
-	    return RemoveComponent;
-	}(React.Component);
-
-	;
-
-	var SensorBlockComponent = function (_React$Component2) {
-	    _inherits(SensorBlockComponent, _React$Component2);
+	var SensorBlockComponent = function (_React$Component) {
+	    _inherits(SensorBlockComponent, _React$Component);
 
 	    function SensorBlockComponent() {
 	        _classCallCheck(this, SensorBlockComponent);
@@ -74068,6 +74028,46 @@
 	    }]);
 
 	    return SensorBlockComponent;
+	}(React.Component);
+
+	;
+
+	var RemoveComponent = function (_React$Component2) {
+	    _inherits(RemoveComponent, _React$Component2);
+
+	    function RemoveComponent(props) {
+	        _classCallCheck(this, RemoveComponent);
+
+	        return _possibleConstructorReturn(this, Object.getPrototypeOf(RemoveComponent).call(this, props));
+	    }
+
+	    _createClass(RemoveComponent, [{
+	        key: 'handleClick',
+	        value: function handleClick(macAddress) {
+	            var dispatch = this.props.data.dispatch;
+	            dispatch(actions.startUpdateWatchList(macAddress));
+	            $('#unpin-sensor-modal').foundation('open');
+	        }
+	    }, {
+	        key: 'render',
+	        value: function render() {
+	            var _this3 = this;
+
+	            return React.createElement(
+	                'a',
+	                { onClick: function onClick() {
+	                        return _this3.handleClick(_this3.props.data.mac);
+	                    } },
+	                React.createElement(
+	                    'div',
+	                    { id: 'unpin-btn', className: 'sensorBlock remove' },
+	                    'Un-Pin'
+	                )
+	            );
+	        }
+	    }]);
+
+	    return RemoveComponent;
 	}(React.Component);
 
 	;
@@ -74145,7 +74145,8 @@
 	    "order": 5,
 	    "locked": true,
 	    "visible": true,
-	    "displayName": "Un-pin?",
+	    "sortable": false,
+	    "displayName": "Actions",
 	    "customComponent": RemoveComponent
 	}];
 
@@ -74159,12 +74160,7 @@
 	    function WatchList(props) {
 	        _classCallCheck(this, WatchList);
 
-	        var _this6 = _possibleConstructorReturn(this, Object.getPrototypeOf(WatchList).call(this, props));
-
-	        _this6.state = {
-	            dataList: []
-	        };
-	        return _this6;
+	        return _possibleConstructorReturn(this, Object.getPrototypeOf(WatchList).call(this, props));
 	    }
 
 	    _createClass(WatchList, [{
@@ -74172,6 +74168,7 @@
 	        value: function tableClickHandler(gridRow) {
 
 	            var macAddress = gridRow.props.data.mac_address;
+	            console.log("macAddress", macAddress);
 
 	            if ($('#unpin-sensor-modal').css('display') === 'none') {
 	                $('#offCanvas').foundation('open', event);
@@ -74181,19 +74178,26 @@
 	    }, {
 	        key: 'render',
 	        value: function render() {
-
 	            var allSensorData = this.props.data;
 	            var dataList = [];
+	            var dispatch = this.props.dispatch;
+
+
 	            for (var sensor in allSensorData) {
 	                if (allSensorData.hasOwnProperty(sensor)) {
+
+	                    var coolStuff = {
+	                        dispatch: dispatch,
+	                        mac: sensor
+	                    };
+
 	                    if (allSensorData[sensor]["watchlist"]) {
-	                        var mac = sensor;
 	                        var row = {
-	                            "mac_address": mac,
+	                            "mac_address": sensor,
 	                            "building": allSensorData[sensor]["building"],
 	                            "sensor-level-id": allSensorData[sensor]["sensor-location-level"] + allSensorData[sensor]["sensor-location-id"],
 	                            "sensor_status": allSensorData[sensor]["sensor_status"],
-	                            "remove": mac
+	                            "remove": coolStuff
 	                        };
 
 	                        if (typeof allSensorData[sensor]["error"] !== "undefined") {
@@ -74212,6 +74216,7 @@
 	                    showFilter: true,
 	                    initialSort: 'building_name',
 	                    tableClassName: 'piOverviewTable',
+	                    columns: ["mac_address", "building", "sensor-level-id", "sensor_status", "remove"],
 	                    columnMetadata: tableMetaData,
 	                    onRowClick: this.tableClickHandler.bind(this),
 	                    rowMetaData: rowMetaData })
@@ -74222,7 +74227,7 @@
 	    return WatchList;
 	}(React.Component);
 
-	module.exports = WatchList;
+	module.exports = (0, _reactRedux.connect)()(WatchList);
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(9)))
 
 /***/ },
@@ -80124,9 +80129,6 @@
 	var Legend = Recharts.Legend;
 	var Tooltip = Recharts.Tooltip;
 
-
-	var myColors = ["#006600", "#cc7a00", "#990000", "#1a1b1b", "#737373"];
-
 	var Building = function (_React$Component) {
 	    _inherits(Building, _React$Component);
 
@@ -80165,25 +80167,25 @@
 	                            { style: { 'float': 'right' } },
 	                            React.createElement(
 	                                'span',
-	                                { style: { 'color': '#006600' } },
+	                                { style: { 'color': '#008000' } },
 	                                this.props.ok
 	                            ),
 	                            ' | ',
 	                            React.createElement(
 	                                'span',
-	                                { style: { 'color': '#cc7a00' } },
+	                                { style: { 'color': '#ffcc00' } },
 	                                this.props.warning
 	                            ),
 	                            ' | ',
 	                            React.createElement(
 	                                'span',
-	                                { style: { 'color': '#990000' } },
+	                                { style: { 'color': '#cc7a00' } },
 	                                this.props.danger
 	                            ),
 	                            ' | ',
 	                            React.createElement(
 	                                'span',
-	                                { style: { 'color': '#1a1b1b' } },
+	                                { style: { 'color': '#990000' } },
 	                                this.props.down
 	                            ),
 	                            ' | ',
@@ -80212,7 +80214,7 @@
 	                            React.createElement(CartesianGrid, { strokeDasharray: '3 3' }),
 	                            React.createElement(Tooltip, { coordinate: { x: 1000, y: 100 }, content: React.createElement(
 	                                    'div',
-	                                    { style: { 'backgroundColor': 'white', 'padding': '10px', 'paddingBottom': '5px' } },
+	                                    { style: { 'backgroundColor': '#fff', 'padding': '10px', 'paddingBottom': '5px' } },
 	                                    React.createElement(
 	                                        'div',
 	                                        null,
@@ -80220,13 +80222,13 @@
 	                                    ),
 	                                    React.createElement(
 	                                        'table',
-	                                        { style: { 'minWidth': '100px' } },
+	                                        { id: 'glance-tooltip', style: { 'minWidth': '100px' } },
 	                                        React.createElement(
 	                                            'tbody',
 	                                            null,
 	                                            React.createElement(
 	                                                'tr',
-	                                                { style: { 'color': '#006600' } },
+	                                                { style: { 'color': '#008000' } },
 	                                                React.createElement(
 	                                                    'td',
 	                                                    null,
@@ -80240,7 +80242,7 @@
 	                                            ),
 	                                            React.createElement(
 	                                                'tr',
-	                                                { style: { 'color': '#cc7a00' } },
+	                                                { style: { 'color': '#ffcc00' } },
 	                                                React.createElement(
 	                                                    'td',
 	                                                    null,
@@ -80254,7 +80256,7 @@
 	                                            ),
 	                                            React.createElement(
 	                                                'tr',
-	                                                { style: { 'color': '#990000' } },
+	                                                { style: { 'color': '#cc7a00' } },
 	                                                React.createElement(
 	                                                    'td',
 	                                                    null,
@@ -80268,7 +80270,7 @@
 	                                            ),
 	                                            React.createElement(
 	                                                'tr',
-	                                                { style: { 'color': '#1a1b1b' } },
+	                                                { style: { 'color': '#990000' } },
 	                                                React.createElement(
 	                                                    'td',
 	                                                    null,
@@ -80297,10 +80299,10 @@
 	                                        )
 	                                    )
 	                                ) }),
-	                            React.createElement(Bar, { dataKey: 'ok', stackId: 'a', fill: '#006600', isAnimationActive: false }),
-	                            React.createElement(Bar, { dataKey: 'warning', stackId: 'a', fill: '#cc7a00', isAnimationActive: false }),
-	                            React.createElement(Bar, { dataKey: 'danger', stackId: 'a', fill: '#990000', isAnimationActive: false }),
-	                            React.createElement(Bar, { dataKey: 'down', stackId: 'a', fill: '#1a1b1b', isAnimationActive: false }),
+	                            React.createElement(Bar, { dataKey: 'ok', stackId: 'a', fill: '#008000', isAnimationActive: false }),
+	                            React.createElement(Bar, { dataKey: 'warning', stackId: 'a', fill: '#ffcc00', isAnimationActive: false }),
+	                            React.createElement(Bar, { dataKey: 'danger', stackId: 'a', fill: '#cc7a00', isAnimationActive: false }),
+	                            React.createElement(Bar, { dataKey: 'down', stackId: 'a', fill: '#990000', isAnimationActive: false }),
 	                            React.createElement(Bar, { dataKey: 'noData', stackId: 'a', fill: '#737373', isAnimationActive: false })
 	                        )
 	                    )
@@ -81144,7 +81146,11 @@
 	                'Hold up. You really wanna delete this bad boy?'
 	              ),
 	              React.createElement('div', { className: 'header', id: 'deleteDetails' }),
-	              React.createElement('div', { className: 'header', id: 'deleteMac' }),
+	              React.createElement(
+	                'div',
+	                { className: 'header', id: 'deleteMac' },
+	                this.props.deleteMac.macAddress
+	              ),
 	              React.createElement(
 	                'div',
 	                { id: 'deleteSensorMessage' },
@@ -81276,7 +81282,7 @@
 	    key: 'onUnpinSensor',
 	    value: function onUnpinSensor() {
 
-	      var macAdd = this.props.pin_mac.macAddress;
+	      var macAdd = this.props.pin_mac.pin_mac;
 	      var that = this;
 
 	      updateWatchList.updateWatchList(macAdd, false).then(function (response) {
@@ -81291,10 +81297,6 @@
 	      // console.log("delete sensor state ", this.state);
 	      var message = this.state.message;
 	      var that = this;
-
-	      if ($('#unpinMac').val() !== "") {
-	        unpinMac = $('#unpinMac').val();
-	      }
 
 	      // resets message to empty string on close
 	      $('#unpin-sensor-modal').on('closed.zf.reveal', function () {
@@ -81379,7 +81381,7 @@
 
 	function mapStateToProps(state, ownProps) {
 	  console.log("state", state);
-	  return { pin_mac: state.macAddress };
+	  return { pin_mac: state.pin_mac };
 	}
 
 	module.exports = connect(mapStateToProps)(UnpinSensor);
@@ -82357,7 +82359,7 @@
 	exports.push([module.id, "@import url(https://fonts.googleapis.com/css?family=Lato:400,900i);", ""]);
 
 	// module
-	exports.push([module.id, "body,\nhtml {\n  background: #f2f2f2;\n  height: 100%;\n  font-family: roboto;\n  color: #1a1b1b; }\n\nbody {\n  -webkit-animation-delay: 0.1s;\n  -webkit-animation-name: fontfix;\n  -webkit-animation-duration: 0.1s;\n  -webkit-animation-iteration-count: 1;\n  -webkit-animation-timing-function: linear; }\n\n@-webkit-keyframes fontfix {\n  from {\n    opacity: 1; }\n  to {\n    opacity: 1; } }\n\n.row {\n  max-width: 100rem; }\n\n.loading-overlay {\n  background-color: rgba(10, 10, 10, 0.45) !important;\n  position: fixed;\n  top: 0;\n  bottom: 0;\n  left: 0;\n  right: 0; }\n\ndiv#offCanvas {\n  width: 350px;\n  height: 100%;\n  padding: 1.5rem;\n  background: #e8e8e8; }\n\n.is-open-right {\n  transform: translateX(-350px); }\n\n.off-canvas.position-right {\n  right: -350px; }\n\n.off-canvas-content {\n  background: #f2f2f2; }\n\na {\n  color: #6abedb; }\n\nhr {\n  border-color: #bdbdbd;\n  margin-top: 0.5rem;\n  max-width: 100%; }\n\n@media only screen and (max-width: 480px) {\n  .allSensors,\n  .buildingCharts {\n    display: none; } }\n\n.divider {\n  border-color: #bdbdbd; }\n\n.reveal {\n  top: 100px !important; }\n\ntable thead {\n  background: #d3d3d3;\n  color: #1a1b1b;\n  border: 1px solid #e4e4e4; }\n\ntable tbody {\n  color: #1a1b1b;\n  border: 1px solid #e4e4e4; }\n\n.margin-top-large {\n  margin-top: 4rem; }\n\n.margin-bottom-large {\n  margin-bottom: 4rem; }\n\n.margin-right-small {\n  margin-right: 2rem; }\n\n.margin-left-small {\n  margin-left: 2rem; }\n\n.margin-left-tiny {\n  margin-left: 0.5rem; }\n\n.margin-right-tiny {\n  margin-right: 0.5rem; }\n\n.margin-top-md {\n  margin-top: 2rem; }\n\n.margin-top-small {\n  margin-top: 1rem; }\n\n.margin-bottom-md {\n  margin-bottom: 2rem; }\n\n.margin-bottom-small {\n  margin-bottom: 1rem; }\n\n.textAlignCenter {\n  text-align: center; }\n\nul.header-list {\n  display: inline-block;\n  list-style: none;\n  margin-bottom: 0; }\n\n.sticky {\n  z-index: 10000;\n  left: 0 !important; }\n\n.callout {\n  background-color: #fff; }\n\n.callout-dark {\n  padding: 1.5rem;\n  background-color: #fff;\n  border: 2px solid #bdbdbd;\n  border-top: none;\n  margin-top: 0;\n  border-bottom-right-radius: 4px;\n  border-bottom-left-radius: 4px; }\n\n.scroll {\n  max-height: 100vh;\n  overflow-y: scroll; }\n\n.callout-dark-header {\n  padding: 0.5rem;\n  background-color: #fff;\n  border: 2px solid #bdbdbd;\n  border-bottom: 1px solid #bdbdbd;\n  border-top-left-radius: 4px;\n  border-top-right-radius: 4px;\n  margin-bottom: 0; }\n\n.callout-top-header {\n  padding: 1rem;\n  background-color: #f2f2f2;\n  border: 2px solid #bdbdbd;\n  border-radius: 4px; }\n\n.callout-minimize {\n  margin-bottom: 1rem;\n  border-radius: 4px 4px;\n  padding: 0.5rem; }\n\n.icon-btn-text-small {\n  font-family: 'Pathway Gothic One', sans-serif;\n  text-transform: uppercase;\n  top: 15px;\n  right: 15px;\n  position: absolute;\n  color: #232f32;\n  font-size: 1.2rem; }\n\n.test {\n  font-family: 'Pathway Gothic One', sans-serif;\n  text-transform: uppercase;\n  color: #fff;\n  font-size: 1.2rem;\n  background: #6abedb; }\n\nlabel {\n  text-transform: capitalize;\n  color: #232f32; }\n\n.header {\n  color: #232f32;\n  margin-bottom: 0;\n  font-size: 1.2rem;\n  text-transform: uppercase;\n  font-family: 'Pathway Gothic One', sans-serif; }\n\n.sub-header {\n  color: #232f32;\n  font-size: 1.3rem;\n  font-family: 'Pathway Gothic One', sans-serif; }\n  .sub-header a {\n    text-transform: capitalize; }\n\n#watchList {\n  display: none; }\n\n.page-title {\n  color: #8e8e8e;\n  font-family: 'Lato', sans-serif;\n  font-size: 1.2rem;\n  font-weight: bold; }\n\ninput[type=search] {\n  box-shadow: none; }\n\n.top-bar-upper {\n  color: #333;\n  font-size: 0.5rem; }\n\n.app-header {\n  font-size: 1.3rem; }\n\ntable.overview-custom tbody,\ntable.overview-custom th,\ntable.overview-custom thead,\ntable.overview-custom tr {\n  text-align: center; }\n\ntable.sensor-details-table tbody {\n  text-align: left; }\n\n.statusText {\n  color: red;\n  margin-bottom: 1rem;\n  text-transform: uppercase;\n  font-size: 0.8em;\n  font-weight: bold; }\n\n.notificationHeader {\n  color: #fff;\n  text-transform: uppercase;\n  font-size: 0.5em;\n  font-weight: bold; }\n\n.sensorBlock {\n  height: 30px;\n  border-radius: 30px;\n  width: auto;\n  color: #fff;\n  text-align: center;\n  font-family: 'Pathway Gothic One', sans-serif;\n  text-transform: uppercase; }\n\n.sensorBlockSquare {\n  height: 30px;\n  width: 30px;\n  border-radius: 4px;\n  cursor: pointer;\n  text-align: center;\n  line-height: 28px;\n  color: white;\n  font-weight: bold; }\n\n.sensorBlockSquare:hover {\n  opacity: 0.5; }\n\n.sensorList {\n  display: inline-block;\n  margin-right: 1px; }\n\n.button-custom {\n  height: 30px;\n  width: auto !important;\n  margin: 0;\n  color: #fff !important;\n  text-align: center;\n  font-family: 'Pathway Gothic One', sans-serif;\n  text-transform: uppercase; }\n\n.proceed {\n  background: #6abedb; }\n\n.cancel {\n  background: #990000; }\n\n.cancel:hover {\n  background: #7a0000; }\n\n.remove {\n  border: 1px solid #990000;\n  background-color: #fff;\n  color: #990000 !important; }\n\n.pin {\n  border: 1px solid #990000;\n  background-color: #fff;\n  color: #006600 !important; }\n\n.tableOptions > li > a {\n  color: #323232;\n  font-weight: normal;\n  font-size: 1rem;\n  padding: 0.5rem 0.7rem; }\n\n.menuHeader:hover,\n.tableOptions .menuHeader {\n  background-color: #232f32 !important;\n  color: #fff;\n  padding: 0.3rem 0.7rem;\n  text-transform: uppercase; }\n\n.tableOptions > li {\n  border-bottom: 1px solid #f2f2f2; }\n\n.tableOptions > li:hover {\n  background-color: #f2f2f2; }\n\n.dropdown-pane {\n  padding: 0; }\n\n.panel-grey {\n  background-color: #e4e4e4;\n  padding-top: 1rem; }\n\n#emailPanel,\n#namePanel,\n#passwordPanel {\n  display: none;\n  padding: 1rem;\n  background: #e4e4e4; }\n\ninput[type=checkbox]:checked ~ #port {\n  display: none; }\n\n#port {\n  display: block; }\n\n.inactive-link {\n  display: none; }\n\n.button-cancel {\n  border-color: #990000 !important;\n  color: #990000 !important; }\n\n.green {\n  background-color: #006600; }\n\n.orange {\n  background-color: #cc7a00; }\n\n.red {\n  background-color: #990000; }\n\n.black {\n  background-color: #1a1b1b; }\n\n.grey {\n  background-color: #737373; }\n\n.loader {\n  height: 4px;\n  width: 100%;\n  position: relative;\n  overflow: hidden;\n  background-color: #ddd; }\n\n.loader:before {\n  display: block;\n  position: absolute;\n  content: \"\";\n  left: -200px;\n  width: 200px;\n  height: 4px;\n  background-color: #2980b9;\n  animation: loading 2s linear infinite; }\n\n@keyframes loading {\n  from {\n    left: -200px;\n    width: 30%; }\n  50% {\n    width: 30%; }\n  70% {\n    width: 70%; }\n  80% {\n    left: 50%; }\n  95% {\n    left: 120%; }\n  to {\n    left: 100%; } }\n", ""]);
+	exports.push([module.id, "body,\nhtml {\n  background: #f2f2f2;\n  height: 100%;\n  font-family: roboto;\n  color: #1a1b1b; }\n\nbody {\n  -webkit-animation-delay: 0.1s;\n  -webkit-animation-name: fontfix;\n  -webkit-animation-duration: 0.1s;\n  -webkit-animation-iteration-count: 1;\n  -webkit-animation-timing-function: linear; }\n\n@-webkit-keyframes fontfix {\n  from {\n    opacity: 1; }\n  to {\n    opacity: 1; } }\n\n.row {\n  max-width: 100rem; }\n\n.loading-overlay {\n  background-color: rgba(10, 10, 10, 0.45) !important;\n  position: fixed;\n  top: 0;\n  bottom: 0;\n  left: 0;\n  right: 0; }\n\ndiv#offCanvas {\n  width: 350px;\n  height: 100%;\n  padding: 1.5rem;\n  background: #e8e8e8; }\n\n.is-open-right {\n  transform: translateX(-350px); }\n\n.off-canvas.position-right {\n  right: -350px; }\n\n.off-canvas-content {\n  background: #f2f2f2; }\n\na {\n  color: #6abedb; }\n\nhr {\n  border-color: #bdbdbd;\n  margin-top: 0.5rem;\n  max-width: 100%; }\n\n@media only screen and (max-width: 480px) {\n  .allSensors,\n  .buildingCharts {\n    display: none; } }\n\n.divider {\n  border-color: #bdbdbd; }\n\n.reveal {\n  top: 100px !important; }\n\ntable thead {\n  background: #d3d3d3;\n  color: #1a1b1b;\n  border: 1px solid #e4e4e4; }\n\ntable tbody {\n  color: #1a1b1b;\n  border: 1px solid #e4e4e4; }\n\n.margin-top-large {\n  margin-top: 4rem; }\n\n.margin-bottom-large {\n  margin-bottom: 4rem; }\n\n.margin-right-small {\n  margin-right: 2rem; }\n\n.margin-left-small {\n  margin-left: 2rem; }\n\n.margin-left-tiny {\n  margin-left: 0.5rem; }\n\n.margin-right-tiny {\n  margin-right: 0.5rem; }\n\n.margin-top-md {\n  margin-top: 2rem; }\n\n.margin-top-small {\n  margin-top: 1rem; }\n\n.margin-bottom-md {\n  margin-bottom: 2rem; }\n\n.margin-bottom-small {\n  margin-bottom: 1rem; }\n\n.textAlignCenter {\n  text-align: center; }\n\nul.header-list {\n  display: inline-block;\n  list-style: none;\n  margin-bottom: 0; }\n\n.sticky {\n  z-index: 10000;\n  left: 0 !important; }\n\n.callout {\n  background-color: #fff; }\n\n.callout-dark {\n  padding: 1.5rem;\n  background-color: #fff;\n  border: 2px solid #bdbdbd;\n  border-top: none;\n  margin-top: 0;\n  border-bottom-right-radius: 4px;\n  border-bottom-left-radius: 4px; }\n\n.scroll {\n  max-height: 100vh;\n  overflow-y: scroll; }\n\n.callout-dark-header {\n  padding: 0.5rem;\n  background-color: #fff;\n  border: 2px solid #bdbdbd;\n  border-bottom: 1px solid #bdbdbd;\n  border-top-left-radius: 4px;\n  border-top-right-radius: 4px;\n  margin-bottom: 0; }\n\n.callout-top-header {\n  padding: 1rem;\n  background-color: #f2f2f2;\n  border: 2px solid #bdbdbd;\n  border-radius: 4px; }\n\n.callout-minimize {\n  margin-bottom: 1rem;\n  border-radius: 4px 4px;\n  padding: 0.5rem; }\n\n.icon-btn-text-small {\n  font-family: 'Roboto', sans-serif;\n  text-transform: Captitalize;\n  top: 15px;\n  right: 15px;\n  position: absolute;\n  color: #232f32;\n  font-size: 1.1rem; }\n\n.test {\n  font-family: 'Pathway Gothic One', sans-serif;\n  text-transform: uppercase;\n  color: #fff;\n  font-size: 1.2rem;\n  background: #6abedb; }\n\nlabel {\n  text-transform: capitalize;\n  color: #232f32; }\n\n.header {\n  color: #232f32;\n  margin-bottom: 0;\n  text-transform: capitalize;\n  font-family: 'Roboto', sans-serif; }\n\n.sub-header {\n  color: #232f32;\n  font-size: 1.3rem;\n  font-family: 'Pathway Gothic One', sans-serif; }\n  .sub-header a {\n    text-transform: capitalize; }\n\n#watchList {\n  display: none; }\n\n.page-title {\n  color: #8e8e8e;\n  font-family: 'Lato', sans-serif;\n  font-size: 1.2rem;\n  font-weight: bold; }\n\ninput[type=search] {\n  box-shadow: none; }\n\n.top-bar-upper {\n  color: #333;\n  font-size: 0.5rem; }\n\n.app-header {\n  font-size: 1.3rem; }\n\ntable.overview-custom tbody,\ntable.overview-custom th,\ntable.overview-custom thead,\ntable.overview-custom tr {\n  text-align: center; }\n\ntable.sensor-details-table tbody {\n  text-align: left; }\n\n.statusText {\n  color: red;\n  margin-bottom: 1rem;\n  text-transform: uppercase;\n  font-size: 0.8em;\n  font-weight: bold; }\n\n.notificationHeader {\n  color: #fff;\n  text-transform: uppercase;\n  font-size: 0.5em;\n  font-weight: bold; }\n\n.sensorBlock {\n  height: 30px;\n  border-radius: 30px;\n  width: auto;\n  color: #fff;\n  text-align: center;\n  font-family: 'Pathway Gothic One', sans-serif;\n  text-transform: uppercase; }\n\n.sensorBlockSquare {\n  height: 30px;\n  width: 30px;\n  border-radius: 4px;\n  cursor: pointer;\n  text-align: center;\n  line-height: 28px;\n  color: white;\n  font-weight: bold; }\n\n.sensorBlockSquare:hover {\n  opacity: 0.5; }\n\n.sensorList {\n  display: inline-block;\n  margin-right: 1px; }\n\n#uptime-form select {\n  margin-right: 2rem; }\n\n.recharts-tooltip-wrapper {\n  z-index: 1000;\n  box-shadow: 1px 1px 4px #323232; }\n\n#glance-tooltip > table tr:nth-of-type(even) {\n  background-color: transparent !important; }\n\n.button-custom {\n  height: 30px;\n  width: auto !important;\n  margin: 0;\n  color: #fff !important;\n  text-align: center;\n  font-family: 'Pathway Gothic One', sans-serif;\n  text-transform: uppercase; }\n\n.proceed {\n  background: #6abedb; }\n\n.cancel {\n  background: #990000; }\n\n.cancel:hover {\n  background: #7a0000; }\n\n.remove {\n  border: 1px solid #990000;\n  background-color: #fff;\n  color: #990000 !important; }\n\n.pin {\n  border: 1px solid #990000;\n  background-color: #fff;\n  color: #008000 !important; }\n\n.tableOptions > li > a {\n  color: #323232;\n  font-weight: normal;\n  font-size: 1rem;\n  padding: 0.5rem 0.7rem; }\n\n.menuHeader:hover,\n.tableOptions .menuHeader {\n  background-color: #232f32 !important;\n  color: #fff;\n  padding: 0.3rem 0.7rem;\n  text-transform: uppercase; }\n\n.tableOptions > li {\n  border-bottom: 1px solid #f2f2f2; }\n\n.tableOptions > li:hover {\n  background-color: #f2f2f2; }\n\n.dropdown-pane {\n  padding: 0; }\n\n.panel-grey {\n  background-color: #e4e4e4;\n  padding-top: 1rem; }\n\n#emailPanel,\n#namePanel,\n#passwordPanel {\n  display: none;\n  padding: 1rem;\n  background: #e4e4e4; }\n\ninput[type=checkbox]:checked ~ #port {\n  display: none; }\n\n#port {\n  display: block; }\n\n.inactive-link {\n  display: none; }\n\n.button-cancel {\n  border-color: #990000 !important;\n  color: #990000 !important; }\n\n.green {\n  background-color: #008000; }\n\n.orange {\n  background-color: #cc7a00; }\n\n.red {\n  background-color: #990000; }\n\n.black {\n  background-color: #1a1b1b; }\n\n.yellow {\n  background-color: #ffcc00; }\n\n.grey {\n  background-color: #737373; }\n\n.loader {\n  height: 4px;\n  width: 100%;\n  position: relative;\n  overflow: hidden;\n  background-color: #ddd; }\n\n.loader:before {\n  display: block;\n  position: absolute;\n  content: \"\";\n  left: -200px;\n  width: 200px;\n  height: 4px;\n  background-color: #2980b9;\n  animation: loading 2s linear infinite; }\n\n@keyframes loading {\n  from {\n    left: -200px;\n    width: 30%; }\n  50% {\n    width: 30%; }\n  70% {\n    width: 70%; }\n  80% {\n    left: 50%; }\n  95% {\n    left: 120%; }\n  to {\n    left: 100%; } }\n", ""]);
 
 	// exports
 
@@ -82399,7 +82401,7 @@
 	exports.push([module.id, "@import url(https://fonts.googleapis.com/css?family=Lato:400,900i);", ""]);
 
 	// module
-	exports.push([module.id, "body,\nhtml {\n  background: #f2f2f2;\n  height: 100%;\n  font-family: roboto;\n  color: #1a1b1b; }\n\nbody {\n  -webkit-animation-delay: 0.1s;\n  -webkit-animation-name: fontfix;\n  -webkit-animation-duration: 0.1s;\n  -webkit-animation-iteration-count: 1;\n  -webkit-animation-timing-function: linear; }\n\n@-webkit-keyframes fontfix {\n  from {\n    opacity: 1; }\n  to {\n    opacity: 1; } }\n\n.row {\n  max-width: 100rem; }\n\n.loading-overlay {\n  background-color: rgba(10, 10, 10, 0.45) !important;\n  position: fixed;\n  top: 0;\n  bottom: 0;\n  left: 0;\n  right: 0; }\n\ndiv#offCanvas {\n  width: 350px;\n  height: 100%;\n  padding: 1.5rem;\n  background: #e8e8e8; }\n\n.is-open-right {\n  transform: translateX(-350px); }\n\n.off-canvas.position-right {\n  right: -350px; }\n\n.off-canvas-content {\n  background: #f2f2f2; }\n\na {\n  color: #6abedb; }\n\nhr {\n  border-color: #bdbdbd;\n  margin-top: 0.5rem;\n  max-width: 100%; }\n\n@media only screen and (max-width: 480px) {\n  .allSensors,\n  .buildingCharts {\n    display: none; } }\n\n.divider {\n  border-color: #bdbdbd; }\n\n.reveal {\n  top: 100px !important; }\n\ntable thead {\n  background: #d3d3d3;\n  color: #1a1b1b;\n  border: 1px solid #e4e4e4; }\n\ntable tbody {\n  color: #1a1b1b;\n  border: 1px solid #e4e4e4; }\n\n.margin-top-large {\n  margin-top: 4rem; }\n\n.margin-bottom-large {\n  margin-bottom: 4rem; }\n\n.margin-right-small {\n  margin-right: 2rem; }\n\n.margin-left-small {\n  margin-left: 2rem; }\n\n.margin-left-tiny {\n  margin-left: 0.5rem; }\n\n.margin-right-tiny {\n  margin-right: 0.5rem; }\n\n.margin-top-md {\n  margin-top: 2rem; }\n\n.margin-top-small {\n  margin-top: 1rem; }\n\n.margin-bottom-md {\n  margin-bottom: 2rem; }\n\n.margin-bottom-small {\n  margin-bottom: 1rem; }\n\n.textAlignCenter {\n  text-align: center; }\n\nul.header-list {\n  display: inline-block;\n  list-style: none;\n  margin-bottom: 0; }\n\n.sticky {\n  z-index: 10000;\n  left: 0 !important; }\n\n.callout {\n  background-color: #fff; }\n\n.callout-dark {\n  padding: 1.5rem;\n  background-color: #fff;\n  border: 2px solid #bdbdbd;\n  border-top: none;\n  margin-top: 0;\n  border-bottom-right-radius: 4px;\n  border-bottom-left-radius: 4px; }\n\n.scroll {\n  max-height: 100vh;\n  overflow-y: scroll; }\n\n.callout-dark-header {\n  padding: 0.5rem;\n  background-color: #fff;\n  border: 2px solid #bdbdbd;\n  border-bottom: 1px solid #bdbdbd;\n  border-top-left-radius: 4px;\n  border-top-right-radius: 4px;\n  margin-bottom: 0; }\n\n.callout-top-header {\n  padding: 1rem;\n  background-color: #f2f2f2;\n  border: 2px solid #bdbdbd;\n  border-radius: 4px; }\n\n.callout-minimize {\n  margin-bottom: 1rem;\n  border-radius: 4px 4px;\n  padding: 0.5rem; }\n\n.icon-btn-text-small {\n  font-family: 'Pathway Gothic One', sans-serif;\n  text-transform: uppercase;\n  top: 15px;\n  right: 15px;\n  position: absolute;\n  color: #232f32;\n  font-size: 1.2rem; }\n\n.test {\n  font-family: 'Pathway Gothic One', sans-serif;\n  text-transform: uppercase;\n  color: #fff;\n  font-size: 1.2rem;\n  background: #6abedb; }\n\nlabel {\n  text-transform: capitalize;\n  color: #232f32; }\n\n.header {\n  color: #232f32;\n  margin-bottom: 0;\n  font-size: 1.2rem;\n  text-transform: uppercase;\n  font-family: 'Pathway Gothic One', sans-serif; }\n\n.sub-header {\n  color: #232f32;\n  font-size: 1.3rem;\n  font-family: 'Pathway Gothic One', sans-serif; }\n  .sub-header a {\n    text-transform: capitalize; }\n\n#watchList {\n  display: none; }\n\n.page-title {\n  color: #8e8e8e;\n  font-family: 'Lato', sans-serif;\n  font-size: 1.2rem;\n  font-weight: bold; }\n\ninput[type=search] {\n  box-shadow: none; }\n\n.top-bar-upper {\n  color: #333;\n  font-size: 0.5rem; }\n\n.app-header {\n  font-size: 1.3rem; }\n\ntable.overview-custom tbody,\ntable.overview-custom th,\ntable.overview-custom thead,\ntable.overview-custom tr {\n  text-align: center; }\n\ntable.sensor-details-table tbody {\n  text-align: left; }\n\n.statusText {\n  color: red;\n  margin-bottom: 1rem;\n  text-transform: uppercase;\n  font-size: 0.8em;\n  font-weight: bold; }\n\n.notificationHeader {\n  color: #fff;\n  text-transform: uppercase;\n  font-size: 0.5em;\n  font-weight: bold; }\n\n.sensorBlock {\n  height: 30px;\n  border-radius: 30px;\n  width: auto;\n  color: #fff;\n  text-align: center;\n  font-family: 'Pathway Gothic One', sans-serif;\n  text-transform: uppercase; }\n\n.sensorBlockSquare {\n  height: 30px;\n  width: 30px;\n  border-radius: 4px;\n  cursor: pointer;\n  text-align: center;\n  line-height: 28px;\n  color: white;\n  font-weight: bold; }\n\n.sensorBlockSquare:hover {\n  opacity: 0.5; }\n\n.sensorList {\n  display: inline-block;\n  margin-right: 1px; }\n\n.button-custom {\n  height: 30px;\n  width: auto !important;\n  margin: 0;\n  color: #fff !important;\n  text-align: center;\n  font-family: 'Pathway Gothic One', sans-serif;\n  text-transform: uppercase; }\n\n.proceed {\n  background: #6abedb; }\n\n.cancel {\n  background: #990000; }\n\n.cancel:hover {\n  background: #7a0000; }\n\n.remove {\n  border: 1px solid #990000;\n  background-color: #fff;\n  color: #990000 !important; }\n\n.pin {\n  border: 1px solid #990000;\n  background-color: #fff;\n  color: #006600 !important; }\n\n.tableOptions > li > a {\n  color: #323232;\n  font-weight: normal;\n  font-size: 1rem;\n  padding: 0.5rem 0.7rem; }\n\n.menuHeader:hover,\n.tableOptions .menuHeader {\n  background-color: #232f32 !important;\n  color: #fff;\n  padding: 0.3rem 0.7rem;\n  text-transform: uppercase; }\n\n.tableOptions > li {\n  border-bottom: 1px solid #f2f2f2; }\n\n.tableOptions > li:hover {\n  background-color: #f2f2f2; }\n\n.dropdown-pane {\n  padding: 0; }\n\n.panel-grey {\n  background-color: #e4e4e4;\n  padding-top: 1rem; }\n\n#emailPanel,\n#namePanel,\n#passwordPanel {\n  display: none;\n  padding: 1rem;\n  background: #e4e4e4; }\n\ninput[type=checkbox]:checked ~ #port {\n  display: none; }\n\n#port {\n  display: block; }\n\n.inactive-link {\n  display: none; }\n\n.button-cancel {\n  border-color: #990000 !important;\n  color: #990000 !important; }\n\n.green {\n  background-color: #006600; }\n\n.orange {\n  background-color: #cc7a00; }\n\n.red {\n  background-color: #990000; }\n\n.black {\n  background-color: #1a1b1b; }\n\n.grey {\n  background-color: #737373; }\n\n.loader {\n  height: 4px;\n  width: 100%;\n  position: relative;\n  overflow: hidden;\n  background-color: #ddd; }\n\n.loader:before {\n  display: block;\n  position: absolute;\n  content: \"\";\n  left: -200px;\n  width: 200px;\n  height: 4px;\n  background-color: #2980b9;\n  animation: loading 2s linear infinite; }\n\n@keyframes loading {\n  from {\n    left: -200px;\n    width: 30%; }\n  50% {\n    width: 30%; }\n  70% {\n    width: 70%; }\n  80% {\n    left: 50%; }\n  95% {\n    left: 120%; }\n  to {\n    left: 100%; } }\n\n.top-bar-left {\n  margin-top: 1.5rem; }\n\n.top-bar-right {\n  margin-top: 1.5rem;\n  text-align: right; }\n\n.top-bar {\n  padding: 0rem 2rem 0rem 2rem;\n  background: #232f32;\n  height: 4rem;\n  box-shadow: 0.5px 0.5px 5px #373837; }\n\n.top-bar ul {\n  background: #232f32;\n  /* temporary fix */\n  position: absolute;\n  top: 15px;\n  right: 15px; }\n\n.top-bar.lower {\n  padding-top: 0px; }\n\n.top-bar-title {\n  font-size: 1.5rem;\n  font-family: 'Lato', sans-serif;\n  font-weight: bold;\n  position: absolute;\n  top: 15px;\n  left: 15px;\n  color: #6abedb; }\n\n.menu > li > a {\n  color: #fafafa;\n  font-weight: bold;\n  font-size: 0.9rem;\n  text-transform: capitalize; }\n\n.is-dropdown-submenu {\n  border: 1px solid #373737; }\n", ""]);
+	exports.push([module.id, "body,\nhtml {\n  background: #f2f2f2;\n  height: 100%;\n  font-family: roboto;\n  color: #1a1b1b; }\n\nbody {\n  -webkit-animation-delay: 0.1s;\n  -webkit-animation-name: fontfix;\n  -webkit-animation-duration: 0.1s;\n  -webkit-animation-iteration-count: 1;\n  -webkit-animation-timing-function: linear; }\n\n@-webkit-keyframes fontfix {\n  from {\n    opacity: 1; }\n  to {\n    opacity: 1; } }\n\n.row {\n  max-width: 100rem; }\n\n.loading-overlay {\n  background-color: rgba(10, 10, 10, 0.45) !important;\n  position: fixed;\n  top: 0;\n  bottom: 0;\n  left: 0;\n  right: 0; }\n\ndiv#offCanvas {\n  width: 350px;\n  height: 100%;\n  padding: 1.5rem;\n  background: #e8e8e8; }\n\n.is-open-right {\n  transform: translateX(-350px); }\n\n.off-canvas.position-right {\n  right: -350px; }\n\n.off-canvas-content {\n  background: #f2f2f2; }\n\na {\n  color: #6abedb; }\n\nhr {\n  border-color: #bdbdbd;\n  margin-top: 0.5rem;\n  max-width: 100%; }\n\n@media only screen and (max-width: 480px) {\n  .allSensors,\n  .buildingCharts {\n    display: none; } }\n\n.divider {\n  border-color: #bdbdbd; }\n\n.reveal {\n  top: 100px !important; }\n\ntable thead {\n  background: #d3d3d3;\n  color: #1a1b1b;\n  border: 1px solid #e4e4e4; }\n\ntable tbody {\n  color: #1a1b1b;\n  border: 1px solid #e4e4e4; }\n\n.margin-top-large {\n  margin-top: 4rem; }\n\n.margin-bottom-large {\n  margin-bottom: 4rem; }\n\n.margin-right-small {\n  margin-right: 2rem; }\n\n.margin-left-small {\n  margin-left: 2rem; }\n\n.margin-left-tiny {\n  margin-left: 0.5rem; }\n\n.margin-right-tiny {\n  margin-right: 0.5rem; }\n\n.margin-top-md {\n  margin-top: 2rem; }\n\n.margin-top-small {\n  margin-top: 1rem; }\n\n.margin-bottom-md {\n  margin-bottom: 2rem; }\n\n.margin-bottom-small {\n  margin-bottom: 1rem; }\n\n.textAlignCenter {\n  text-align: center; }\n\nul.header-list {\n  display: inline-block;\n  list-style: none;\n  margin-bottom: 0; }\n\n.sticky {\n  z-index: 10000;\n  left: 0 !important; }\n\n.callout {\n  background-color: #fff; }\n\n.callout-dark {\n  padding: 1.5rem;\n  background-color: #fff;\n  border: 2px solid #bdbdbd;\n  border-top: none;\n  margin-top: 0;\n  border-bottom-right-radius: 4px;\n  border-bottom-left-radius: 4px; }\n\n.scroll {\n  max-height: 100vh;\n  overflow-y: scroll; }\n\n.callout-dark-header {\n  padding: 0.5rem;\n  background-color: #fff;\n  border: 2px solid #bdbdbd;\n  border-bottom: 1px solid #bdbdbd;\n  border-top-left-radius: 4px;\n  border-top-right-radius: 4px;\n  margin-bottom: 0; }\n\n.callout-top-header {\n  padding: 1rem;\n  background-color: #f2f2f2;\n  border: 2px solid #bdbdbd;\n  border-radius: 4px; }\n\n.callout-minimize {\n  margin-bottom: 1rem;\n  border-radius: 4px 4px;\n  padding: 0.5rem; }\n\n.icon-btn-text-small {\n  font-family: 'Roboto', sans-serif;\n  text-transform: Captitalize;\n  top: 15px;\n  right: 15px;\n  position: absolute;\n  color: #232f32;\n  font-size: 1.1rem; }\n\n.test {\n  font-family: 'Pathway Gothic One', sans-serif;\n  text-transform: uppercase;\n  color: #fff;\n  font-size: 1.2rem;\n  background: #6abedb; }\n\nlabel {\n  text-transform: capitalize;\n  color: #232f32; }\n\n.header {\n  color: #232f32;\n  margin-bottom: 0;\n  text-transform: capitalize;\n  font-family: 'Roboto', sans-serif; }\n\n.sub-header {\n  color: #232f32;\n  font-size: 1.3rem;\n  font-family: 'Pathway Gothic One', sans-serif; }\n  .sub-header a {\n    text-transform: capitalize; }\n\n#watchList {\n  display: none; }\n\n.page-title {\n  color: #8e8e8e;\n  font-family: 'Lato', sans-serif;\n  font-size: 1.2rem;\n  font-weight: bold; }\n\ninput[type=search] {\n  box-shadow: none; }\n\n.top-bar-upper {\n  color: #333;\n  font-size: 0.5rem; }\n\n.app-header {\n  font-size: 1.3rem; }\n\ntable.overview-custom tbody,\ntable.overview-custom th,\ntable.overview-custom thead,\ntable.overview-custom tr {\n  text-align: center; }\n\ntable.sensor-details-table tbody {\n  text-align: left; }\n\n.statusText {\n  color: red;\n  margin-bottom: 1rem;\n  text-transform: uppercase;\n  font-size: 0.8em;\n  font-weight: bold; }\n\n.notificationHeader {\n  color: #fff;\n  text-transform: uppercase;\n  font-size: 0.5em;\n  font-weight: bold; }\n\n.sensorBlock {\n  height: 30px;\n  border-radius: 30px;\n  width: auto;\n  color: #fff;\n  text-align: center;\n  font-family: 'Pathway Gothic One', sans-serif;\n  text-transform: uppercase; }\n\n.sensorBlockSquare {\n  height: 30px;\n  width: 30px;\n  border-radius: 4px;\n  cursor: pointer;\n  text-align: center;\n  line-height: 28px;\n  color: white;\n  font-weight: bold; }\n\n.sensorBlockSquare:hover {\n  opacity: 0.5; }\n\n.sensorList {\n  display: inline-block;\n  margin-right: 1px; }\n\n#uptime-form select {\n  margin-right: 2rem; }\n\n.recharts-tooltip-wrapper {\n  z-index: 1000;\n  box-shadow: 1px 1px 4px #323232; }\n\n#glance-tooltip > table tr:nth-of-type(even) {\n  background-color: transparent !important; }\n\n.button-custom {\n  height: 30px;\n  width: auto !important;\n  margin: 0;\n  color: #fff !important;\n  text-align: center;\n  font-family: 'Pathway Gothic One', sans-serif;\n  text-transform: uppercase; }\n\n.proceed {\n  background: #6abedb; }\n\n.cancel {\n  background: #990000; }\n\n.cancel:hover {\n  background: #7a0000; }\n\n.remove {\n  border: 1px solid #990000;\n  background-color: #fff;\n  color: #990000 !important; }\n\n.pin {\n  border: 1px solid #990000;\n  background-color: #fff;\n  color: #008000 !important; }\n\n.tableOptions > li > a {\n  color: #323232;\n  font-weight: normal;\n  font-size: 1rem;\n  padding: 0.5rem 0.7rem; }\n\n.menuHeader:hover,\n.tableOptions .menuHeader {\n  background-color: #232f32 !important;\n  color: #fff;\n  padding: 0.3rem 0.7rem;\n  text-transform: uppercase; }\n\n.tableOptions > li {\n  border-bottom: 1px solid #f2f2f2; }\n\n.tableOptions > li:hover {\n  background-color: #f2f2f2; }\n\n.dropdown-pane {\n  padding: 0; }\n\n.panel-grey {\n  background-color: #e4e4e4;\n  padding-top: 1rem; }\n\n#emailPanel,\n#namePanel,\n#passwordPanel {\n  display: none;\n  padding: 1rem;\n  background: #e4e4e4; }\n\ninput[type=checkbox]:checked ~ #port {\n  display: none; }\n\n#port {\n  display: block; }\n\n.inactive-link {\n  display: none; }\n\n.button-cancel {\n  border-color: #990000 !important;\n  color: #990000 !important; }\n\n.green {\n  background-color: #008000; }\n\n.orange {\n  background-color: #cc7a00; }\n\n.red {\n  background-color: #990000; }\n\n.black {\n  background-color: #1a1b1b; }\n\n.yellow {\n  background-color: #ffcc00; }\n\n.grey {\n  background-color: #737373; }\n\n.loader {\n  height: 4px;\n  width: 100%;\n  position: relative;\n  overflow: hidden;\n  background-color: #ddd; }\n\n.loader:before {\n  display: block;\n  position: absolute;\n  content: \"\";\n  left: -200px;\n  width: 200px;\n  height: 4px;\n  background-color: #2980b9;\n  animation: loading 2s linear infinite; }\n\n@keyframes loading {\n  from {\n    left: -200px;\n    width: 30%; }\n  50% {\n    width: 30%; }\n  70% {\n    width: 70%; }\n  80% {\n    left: 50%; }\n  95% {\n    left: 120%; }\n  to {\n    left: 100%; } }\n\n.top-bar-left {\n  margin-top: 1.5rem; }\n\n.top-bar-right {\n  margin-top: 1.5rem;\n  text-align: right; }\n\n.top-bar {\n  padding: 0rem 2rem 0rem 2rem;\n  background: #232f32;\n  height: 4rem;\n  box-shadow: 0.5px 0.5px 5px #373837; }\n\n.top-bar ul {\n  background: #232f32;\n  /* temporary fix */\n  position: absolute;\n  top: 15px;\n  right: 15px; }\n\n.top-bar.lower {\n  padding-top: 0px; }\n\n.top-bar-title {\n  font-size: 1.5rem;\n  font-family: 'Lato', sans-serif;\n  font-weight: bold;\n  position: absolute;\n  top: 15px;\n  left: 15px;\n  color: #6abedb; }\n\n.menu > li > a {\n  color: #fafafa;\n  font-weight: bold;\n  font-size: 0.9rem;\n  text-transform: capitalize; }\n\n.is-dropdown-submenu {\n  border: 1px solid #373737; }\n", ""]);
 
 	// exports
 
@@ -82481,7 +82483,7 @@
 	exports.push([module.id, "@import url(https://fonts.googleapis.com/css?family=Lato:400,900i);", ""]);
 
 	// module
-	exports.push([module.id, "body,\nhtml {\n  background: #f2f2f2;\n  height: 100%;\n  font-family: roboto;\n  color: #1a1b1b; }\n\nbody {\n  -webkit-animation-delay: 0.1s;\n  -webkit-animation-name: fontfix;\n  -webkit-animation-duration: 0.1s;\n  -webkit-animation-iteration-count: 1;\n  -webkit-animation-timing-function: linear; }\n\n@-webkit-keyframes fontfix {\n  from {\n    opacity: 1; }\n  to {\n    opacity: 1; } }\n\n.row {\n  max-width: 100rem; }\n\n.loading-overlay {\n  background-color: rgba(10, 10, 10, 0.45) !important;\n  position: fixed;\n  top: 0;\n  bottom: 0;\n  left: 0;\n  right: 0; }\n\ndiv#offCanvas {\n  width: 350px;\n  height: 100%;\n  padding: 1.5rem;\n  background: #e8e8e8; }\n\n.is-open-right {\n  transform: translateX(-350px); }\n\n.off-canvas.position-right {\n  right: -350px; }\n\n.off-canvas-content {\n  background: #f2f2f2; }\n\na {\n  color: #6abedb; }\n\nhr {\n  border-color: #bdbdbd;\n  margin-top: 0.5rem;\n  max-width: 100%; }\n\n@media only screen and (max-width: 480px) {\n  .allSensors,\n  .buildingCharts {\n    display: none; } }\n\n.divider {\n  border-color: #bdbdbd; }\n\n.reveal {\n  top: 100px !important; }\n\ntable thead {\n  background: #d3d3d3;\n  color: #1a1b1b;\n  border: 1px solid #e4e4e4; }\n\ntable tbody {\n  color: #1a1b1b;\n  border: 1px solid #e4e4e4; }\n\n.margin-top-large {\n  margin-top: 4rem; }\n\n.margin-bottom-large {\n  margin-bottom: 4rem; }\n\n.margin-right-small {\n  margin-right: 2rem; }\n\n.margin-left-small {\n  margin-left: 2rem; }\n\n.margin-left-tiny {\n  margin-left: 0.5rem; }\n\n.margin-right-tiny {\n  margin-right: 0.5rem; }\n\n.margin-top-md {\n  margin-top: 2rem; }\n\n.margin-top-small {\n  margin-top: 1rem; }\n\n.margin-bottom-md {\n  margin-bottom: 2rem; }\n\n.margin-bottom-small {\n  margin-bottom: 1rem; }\n\n.textAlignCenter {\n  text-align: center; }\n\nul.header-list {\n  display: inline-block;\n  list-style: none;\n  margin-bottom: 0; }\n\n.sticky {\n  z-index: 10000;\n  left: 0 !important; }\n\n.callout {\n  background-color: #fff; }\n\n.callout-dark {\n  padding: 1.5rem;\n  background-color: #fff;\n  border: 2px solid #bdbdbd;\n  border-top: none;\n  margin-top: 0;\n  border-bottom-right-radius: 4px;\n  border-bottom-left-radius: 4px; }\n\n.scroll {\n  max-height: 100vh;\n  overflow-y: scroll; }\n\n.callout-dark-header {\n  padding: 0.5rem;\n  background-color: #fff;\n  border: 2px solid #bdbdbd;\n  border-bottom: 1px solid #bdbdbd;\n  border-top-left-radius: 4px;\n  border-top-right-radius: 4px;\n  margin-bottom: 0; }\n\n.callout-top-header {\n  padding: 1rem;\n  background-color: #f2f2f2;\n  border: 2px solid #bdbdbd;\n  border-radius: 4px; }\n\n.callout-minimize {\n  margin-bottom: 1rem;\n  border-radius: 4px 4px;\n  padding: 0.5rem; }\n\n.icon-btn-text-small {\n  font-family: 'Pathway Gothic One', sans-serif;\n  text-transform: uppercase;\n  top: 15px;\n  right: 15px;\n  position: absolute;\n  color: #232f32;\n  font-size: 1.2rem; }\n\n.test {\n  font-family: 'Pathway Gothic One', sans-serif;\n  text-transform: uppercase;\n  color: #fff;\n  font-size: 1.2rem;\n  background: #6abedb; }\n\nlabel {\n  text-transform: capitalize;\n  color: #232f32; }\n\n.header {\n  color: #232f32;\n  margin-bottom: 0;\n  font-size: 1.2rem;\n  text-transform: uppercase;\n  font-family: 'Pathway Gothic One', sans-serif; }\n\n.sub-header {\n  color: #232f32;\n  font-size: 1.3rem;\n  font-family: 'Pathway Gothic One', sans-serif; }\n  .sub-header a {\n    text-transform: capitalize; }\n\n#watchList {\n  display: none; }\n\n.page-title {\n  color: #8e8e8e;\n  font-family: 'Lato', sans-serif;\n  font-size: 1.2rem;\n  font-weight: bold; }\n\ninput[type=search] {\n  box-shadow: none; }\n\n.top-bar-upper {\n  color: #333;\n  font-size: 0.5rem; }\n\n.app-header {\n  font-size: 1.3rem; }\n\ntable.overview-custom tbody,\ntable.overview-custom th,\ntable.overview-custom thead,\ntable.overview-custom tr {\n  text-align: center; }\n\ntable.sensor-details-table tbody {\n  text-align: left; }\n\n.statusText {\n  color: red;\n  margin-bottom: 1rem;\n  text-transform: uppercase;\n  font-size: 0.8em;\n  font-weight: bold; }\n\n.notificationHeader {\n  color: #fff;\n  text-transform: uppercase;\n  font-size: 0.5em;\n  font-weight: bold; }\n\n.sensorBlock {\n  height: 30px;\n  border-radius: 30px;\n  width: auto;\n  color: #fff;\n  text-align: center;\n  font-family: 'Pathway Gothic One', sans-serif;\n  text-transform: uppercase; }\n\n.sensorBlockSquare {\n  height: 30px;\n  width: 30px;\n  border-radius: 4px;\n  cursor: pointer;\n  text-align: center;\n  line-height: 28px;\n  color: white;\n  font-weight: bold; }\n\n.sensorBlockSquare:hover {\n  opacity: 0.5; }\n\n.sensorList {\n  display: inline-block;\n  margin-right: 1px; }\n\n.button-custom {\n  height: 30px;\n  width: auto !important;\n  margin: 0;\n  color: #fff !important;\n  text-align: center;\n  font-family: 'Pathway Gothic One', sans-serif;\n  text-transform: uppercase; }\n\n.proceed {\n  background: #6abedb; }\n\n.cancel {\n  background: #990000; }\n\n.cancel:hover {\n  background: #7a0000; }\n\n.remove {\n  border: 1px solid #990000;\n  background-color: #fff;\n  color: #990000 !important; }\n\n.pin {\n  border: 1px solid #990000;\n  background-color: #fff;\n  color: #006600 !important; }\n\n.tableOptions > li > a {\n  color: #323232;\n  font-weight: normal;\n  font-size: 1rem;\n  padding: 0.5rem 0.7rem; }\n\n.menuHeader:hover,\n.tableOptions .menuHeader {\n  background-color: #232f32 !important;\n  color: #fff;\n  padding: 0.3rem 0.7rem;\n  text-transform: uppercase; }\n\n.tableOptions > li {\n  border-bottom: 1px solid #f2f2f2; }\n\n.tableOptions > li:hover {\n  background-color: #f2f2f2; }\n\n.dropdown-pane {\n  padding: 0; }\n\n.panel-grey {\n  background-color: #e4e4e4;\n  padding-top: 1rem; }\n\n#emailPanel,\n#namePanel,\n#passwordPanel {\n  display: none;\n  padding: 1rem;\n  background: #e4e4e4; }\n\ninput[type=checkbox]:checked ~ #port {\n  display: none; }\n\n#port {\n  display: block; }\n\n.inactive-link {\n  display: none; }\n\n.button-cancel {\n  border-color: #990000 !important;\n  color: #990000 !important; }\n\n.green {\n  background-color: #006600; }\n\n.orange {\n  background-color: #cc7a00; }\n\n.red {\n  background-color: #990000; }\n\n.black {\n  background-color: #1a1b1b; }\n\n.grey {\n  background-color: #737373; }\n\n.loader {\n  height: 4px;\n  width: 100%;\n  position: relative;\n  overflow: hidden;\n  background-color: #ddd; }\n\n.loader:before {\n  display: block;\n  position: absolute;\n  content: \"\";\n  left: -200px;\n  width: 200px;\n  height: 4px;\n  background-color: #2980b9;\n  animation: loading 2s linear infinite; }\n\n@keyframes loading {\n  from {\n    left: -200px;\n    width: 30%; }\n  50% {\n    width: 30%; }\n  70% {\n    width: 70%; }\n  80% {\n    left: 50%; }\n  95% {\n    left: 120%; }\n  to {\n    left: 100%; } }\n\n.griddle-container {\n  border: none !important; }\n\n.griddle .top-section {\n  clear: both;\n  display: table;\n  width: 100%; }\n\n.griddle .griddle-filter {\n  float: left;\n  width: 50%;\n  text-align: left;\n  color: #222;\n  min-height: 1px; }\n\n.griddle-body {\n  font-size: 1em;\n  overflow-x: scroll; }\n\n.griddle .griddle-settings-toggle {\n  float: left;\n  width: 50%;\n  text-align: right;\n  color: #f8f8f8; }\n\n.griddle .griddle-settings {\n  background-color: #FFF;\n  border: 1px solid #DDD;\n  color: #222;\n  padding: 10px;\n  margin-bottom: 10px; }\n\n.griddle .griddle-settings .settings {\n  color: #f8f8f8; }\n\n.griddle .griddle-settings .griddle-columns {\n  clear: both;\n  display: table;\n  width: 100%;\n  border-bottom: 1px solid #EDEDED;\n  margin-bottom: 10px; }\n\n.griddle .griddle-settings .griddle-column-selection {\n  float: left;\n  width: 20%; }\n\n.griddle table {\n  width: 100%;\n  table-layout: auto !important; }\n\n.griddle th {\n  background-color: #EDEDEF;\n  border: 0px;\n  border-bottom: 1px solid #DDD;\n  color: #222;\n  padding: 5px; }\n\n.griddle td {\n  padding: 5px;\n  background-color: #FFF;\n  border-top-color: #DDD;\n  color: #222; }\n\n.griddle .footer-container {\n  padding: 0px;\n  background-color: #EDEDED;\n  border: 0px;\n  color: #222; }\n\n.griddle button {\n  font-weight: bold;\n  color: #232f32; }\n\n.griddle .griddle-previous, .griddle .griddle-page, .griddle .griddle-next {\n  float: left;\n  width: 33%;\n  min-height: 1px;\n  margin-top: 5px; }\n\n.griddle .griddle-page {\n  text-align: center; }\n\n.griddle .griddle-next {\n  text-align: right; }\n", ""]);
+	exports.push([module.id, "body,\nhtml {\n  background: #f2f2f2;\n  height: 100%;\n  font-family: roboto;\n  color: #1a1b1b; }\n\nbody {\n  -webkit-animation-delay: 0.1s;\n  -webkit-animation-name: fontfix;\n  -webkit-animation-duration: 0.1s;\n  -webkit-animation-iteration-count: 1;\n  -webkit-animation-timing-function: linear; }\n\n@-webkit-keyframes fontfix {\n  from {\n    opacity: 1; }\n  to {\n    opacity: 1; } }\n\n.row {\n  max-width: 100rem; }\n\n.loading-overlay {\n  background-color: rgba(10, 10, 10, 0.45) !important;\n  position: fixed;\n  top: 0;\n  bottom: 0;\n  left: 0;\n  right: 0; }\n\ndiv#offCanvas {\n  width: 350px;\n  height: 100%;\n  padding: 1.5rem;\n  background: #e8e8e8; }\n\n.is-open-right {\n  transform: translateX(-350px); }\n\n.off-canvas.position-right {\n  right: -350px; }\n\n.off-canvas-content {\n  background: #f2f2f2; }\n\na {\n  color: #6abedb; }\n\nhr {\n  border-color: #bdbdbd;\n  margin-top: 0.5rem;\n  max-width: 100%; }\n\n@media only screen and (max-width: 480px) {\n  .allSensors,\n  .buildingCharts {\n    display: none; } }\n\n.divider {\n  border-color: #bdbdbd; }\n\n.reveal {\n  top: 100px !important; }\n\ntable thead {\n  background: #d3d3d3;\n  color: #1a1b1b;\n  border: 1px solid #e4e4e4; }\n\ntable tbody {\n  color: #1a1b1b;\n  border: 1px solid #e4e4e4; }\n\n.margin-top-large {\n  margin-top: 4rem; }\n\n.margin-bottom-large {\n  margin-bottom: 4rem; }\n\n.margin-right-small {\n  margin-right: 2rem; }\n\n.margin-left-small {\n  margin-left: 2rem; }\n\n.margin-left-tiny {\n  margin-left: 0.5rem; }\n\n.margin-right-tiny {\n  margin-right: 0.5rem; }\n\n.margin-top-md {\n  margin-top: 2rem; }\n\n.margin-top-small {\n  margin-top: 1rem; }\n\n.margin-bottom-md {\n  margin-bottom: 2rem; }\n\n.margin-bottom-small {\n  margin-bottom: 1rem; }\n\n.textAlignCenter {\n  text-align: center; }\n\nul.header-list {\n  display: inline-block;\n  list-style: none;\n  margin-bottom: 0; }\n\n.sticky {\n  z-index: 10000;\n  left: 0 !important; }\n\n.callout {\n  background-color: #fff; }\n\n.callout-dark {\n  padding: 1.5rem;\n  background-color: #fff;\n  border: 2px solid #bdbdbd;\n  border-top: none;\n  margin-top: 0;\n  border-bottom-right-radius: 4px;\n  border-bottom-left-radius: 4px; }\n\n.scroll {\n  max-height: 100vh;\n  overflow-y: scroll; }\n\n.callout-dark-header {\n  padding: 0.5rem;\n  background-color: #fff;\n  border: 2px solid #bdbdbd;\n  border-bottom: 1px solid #bdbdbd;\n  border-top-left-radius: 4px;\n  border-top-right-radius: 4px;\n  margin-bottom: 0; }\n\n.callout-top-header {\n  padding: 1rem;\n  background-color: #f2f2f2;\n  border: 2px solid #bdbdbd;\n  border-radius: 4px; }\n\n.callout-minimize {\n  margin-bottom: 1rem;\n  border-radius: 4px 4px;\n  padding: 0.5rem; }\n\n.icon-btn-text-small {\n  font-family: 'Roboto', sans-serif;\n  text-transform: Captitalize;\n  top: 15px;\n  right: 15px;\n  position: absolute;\n  color: #232f32;\n  font-size: 1.1rem; }\n\n.test {\n  font-family: 'Pathway Gothic One', sans-serif;\n  text-transform: uppercase;\n  color: #fff;\n  font-size: 1.2rem;\n  background: #6abedb; }\n\nlabel {\n  text-transform: capitalize;\n  color: #232f32; }\n\n.header {\n  color: #232f32;\n  margin-bottom: 0;\n  text-transform: capitalize;\n  font-family: 'Roboto', sans-serif; }\n\n.sub-header {\n  color: #232f32;\n  font-size: 1.3rem;\n  font-family: 'Pathway Gothic One', sans-serif; }\n  .sub-header a {\n    text-transform: capitalize; }\n\n#watchList {\n  display: none; }\n\n.page-title {\n  color: #8e8e8e;\n  font-family: 'Lato', sans-serif;\n  font-size: 1.2rem;\n  font-weight: bold; }\n\ninput[type=search] {\n  box-shadow: none; }\n\n.top-bar-upper {\n  color: #333;\n  font-size: 0.5rem; }\n\n.app-header {\n  font-size: 1.3rem; }\n\ntable.overview-custom tbody,\ntable.overview-custom th,\ntable.overview-custom thead,\ntable.overview-custom tr {\n  text-align: center; }\n\ntable.sensor-details-table tbody {\n  text-align: left; }\n\n.statusText {\n  color: red;\n  margin-bottom: 1rem;\n  text-transform: uppercase;\n  font-size: 0.8em;\n  font-weight: bold; }\n\n.notificationHeader {\n  color: #fff;\n  text-transform: uppercase;\n  font-size: 0.5em;\n  font-weight: bold; }\n\n.sensorBlock {\n  height: 30px;\n  border-radius: 30px;\n  width: auto;\n  color: #fff;\n  text-align: center;\n  font-family: 'Pathway Gothic One', sans-serif;\n  text-transform: uppercase; }\n\n.sensorBlockSquare {\n  height: 30px;\n  width: 30px;\n  border-radius: 4px;\n  cursor: pointer;\n  text-align: center;\n  line-height: 28px;\n  color: white;\n  font-weight: bold; }\n\n.sensorBlockSquare:hover {\n  opacity: 0.5; }\n\n.sensorList {\n  display: inline-block;\n  margin-right: 1px; }\n\n#uptime-form select {\n  margin-right: 2rem; }\n\n.recharts-tooltip-wrapper {\n  z-index: 1000;\n  box-shadow: 1px 1px 4px #323232; }\n\n#glance-tooltip > table tr:nth-of-type(even) {\n  background-color: transparent !important; }\n\n.button-custom {\n  height: 30px;\n  width: auto !important;\n  margin: 0;\n  color: #fff !important;\n  text-align: center;\n  font-family: 'Pathway Gothic One', sans-serif;\n  text-transform: uppercase; }\n\n.proceed {\n  background: #6abedb; }\n\n.cancel {\n  background: #990000; }\n\n.cancel:hover {\n  background: #7a0000; }\n\n.remove {\n  border: 1px solid #990000;\n  background-color: #fff;\n  color: #990000 !important; }\n\n.pin {\n  border: 1px solid #990000;\n  background-color: #fff;\n  color: #008000 !important; }\n\n.tableOptions > li > a {\n  color: #323232;\n  font-weight: normal;\n  font-size: 1rem;\n  padding: 0.5rem 0.7rem; }\n\n.menuHeader:hover,\n.tableOptions .menuHeader {\n  background-color: #232f32 !important;\n  color: #fff;\n  padding: 0.3rem 0.7rem;\n  text-transform: uppercase; }\n\n.tableOptions > li {\n  border-bottom: 1px solid #f2f2f2; }\n\n.tableOptions > li:hover {\n  background-color: #f2f2f2; }\n\n.dropdown-pane {\n  padding: 0; }\n\n.panel-grey {\n  background-color: #e4e4e4;\n  padding-top: 1rem; }\n\n#emailPanel,\n#namePanel,\n#passwordPanel {\n  display: none;\n  padding: 1rem;\n  background: #e4e4e4; }\n\ninput[type=checkbox]:checked ~ #port {\n  display: none; }\n\n#port {\n  display: block; }\n\n.inactive-link {\n  display: none; }\n\n.button-cancel {\n  border-color: #990000 !important;\n  color: #990000 !important; }\n\n.green {\n  background-color: #008000; }\n\n.orange {\n  background-color: #cc7a00; }\n\n.red {\n  background-color: #990000; }\n\n.black {\n  background-color: #1a1b1b; }\n\n.yellow {\n  background-color: #ffcc00; }\n\n.grey {\n  background-color: #737373; }\n\n.loader {\n  height: 4px;\n  width: 100%;\n  position: relative;\n  overflow: hidden;\n  background-color: #ddd; }\n\n.loader:before {\n  display: block;\n  position: absolute;\n  content: \"\";\n  left: -200px;\n  width: 200px;\n  height: 4px;\n  background-color: #2980b9;\n  animation: loading 2s linear infinite; }\n\n@keyframes loading {\n  from {\n    left: -200px;\n    width: 30%; }\n  50% {\n    width: 30%; }\n  70% {\n    width: 70%; }\n  80% {\n    left: 50%; }\n  95% {\n    left: 120%; }\n  to {\n    left: 100%; } }\n\n.griddle-container {\n  border: none !important; }\n\n.griddle .top-section {\n  clear: both;\n  display: table;\n  width: 100%; }\n\n.griddle .griddle-filter {\n  float: left;\n  width: 50%;\n  text-align: left;\n  color: #222;\n  min-height: 1px; }\n\n.griddle-body {\n  font-size: 1em;\n  overflow-x: scroll; }\n\n.griddle .griddle-settings-toggle {\n  float: left;\n  width: 50%;\n  text-align: right;\n  color: #f8f8f8; }\n\n.griddle .griddle-settings {\n  background-color: #FFF;\n  border: 1px solid #DDD;\n  color: #222;\n  padding: 10px;\n  margin-bottom: 10px; }\n\n.griddle .griddle-settings .settings {\n  color: #f8f8f8; }\n\n.griddle .griddle-settings .griddle-columns {\n  clear: both;\n  display: table;\n  width: 100%;\n  border-bottom: 1px solid #EDEDED;\n  margin-bottom: 10px; }\n\n.griddle .griddle-settings .griddle-column-selection {\n  float: left;\n  width: 20%; }\n\n.griddle table {\n  width: 100%;\n  table-layout: auto !important; }\n\n.griddle th {\n  background-color: #EDEDEF;\n  border: 0px;\n  border-bottom: 1px solid #DDD;\n  color: #222;\n  padding: 5px; }\n\n.griddle td {\n  padding: 5px;\n  background-color: #FFF;\n  border-top-color: #DDD;\n  color: #222; }\n\n.griddle .footer-container {\n  padding: 0px;\n  background-color: #EDEDED;\n  border: 0px;\n  color: #222; }\n\n.griddle button {\n  font-weight: bold;\n  color: #232f32; }\n\n.griddle .griddle-previous, .griddle .griddle-page, .griddle .griddle-next {\n  float: left;\n  width: 33%;\n  min-height: 1px;\n  margin-top: 5px; }\n\n.griddle .griddle-page {\n  text-align: center; }\n\n.griddle .griddle-next {\n  text-align: right; }\n", ""]);
 
 	// exports
 

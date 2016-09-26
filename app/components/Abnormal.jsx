@@ -30,14 +30,14 @@ class PinComponent extends React.Component {
     }
 
     handleClick(macAddress) {
-        var {dispatch} = this.props;
+        var dispatch = this.props.data.dispatch;
         dispatch(actions.startUpdateWatchList(macAddress));
         $('#pin-sensor-modal').foundation('open');
     }
 
     render() {
       return (
-        <a onClick={() => this.handleClick(this.props.data)} >
+        <a onClick={() => this.handleClick(this.props.data.mac)} >
             <div id="pin-btn" className="sensorBlock pin">Pin</div>
         </a>
       );
@@ -83,9 +83,9 @@ const tableMetaData = [
     }, {
         "columnName": "pin",
         "order": 6,
-        "locked": false,
+        "locked": true,
         "visible": true,
-        "sortable": true,
+        "sortable": false,
         "displayName": "Actions",
         "customComponent": PinComponent
     }
@@ -101,10 +101,16 @@ class Abnormal extends React.Component {
     render() {
         var allSensorData = this.props.data;
         var dataList = [];
+        var {dispatch} = this.props;
 
         for (var sensor in allSensorData) {
             if (allSensorData.hasOwnProperty(sensor)) {
-                var mac = sensor;
+
+                var coolStuff = {
+                    dispatch: dispatch,
+                    mac: sensor
+                };
+
                 if (allSensorData[sensor]["flapping"]) {
                     var row = {
                         "building": allSensorData[sensor]["building"],
@@ -112,7 +118,7 @@ class Abnormal extends React.Component {
                         "sensor_status": allSensorData[sensor]["sensor_status"],
                         "flapping": allSensorData[sensor]["flapping"],
                         "network_router": allSensorData[sensor]["network_router"],
-                        "pin" : mac
+                        "pin" : coolStuff
                     };
 
                     if (allSensorData[sensor]["flapping"] != "false") {
@@ -124,7 +130,9 @@ class Abnormal extends React.Component {
 
         return (
             <div>
-                <Griddle results={dataList} columnMetadata={tableMetaData} tableClassName="table" columns={["building", "sensor-level-id", "sensor_status", "flapping", "network_router", "pin"]}/>
+                <Griddle results={dataList}
+                        columnMetadata={tableMetaData}
+                        tableClassName="table" columns={["building", "sensor-level-id", "sensor_status", "flapping", "network_router", "pin"]}/>
             </div>
         );
     }

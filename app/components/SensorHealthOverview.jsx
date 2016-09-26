@@ -12,9 +12,9 @@ const HOST = 'http://opsdev.sence.io:4201/';
 
 var colorMap = {
   "ok" : "sensorBlockSquare green sensorList",
-  "warning" : "sensorBlockSquare orange sensorList",
-  "danger" : "sensorBlockSquare red sensorList",
-  "down" : "sensorBlockSquare black sensorList",
+  "warning" : "sensorBlockSquare yellow sensorList",
+  "danger" : "sensorBlockSquare orange sensorList",
+  "down" : "sensorBlockSquare red sensorList",
   "no data" : "sensorBlockSquare grey sensorList"
 }
 

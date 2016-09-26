@@ -7,9 +7,9 @@ const {XAxis, Cell, YAxis, Legend, BarChart, Bar, CartesianGrid, Tooltip, Brush,
 
 var colorMap = {
   "ok" : "#006600",
-  "warning" : "#cc7a00",
-  "danger" : "#990000",
-  "down" : "#1a1b1b",
+  "warning" : "#ffff1a",
+  "danger" : "#cc7a00",
+  "down" : "#990000",
   "no data" : "#737373"
 }
 
@@ -122,7 +122,7 @@ class Uptime extends React.Component {
                 }}/>
               Show/Hide all
             </button>
-            <form>
+            <form id="uptime-form" style={{display: 'flex'}}>
               <select ref="numDays">
                 <option value="0">Select number of days</option>
                 <option value="1">1</option>

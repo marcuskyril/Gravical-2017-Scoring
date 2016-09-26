@@ -12,8 +12,6 @@ constructor(props) {
 
 componentDidMount() {
     $(document).foundation();
-
-    // listen for terminal modal close
 }
 
 render() {

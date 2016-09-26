@@ -10,25 +10,6 @@ import {connect} from 'react-redux';
 
 var dataList = [];
 
-class RemoveComponent extends React.Component {
-
-    handleClick(macAddress) {
-
-        var {dispatch} = this.props;
-        dispatch(actions.startUpdateWatchList(macAddress));
-        $('#unpin-sensor-modal').foundation('open');
-    }
-
-    render() {
-      return (
-        <a onClick={() => this.handleClick(this.props.data)} >
-            <div id="unpin-btn" className="sensorBlock remove">Un-Pin</div>
-        </a>
-      );
-
-    }
-};
-
 class SensorBlockComponent extends React.Component {
 
     render() {
@@ -44,6 +25,28 @@ class SensorBlockComponent extends React.Component {
         return (
             <div className={colorMap[this.props.data]}>{this.props.data}</div>
         );
+    }
+};
+
+class RemoveComponent extends React.Component {
+
+    constructor(props) {
+        super(props);
+    }
+
+    handleClick(macAddress) {
+        var dispatch = this.props.data.dispatch;
+        dispatch(actions.startUpdateWatchList(macAddress));
+        $('#unpin-sensor-modal').foundation('open');
+    }
+
+    render() {
+      return (
+        <a onClick={() => this.handleClick(this.props.data.mac)} >
+            <div id="unpin-btn" className="sensorBlock remove">Un-Pin</div>
+        </a>
+      );
+
     }
 };
 
@@ -106,7 +109,8 @@ const tableMetaData = [
         "order": 5,
         "locked": true,
         "visible": true,
-        "displayName": "Un-pin?",
+        "sortable": false,
+        "displayName": "Actions",
         "customComponent": RemoveComponent
     }
 
@@ -120,14 +124,12 @@ class WatchList extends React.Component {
 
     constructor(props) {
         super(props);
-        this.state = {
-            dataList: []
-        };
     }
 
     tableClickHandler(gridRow) {
 
-        var macAddress = gridRow.props.data.mac_address
+        var macAddress = gridRow.props.data.mac_address;
+        console.log("macAddress", macAddress);
 
         if($('#unpin-sensor-modal').css('display') === 'none') {
             $('#offCanvas').foundation('open', event);
@@ -136,24 +138,30 @@ class WatchList extends React.Component {
     }
 
     render() {
-
         var allSensorData = this.props.data;
         var dataList = [];
+        var {dispatch} = this.props;
+
         for (var sensor in allSensorData) {
             if (allSensorData.hasOwnProperty(sensor)) {
-              if(allSensorData[sensor]["watchlist"]){
-                var mac = sensor;
-                var row = {
-                    "mac_address": mac,
-                    "building": allSensorData[sensor]["building"],
-                    "sensor-level-id": allSensorData[sensor]["sensor-location-level"] + allSensorData[sensor]["sensor-location-id"],
-                    "sensor_status": allSensorData[sensor]["sensor_status"],
-                    "remove" : mac
+
+                var coolStuff = {
+                    dispatch: dispatch,
+                    mac: sensor
                 };
 
-                if (typeof allSensorData[sensor]["error"] !== "undefined") {
-                    row["sensor_status"] = "-";
-                }
+                if(allSensorData[sensor]["watchlist"]){
+                    var row = {
+                        "mac_address": sensor,
+                        "building": allSensorData[sensor]["building"],
+                        "sensor-level-id": allSensorData[sensor]["sensor-location-level"] + allSensorData[sensor]["sensor-location-id"],
+                        "sensor_status": allSensorData[sensor]["sensor_status"],
+                        "remove" : coolStuff
+                    };
+
+                    if (typeof allSensorData[sensor]["error"] !== "undefined") {
+                        row["sensor_status"] = "-";
+                    }
 
                 dataList.push(row);
               }
@@ -166,6 +174,7 @@ class WatchList extends React.Component {
                           showFilter={true}
                           initialSort="building_name"
                           tableClassName="piOverviewTable"
+                          columns={["mac_address", "building", "sensor-level-id", "sensor_status", "remove"]}
                           columnMetadata={tableMetaData}
                           onRowClick={this.tableClickHandler.bind(this)}
                           rowMetaData={rowMetaData}/>
@@ -174,4 +183,4 @@ class WatchList extends React.Component {
     }
 }
 
-module.exports = WatchList;
+module.exports = connect()(WatchList);
