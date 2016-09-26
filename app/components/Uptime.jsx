@@ -59,7 +59,8 @@ class Uptime extends React.Component {
       isLoading: true
     });
 
-    this.retrieveData(3, 30);
+    window.scrollTo(0, 0);
+    this.retrieveData(1, 10);
   }
 
   onSubmit() {
@@ -67,23 +68,24 @@ class Uptime extends React.Component {
     var numDays = parseInt(this.refs.numDays.value);
     var interval = parseInt(this.refs.interval.value);
 
+    this.setState({
+      data: "",
+      isLoading: true
+    });
+
     this.retrieveData(numDays, interval);
+
   }
 
   retrieveData(numDays, interval) {
 
     var that = this;
-
-    $('.off-canvas-content').addClass('loading-overlay');
-
     retrieveUptimeDataAPI.retrieveUptimeData(that.state.buildingName, numDays, interval).then(function(response) {
         // console.log("response", response);
         that.setState({
           data: response,
           isLoading: false
         });
-
-        $('.off-canvas-content').removeClass('loading-overlay');
     });
   }
 
@@ -103,15 +105,13 @@ class Uptime extends React.Component {
     var {isLoading, data, buildingName} = this.state;
     var that = this;
 
-    function renderMessage() {
+    function renderContent() {
       if(isLoading) {
-        $('.off-canvas-content').addClass('loading-overlay');
 
         return (
-          <div className="textAlignCenter">
-            <FontAwesome name='refresh' size={'5x'} spin style={{color: '#fff', textShadow: '0 1px 0 rgba(0, 0, 0, 0.1)'}}/>
-          </div>
+          <div className="loader"></div>
         );
+
       } else {
         return (
           <div>
@@ -156,7 +156,7 @@ class Uptime extends React.Component {
         <div className="row" style={{minHeight: '100vh'}}>
           <div className="columns large-12">
 
-            {renderMessage()}
+            {renderContent()}
             <UptimeList data={this.state.data}/>
           </div>
         </div>

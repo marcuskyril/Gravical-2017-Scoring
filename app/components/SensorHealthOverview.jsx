@@ -252,12 +252,4 @@ render() {
   }
 }
 
-// module.exports = SensorHealthOverview;
-// function mapStateToProps(state, ownProps) {
-//     return {
-//         deleteMac: state.macAddress,
-//         pin_mac: state.pin_mac
-//     }
-// }
-
 module.exports = connect()(SensorHealthOverview);

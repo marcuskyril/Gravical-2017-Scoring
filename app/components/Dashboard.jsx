@@ -25,9 +25,6 @@ class Dashboard extends React.Component {
     constructor(props) {
         super(props);
 
-        var {dispatch} = this.props;
-        console.log("dashboard props", dispatch);
-
         this.state = {
             connection: null,
             type: "-",
@@ -74,7 +71,6 @@ class Dashboard extends React.Component {
         }, function() {
 
             // refresh browser when connection is unavailable
-
             console.warn('WebSocket connection closed: all data unavailable');
 
             // if(this.props && this.props.location.pathname === '/dashboard') {
@@ -222,12 +218,4 @@ class Dashboard extends React.Component {
     }
 };
 
-// module.exports = Dashboard;
-function mapStateToProps(state, ownProps) {
-    return {
-        deleteMac: state.macAddress,
-        pin_mac: state.pin_mac
-    }
-}
-
-module.exports = connect(mapStateToProps)(Dashboard);
+module.exports = connect()(Dashboard);

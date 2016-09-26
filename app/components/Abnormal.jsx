@@ -32,7 +32,6 @@ class PinComponent extends React.Component {
     handleClick(macAddress) {
         var {dispatch} = this.props;
         dispatch(actions.startUpdateWatchList(macAddress));
-        // $('#pinMac').val(macAddress);
         $('#pin-sensor-modal').foundation('open');
     }
 

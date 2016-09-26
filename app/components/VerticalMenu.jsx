@@ -97,32 +97,31 @@ class VerticalMenu extends React.Component {
             console.warn('Invalid request.');
             break;
         }
+    }
 
+    renderTerminalLink() {
+        var {reboot_available} = this.state;
+
+        if(reboot_available) {
+            return (
+              <li><a onClick={() => this.handleClick(this.props.sensorData, 'LAUNCH_TERMINAL_ACTION')}>Launch terminal</a></li>
+            );
+        }
     }
     render() {
-      var {reboot_available} = this.state;
-
-      function renderTerminalLink() {
-        if(reboot_available) {
-          return (
-            <li><a onClick={() => this.handleClick(this.props.sensorData, 'LAUNCH_TERMINAL_ACTION')}>Launch terminal</a></li>
-          );
-        }
-      }
-
-       return (
+        return (
 
            <li className="sensorList">
-             <div className={this.props.class} onClick={() => this.handleClick(this.props.sensorData, 'NO_ACTION')}>{this.props.id}</div>
-             <div className="dropdown-pane" id={this.props.macAdd} data-dropdown data-options="data-hover:true; data-close-on-click:true">
-                 <ul className="vertical menu tableOptions">
-                   <li className="menuHeader">{this.props.macAdd}</li>
-                   <li><a onClick={() => this.handleClick(this.props.sensorData, 'OPEN_CANVAS_ACTION')} data-toggle="offCanvas">More details &raquo;</a></li>
-                   <li><a onClick={() => this.handleClick(this.props.sensorData, 'EDIT_ACTION')}>Edit sensor</a></li>
-                   <li><a onClick={() => this.handleClick(this.props.sensorData, 'DELETE_ACTION')}>Delete sensor</a></li>
-                   <li><a onClick={() => this.handleClick(this.props.sensorData, 'WATCHLIST_UPDATE_ACTION')}>Pin sensor</a></li>
-                   {renderTerminalLink()}
-                 </ul>
+            <div className={this.props.class} onClick={() => this.handleClick(this.props.sensorData, 'NO_ACTION')}>{this.props.id}</div>
+            <div className="dropdown-pane" id={this.props.macAdd} data-dropdown data-options="data-hover:true; data-close-on-click:true">
+                    <ul className="vertical menu tableOptions">
+                       <li className="menuHeader">{this.props.macAdd}</li>
+                       <li><a onClick={() => this.handleClick(this.props.sensorData, 'OPEN_CANVAS_ACTION')} data-toggle="offCanvas">More details &raquo;</a></li>
+                       <li><a onClick={() => this.handleClick(this.props.sensorData, 'EDIT_ACTION')}>Edit sensor</a></li>
+                       <li><a onClick={() => this.handleClick(this.props.sensorData, 'DELETE_ACTION')}>Delete sensor</a></li>
+                       <li><a onClick={() => this.handleClick(this.props.sensorData, 'WATCHLIST_UPDATE_ACTION')}>Pin sensor</a></li>
+                       {this.renderTerminalLink()}
+                    </ul>
                </div>
            </li>
        );

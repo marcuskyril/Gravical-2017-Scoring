@@ -93,7 +93,7 @@ try {
             var status = response["status"];
             document.getElementById("status").innerHTML = status;
 
-            if(response["port"] && response["port"].length > 0 && $('#bootyCall').hasClass('disabled')) {
+            if(response["port"] && response["port"].length > 0 && $('#bootyCall').hasClass('disabled')&& response["reboot_available"]) {
               $('#bootyCall').removeClass('disabled');
             }
 
@@ -229,10 +229,6 @@ $("#reboot-modal-submit").on('submit', function (e) {
             var data = JSON.parse(xhr.responseText);
 
             console.console.log("error", data);
-
-            // console.log(form.find('#errMsgPopup'));
-            // form.find('#errMsgPopup').html(data['emailTxt']);
-            // form.find('#errMsgFooter').html(data['emailTxt']);
         }
     });
 });
