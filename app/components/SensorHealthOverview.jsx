@@ -27,8 +27,18 @@ class Building extends React.Component {
 
         return (
             <div className="column row">
-                <div className="header">{this.props.buildingName} | Total count: {this.props.sensorCount}</div>
-                <IndexLink activeClassName='active' to={uptimeLink}>View historical data &raquo;</IndexLink>
+
+                <div className="header">
+                    {this.props.buildingName}
+                    <div style={{float:'right'}}>
+                        <span>Total Count: {this.props.sensorCount}</span>
+                        <span>
+                            <IndexLink activeClassName='active' to={uptimeLink}>
+                                <FontAwesome name='bar-chart' style={{marginLeft: '5px'}}/>
+                            </IndexLink>
+                        </span>
+                    </div>
+                </div>
                 <table className="sensorHealthTable">
                     <BuildingHeader areaArray={this.props.areaNames}/>
                     <LevelList areaArray={this.props.areaNames} levelArray={this.props.levelNames} sensors={this.props.sensors}/>

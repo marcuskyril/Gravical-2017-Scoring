@@ -92,6 +92,7 @@ hr {
 
 .divider {
     border-color: #bdbdbd;
+    margin-bottom: 10px;
 }
 
 .reveal {
@@ -212,7 +213,7 @@ ul.header-list {
     top: 15px;
     right: 15px;
     position: absolute;
-    color: $night-ocean;
+    color: $dark-grey;
     font-size: 1.1rem;
 }
 
@@ -220,7 +221,7 @@ ul.header-list {
     font-family: 'Pathway Gothic One', sans-serif;
     text-transform: uppercase;
     color: #fff;
-    font-size: 1.2rem;
+    font-size: 1rem;
     background: $header-color;
 }
 
@@ -230,9 +231,10 @@ label {
 }
 
 .header {
-    color: $night-ocean;
+    color: $dark-grey;
     margin-bottom: 0;
     text-transform: capitalize;
+    font-weight: 500;
     font-family: 'Roboto', sans-serif;
 }
 
@@ -251,10 +253,10 @@ label {
 }
 
 .page-title {
-    color: #8e8e8e;
-    font-family: 'Lato', sans-serif;
+    color: $dark-grey;
+    font-family: 'Roboto', sans-serif;
+    font-weight: 500;
     font-size: 1.2rem;
-    font-weight: bold;
 }
 
 input[type=search] {
@@ -368,12 +370,38 @@ table.sensor-details-table {
 .remove {
     border: 1px solid $red;
     background-color: #fff;
-    color: $red !important;
+    color: $red;
 }
+
+.remove:hover {
+    background-color: $red;
+    color: #fff !important;
+}
+
 .pin {
-    border: 1px solid $red;
+    border: 1px solid $green;
     background-color: #fff;
-    color: $green !important;
+    color: $green;
+}
+
+.pin:hover {
+    background-color: #006600;
+    color: #fff !important;
+}
+
+.disabled {
+    pointer-events: none;
+    background: $not-so-dark-grey;
+    border: none;
+    color: white;
+
+}
+
+.disabled:hover {
+    pointer-events: none;
+    background: $not-so-dark-grey;
+    border: none;
+    color: white;
 }
 
 .tableOptions > li > a {

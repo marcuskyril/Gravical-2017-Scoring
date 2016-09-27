@@ -18,12 +18,11 @@ class SimpleBarChart extends React.Component{
 
     // console.log("uptime data", this.props.uptimeData);
     var width = $('.row').width() * 0.95;
-    console.log("width", width);
 
   	return (
       <div>
         <div className="header">{this.props.id} | {this.props.mac}</div>
-        <BarChart width={width} height={50} data={this.props.uptimeData} syncId={this.props.level}
+        <BarChart width={width} height={40} data={this.props.uptimeData}
                   margin={{top: 5, right: 30, left: 20, bottom: 5}} barGap={0} barCategoryGap={0}>
              <CartesianGrid strokeDasharray="3 3"/>
              <Tooltip/>
@@ -220,7 +219,7 @@ class SensorList extends React.Component {
     return (
       <div className="margin-bottom-md">
         <div className="callout callout-dark-header">
-          {currentLevel}
+          <div className="page-title">{currentLevel}</div>
           <button onClick={() => this.minimize(this.props.level)} className="icon-btn-text-small">
               <FontAwesome name='expand'/>
           </button>

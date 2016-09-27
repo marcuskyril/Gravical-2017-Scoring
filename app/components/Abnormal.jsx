@@ -35,10 +35,23 @@ class PinComponent extends React.Component {
         $('#pin-sensor-modal').foundation('open');
     }
 
+    renderButton(){
+        if(this.props.data.watchlist) {
+            return(
+                <div id="pin-btn" className="sensorBlock pin disabled">Pin</div>
+            );
+        } else {
+            return (
+                <div id="pin-btn" className="sensorBlock pin">Pin</div>
+            );
+        }
+    }
+
     render() {
+
       return (
         <a onClick={() => this.handleClick(this.props.data.mac)} >
-            <div id="pin-btn" className="sensorBlock pin">Pin</div>
+            {this.renderButton()}
         </a>
       );
 
@@ -108,7 +121,8 @@ class Abnormal extends React.Component {
 
                 var coolStuff = {
                     dispatch: dispatch,
-                    mac: sensor
+                    mac: sensor,
+                    watchlist: allSensorData[sensor]["watchlist"]
                 };
 
                 if (allSensorData[sensor]["flapping"]) {
