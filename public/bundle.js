@@ -14346,7 +14346,7 @@
 	    var _this2 = _possibleConstructorReturn(this, Object.getPrototypeOf(Uptime).call(this, props));
 
 	    var d = new Date();
-	    d.setDate(d.getDate() - 7);
+	    d.setDate(d.getDate() - 6);
 
 	    var startDate = d.toISOString().substring(0, 10);
 	    var endDate = new Date().toISOString().substring(0, 10);
@@ -14389,18 +14389,12 @@
 	      var endDate = this.refs.endDate.value;
 	      var interval = parseInt(this.refs.interval.value);
 
-	      console.log("startDate", startDate);
-	      console.log("endDate", endDate);
-
 	      if (Date.parse(endDate) < Date.parse(startDate)) {
 	        this.setState({ message: 'End date is before start date. Please try again.' });
 	      } else {
 	        this.setState({
 	          data: "",
-	          isLoading: true,
-	          startDate: startDate,
-	          endDate: endDate,
-	          interval: interval
+	          isLoading: true
 	        });
 
 	        this.retrieveData(startDate, endDate, interval);
@@ -14412,11 +14406,13 @@
 
 	      var that = this;
 	      retrieveUptimeDataAPI.retrieveUptimeData(that.state.buildingName, startDate, endDate, interval).then(function (response) {
-	        // console.log("response", response)
 
 	        that.setState({
 	          data: response,
-	          isLoading: false
+	          isLoading: false,
+	          startDate: startDate,
+	          endDate: endDate,
+	          interval: interval
 	        });
 	      });
 	    }
