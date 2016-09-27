@@ -16,9 +16,9 @@ class SensorBlockComponent extends React.Component {
 
         var colorMap = {
           "ok" : "sensorBlock green",
-          "warning" : "sensorBlock orange",
-          "danger" : "sensorBlock red",
-          "down" : "sensorBlock black",
+          "warning" : "sensorBlock yellow",
+          "danger" : "sensorBlock orange",
+          "down" : "sensorBlock red",
           "-" : "sensorBlock grey",
         }
 
@@ -42,9 +42,7 @@ class RemoveComponent extends React.Component {
 
     render() {
       return (
-        <a onClick={() => this.handleClick(this.props.data.mac)} >
-            <div id="unpin-btn" className="sensorBlock remove">Un-Pin</div>
-        </a>
+        <div id="unpin-btn" className="sensorBlock remove" onClick={() => this.handleClick(this.props.data.mac)}>Un-Pin</div>
       );
 
     }

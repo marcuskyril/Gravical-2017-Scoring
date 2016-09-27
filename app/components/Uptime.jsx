@@ -7,7 +7,7 @@ const {XAxis, Cell, YAxis, Legend, BarChart, Bar, CartesianGrid, Tooltip, Brush,
 
 var colorMap = {
   "ok" : "#006600",
-  "warning" : "#ffff1a",
+  "warning" : "#ffcc00",
   "danger" : "#cc7a00",
   "down" : "#990000",
   "no data" : "#737373"
@@ -20,12 +20,12 @@ class SimpleBarChart extends React.Component{
     var width = $('.row').width() * 0.95;
 
   	return (
-      <div>
+      <div key={this.props.id}>
         <div className="header">{this.props.id} | {this.props.mac}</div>
         <BarChart width={width} height={40} data={this.props.uptimeData}
                   margin={{top: 5, right: 30, left: 20, bottom: 5}} barGap={0} barCategoryGap={0}>
              <CartesianGrid strokeDasharray="3 3"/>
-             <Tooltip/>
+             <Tooltip content={<CustomTooltip external={this.props.uptimeData}/>}/>
              <Bar dataKey="value">
                {
                  this.props.uptimeData.map((entry, index) =>(
@@ -114,13 +114,15 @@ class Uptime extends React.Component {
       } else {
         return (
           <div>
-            <div className="page-title">{buildingName}</div>
-            <button onClick={that.minimizeAll}>
-                <FontAwesome name='expand' style={{
-                    marginRight: '0.5rem'
-                }}/>
-              Show/Hide all
-            </button>
+            <div className="margin-bottom-small" style={{display: 'flex'}}>
+                <div className="page-title">{buildingName}</div>
+                <button className="margin-left-small" onClick={that.minimizeAll}>
+                    <FontAwesome name='expand' style={{
+                        marginRight: '0.5rem'
+                    }}/>
+                  Show/Hide all
+                </button>
+            </div>
             <form id="uptime-form" style={{display: 'flex'}}>
               <select ref="numDays">
                 <option value="0">Select number of days</option>
@@ -174,7 +176,7 @@ class UptimeList extends React.Component {
           if (dataList.hasOwnProperty(level)) {
 
               var sensorsOnLevel = dataList[level];
-              rows.push(<SensorList level={level} data={sensorsOnLevel}/>);
+              rows.push(<SensorList key={level} level={level} data={sensorsOnLevel}/>);
           }
         }
 
@@ -201,7 +203,7 @@ class SensorList extends React.Component {
   render() {
     var sensorsOnLevel = this.props.data;
     var rows = [];
-    var currentLevel = `Level: ${this.props.level}`
+    var currentLevel = `Level ${this.props.level}`
 
     for(var sensor in sensorsOnLevel) {
       if(sensorsOnLevel.hasOwnProperty(sensor)) {
@@ -212,19 +214,19 @@ class SensorList extends React.Component {
         var id = sensor["id"];
         var uptimeData = sensor["uptimeData"];
 
-        rows.push(<SimpleBarChart mac={mac} id={id} level={level} uptimeData={uptimeData}/>);
+        rows.push(<SimpleBarChart key={mac} mac={mac} id={id} level={level} uptimeData={uptimeData}/>);
       }
     }
 
     return (
-      <div className="margin-bottom-md">
+      <div key={this.props.level} className="margin-bottom-md">
         <div className="callout callout-dark-header">
           <div className="page-title">{currentLevel}</div>
           <button onClick={() => this.minimize(this.props.level)} className="icon-btn-text-small">
               <FontAwesome name='expand'/>
           </button>
         </div>
-        <div id={this.props.level} className="callout callout-dark">
+        <div key={this.props.level} id={this.props.level} className="callout callout-dark">
           {rows}
         </div>
       </div>
@@ -233,3 +235,41 @@ class SensorList extends React.Component {
 }
 
 module.exports = Uptime;
+
+class CustomTooltip extends React.Component{
+
+    getDetails(label) {
+
+        var {external} = this.props;
+        var timestamp = external[label]['timestamp'];
+        var status = external[label]['status'];
+
+        return (
+            <div>
+                <p className="label">{status}</p>
+                <p className="desc">{timestamp}</p>
+            </div>
+        );
+    }
+
+    render() {
+        const { active } = this.props;
+
+        if (active) {
+            const { payload, external, label } = this.props;
+
+            return (
+                <div className="custom-tooltip">
+                    {this.getDetails(label)}
+                </div>
+            );
+        }
+    return null;
+    }
+};
+
+CustomTooltip.propTypes = {
+  type: React.PropTypes.string,
+  payload: React.PropTypes.array,
+  label: React.PropTypes.number
+}

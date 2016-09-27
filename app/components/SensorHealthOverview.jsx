@@ -193,7 +193,7 @@ class LevelList extends React.Component {
           });
 
           tableRows.push(
-              <tr>
+              <tr key={level}>
                 <th>
                     {level.length === 1 ? `0${level}` : level}
                 </th>

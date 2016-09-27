@@ -21,7 +21,12 @@ class UnpinSensor extends React.Component {
     updateWatchList.updateWatchList(macAdd, false).then(function (response) {
         console.log("removed sensor?", response);
 
-        $('#unpin-sensor-modal').foundation('close');
+        if (response.error) {
+            that.setState({message: response.error});
+        } else {
+            that.setState({message: response.msg});
+            $('#unpin-sensor-modal').foundation('close');
+        }
     });
   }
 

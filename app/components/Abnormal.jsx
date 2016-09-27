@@ -38,11 +38,11 @@ class PinComponent extends React.Component {
     renderButton(){
         if(this.props.data.watchlist) {
             return(
-                <div id="pin-btn" className="sensorBlock pin disabled">Pin</div>
+                <div id="pin-btn" onClick={() => this.handleClick(this.props.data.mac)} className="sensorBlock pin disabled">Pin</div>
             );
         } else {
             return (
-                <div id="pin-btn" className="sensorBlock pin">Pin</div>
+                <div id="pin-btn" onClick={() => this.handleClick(this.props.data.mac)} className="sensorBlock pin">Pin</div>
             );
         }
     }
@@ -50,9 +50,9 @@ class PinComponent extends React.Component {
     render() {
 
       return (
-        <a onClick={() => this.handleClick(this.props.data.mac)} >
+        <div>
             {this.renderButton()}
-        </a>
+        </div>
       );
 
     }

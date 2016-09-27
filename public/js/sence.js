@@ -1,5 +1,12 @@
 const REBOOT_SENSOR_URL = "http://opsdev.sence.io/backend/initialize_reboot_sequence.php";
 
+var colorMap = {
+  "ok" : "#006600",
+  "warning" : "#ffcc00",
+  "danger" : "#cc7a00",
+  "down" : "#990000",
+  "no data" : "#737373"
+}
 
 var deleteSensorModal;
 var unpinSensorModal;
@@ -11,7 +18,6 @@ $(document).ready(function() {
     unpinSensorModal = new Foundation.Reveal($('#unpinSensorModal'));
     rebootSensorModal = new Foundation.Reveal($('#rebootSensorModal'));
 });
-
 
 function scroll(action, macAddress) {
 
@@ -99,19 +105,19 @@ try {
 
             switch (status) {
                 case "ok":
-                    document.getElementById("status").style.color = "#006600";
+                    document.getElementById("status").style.color = colorMap['ok'];
                     break;
                 case "warning":
-                    document.getElementById("status").style.color = "#cc7a00";
+                    document.getElementById("status").style.color = colorMap['warning'];
                     break;
                 case "danger":
-                    document.getElementById("status").style.color = "#990000";
+                    document.getElementById("status").style.color = colorMap['danger'];
                     break;
                 case "down":
-                    document.getElementById("status").style.color = "#1a1b1b";
+                    document.getElementById("status").style.color = colorMap['down'];
                     break;
                 case "no data":
-                    document.getElementById("status").style.color = "#737373";
+                    document.getElementById("status").style.color = colorMap['no data'];
                     break;
                 default:
                     break;
@@ -304,8 +310,8 @@ $(document).on('closed.zf.reveal', function() {
 function pinToWatchList(macAddress, pin) {
     const PIN_TO_WATCHLIST_URL = "http://opsdev.sence.io/backend/sensor-watchlist-pin.php";
 
-    console.log("Hola", macAddress);
-    console.log("Hola", pin);
+    // console.log("Hola", macAddress);
+    // console.log("Hola", pin);
 
     var data = {
         "MAC": macAddress,

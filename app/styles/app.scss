@@ -339,6 +339,7 @@ table.sensor-details-table {
 .recharts-tooltip-wrapper {
     z-index: 1000;
     box-shadow: 1px 1px 4px $dark-grey;
+    background-color: #fff;
 }
 
 #glance-tooltip > table tr:nth-of-type(even) {
@@ -371,6 +372,7 @@ table.sensor-details-table {
     border: 1px solid $red;
     background-color: #fff;
     color: $red;
+    cursor: pointer;
 }
 
 .remove:hover {
@@ -382,6 +384,7 @@ table.sensor-details-table {
     border: 1px solid $green;
     background-color: #fff;
     color: $green;
+    cursor: pointer;
 }
 
 .pin:hover {
@@ -394,7 +397,7 @@ table.sensor-details-table {
     background: $not-so-dark-grey;
     border: none;
     color: white;
-
+    cursor: default;
 }
 
 .disabled:hover {
@@ -402,6 +405,7 @@ table.sensor-details-table {
     background: $not-so-dark-grey;
     border: none;
     color: white;
+    cursor: default;
 }
 
 .tableOptions > li > a {

@@ -130,7 +130,7 @@
 	var browserHistory = _require2.browserHistory;
 
 	var actions = __webpack_require__(139);
-	var store = __webpack_require__(819).configure();
+	var store = __webpack_require__(796).configure();
 
 	_firebase2.default.auth().onAuthStateChanged(function (user) {
 	  if (user) {
@@ -14287,7 +14287,7 @@
 
 	var colorMap = {
 	  "ok": "#006600",
-	  "warning": "#ffff1a",
+	  "warning": "#ffcc00",
 	  "danger": "#cc7a00",
 	  "down": "#990000",
 	  "no data": "#737373"
@@ -14311,7 +14311,7 @@
 
 	      return React.createElement(
 	        'div',
-	        null,
+	        { key: this.props.id },
 	        React.createElement(
 	          'div',
 	          { className: 'header' },
@@ -14324,7 +14324,7 @@
 	          { width: width, height: 40, data: this.props.uptimeData,
 	            margin: { top: 5, right: 30, left: 20, bottom: 5 }, barGap: 0, barCategoryGap: 0 },
 	          React.createElement(CartesianGrid, { strokeDasharray: '3 3' }),
-	          React.createElement(Tooltip, null),
+	          React.createElement(Tooltip, { content: React.createElement(CustomTooltip, { external: this.props.uptimeData }) }),
 	          React.createElement(
 	            Bar,
 	            { dataKey: 'value' },
@@ -14431,16 +14431,20 @@
 	            null,
 	            React.createElement(
 	              'div',
-	              { className: 'page-title' },
-	              buildingName
-	            ),
-	            React.createElement(
-	              'button',
-	              { onClick: that.minimizeAll },
-	              React.createElement(FontAwesome, { name: 'expand', style: {
-	                  marginRight: '0.5rem'
-	                } }),
-	              'Show/Hide all'
+	              { className: 'margin-bottom-small', style: { display: 'flex' } },
+	              React.createElement(
+	                'div',
+	                { className: 'page-title' },
+	                buildingName
+	              ),
+	              React.createElement(
+	                'button',
+	                { className: 'margin-left-small', onClick: that.minimizeAll },
+	                React.createElement(FontAwesome, { name: 'expand', style: {
+	                    marginRight: '0.5rem'
+	                  } }),
+	                'Show/Hide all'
+	              )
 	            ),
 	            React.createElement(
 	              'form',
@@ -14576,7 +14580,7 @@
 	        if (dataList.hasOwnProperty(level)) {
 
 	          var sensorsOnLevel = dataList[level];
-	          rows.push(React.createElement(SensorList, { level: level, data: sensorsOnLevel }));
+	          rows.push(React.createElement(SensorList, { key: level, level: level, data: sensorsOnLevel }));
 	        }
 	      }
 
@@ -14618,7 +14622,7 @@
 
 	      var sensorsOnLevel = this.props.data;
 	      var rows = [];
-	      var currentLevel = 'Level: ' + this.props.level;
+	      var currentLevel = 'Level ' + this.props.level;
 
 	      for (var sensor in sensorsOnLevel) {
 	        if (sensorsOnLevel.hasOwnProperty(sensor)) {
@@ -14629,13 +14633,13 @@
 	          var id = sensor["id"];
 	          var uptimeData = sensor["uptimeData"];
 
-	          rows.push(React.createElement(SimpleBarChart, { mac: mac, id: id, level: level, uptimeData: uptimeData }));
+	          rows.push(React.createElement(SimpleBarChart, { key: mac, mac: mac, id: id, level: level, uptimeData: uptimeData }));
 	        }
 	      }
 
 	      return React.createElement(
 	        'div',
-	        { className: 'margin-bottom-md' },
+	        { key: this.props.level, className: 'margin-bottom-md' },
 	        React.createElement(
 	          'div',
 	          { className: 'callout callout-dark-header' },
@@ -14654,7 +14658,7 @@
 	        ),
 	        React.createElement(
 	          'div',
-	          { id: this.props.level, className: 'callout callout-dark' },
+	          { key: this.props.level, id: this.props.level, className: 'callout callout-dark' },
 	          rows
 	        )
 	      );
@@ -14665,6 +14669,72 @@
 	}(React.Component);
 
 	module.exports = Uptime;
+
+	var CustomTooltip = function (_React$Component5) {
+	  _inherits(CustomTooltip, _React$Component5);
+
+	  function CustomTooltip() {
+	    _classCallCheck(this, CustomTooltip);
+
+	    return _possibleConstructorReturn(this, Object.getPrototypeOf(CustomTooltip).apply(this, arguments));
+	  }
+
+	  _createClass(CustomTooltip, [{
+	    key: 'getDetails',
+	    value: function getDetails(label) {
+	      var external = this.props.external;
+
+	      var timestamp = external[label]['timestamp'];
+	      var status = external[label]['status'];
+
+	      return React.createElement(
+	        'div',
+	        null,
+	        React.createElement(
+	          'p',
+	          { className: 'label' },
+	          status
+	        ),
+	        React.createElement(
+	          'p',
+	          { className: 'desc' },
+	          timestamp
+	        )
+	      );
+	    }
+	  }, {
+	    key: 'render',
+	    value: function render() {
+	      var active = this.props.active;
+
+
+	      if (active) {
+	        var _props = this.props;
+	        var payload = _props.payload;
+	        var external = _props.external;
+	        var label = _props.label;
+
+
+	        return React.createElement(
+	          'div',
+	          { className: 'custom-tooltip' },
+	          this.getDetails(label)
+	        );
+	      }
+	      return null;
+	    }
+	  }]);
+
+	  return CustomTooltip;
+	}(React.Component);
+
+	;
+
+	CustomTooltip.propTypes = {
+	  type: React.PropTypes.string,
+	  payload: React.PropTypes.array,
+	  label: React.PropTypes.number
+	};
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(9)))
 
 /***/ },
@@ -72530,18 +72600,18 @@
 	var Abnormal = __webpack_require__(792);
 	var Uptime = __webpack_require__(159);
 	var SensorHealthOverview = __webpack_require__(793);
-	var WatchList = __webpack_require__(796);
-	var Tableaux = __webpack_require__(799);
-	var NotificationBar = __webpack_require__(800);
+	var WatchList = __webpack_require__(799);
+	var Tableaux = __webpack_require__(802);
+	var NotificationBar = __webpack_require__(803);
 	var FontAwesome = __webpack_require__(581);
-	var BuildingOverview = __webpack_require__(807);
-	var AddSensor = __webpack_require__(808);
-	var EditSensor = __webpack_require__(810);
-	var DeleteSensor = __webpack_require__(812);
-	var UnpinSensor = __webpack_require__(814);
-	var RebootSensor = __webpack_require__(815);
-	var PinSensor = __webpack_require__(817);
-	var Terminal = __webpack_require__(818);
+	var BuildingOverview = __webpack_require__(810);
+	var AddSensor = __webpack_require__(811);
+	var EditSensor = __webpack_require__(813);
+	var DeleteSensor = __webpack_require__(815);
+	var UnpinSensor = __webpack_require__(817);
+	var RebootSensor = __webpack_require__(818);
+	var PinSensor = __webpack_require__(820);
+	var Terminal = __webpack_require__(821);
 
 	var _require = __webpack_require__(111);
 
@@ -72898,16 +72968,22 @@
 	    }, {
 	        key: 'renderButton',
 	        value: function renderButton() {
+	            var _this3 = this;
+
 	            if (this.props.data.watchlist) {
 	                return React.createElement(
 	                    'div',
-	                    { id: 'pin-btn', className: 'sensorBlock pin disabled' },
+	                    { id: 'pin-btn', onClick: function onClick() {
+	                            return _this3.handleClick(_this3.props.data.mac);
+	                        }, className: 'sensorBlock pin disabled' },
 	                    'Pin'
 	                );
 	            } else {
 	                return React.createElement(
 	                    'div',
-	                    { id: 'pin-btn', className: 'sensorBlock pin' },
+	                    { id: 'pin-btn', onClick: function onClick() {
+	                            return _this3.handleClick(_this3.props.data.mac);
+	                        }, className: 'sensorBlock pin' },
 	                    'Pin'
 	                );
 	            }
@@ -72915,13 +72991,10 @@
 	    }, {
 	        key: 'render',
 	        value: function render() {
-	            var _this3 = this;
 
 	            return React.createElement(
-	                'a',
-	                { onClick: function onClick() {
-	                        return _this3.handleClick(_this3.props.data.mac);
-	                    } },
+	                'div',
+	                null,
 	                this.renderButton()
 	            );
 	        }
@@ -73326,7 +73399,7 @@
 
 	                tableRows.push(React.createElement(
 	                    'tr',
-	                    null,
+	                    { key: level },
 	                    React.createElement(
 	                        'th',
 	                        null,
@@ -73793,7 +73866,7 @@
 	var React = __webpack_require__(14);
 
 	var HOST = 'http://opsdev.sence.io:4201/';
-	var store = __webpack_require__(819).configure();
+	var store = __webpack_require__(796).configure();
 
 	var VerticalMenu = function (_React$Component) {
 	  _inherits(VerticalMenu, _React$Component);
@@ -74032,6 +74105,160 @@
 /* 796 */
 /***/ function(module, exports, __webpack_require__) {
 
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.configure = undefined;
+
+	var _redux = __webpack_require__(118);
+
+	var redux = _interopRequireWildcard(_redux);
+
+	var _reduxThunk = __webpack_require__(797);
+
+	var _reduxThunk2 = _interopRequireDefault(_reduxThunk);
+
+	var _reducers = __webpack_require__(798);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+
+	var configure = exports.configure = function configure() {
+	  var initialState = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
+
+	  var reducer = redux.combineReducers({
+	    sensorData: _reducers.sensorDataReducer,
+	    auth: _reducers.authReducer,
+	    macAddress: _reducers.deleteSensorReducer,
+	    pin_mac: _reducers.updateWatchListReducer
+	  });
+
+	  var store = redux.createStore(reducer, initialState, redux.compose(redux.applyMiddleware(_reduxThunk2.default), window.devToolsExtension ? window.devToolsExtension() : function (f) {
+	    return f;
+	  }));
+
+	  return store;
+	};
+
+/***/ },
+/* 797 */
+/***/ function(module, exports) {
+
+	'use strict';
+
+	exports.__esModule = true;
+	function createThunkMiddleware(extraArgument) {
+	  return function (_ref) {
+	    var dispatch = _ref.dispatch;
+	    var getState = _ref.getState;
+	    return function (next) {
+	      return function (action) {
+	        if (typeof action === 'function') {
+	          return action(dispatch, getState, extraArgument);
+	        }
+
+	        return next(action);
+	      };
+	    };
+	  };
+	}
+
+	var thunk = createThunkMiddleware();
+	thunk.withExtraArgument = createThunkMiddleware;
+
+	exports['default'] = thunk;
+
+/***/ },
+/* 798 */
+/***/ function(module, exports) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	// string
+
+	var deleteSensorReducer = exports.deleteSensorReducer = function deleteSensorReducer() {
+	  var state = arguments.length <= 0 || arguments[0] === undefined ? { macAddress: 'something_stupid' } : arguments[0];
+	  var action = arguments[1];
+
+
+	  switch (action.type) {
+	    case 'COMPLETE_DELETE_SENSOR':
+
+	      console.log("macAdd", action.macAddress);
+
+	      return {
+	        macAddress: action.macAddress
+	      };
+	    default:
+	      return state;
+	  }
+	};
+
+	var updateWatchListReducer = exports.updateWatchListReducer = function updateWatchListReducer() {
+	  var state = arguments.length <= 0 || arguments[0] === undefined ? { pin_mac: '' } : arguments[0];
+	  var action = arguments[1];
+
+	  switch (action.type) {
+	    case 'COMPLETE_UPDATE_WATCHLIST':
+	      console.log("macAdd", action.pin_mac);
+
+	      return {
+	        pin_mac: action.pin_mac
+	      };
+	    default:
+	      return state;
+	  }
+	};
+
+	var sensorDataReducer = exports.sensorDataReducer = function sensorDataReducer() {
+	  var state = arguments.length <= 0 || arguments[0] === undefined ? { isFetching: false, data: undefined } : arguments[0];
+	  var action = arguments[1];
+
+
+	  switch (action.type) {
+	    case 'START_SENSOR_DATA_FETCH':
+	      return {
+	        isFetching: true,
+	        data: undefined
+	      };
+
+	    case 'COMPLETE_SENSOR_DATA_FETCH':
+	      return {
+	        isFetching: false,
+	        data: action.data
+	      };
+
+	    default:
+	      return state;
+	  }
+	};
+
+	var authReducer = exports.authReducer = function authReducer() {
+	  var state = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
+	  var action = arguments[1];
+
+	  switch (action.type) {
+	    case 'LOGIN':
+	      return {
+	        uid: action.uid
+	      };
+	    case 'LOGOUT':
+	      return {};
+	    default:
+	      return state;
+	  }
+	};
+
+/***/ },
+/* 799 */
+/***/ function(module, exports, __webpack_require__) {
+
 	/* WEBPACK VAR INJECTION */(function($) {'use strict';
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
@@ -74055,8 +74282,8 @@
 	var React = __webpack_require__(14);
 	var axios = __webpack_require__(140);
 	var Griddle = __webpack_require__(584);
-	var retrieveSensorDetails = __webpack_require__(797);
-	var updateWatchList = __webpack_require__(798);
+	var retrieveSensorDetails = __webpack_require__(800);
+	var updateWatchList = __webpack_require__(801);
 	var ReactDOM = __webpack_require__(490);
 
 
@@ -74077,9 +74304,9 @@
 
 	            var colorMap = {
 	                "ok": "sensorBlock green",
-	                "warning": "sensorBlock orange",
-	                "danger": "sensorBlock red",
-	                "down": "sensorBlock black",
+	                "warning": "sensorBlock yellow",
+	                "danger": "sensorBlock orange",
+	                "down": "sensorBlock red",
 	                "-": "sensorBlock grey"
 	            };
 
@@ -74118,15 +74345,11 @@
 	            var _this3 = this;
 
 	            return React.createElement(
-	                'a',
-	                { onClick: function onClick() {
+	                'div',
+	                { id: 'unpin-btn', className: 'sensorBlock remove', onClick: function onClick() {
 	                        return _this3.handleClick(_this3.props.data.mac);
 	                    } },
-	                React.createElement(
-	                    'div',
-	                    { id: 'unpin-btn', className: 'sensorBlock remove' },
-	                    'Un-Pin'
-	                )
+	                'Un-Pin'
 	            );
 	        }
 	    }]);
@@ -74295,7 +74518,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(9)))
 
 /***/ },
-/* 797 */
+/* 800 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -74320,7 +74543,7 @@
 	};
 
 /***/ },
-/* 798 */
+/* 801 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function($) {'use strict';
@@ -74358,7 +74581,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(9)))
 
 /***/ },
-/* 799 */
+/* 802 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function($) {'use strict';
@@ -74662,16 +74885,16 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(9)))
 
 /***/ },
-/* 800 */
+/* 803 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-	var _reactNotification = __webpack_require__(801);
+	var _reactNotification = __webpack_require__(804);
 
-	var _immutable = __webpack_require__(806);
+	var _immutable = __webpack_require__(809);
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -74762,7 +74985,7 @@
 	module.exports = NotificationBar;
 
 /***/ },
-/* 801 */
+/* 804 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -74772,11 +74995,11 @@
 	});
 	exports.NotificationStack = exports.Notification = undefined;
 
-	var _notification = __webpack_require__(802);
+	var _notification = __webpack_require__(805);
 
 	var _notification2 = _interopRequireDefault(_notification);
 
-	var _notificationStack = __webpack_require__(804);
+	var _notificationStack = __webpack_require__(807);
 
 	var _notificationStack2 = _interopRequireDefault(_notificationStack);
 
@@ -74786,7 +75009,7 @@
 	exports.NotificationStack = _notificationStack2.default;
 
 /***/ },
-/* 802 */
+/* 805 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -74801,7 +75024,7 @@
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _defaultPropTypes = __webpack_require__(803);
+	var _defaultPropTypes = __webpack_require__(806);
 
 	var _defaultPropTypes2 = _interopRequireDefault(_defaultPropTypes);
 
@@ -75002,7 +75225,7 @@
 	exports.default = Notification;
 
 /***/ },
-/* 803 */
+/* 806 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -75030,7 +75253,7 @@
 	};
 
 /***/ },
-/* 804 */
+/* 807 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -75045,11 +75268,11 @@
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _defaultPropTypes = __webpack_require__(803);
+	var _defaultPropTypes = __webpack_require__(806);
 
 	var _defaultPropTypes2 = _interopRequireDefault(_defaultPropTypes);
 
-	var _stackedNotification = __webpack_require__(805);
+	var _stackedNotification = __webpack_require__(808);
 
 	var _stackedNotification2 = _interopRequireDefault(_stackedNotification);
 
@@ -75103,7 +75326,7 @@
 	exports.default = NotificationStack;
 
 /***/ },
-/* 805 */
+/* 808 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -75120,7 +75343,7 @@
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _notification = __webpack_require__(802);
+	var _notification = __webpack_require__(805);
 
 	var _notification2 = _interopRequireDefault(_notification);
 
@@ -75185,7 +75408,7 @@
 	exports.default = StackedNotification;
 
 /***/ },
-/* 806 */
+/* 809 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -80169,7 +80392,7 @@
 	}));
 
 /***/ },
-/* 807 */
+/* 810 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -80533,7 +80756,7 @@
 	module.exports = BuildingOverview;
 
 /***/ },
-/* 808 */
+/* 811 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function($) {'use strict';
@@ -80547,7 +80770,7 @@
 	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 	var React = __webpack_require__(14);
-	var addSensorAPI = __webpack_require__(809);
+	var addSensorAPI = __webpack_require__(812);
 
 	var AddSensor = function (_React$Component) {
 	  _inherits(AddSensor, _React$Component);
@@ -80790,7 +81013,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(9)))
 
 /***/ },
-/* 809 */
+/* 812 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function($) {'use strict';
@@ -80830,7 +81053,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(9)))
 
 /***/ },
-/* 810 */
+/* 813 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function($) {'use strict';
@@ -80844,7 +81067,7 @@
 	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 	var React = __webpack_require__(14);
-	var editSensorAPI = __webpack_require__(811);
+	var editSensorAPI = __webpack_require__(814);
 
 	var EditSensor = function (_React$Component) {
 	  _inherits(EditSensor, _React$Component);
@@ -81068,7 +81291,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(9)))
 
 /***/ },
-/* 811 */
+/* 814 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function($) {'use strict';
@@ -81111,7 +81334,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(9)))
 
 /***/ },
-/* 812 */
+/* 815 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function($) {'use strict';
@@ -81125,158 +81348,152 @@
 	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 	var React = __webpack_require__(14);
-	var deleteSensorAPI = __webpack_require__(813);
+	var deleteSensorAPI = __webpack_require__(816);
 	var deleteMac = "";
 
 	var _require = __webpack_require__(111);
 
 	var connect = _require.connect;
 
-	var store = __webpack_require__(819).configure();
+	var store = __webpack_require__(796).configure();
 
 	var DeleteSensor = function (_React$Component) {
-	  _inherits(DeleteSensor, _React$Component);
+	    _inherits(DeleteSensor, _React$Component);
 
-	  function DeleteSensor(props) {
-	    _classCallCheck(this, DeleteSensor);
+	    function DeleteSensor(props) {
+	        _classCallCheck(this, DeleteSensor);
 
-	    var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(DeleteSensor).call(this, props));
+	        var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(DeleteSensor).call(this, props));
 
-	    _this.state = {
-	      message: ''
-	    };
-	    return _this;
-	  }
+	        _this.state = {
+	            message: ''
+	        };
+	        return _this;
+	    }
 
-	  _createClass(DeleteSensor, [{
-	    key: 'onDeleteSensor',
-	    value: function onDeleteSensor(event) {
+	    _createClass(DeleteSensor, [{
+	        key: 'onDeleteSensor',
+	        value: function onDeleteSensor(event) {
 
-	      event.preventDefault();
+	            event.preventDefault();
 
-	      var that = this;
-	      //var deleteMac = store.getState().macAddress;
-	      var macAdd = that.props.deleteMac.macAddress;
+	            var that = this;
+	            var macAdd = that.props.deleteMac.macAddress;
 
-	      deleteSensorAPI.deleteSensor(macAdd).then(function (response) {
+	            deleteSensorAPI.deleteSensor(macAdd).then(function (response) {
 
-	        if (response.error) {
-	          that.setState({
-	            message: response.error
-	          });
-	        } else {
-	          that.setState({
-	            message: response.msg
-	          });
-
-	          $('#delete-sensor-modal').foundation('close');
+	                if (response.error) {
+	                    that.setState({ message: response.error });
+	                } else {
+	                    that.setState({ message: response.msg });
+	                    $('#delete-sensor-modal').foundation('close');
+	                }
+	            });
 	        }
-	      });
-	    }
-	  }, {
-	    key: 'render',
-	    value: function render() {
-	      // console.log("delete sensor state ", this.state);
-	      var message = this.state.message;
-	      var that = this;
+	    }, {
+	        key: 'render',
+	        value: function render() {
+	            // console.log("delete sensor state ", this.state);
+	            var message = this.state.message;
 
-	      // resets message to empty string on close
-	      $('#delete-sensor-modal').on('closed.zf.reveal', function () {
-	        //console.log("close");
-	        that.setState({
-	          message: ''
-	        });
-	      });
+	            var that = this;
 
-	      return React.createElement(
-	        'div',
-	        { id: 'delete-sensor-modal', className: 'reveal tiny text-center', 'data-reveal': '' },
-	        React.createElement(
-	          'form',
-	          null,
-	          React.createElement(
-	            'div',
-	            { className: 'row' },
-	            React.createElement(
-	              'div',
-	              { className: 'large-12 columns' },
-	              React.createElement(
-	                'div',
-	                { className: 'page-title' },
-	                'Delete Sensor'
-	              ),
-	              React.createElement(
-	                'div',
-	                { className: 'header', style: { color: '#990000' } },
-	                'Hold up. You really wanna delete this bad boy?'
-	              ),
-	              React.createElement('div', { className: 'header', id: 'deleteDetails' }),
-	              React.createElement(
-	                'div',
-	                { className: 'header', id: 'deleteMac' },
-	                this.props.deleteMac.macAddress
-	              ),
-	              React.createElement(
-	                'div',
-	                { id: 'deleteSensorMessage' },
-	                React.createElement(DeleteSensorMessage, { message: message })
-	              ),
-	              React.createElement(
-	                'a',
-	                { className: 'button proceed expanded', onClick: this.onDeleteSensor.bind(this) },
-	                'Yes I do'
-	              ),
-	              React.createElement(
-	                'a',
-	                { id: 'deleteClose', className: 'button cancel expanded close-reveal-modal', 'data-close': '', 'aria-label': 'Close' },
-	                'Slow Down, Cowboy'
-	              )
-	            )
-	          )
-	        )
-	      );
-	    }
-	  }]);
+	            // resets message to empty string on close
+	            $('#delete-sensor-modal').on('closed.zf.reveal', function () {
+	                //console.log("close");
+	                that.setState({ message: '' });
+	            });
 
-	  return DeleteSensor;
+	            return React.createElement(
+	                'div',
+	                { id: 'delete-sensor-modal', className: 'reveal tiny text-center', 'data-reveal': '' },
+	                React.createElement(
+	                    'form',
+	                    null,
+	                    React.createElement(
+	                        'div',
+	                        { className: 'row' },
+	                        React.createElement(
+	                            'div',
+	                            { className: 'large-12 columns' },
+	                            React.createElement(
+	                                'div',
+	                                { className: 'page-title' },
+	                                'Delete Sensor'
+	                            ),
+	                            React.createElement(
+	                                'div',
+	                                { className: 'header', style: {
+	                                        color: '#990000'
+	                                    } },
+	                                'Hold up. You really wanna delete this bad boy?'
+	                            ),
+	                            React.createElement('div', { className: 'header', id: 'deleteDetails' }),
+	                            React.createElement(
+	                                'div',
+	                                { className: 'header', id: 'deleteMac' },
+	                                this.props.deleteMac.macAddress
+	                            ),
+	                            React.createElement(
+	                                'div',
+	                                { id: 'deleteSensorMessage' },
+	                                React.createElement(DeleteSensorMessage, { message: message })
+	                            ),
+	                            React.createElement(
+	                                'a',
+	                                { className: 'button proceed expanded', onClick: this.onDeleteSensor.bind(this) },
+	                                'Yes I do'
+	                            ),
+	                            React.createElement(
+	                                'a',
+	                                { id: 'deleteClose', className: 'button cancel expanded close-reveal-modal', 'data-close': '', 'aria-label': 'Close' },
+	                                'Slow Down, Cowboy'
+	                            )
+	                        )
+	                    )
+	                )
+	            );
+	        }
+	    }]);
+
+	    return DeleteSensor;
 	}(React.Component);
 
 	var DeleteSensorMessage = function (_React$Component2) {
-	  _inherits(DeleteSensorMessage, _React$Component2);
+	    _inherits(DeleteSensorMessage, _React$Component2);
 
-	  function DeleteSensorMessage() {
-	    _classCallCheck(this, DeleteSensorMessage);
+	    function DeleteSensorMessage() {
+	        _classCallCheck(this, DeleteSensorMessage);
 
-	    return _possibleConstructorReturn(this, Object.getPrototypeOf(DeleteSensorMessage).apply(this, arguments));
-	  }
-
-	  _createClass(DeleteSensorMessage, [{
-	    key: 'render',
-	    value: function render() {
-	      var message = this.props.message;
-	      // console.log("message from parent: ", message);
-
-	      return React.createElement(
-	        'div',
-	        { className: 'statusText' },
-	        message
-	      );
+	        return _possibleConstructorReturn(this, Object.getPrototypeOf(DeleteSensorMessage).apply(this, arguments));
 	    }
-	  }]);
 
-	  return DeleteSensorMessage;
+	    _createClass(DeleteSensorMessage, [{
+	        key: 'render',
+	        value: function render() {
+	            var message = this.props.message;
+
+	            return React.createElement(
+	                'div',
+	                { className: 'statusText' },
+	                message
+	            );
+	        }
+	    }]);
+
+	    return DeleteSensorMessage;
 	}(React.Component);
 
 	function mapStateToProps(state, ownProps) {
-	  console.log("state", state);
-	  return { deleteMac: state.macAddress };
+	    console.log("state", state);
+	    return { deleteMac: state.macAddress };
 	}
 
 	module.exports = connect(mapStateToProps)(DeleteSensor);
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(9)))
 
 /***/ },
-/* 813 */
+/* 816 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function($) {"use strict";
@@ -81306,7 +81523,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(9)))
 
 /***/ },
-/* 814 */
+/* 817 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function($) {'use strict';
@@ -81320,14 +81537,14 @@
 	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 	var React = __webpack_require__(14);
-	var updateWatchList = __webpack_require__(798);
+	var updateWatchList = __webpack_require__(801);
 	var unpinMac = "";
 
 	var _require = __webpack_require__(111);
 
 	var connect = _require.connect;
 
-	var store = __webpack_require__(819).configure();
+	var store = __webpack_require__(796).configure();
 
 	var UnpinSensor = function (_React$Component) {
 	  _inherits(UnpinSensor, _React$Component);
@@ -81353,7 +81570,12 @@
 	      updateWatchList.updateWatchList(macAdd, false).then(function (response) {
 	        console.log("removed sensor?", response);
 
-	        $('#unpin-sensor-modal').foundation('close');
+	        if (response.error) {
+	          that.setState({ message: response.error });
+	        } else {
+	          that.setState({ message: response.msg });
+	          $('#unpin-sensor-modal').foundation('close');
+	        }
 	      });
 	    }
 	  }, {
@@ -81453,7 +81675,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(9)))
 
 /***/ },
-/* 815 */
+/* 818 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function($) {'use strict';
@@ -81467,7 +81689,7 @@
 	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 	var React = __webpack_require__(14);
-	var rebootSensorAPI = __webpack_require__(816);
+	var rebootSensorAPI = __webpack_require__(819);
 	var rebootMac = "";
 
 	var RebootSensor = function (_React$Component) {
@@ -81623,7 +81845,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(9)))
 
 /***/ },
-/* 816 */
+/* 819 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function($) {"use strict";
@@ -81659,7 +81881,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(9)))
 
 /***/ },
-/* 817 */
+/* 820 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function($) {'use strict';
@@ -81673,7 +81895,7 @@
 	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 	var React = __webpack_require__(14);
-	var updateWatchList = __webpack_require__(798);
+	var updateWatchList = __webpack_require__(801);
 
 	var _require = __webpack_require__(111);
 
@@ -81682,130 +81904,135 @@
 	var pinMac = "";
 
 	var PinSensor = function (_React$Component) {
-	  _inherits(PinSensor, _React$Component);
+	    _inherits(PinSensor, _React$Component);
 
-	  function PinSensor(props) {
-	    _classCallCheck(this, PinSensor);
+	    function PinSensor(props) {
+	        _classCallCheck(this, PinSensor);
 
-	    var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(PinSensor).call(this, props));
+	        var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(PinSensor).call(this, props));
 
-	    _this.state = {
-	      message: ''
-	    };
-	    return _this;
-	  }
-
-	  _createClass(PinSensor, [{
-	    key: 'onPinSensor',
-	    value: function onPinSensor() {
-
-	      var macAdd = this.props.pin_mac.pin_mac;
-	      var that = this;
-
-	      updateWatchList.updateWatchList(macAdd, true).then(function (response) {
-	        console.log("Added sensor to watchlist", response);
-
-	        $('#pin-sensor-modal').foundation('close');
-	      });
+	        _this.state = {
+	            message: ''
+	        };
+	        return _this;
 	    }
-	  }, {
-	    key: 'render',
-	    value: function render() {
-	      // console.log("delete sensor state ", this.state);
-	      var message = this.state.message;
-	      var that = this;
 
-	      // resets message to empty string on close
-	      $('#pin-sensor-modal').on('closed.zf.reveal', function () {
-	        //console.log("close");
-	        that.setState({
-	          message: ''
-	        });
-	      });
+	    _createClass(PinSensor, [{
+	        key: 'onPinSensor',
+	        value: function onPinSensor() {
 
-	      return React.createElement(
-	        'div',
-	        { id: 'pin-sensor-modal', className: 'reveal tiny text-center', 'data-reveal': '' },
-	        React.createElement(
-	          'form',
-	          null,
-	          React.createElement(
-	            'div',
-	            { className: 'row' },
-	            React.createElement(
-	              'div',
-	              { className: 'large-12 columns' },
-	              React.createElement(
-	                'div',
-	                { className: 'page-title' },
-	                'Pin Sensor'
-	              ),
-	              React.createElement(
-	                'div',
-	                { className: 'header', style: { color: '#990000' } },
-	                'Pin this sensor, you want to?'
-	              ),
-	              React.createElement('input', { id: 'pinMac', value: '', hidden: true }),
-	              React.createElement(
-	                'div',
-	                { id: 'pinSensorMessage' },
-	                React.createElement(PinSensorMessage, { message: message })
-	              ),
-	              React.createElement(
-	                'a',
-	                { className: 'button proceed expanded', onClick: this.onPinSensor.bind(this) },
-	                'Yes I do'
-	              ),
-	              React.createElement(
-	                'a',
-	                { className: 'button cancel expanded close-reveal-modal', 'data-close': '', 'aria-label': 'Close', id: 'closePin' },
-	                'Slow Down, Cowboy'
-	              )
-	            )
-	          )
-	        )
-	      );
-	    }
-	  }]);
+	            var macAdd = this.props.pin_mac.pin_mac;
+	            var that = this;
 
-	  return PinSensor;
+	            updateWatchList.updateWatchList(macAdd, true).then(function (response) {
+	                console.log("Added sensor to watchlist", response);
+
+	                if (response.error) {
+	                    that.setState({ message: response.error });
+	                } else {
+	                    that.setState({ message: response.msg });
+	                    $('#pin-sensor-modal').foundation('close');
+	                }
+	            });
+	        }
+	    }, {
+	        key: 'render',
+	        value: function render() {
+	            // console.log("delete sensor state ", this.state);
+	            var message = this.state.message;
+	            var that = this;
+
+	            // resets message to empty string on close
+	            $('#pin-sensor-modal').on('closed.zf.reveal', function () {
+	                //console.log("close");
+	                that.setState({ message: '' });
+	            });
+
+	            return React.createElement(
+	                'div',
+	                { id: 'pin-sensor-modal', className: 'reveal tiny text-center', 'data-reveal': '' },
+	                React.createElement(
+	                    'form',
+	                    null,
+	                    React.createElement(
+	                        'div',
+	                        { className: 'row' },
+	                        React.createElement(
+	                            'div',
+	                            { className: 'large-12 columns' },
+	                            React.createElement(
+	                                'div',
+	                                { className: 'page-title' },
+	                                'Pin Sensor'
+	                            ),
+	                            React.createElement(
+	                                'div',
+	                                { className: 'header', style: {
+	                                        color: '#990000'
+	                                    } },
+	                                'Pin this sensor, you want to?'
+	                            ),
+	                            React.createElement('input', { id: 'pinMac', value: '', hidden: true }),
+	                            React.createElement(
+	                                'div',
+	                                { id: 'pinSensorMessage' },
+	                                React.createElement(PinSensorMessage, { message: message })
+	                            ),
+	                            React.createElement(
+	                                'a',
+	                                { className: 'button proceed expanded', onClick: this.onPinSensor.bind(this) },
+	                                'Yes I do'
+	                            ),
+	                            React.createElement(
+	                                'a',
+	                                { className: 'button cancel expanded close-reveal-modal', 'data-close': '', 'aria-label': 'Close', id: 'closePin' },
+	                                'Slow Down, Cowboy'
+	                            )
+	                        )
+	                    )
+	                )
+	            );
+	        }
+	    }]);
+
+	    return PinSensor;
 	}(React.Component);
 
 	var PinSensorMessage = function (_React$Component2) {
-	  _inherits(PinSensorMessage, _React$Component2);
+	    _inherits(PinSensorMessage, _React$Component2);
 
-	  function PinSensorMessage() {
-	    _classCallCheck(this, PinSensorMessage);
+	    function PinSensorMessage() {
+	        _classCallCheck(this, PinSensorMessage);
 
-	    return _possibleConstructorReturn(this, Object.getPrototypeOf(PinSensorMessage).apply(this, arguments));
-	  }
-
-	  _createClass(PinSensorMessage, [{
-	    key: 'render',
-	    value: function render() {
-	      var message = this.props.message;
-
-	      return React.createElement(
-	        'div',
-	        { className: 'statusText' },
-	        message
-	      );
+	        return _possibleConstructorReturn(this, Object.getPrototypeOf(PinSensorMessage).apply(this, arguments));
 	    }
-	  }]);
 
-	  return PinSensorMessage;
+	    _createClass(PinSensorMessage, [{
+	        key: 'render',
+	        value: function render() {
+	            var message = this.props.message;
+
+	            return React.createElement(
+	                'div',
+	                { className: 'statusText' },
+	                message
+	            );
+	        }
+	    }]);
+
+	    return PinSensorMessage;
 	}(React.Component);
 
 	function mapStateToProps(state, ownProps) {
-	  console.log("state", state);
-	  return { pin_mac: state.pin_mac };
+	    console.log("state", state);
+	    return { pin_mac: state.pin_mac };
 	}
 
 	module.exports = connect(mapStateToProps)(PinSensor);
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(9)))
 
 /***/ },
-/* 818 */
+/* 821 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function($) {'use strict';
@@ -81884,160 +82111,6 @@
 
 	module.exports = Terminal;
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(9)))
-
-/***/ },
-/* 819 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-	exports.configure = undefined;
-
-	var _redux = __webpack_require__(118);
-
-	var redux = _interopRequireWildcard(_redux);
-
-	var _reduxThunk = __webpack_require__(820);
-
-	var _reduxThunk2 = _interopRequireDefault(_reduxThunk);
-
-	var _reducers = __webpack_require__(821);
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
-
-	var configure = exports.configure = function configure() {
-	  var initialState = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
-
-	  var reducer = redux.combineReducers({
-	    sensorData: _reducers.sensorDataReducer,
-	    auth: _reducers.authReducer,
-	    macAddress: _reducers.deleteSensorReducer,
-	    pin_mac: _reducers.updateWatchListReducer
-	  });
-
-	  var store = redux.createStore(reducer, initialState, redux.compose(redux.applyMiddleware(_reduxThunk2.default), window.devToolsExtension ? window.devToolsExtension() : function (f) {
-	    return f;
-	  }));
-
-	  return store;
-	};
-
-/***/ },
-/* 820 */
-/***/ function(module, exports) {
-
-	'use strict';
-
-	exports.__esModule = true;
-	function createThunkMiddleware(extraArgument) {
-	  return function (_ref) {
-	    var dispatch = _ref.dispatch;
-	    var getState = _ref.getState;
-	    return function (next) {
-	      return function (action) {
-	        if (typeof action === 'function') {
-	          return action(dispatch, getState, extraArgument);
-	        }
-
-	        return next(action);
-	      };
-	    };
-	  };
-	}
-
-	var thunk = createThunkMiddleware();
-	thunk.withExtraArgument = createThunkMiddleware;
-
-	exports['default'] = thunk;
-
-/***/ },
-/* 821 */
-/***/ function(module, exports) {
-
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-	// string
-
-	var deleteSensorReducer = exports.deleteSensorReducer = function deleteSensorReducer() {
-	  var state = arguments.length <= 0 || arguments[0] === undefined ? { macAddress: 'something_stupid' } : arguments[0];
-	  var action = arguments[1];
-
-
-	  switch (action.type) {
-	    case 'COMPLETE_DELETE_SENSOR':
-
-	      console.log("macAdd", action.macAddress);
-
-	      return {
-	        macAddress: action.macAddress
-	      };
-	    default:
-	      return state;
-	  }
-	};
-
-	var updateWatchListReducer = exports.updateWatchListReducer = function updateWatchListReducer() {
-	  var state = arguments.length <= 0 || arguments[0] === undefined ? { pin_mac: '' } : arguments[0];
-	  var action = arguments[1];
-
-	  switch (action.type) {
-	    case 'COMPLETE_UPDATE_WATCHLIST':
-	      console.log("macAdd", action.pin_mac);
-
-	      return {
-	        pin_mac: action.pin_mac
-	      };
-	    default:
-	      return state;
-	  }
-	};
-
-	var sensorDataReducer = exports.sensorDataReducer = function sensorDataReducer() {
-	  var state = arguments.length <= 0 || arguments[0] === undefined ? { isFetching: false, data: undefined } : arguments[0];
-	  var action = arguments[1];
-
-
-	  switch (action.type) {
-	    case 'START_SENSOR_DATA_FETCH':
-	      return {
-	        isFetching: true,
-	        data: undefined
-	      };
-
-	    case 'COMPLETE_SENSOR_DATA_FETCH':
-	      return {
-	        isFetching: false,
-	        data: action.data
-	      };
-
-	    default:
-	      return state;
-	  }
-	};
-
-	var authReducer = exports.authReducer = function authReducer() {
-	  var state = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
-	  var action = arguments[1];
-
-	  switch (action.type) {
-	    case 'LOGIN':
-	      return {
-	        uid: action.uid
-	      };
-	    case 'LOGOUT':
-	      return {};
-	    default:
-	      return state;
-	  }
-	};
 
 /***/ },
 /* 822 */
@@ -82424,7 +82497,7 @@
 	exports.push([module.id, "@import url(https://fonts.googleapis.com/css?family=Lato:400,900i);", ""]);
 
 	// module
-	exports.push([module.id, "body,\nhtml {\n  background: #f2f2f2;\n  height: 100%;\n  font-family: roboto;\n  color: #1a1b1b; }\n\nbody {\n  -webkit-animation-delay: 0.1s;\n  -webkit-animation-name: fontfix;\n  -webkit-animation-duration: 0.1s;\n  -webkit-animation-iteration-count: 1;\n  -webkit-animation-timing-function: linear; }\n\n@-webkit-keyframes fontfix {\n  from {\n    opacity: 1; }\n  to {\n    opacity: 1; } }\n\n.row {\n  max-width: 100rem; }\n\n.loading-overlay {\n  background-color: rgba(10, 10, 10, 0.45) !important;\n  position: fixed;\n  top: 0;\n  bottom: 0;\n  left: 0;\n  right: 0; }\n\ndiv#offCanvas {\n  width: 350px;\n  height: 100%;\n  padding: 1.5rem;\n  background: #e8e8e8; }\n\n.is-open-right {\n  transform: translateX(-350px); }\n\n.off-canvas.position-right {\n  right: -350px; }\n\n.off-canvas-content {\n  background: #f2f2f2; }\n\na {\n  color: #6abedb; }\n\nhr {\n  border-color: #bdbdbd;\n  margin-top: 0.5rem;\n  max-width: 100%; }\n\n@media only screen and (max-width: 480px) {\n  .allSensors,\n  .buildingCharts {\n    display: none; } }\n\n.divider {\n  border-color: #bdbdbd;\n  margin-bottom: 10px; }\n\n.reveal {\n  top: 100px !important; }\n\ntable thead {\n  background: #d3d3d3;\n  color: #1a1b1b;\n  border: 1px solid #e4e4e4; }\n\ntable tbody {\n  color: #1a1b1b;\n  border: 1px solid #e4e4e4; }\n\n.margin-top-large {\n  margin-top: 4rem; }\n\n.margin-bottom-large {\n  margin-bottom: 4rem; }\n\n.margin-right-small {\n  margin-right: 2rem; }\n\n.margin-left-small {\n  margin-left: 2rem; }\n\n.margin-left-tiny {\n  margin-left: 0.5rem; }\n\n.margin-right-tiny {\n  margin-right: 0.5rem; }\n\n.margin-top-md {\n  margin-top: 2rem; }\n\n.margin-top-small {\n  margin-top: 1rem; }\n\n.margin-bottom-md {\n  margin-bottom: 2rem; }\n\n.margin-bottom-small {\n  margin-bottom: 1rem; }\n\n.textAlignCenter {\n  text-align: center; }\n\nul.header-list {\n  display: inline-block;\n  list-style: none;\n  margin-bottom: 0; }\n\n.sticky {\n  z-index: 10000;\n  left: 0 !important; }\n\n.callout {\n  background-color: #fff; }\n\n.callout-dark {\n  padding: 1.5rem;\n  background-color: #fff;\n  border: 2px solid #bdbdbd;\n  border-top: none;\n  margin-top: 0;\n  border-bottom-right-radius: 4px;\n  border-bottom-left-radius: 4px; }\n\n.scroll {\n  max-height: 100vh;\n  overflow-y: scroll; }\n\n.callout-dark-header {\n  padding: 0.5rem;\n  background-color: #fff;\n  border: 2px solid #bdbdbd;\n  border-bottom: 1px solid #bdbdbd;\n  border-top-left-radius: 4px;\n  border-top-right-radius: 4px;\n  margin-bottom: 0; }\n\n.callout-top-header {\n  padding: 1rem;\n  background-color: #f2f2f2;\n  border: 2px solid #bdbdbd;\n  border-radius: 4px; }\n\n.callout-minimize {\n  margin-bottom: 1rem;\n  border-radius: 4px 4px;\n  padding: 0.5rem; }\n\n.icon-btn-text-small {\n  font-family: 'Roboto', sans-serif;\n  text-transform: Captitalize;\n  top: 15px;\n  right: 15px;\n  position: absolute;\n  color: #323232;\n  font-size: 1.1rem; }\n\n.test {\n  font-family: 'Pathway Gothic One', sans-serif;\n  text-transform: uppercase;\n  color: #fff;\n  font-size: 1rem;\n  background: #6abedb; }\n\nlabel {\n  text-transform: capitalize;\n  color: #232f32; }\n\n.header {\n  color: #323232;\n  margin-bottom: 0;\n  text-transform: capitalize;\n  font-weight: 500;\n  font-family: 'Roboto', sans-serif; }\n\n.sub-header {\n  color: #232f32;\n  font-size: 1.3rem;\n  font-family: 'Pathway Gothic One', sans-serif; }\n  .sub-header a {\n    text-transform: capitalize; }\n\n#watchList {\n  display: none; }\n\n.page-title {\n  color: #323232;\n  font-family: 'Roboto', sans-serif;\n  font-weight: 500;\n  font-size: 1.2rem; }\n\ninput[type=search] {\n  box-shadow: none; }\n\n.top-bar-upper {\n  color: #333;\n  font-size: 0.5rem; }\n\n.app-header {\n  font-size: 1.3rem; }\n\ntable.overview-custom tbody,\ntable.overview-custom th,\ntable.overview-custom thead,\ntable.overview-custom tr {\n  text-align: center; }\n\ntable.sensor-details-table tbody {\n  text-align: left; }\n\n.statusText {\n  color: red;\n  margin-bottom: 1rem;\n  text-transform: uppercase;\n  font-size: 0.8em;\n  font-weight: bold; }\n\n.notificationHeader {\n  color: #fff;\n  text-transform: uppercase;\n  font-size: 0.5em;\n  font-weight: bold; }\n\n.sensorBlock {\n  height: 30px;\n  border-radius: 30px;\n  width: auto;\n  color: #fff;\n  text-align: center;\n  font-family: 'Pathway Gothic One', sans-serif;\n  text-transform: uppercase; }\n\n.sensorBlockSquare {\n  height: 30px;\n  width: 30px;\n  border-radius: 4px;\n  cursor: pointer;\n  text-align: center;\n  line-height: 28px;\n  color: white;\n  font-weight: bold; }\n\n.sensorBlockSquare:hover {\n  opacity: 0.5; }\n\n.sensorList {\n  display: inline-block;\n  margin-right: 1px; }\n\n#uptime-form select {\n  margin-right: 2rem; }\n\n.recharts-tooltip-wrapper {\n  z-index: 1000;\n  box-shadow: 1px 1px 4px #323232; }\n\n#glance-tooltip > table tr:nth-of-type(even) {\n  background-color: transparent !important; }\n\n.button-custom {\n  height: 30px;\n  width: auto !important;\n  margin: 0;\n  color: #fff !important;\n  text-align: center;\n  font-family: 'Pathway Gothic One', sans-serif;\n  text-transform: uppercase; }\n\n.proceed {\n  background: #6abedb; }\n\n.cancel {\n  background: #990000; }\n\n.cancel:hover {\n  background: #7a0000; }\n\n.remove {\n  border: 1px solid #990000;\n  background-color: #fff;\n  color: #990000; }\n\n.remove:hover {\n  background-color: #990000;\n  color: #fff !important; }\n\n.pin {\n  border: 1px solid #008000;\n  background-color: #fff;\n  color: #008000; }\n\n.pin:hover {\n  background-color: #006600;\n  color: #fff !important; }\n\n.disabled {\n  pointer-events: none;\n  background: #e8e8e8;\n  border: none;\n  color: white; }\n\n.disabled:hover {\n  pointer-events: none;\n  background: #e8e8e8;\n  border: none;\n  color: white; }\n\n.tableOptions > li > a {\n  color: #323232;\n  font-weight: normal;\n  font-size: 1rem;\n  padding: 0.5rem 0.7rem; }\n\n.menuHeader:hover,\n.tableOptions .menuHeader {\n  background-color: #232f32 !important;\n  color: #fff;\n  padding: 0.3rem 0.7rem;\n  text-transform: uppercase; }\n\n.tableOptions > li {\n  border-bottom: 1px solid #f2f2f2; }\n\n.tableOptions > li:hover {\n  background-color: #f2f2f2; }\n\n.dropdown-pane {\n  padding: 0; }\n\n.panel-grey {\n  background-color: #e4e4e4;\n  padding-top: 1rem; }\n\n#emailPanel,\n#namePanel,\n#passwordPanel {\n  display: none;\n  padding: 1rem;\n  background: #e4e4e4; }\n\ninput[type=checkbox]:checked ~ #port {\n  display: none; }\n\n#port {\n  display: block; }\n\n.inactive-link {\n  display: none; }\n\n.button-cancel {\n  border-color: #990000 !important;\n  color: #990000 !important; }\n\n.green {\n  background-color: #008000; }\n\n.orange {\n  background-color: #cc7a00; }\n\n.red {\n  background-color: #990000; }\n\n.black {\n  background-color: #1a1b1b; }\n\n.yellow {\n  background-color: #ffcc00; }\n\n.grey {\n  background-color: #737373; }\n\n.loader {\n  height: 4px;\n  width: 100%;\n  position: relative;\n  overflow: hidden;\n  background-color: #ddd; }\n\n.loader:before {\n  display: block;\n  position: absolute;\n  content: \"\";\n  left: -200px;\n  width: 200px;\n  height: 4px;\n  background-color: #2980b9;\n  animation: loading 2s linear infinite; }\n\n@keyframes loading {\n  from {\n    left: -200px;\n    width: 30%; }\n  50% {\n    width: 30%; }\n  70% {\n    width: 70%; }\n  80% {\n    left: 50%; }\n  95% {\n    left: 120%; }\n  to {\n    left: 100%; } }\n", ""]);
+	exports.push([module.id, "body,\nhtml {\n  background: #f2f2f2;\n  height: 100%;\n  font-family: roboto;\n  color: #1a1b1b; }\n\nbody {\n  -webkit-animation-delay: 0.1s;\n  -webkit-animation-name: fontfix;\n  -webkit-animation-duration: 0.1s;\n  -webkit-animation-iteration-count: 1;\n  -webkit-animation-timing-function: linear; }\n\n@-webkit-keyframes fontfix {\n  from {\n    opacity: 1; }\n  to {\n    opacity: 1; } }\n\n.row {\n  max-width: 100rem; }\n\n.loading-overlay {\n  background-color: rgba(10, 10, 10, 0.45) !important;\n  position: fixed;\n  top: 0;\n  bottom: 0;\n  left: 0;\n  right: 0; }\n\ndiv#offCanvas {\n  width: 350px;\n  height: 100%;\n  padding: 1.5rem;\n  background: #e8e8e8; }\n\n.is-open-right {\n  transform: translateX(-350px); }\n\n.off-canvas.position-right {\n  right: -350px; }\n\n.off-canvas-content {\n  background: #f2f2f2; }\n\na {\n  color: #6abedb; }\n\nhr {\n  border-color: #bdbdbd;\n  margin-top: 0.5rem;\n  max-width: 100%; }\n\n@media only screen and (max-width: 480px) {\n  .allSensors,\n  .buildingCharts {\n    display: none; } }\n\n.divider {\n  border-color: #bdbdbd;\n  margin-bottom: 10px; }\n\n.reveal {\n  top: 100px !important; }\n\ntable thead {\n  background: #d3d3d3;\n  color: #1a1b1b;\n  border: 1px solid #e4e4e4; }\n\ntable tbody {\n  color: #1a1b1b;\n  border: 1px solid #e4e4e4; }\n\n.margin-top-large {\n  margin-top: 4rem; }\n\n.margin-bottom-large {\n  margin-bottom: 4rem; }\n\n.margin-right-small {\n  margin-right: 2rem; }\n\n.margin-left-small {\n  margin-left: 2rem; }\n\n.margin-left-tiny {\n  margin-left: 0.5rem; }\n\n.margin-right-tiny {\n  margin-right: 0.5rem; }\n\n.margin-top-md {\n  margin-top: 2rem; }\n\n.margin-top-small {\n  margin-top: 1rem; }\n\n.margin-bottom-md {\n  margin-bottom: 2rem; }\n\n.margin-bottom-small {\n  margin-bottom: 1rem; }\n\n.textAlignCenter {\n  text-align: center; }\n\nul.header-list {\n  display: inline-block;\n  list-style: none;\n  margin-bottom: 0; }\n\n.sticky {\n  z-index: 10000;\n  left: 0 !important; }\n\n.callout {\n  background-color: #fff; }\n\n.callout-dark {\n  padding: 1.5rem;\n  background-color: #fff;\n  border: 2px solid #bdbdbd;\n  border-top: none;\n  margin-top: 0;\n  border-bottom-right-radius: 4px;\n  border-bottom-left-radius: 4px; }\n\n.scroll {\n  max-height: 100vh;\n  overflow-y: scroll; }\n\n.callout-dark-header {\n  padding: 0.5rem;\n  background-color: #fff;\n  border: 2px solid #bdbdbd;\n  border-bottom: 1px solid #bdbdbd;\n  border-top-left-radius: 4px;\n  border-top-right-radius: 4px;\n  margin-bottom: 0; }\n\n.callout-top-header {\n  padding: 1rem;\n  background-color: #f2f2f2;\n  border: 2px solid #bdbdbd;\n  border-radius: 4px; }\n\n.callout-minimize {\n  margin-bottom: 1rem;\n  border-radius: 4px 4px;\n  padding: 0.5rem; }\n\n.icon-btn-text-small {\n  font-family: 'Roboto', sans-serif;\n  text-transform: Captitalize;\n  top: 15px;\n  right: 15px;\n  position: absolute;\n  color: #323232;\n  font-size: 1.1rem; }\n\n.test {\n  font-family: 'Pathway Gothic One', sans-serif;\n  text-transform: uppercase;\n  color: #fff;\n  font-size: 1rem;\n  background: #6abedb; }\n\nlabel {\n  text-transform: capitalize;\n  color: #232f32; }\n\n.header {\n  color: #323232;\n  margin-bottom: 0;\n  text-transform: capitalize;\n  font-weight: 500;\n  font-family: 'Roboto', sans-serif; }\n\n.sub-header {\n  color: #232f32;\n  font-size: 1.3rem;\n  font-family: 'Pathway Gothic One', sans-serif; }\n  .sub-header a {\n    text-transform: capitalize; }\n\n#watchList {\n  display: none; }\n\n.page-title {\n  color: #323232;\n  font-family: 'Roboto', sans-serif;\n  font-weight: 500;\n  font-size: 1.2rem; }\n\ninput[type=search] {\n  box-shadow: none; }\n\n.top-bar-upper {\n  color: #333;\n  font-size: 0.5rem; }\n\n.app-header {\n  font-size: 1.3rem; }\n\ntable.overview-custom tbody,\ntable.overview-custom th,\ntable.overview-custom thead,\ntable.overview-custom tr {\n  text-align: center; }\n\ntable.sensor-details-table tbody {\n  text-align: left; }\n\n.statusText {\n  color: red;\n  margin-bottom: 1rem;\n  text-transform: uppercase;\n  font-size: 0.8em;\n  font-weight: bold; }\n\n.notificationHeader {\n  color: #fff;\n  text-transform: uppercase;\n  font-size: 0.5em;\n  font-weight: bold; }\n\n.sensorBlock {\n  height: 30px;\n  border-radius: 30px;\n  width: auto;\n  color: #fff;\n  text-align: center;\n  font-family: 'Pathway Gothic One', sans-serif;\n  text-transform: uppercase; }\n\n.sensorBlockSquare {\n  height: 30px;\n  width: 30px;\n  border-radius: 4px;\n  cursor: pointer;\n  text-align: center;\n  line-height: 28px;\n  color: white;\n  font-weight: bold; }\n\n.sensorBlockSquare:hover {\n  opacity: 0.5; }\n\n.sensorList {\n  display: inline-block;\n  margin-right: 1px; }\n\n#uptime-form select {\n  margin-right: 2rem; }\n\n.recharts-tooltip-wrapper {\n  z-index: 1000;\n  box-shadow: 1px 1px 4px #323232;\n  background-color: #fff; }\n\n#glance-tooltip > table tr:nth-of-type(even) {\n  background-color: transparent !important; }\n\n.button-custom {\n  height: 30px;\n  width: auto !important;\n  margin: 0;\n  color: #fff !important;\n  text-align: center;\n  font-family: 'Pathway Gothic One', sans-serif;\n  text-transform: uppercase; }\n\n.proceed {\n  background: #6abedb; }\n\n.cancel {\n  background: #990000; }\n\n.cancel:hover {\n  background: #7a0000; }\n\n.remove {\n  border: 1px solid #990000;\n  background-color: #fff;\n  color: #990000;\n  cursor: pointer; }\n\n.remove:hover {\n  background-color: #990000;\n  color: #fff !important; }\n\n.pin {\n  border: 1px solid #008000;\n  background-color: #fff;\n  color: #008000;\n  cursor: pointer; }\n\n.pin:hover {\n  background-color: #006600;\n  color: #fff !important; }\n\n.disabled {\n  pointer-events: none;\n  background: #e8e8e8;\n  border: none;\n  color: white;\n  cursor: default; }\n\n.disabled:hover {\n  pointer-events: none;\n  background: #e8e8e8;\n  border: none;\n  color: white;\n  cursor: default; }\n\n.tableOptions > li > a {\n  color: #323232;\n  font-weight: normal;\n  font-size: 1rem;\n  padding: 0.5rem 0.7rem; }\n\n.menuHeader:hover,\n.tableOptions .menuHeader {\n  background-color: #232f32 !important;\n  color: #fff;\n  padding: 0.3rem 0.7rem;\n  text-transform: uppercase; }\n\n.tableOptions > li {\n  border-bottom: 1px solid #f2f2f2; }\n\n.tableOptions > li:hover {\n  background-color: #f2f2f2; }\n\n.dropdown-pane {\n  padding: 0; }\n\n.panel-grey {\n  background-color: #e4e4e4;\n  padding-top: 1rem; }\n\n#emailPanel,\n#namePanel,\n#passwordPanel {\n  display: none;\n  padding: 1rem;\n  background: #e4e4e4; }\n\ninput[type=checkbox]:checked ~ #port {\n  display: none; }\n\n#port {\n  display: block; }\n\n.inactive-link {\n  display: none; }\n\n.button-cancel {\n  border-color: #990000 !important;\n  color: #990000 !important; }\n\n.green {\n  background-color: #008000; }\n\n.orange {\n  background-color: #cc7a00; }\n\n.red {\n  background-color: #990000; }\n\n.black {\n  background-color: #1a1b1b; }\n\n.yellow {\n  background-color: #ffcc00; }\n\n.grey {\n  background-color: #737373; }\n\n.loader {\n  height: 4px;\n  width: 100%;\n  position: relative;\n  overflow: hidden;\n  background-color: #ddd; }\n\n.loader:before {\n  display: block;\n  position: absolute;\n  content: \"\";\n  left: -200px;\n  width: 200px;\n  height: 4px;\n  background-color: #2980b9;\n  animation: loading 2s linear infinite; }\n\n@keyframes loading {\n  from {\n    left: -200px;\n    width: 30%; }\n  50% {\n    width: 30%; }\n  70% {\n    width: 70%; }\n  80% {\n    left: 50%; }\n  95% {\n    left: 120%; }\n  to {\n    left: 100%; } }\n", ""]);
 
 	// exports
 
@@ -82466,7 +82539,7 @@
 	exports.push([module.id, "@import url(https://fonts.googleapis.com/css?family=Lato:400,900i);", ""]);
 
 	// module
-	exports.push([module.id, "body,\nhtml {\n  background: #f2f2f2;\n  height: 100%;\n  font-family: roboto;\n  color: #1a1b1b; }\n\nbody {\n  -webkit-animation-delay: 0.1s;\n  -webkit-animation-name: fontfix;\n  -webkit-animation-duration: 0.1s;\n  -webkit-animation-iteration-count: 1;\n  -webkit-animation-timing-function: linear; }\n\n@-webkit-keyframes fontfix {\n  from {\n    opacity: 1; }\n  to {\n    opacity: 1; } }\n\n.row {\n  max-width: 100rem; }\n\n.loading-overlay {\n  background-color: rgba(10, 10, 10, 0.45) !important;\n  position: fixed;\n  top: 0;\n  bottom: 0;\n  left: 0;\n  right: 0; }\n\ndiv#offCanvas {\n  width: 350px;\n  height: 100%;\n  padding: 1.5rem;\n  background: #e8e8e8; }\n\n.is-open-right {\n  transform: translateX(-350px); }\n\n.off-canvas.position-right {\n  right: -350px; }\n\n.off-canvas-content {\n  background: #f2f2f2; }\n\na {\n  color: #6abedb; }\n\nhr {\n  border-color: #bdbdbd;\n  margin-top: 0.5rem;\n  max-width: 100%; }\n\n@media only screen and (max-width: 480px) {\n  .allSensors,\n  .buildingCharts {\n    display: none; } }\n\n.divider {\n  border-color: #bdbdbd;\n  margin-bottom: 10px; }\n\n.reveal {\n  top: 100px !important; }\n\ntable thead {\n  background: #d3d3d3;\n  color: #1a1b1b;\n  border: 1px solid #e4e4e4; }\n\ntable tbody {\n  color: #1a1b1b;\n  border: 1px solid #e4e4e4; }\n\n.margin-top-large {\n  margin-top: 4rem; }\n\n.margin-bottom-large {\n  margin-bottom: 4rem; }\n\n.margin-right-small {\n  margin-right: 2rem; }\n\n.margin-left-small {\n  margin-left: 2rem; }\n\n.margin-left-tiny {\n  margin-left: 0.5rem; }\n\n.margin-right-tiny {\n  margin-right: 0.5rem; }\n\n.margin-top-md {\n  margin-top: 2rem; }\n\n.margin-top-small {\n  margin-top: 1rem; }\n\n.margin-bottom-md {\n  margin-bottom: 2rem; }\n\n.margin-bottom-small {\n  margin-bottom: 1rem; }\n\n.textAlignCenter {\n  text-align: center; }\n\nul.header-list {\n  display: inline-block;\n  list-style: none;\n  margin-bottom: 0; }\n\n.sticky {\n  z-index: 10000;\n  left: 0 !important; }\n\n.callout {\n  background-color: #fff; }\n\n.callout-dark {\n  padding: 1.5rem;\n  background-color: #fff;\n  border: 2px solid #bdbdbd;\n  border-top: none;\n  margin-top: 0;\n  border-bottom-right-radius: 4px;\n  border-bottom-left-radius: 4px; }\n\n.scroll {\n  max-height: 100vh;\n  overflow-y: scroll; }\n\n.callout-dark-header {\n  padding: 0.5rem;\n  background-color: #fff;\n  border: 2px solid #bdbdbd;\n  border-bottom: 1px solid #bdbdbd;\n  border-top-left-radius: 4px;\n  border-top-right-radius: 4px;\n  margin-bottom: 0; }\n\n.callout-top-header {\n  padding: 1rem;\n  background-color: #f2f2f2;\n  border: 2px solid #bdbdbd;\n  border-radius: 4px; }\n\n.callout-minimize {\n  margin-bottom: 1rem;\n  border-radius: 4px 4px;\n  padding: 0.5rem; }\n\n.icon-btn-text-small {\n  font-family: 'Roboto', sans-serif;\n  text-transform: Captitalize;\n  top: 15px;\n  right: 15px;\n  position: absolute;\n  color: #323232;\n  font-size: 1.1rem; }\n\n.test {\n  font-family: 'Pathway Gothic One', sans-serif;\n  text-transform: uppercase;\n  color: #fff;\n  font-size: 1rem;\n  background: #6abedb; }\n\nlabel {\n  text-transform: capitalize;\n  color: #232f32; }\n\n.header {\n  color: #323232;\n  margin-bottom: 0;\n  text-transform: capitalize;\n  font-weight: 500;\n  font-family: 'Roboto', sans-serif; }\n\n.sub-header {\n  color: #232f32;\n  font-size: 1.3rem;\n  font-family: 'Pathway Gothic One', sans-serif; }\n  .sub-header a {\n    text-transform: capitalize; }\n\n#watchList {\n  display: none; }\n\n.page-title {\n  color: #323232;\n  font-family: 'Roboto', sans-serif;\n  font-weight: 500;\n  font-size: 1.2rem; }\n\ninput[type=search] {\n  box-shadow: none; }\n\n.top-bar-upper {\n  color: #333;\n  font-size: 0.5rem; }\n\n.app-header {\n  font-size: 1.3rem; }\n\ntable.overview-custom tbody,\ntable.overview-custom th,\ntable.overview-custom thead,\ntable.overview-custom tr {\n  text-align: center; }\n\ntable.sensor-details-table tbody {\n  text-align: left; }\n\n.statusText {\n  color: red;\n  margin-bottom: 1rem;\n  text-transform: uppercase;\n  font-size: 0.8em;\n  font-weight: bold; }\n\n.notificationHeader {\n  color: #fff;\n  text-transform: uppercase;\n  font-size: 0.5em;\n  font-weight: bold; }\n\n.sensorBlock {\n  height: 30px;\n  border-radius: 30px;\n  width: auto;\n  color: #fff;\n  text-align: center;\n  font-family: 'Pathway Gothic One', sans-serif;\n  text-transform: uppercase; }\n\n.sensorBlockSquare {\n  height: 30px;\n  width: 30px;\n  border-radius: 4px;\n  cursor: pointer;\n  text-align: center;\n  line-height: 28px;\n  color: white;\n  font-weight: bold; }\n\n.sensorBlockSquare:hover {\n  opacity: 0.5; }\n\n.sensorList {\n  display: inline-block;\n  margin-right: 1px; }\n\n#uptime-form select {\n  margin-right: 2rem; }\n\n.recharts-tooltip-wrapper {\n  z-index: 1000;\n  box-shadow: 1px 1px 4px #323232; }\n\n#glance-tooltip > table tr:nth-of-type(even) {\n  background-color: transparent !important; }\n\n.button-custom {\n  height: 30px;\n  width: auto !important;\n  margin: 0;\n  color: #fff !important;\n  text-align: center;\n  font-family: 'Pathway Gothic One', sans-serif;\n  text-transform: uppercase; }\n\n.proceed {\n  background: #6abedb; }\n\n.cancel {\n  background: #990000; }\n\n.cancel:hover {\n  background: #7a0000; }\n\n.remove {\n  border: 1px solid #990000;\n  background-color: #fff;\n  color: #990000; }\n\n.remove:hover {\n  background-color: #990000;\n  color: #fff !important; }\n\n.pin {\n  border: 1px solid #008000;\n  background-color: #fff;\n  color: #008000; }\n\n.pin:hover {\n  background-color: #006600;\n  color: #fff !important; }\n\n.disabled {\n  pointer-events: none;\n  background: #e8e8e8;\n  border: none;\n  color: white; }\n\n.disabled:hover {\n  pointer-events: none;\n  background: #e8e8e8;\n  border: none;\n  color: white; }\n\n.tableOptions > li > a {\n  color: #323232;\n  font-weight: normal;\n  font-size: 1rem;\n  padding: 0.5rem 0.7rem; }\n\n.menuHeader:hover,\n.tableOptions .menuHeader {\n  background-color: #232f32 !important;\n  color: #fff;\n  padding: 0.3rem 0.7rem;\n  text-transform: uppercase; }\n\n.tableOptions > li {\n  border-bottom: 1px solid #f2f2f2; }\n\n.tableOptions > li:hover {\n  background-color: #f2f2f2; }\n\n.dropdown-pane {\n  padding: 0; }\n\n.panel-grey {\n  background-color: #e4e4e4;\n  padding-top: 1rem; }\n\n#emailPanel,\n#namePanel,\n#passwordPanel {\n  display: none;\n  padding: 1rem;\n  background: #e4e4e4; }\n\ninput[type=checkbox]:checked ~ #port {\n  display: none; }\n\n#port {\n  display: block; }\n\n.inactive-link {\n  display: none; }\n\n.button-cancel {\n  border-color: #990000 !important;\n  color: #990000 !important; }\n\n.green {\n  background-color: #008000; }\n\n.orange {\n  background-color: #cc7a00; }\n\n.red {\n  background-color: #990000; }\n\n.black {\n  background-color: #1a1b1b; }\n\n.yellow {\n  background-color: #ffcc00; }\n\n.grey {\n  background-color: #737373; }\n\n.loader {\n  height: 4px;\n  width: 100%;\n  position: relative;\n  overflow: hidden;\n  background-color: #ddd; }\n\n.loader:before {\n  display: block;\n  position: absolute;\n  content: \"\";\n  left: -200px;\n  width: 200px;\n  height: 4px;\n  background-color: #2980b9;\n  animation: loading 2s linear infinite; }\n\n@keyframes loading {\n  from {\n    left: -200px;\n    width: 30%; }\n  50% {\n    width: 30%; }\n  70% {\n    width: 70%; }\n  80% {\n    left: 50%; }\n  95% {\n    left: 120%; }\n  to {\n    left: 100%; } }\n\n.top-bar-left {\n  margin-top: 1.5rem; }\n\n.top-bar-right {\n  margin-top: 1.5rem;\n  text-align: right; }\n\n.top-bar {\n  padding: 0rem 2rem 0rem 2rem;\n  background: #232f32;\n  height: 4rem;\n  box-shadow: 0.5px 0.5px 5px #373837; }\n\n.top-bar ul {\n  background: #232f32;\n  /* temporary fix */\n  position: absolute;\n  top: 15px;\n  right: 15px; }\n\n.top-bar.lower {\n  padding-top: 0px; }\n\n.top-bar-title {\n  font-size: 1.5rem;\n  font-family: 'Lato', sans-serif;\n  font-weight: bold;\n  position: absolute;\n  top: 15px;\n  left: 15px;\n  color: #6abedb; }\n\n.menu > li > a {\n  color: #fafafa;\n  font-weight: bold;\n  font-size: 0.9rem;\n  text-transform: capitalize; }\n\n.is-dropdown-submenu {\n  border: 1px solid #373737; }\n", ""]);
+	exports.push([module.id, "body,\nhtml {\n  background: #f2f2f2;\n  height: 100%;\n  font-family: roboto;\n  color: #1a1b1b; }\n\nbody {\n  -webkit-animation-delay: 0.1s;\n  -webkit-animation-name: fontfix;\n  -webkit-animation-duration: 0.1s;\n  -webkit-animation-iteration-count: 1;\n  -webkit-animation-timing-function: linear; }\n\n@-webkit-keyframes fontfix {\n  from {\n    opacity: 1; }\n  to {\n    opacity: 1; } }\n\n.row {\n  max-width: 100rem; }\n\n.loading-overlay {\n  background-color: rgba(10, 10, 10, 0.45) !important;\n  position: fixed;\n  top: 0;\n  bottom: 0;\n  left: 0;\n  right: 0; }\n\ndiv#offCanvas {\n  width: 350px;\n  height: 100%;\n  padding: 1.5rem;\n  background: #e8e8e8; }\n\n.is-open-right {\n  transform: translateX(-350px); }\n\n.off-canvas.position-right {\n  right: -350px; }\n\n.off-canvas-content {\n  background: #f2f2f2; }\n\na {\n  color: #6abedb; }\n\nhr {\n  border-color: #bdbdbd;\n  margin-top: 0.5rem;\n  max-width: 100%; }\n\n@media only screen and (max-width: 480px) {\n  .allSensors,\n  .buildingCharts {\n    display: none; } }\n\n.divider {\n  border-color: #bdbdbd;\n  margin-bottom: 10px; }\n\n.reveal {\n  top: 100px !important; }\n\ntable thead {\n  background: #d3d3d3;\n  color: #1a1b1b;\n  border: 1px solid #e4e4e4; }\n\ntable tbody {\n  color: #1a1b1b;\n  border: 1px solid #e4e4e4; }\n\n.margin-top-large {\n  margin-top: 4rem; }\n\n.margin-bottom-large {\n  margin-bottom: 4rem; }\n\n.margin-right-small {\n  margin-right: 2rem; }\n\n.margin-left-small {\n  margin-left: 2rem; }\n\n.margin-left-tiny {\n  margin-left: 0.5rem; }\n\n.margin-right-tiny {\n  margin-right: 0.5rem; }\n\n.margin-top-md {\n  margin-top: 2rem; }\n\n.margin-top-small {\n  margin-top: 1rem; }\n\n.margin-bottom-md {\n  margin-bottom: 2rem; }\n\n.margin-bottom-small {\n  margin-bottom: 1rem; }\n\n.textAlignCenter {\n  text-align: center; }\n\nul.header-list {\n  display: inline-block;\n  list-style: none;\n  margin-bottom: 0; }\n\n.sticky {\n  z-index: 10000;\n  left: 0 !important; }\n\n.callout {\n  background-color: #fff; }\n\n.callout-dark {\n  padding: 1.5rem;\n  background-color: #fff;\n  border: 2px solid #bdbdbd;\n  border-top: none;\n  margin-top: 0;\n  border-bottom-right-radius: 4px;\n  border-bottom-left-radius: 4px; }\n\n.scroll {\n  max-height: 100vh;\n  overflow-y: scroll; }\n\n.callout-dark-header {\n  padding: 0.5rem;\n  background-color: #fff;\n  border: 2px solid #bdbdbd;\n  border-bottom: 1px solid #bdbdbd;\n  border-top-left-radius: 4px;\n  border-top-right-radius: 4px;\n  margin-bottom: 0; }\n\n.callout-top-header {\n  padding: 1rem;\n  background-color: #f2f2f2;\n  border: 2px solid #bdbdbd;\n  border-radius: 4px; }\n\n.callout-minimize {\n  margin-bottom: 1rem;\n  border-radius: 4px 4px;\n  padding: 0.5rem; }\n\n.icon-btn-text-small {\n  font-family: 'Roboto', sans-serif;\n  text-transform: Captitalize;\n  top: 15px;\n  right: 15px;\n  position: absolute;\n  color: #323232;\n  font-size: 1.1rem; }\n\n.test {\n  font-family: 'Pathway Gothic One', sans-serif;\n  text-transform: uppercase;\n  color: #fff;\n  font-size: 1rem;\n  background: #6abedb; }\n\nlabel {\n  text-transform: capitalize;\n  color: #232f32; }\n\n.header {\n  color: #323232;\n  margin-bottom: 0;\n  text-transform: capitalize;\n  font-weight: 500;\n  font-family: 'Roboto', sans-serif; }\n\n.sub-header {\n  color: #232f32;\n  font-size: 1.3rem;\n  font-family: 'Pathway Gothic One', sans-serif; }\n  .sub-header a {\n    text-transform: capitalize; }\n\n#watchList {\n  display: none; }\n\n.page-title {\n  color: #323232;\n  font-family: 'Roboto', sans-serif;\n  font-weight: 500;\n  font-size: 1.2rem; }\n\ninput[type=search] {\n  box-shadow: none; }\n\n.top-bar-upper {\n  color: #333;\n  font-size: 0.5rem; }\n\n.app-header {\n  font-size: 1.3rem; }\n\ntable.overview-custom tbody,\ntable.overview-custom th,\ntable.overview-custom thead,\ntable.overview-custom tr {\n  text-align: center; }\n\ntable.sensor-details-table tbody {\n  text-align: left; }\n\n.statusText {\n  color: red;\n  margin-bottom: 1rem;\n  text-transform: uppercase;\n  font-size: 0.8em;\n  font-weight: bold; }\n\n.notificationHeader {\n  color: #fff;\n  text-transform: uppercase;\n  font-size: 0.5em;\n  font-weight: bold; }\n\n.sensorBlock {\n  height: 30px;\n  border-radius: 30px;\n  width: auto;\n  color: #fff;\n  text-align: center;\n  font-family: 'Pathway Gothic One', sans-serif;\n  text-transform: uppercase; }\n\n.sensorBlockSquare {\n  height: 30px;\n  width: 30px;\n  border-radius: 4px;\n  cursor: pointer;\n  text-align: center;\n  line-height: 28px;\n  color: white;\n  font-weight: bold; }\n\n.sensorBlockSquare:hover {\n  opacity: 0.5; }\n\n.sensorList {\n  display: inline-block;\n  margin-right: 1px; }\n\n#uptime-form select {\n  margin-right: 2rem; }\n\n.recharts-tooltip-wrapper {\n  z-index: 1000;\n  box-shadow: 1px 1px 4px #323232;\n  background-color: #fff; }\n\n#glance-tooltip > table tr:nth-of-type(even) {\n  background-color: transparent !important; }\n\n.button-custom {\n  height: 30px;\n  width: auto !important;\n  margin: 0;\n  color: #fff !important;\n  text-align: center;\n  font-family: 'Pathway Gothic One', sans-serif;\n  text-transform: uppercase; }\n\n.proceed {\n  background: #6abedb; }\n\n.cancel {\n  background: #990000; }\n\n.cancel:hover {\n  background: #7a0000; }\n\n.remove {\n  border: 1px solid #990000;\n  background-color: #fff;\n  color: #990000;\n  cursor: pointer; }\n\n.remove:hover {\n  background-color: #990000;\n  color: #fff !important; }\n\n.pin {\n  border: 1px solid #008000;\n  background-color: #fff;\n  color: #008000;\n  cursor: pointer; }\n\n.pin:hover {\n  background-color: #006600;\n  color: #fff !important; }\n\n.disabled {\n  pointer-events: none;\n  background: #e8e8e8;\n  border: none;\n  color: white;\n  cursor: default; }\n\n.disabled:hover {\n  pointer-events: none;\n  background: #e8e8e8;\n  border: none;\n  color: white;\n  cursor: default; }\n\n.tableOptions > li > a {\n  color: #323232;\n  font-weight: normal;\n  font-size: 1rem;\n  padding: 0.5rem 0.7rem; }\n\n.menuHeader:hover,\n.tableOptions .menuHeader {\n  background-color: #232f32 !important;\n  color: #fff;\n  padding: 0.3rem 0.7rem;\n  text-transform: uppercase; }\n\n.tableOptions > li {\n  border-bottom: 1px solid #f2f2f2; }\n\n.tableOptions > li:hover {\n  background-color: #f2f2f2; }\n\n.dropdown-pane {\n  padding: 0; }\n\n.panel-grey {\n  background-color: #e4e4e4;\n  padding-top: 1rem; }\n\n#emailPanel,\n#namePanel,\n#passwordPanel {\n  display: none;\n  padding: 1rem;\n  background: #e4e4e4; }\n\ninput[type=checkbox]:checked ~ #port {\n  display: none; }\n\n#port {\n  display: block; }\n\n.inactive-link {\n  display: none; }\n\n.button-cancel {\n  border-color: #990000 !important;\n  color: #990000 !important; }\n\n.green {\n  background-color: #008000; }\n\n.orange {\n  background-color: #cc7a00; }\n\n.red {\n  background-color: #990000; }\n\n.black {\n  background-color: #1a1b1b; }\n\n.yellow {\n  background-color: #ffcc00; }\n\n.grey {\n  background-color: #737373; }\n\n.loader {\n  height: 4px;\n  width: 100%;\n  position: relative;\n  overflow: hidden;\n  background-color: #ddd; }\n\n.loader:before {\n  display: block;\n  position: absolute;\n  content: \"\";\n  left: -200px;\n  width: 200px;\n  height: 4px;\n  background-color: #2980b9;\n  animation: loading 2s linear infinite; }\n\n@keyframes loading {\n  from {\n    left: -200px;\n    width: 30%; }\n  50% {\n    width: 30%; }\n  70% {\n    width: 70%; }\n  80% {\n    left: 50%; }\n  95% {\n    left: 120%; }\n  to {\n    left: 100%; } }\n\n.top-bar-left {\n  margin-top: 1.5rem; }\n\n.top-bar-right {\n  margin-top: 1.5rem;\n  text-align: right; }\n\n.top-bar {\n  padding: 0rem 2rem 0rem 2rem;\n  background: #232f32;\n  height: 4rem;\n  box-shadow: 0.5px 0.5px 5px #373837; }\n\n.top-bar ul {\n  background: #232f32;\n  /* temporary fix */\n  position: absolute;\n  top: 15px;\n  right: 15px; }\n\n.top-bar.lower {\n  padding-top: 0px; }\n\n.top-bar-title {\n  font-size: 1.5rem;\n  font-family: 'Lato', sans-serif;\n  font-weight: bold;\n  position: absolute;\n  top: 15px;\n  left: 15px;\n  color: #6abedb; }\n\n.menu > li > a {\n  color: #fafafa;\n  font-weight: bold;\n  font-size: 0.9rem;\n  text-transform: capitalize; }\n\n.is-dropdown-submenu {\n  border: 1px solid #373737; }\n", ""]);
 
 	// exports
 
@@ -82548,7 +82621,7 @@
 	exports.push([module.id, "@import url(https://fonts.googleapis.com/css?family=Lato:400,900i);", ""]);
 
 	// module
-	exports.push([module.id, "body,\nhtml {\n  background: #f2f2f2;\n  height: 100%;\n  font-family: roboto;\n  color: #1a1b1b; }\n\nbody {\n  -webkit-animation-delay: 0.1s;\n  -webkit-animation-name: fontfix;\n  -webkit-animation-duration: 0.1s;\n  -webkit-animation-iteration-count: 1;\n  -webkit-animation-timing-function: linear; }\n\n@-webkit-keyframes fontfix {\n  from {\n    opacity: 1; }\n  to {\n    opacity: 1; } }\n\n.row {\n  max-width: 100rem; }\n\n.loading-overlay {\n  background-color: rgba(10, 10, 10, 0.45) !important;\n  position: fixed;\n  top: 0;\n  bottom: 0;\n  left: 0;\n  right: 0; }\n\ndiv#offCanvas {\n  width: 350px;\n  height: 100%;\n  padding: 1.5rem;\n  background: #e8e8e8; }\n\n.is-open-right {\n  transform: translateX(-350px); }\n\n.off-canvas.position-right {\n  right: -350px; }\n\n.off-canvas-content {\n  background: #f2f2f2; }\n\na {\n  color: #6abedb; }\n\nhr {\n  border-color: #bdbdbd;\n  margin-top: 0.5rem;\n  max-width: 100%; }\n\n@media only screen and (max-width: 480px) {\n  .allSensors,\n  .buildingCharts {\n    display: none; } }\n\n.divider {\n  border-color: #bdbdbd;\n  margin-bottom: 10px; }\n\n.reveal {\n  top: 100px !important; }\n\ntable thead {\n  background: #d3d3d3;\n  color: #1a1b1b;\n  border: 1px solid #e4e4e4; }\n\ntable tbody {\n  color: #1a1b1b;\n  border: 1px solid #e4e4e4; }\n\n.margin-top-large {\n  margin-top: 4rem; }\n\n.margin-bottom-large {\n  margin-bottom: 4rem; }\n\n.margin-right-small {\n  margin-right: 2rem; }\n\n.margin-left-small {\n  margin-left: 2rem; }\n\n.margin-left-tiny {\n  margin-left: 0.5rem; }\n\n.margin-right-tiny {\n  margin-right: 0.5rem; }\n\n.margin-top-md {\n  margin-top: 2rem; }\n\n.margin-top-small {\n  margin-top: 1rem; }\n\n.margin-bottom-md {\n  margin-bottom: 2rem; }\n\n.margin-bottom-small {\n  margin-bottom: 1rem; }\n\n.textAlignCenter {\n  text-align: center; }\n\nul.header-list {\n  display: inline-block;\n  list-style: none;\n  margin-bottom: 0; }\n\n.sticky {\n  z-index: 10000;\n  left: 0 !important; }\n\n.callout {\n  background-color: #fff; }\n\n.callout-dark {\n  padding: 1.5rem;\n  background-color: #fff;\n  border: 2px solid #bdbdbd;\n  border-top: none;\n  margin-top: 0;\n  border-bottom-right-radius: 4px;\n  border-bottom-left-radius: 4px; }\n\n.scroll {\n  max-height: 100vh;\n  overflow-y: scroll; }\n\n.callout-dark-header {\n  padding: 0.5rem;\n  background-color: #fff;\n  border: 2px solid #bdbdbd;\n  border-bottom: 1px solid #bdbdbd;\n  border-top-left-radius: 4px;\n  border-top-right-radius: 4px;\n  margin-bottom: 0; }\n\n.callout-top-header {\n  padding: 1rem;\n  background-color: #f2f2f2;\n  border: 2px solid #bdbdbd;\n  border-radius: 4px; }\n\n.callout-minimize {\n  margin-bottom: 1rem;\n  border-radius: 4px 4px;\n  padding: 0.5rem; }\n\n.icon-btn-text-small {\n  font-family: 'Roboto', sans-serif;\n  text-transform: Captitalize;\n  top: 15px;\n  right: 15px;\n  position: absolute;\n  color: #323232;\n  font-size: 1.1rem; }\n\n.test {\n  font-family: 'Pathway Gothic One', sans-serif;\n  text-transform: uppercase;\n  color: #fff;\n  font-size: 1rem;\n  background: #6abedb; }\n\nlabel {\n  text-transform: capitalize;\n  color: #232f32; }\n\n.header {\n  color: #323232;\n  margin-bottom: 0;\n  text-transform: capitalize;\n  font-weight: 500;\n  font-family: 'Roboto', sans-serif; }\n\n.sub-header {\n  color: #232f32;\n  font-size: 1.3rem;\n  font-family: 'Pathway Gothic One', sans-serif; }\n  .sub-header a {\n    text-transform: capitalize; }\n\n#watchList {\n  display: none; }\n\n.page-title {\n  color: #323232;\n  font-family: 'Roboto', sans-serif;\n  font-weight: 500;\n  font-size: 1.2rem; }\n\ninput[type=search] {\n  box-shadow: none; }\n\n.top-bar-upper {\n  color: #333;\n  font-size: 0.5rem; }\n\n.app-header {\n  font-size: 1.3rem; }\n\ntable.overview-custom tbody,\ntable.overview-custom th,\ntable.overview-custom thead,\ntable.overview-custom tr {\n  text-align: center; }\n\ntable.sensor-details-table tbody {\n  text-align: left; }\n\n.statusText {\n  color: red;\n  margin-bottom: 1rem;\n  text-transform: uppercase;\n  font-size: 0.8em;\n  font-weight: bold; }\n\n.notificationHeader {\n  color: #fff;\n  text-transform: uppercase;\n  font-size: 0.5em;\n  font-weight: bold; }\n\n.sensorBlock {\n  height: 30px;\n  border-radius: 30px;\n  width: auto;\n  color: #fff;\n  text-align: center;\n  font-family: 'Pathway Gothic One', sans-serif;\n  text-transform: uppercase; }\n\n.sensorBlockSquare {\n  height: 30px;\n  width: 30px;\n  border-radius: 4px;\n  cursor: pointer;\n  text-align: center;\n  line-height: 28px;\n  color: white;\n  font-weight: bold; }\n\n.sensorBlockSquare:hover {\n  opacity: 0.5; }\n\n.sensorList {\n  display: inline-block;\n  margin-right: 1px; }\n\n#uptime-form select {\n  margin-right: 2rem; }\n\n.recharts-tooltip-wrapper {\n  z-index: 1000;\n  box-shadow: 1px 1px 4px #323232; }\n\n#glance-tooltip > table tr:nth-of-type(even) {\n  background-color: transparent !important; }\n\n.button-custom {\n  height: 30px;\n  width: auto !important;\n  margin: 0;\n  color: #fff !important;\n  text-align: center;\n  font-family: 'Pathway Gothic One', sans-serif;\n  text-transform: uppercase; }\n\n.proceed {\n  background: #6abedb; }\n\n.cancel {\n  background: #990000; }\n\n.cancel:hover {\n  background: #7a0000; }\n\n.remove {\n  border: 1px solid #990000;\n  background-color: #fff;\n  color: #990000; }\n\n.remove:hover {\n  background-color: #990000;\n  color: #fff !important; }\n\n.pin {\n  border: 1px solid #008000;\n  background-color: #fff;\n  color: #008000; }\n\n.pin:hover {\n  background-color: #006600;\n  color: #fff !important; }\n\n.disabled {\n  pointer-events: none;\n  background: #e8e8e8;\n  border: none;\n  color: white; }\n\n.disabled:hover {\n  pointer-events: none;\n  background: #e8e8e8;\n  border: none;\n  color: white; }\n\n.tableOptions > li > a {\n  color: #323232;\n  font-weight: normal;\n  font-size: 1rem;\n  padding: 0.5rem 0.7rem; }\n\n.menuHeader:hover,\n.tableOptions .menuHeader {\n  background-color: #232f32 !important;\n  color: #fff;\n  padding: 0.3rem 0.7rem;\n  text-transform: uppercase; }\n\n.tableOptions > li {\n  border-bottom: 1px solid #f2f2f2; }\n\n.tableOptions > li:hover {\n  background-color: #f2f2f2; }\n\n.dropdown-pane {\n  padding: 0; }\n\n.panel-grey {\n  background-color: #e4e4e4;\n  padding-top: 1rem; }\n\n#emailPanel,\n#namePanel,\n#passwordPanel {\n  display: none;\n  padding: 1rem;\n  background: #e4e4e4; }\n\ninput[type=checkbox]:checked ~ #port {\n  display: none; }\n\n#port {\n  display: block; }\n\n.inactive-link {\n  display: none; }\n\n.button-cancel {\n  border-color: #990000 !important;\n  color: #990000 !important; }\n\n.green {\n  background-color: #008000; }\n\n.orange {\n  background-color: #cc7a00; }\n\n.red {\n  background-color: #990000; }\n\n.black {\n  background-color: #1a1b1b; }\n\n.yellow {\n  background-color: #ffcc00; }\n\n.grey {\n  background-color: #737373; }\n\n.loader {\n  height: 4px;\n  width: 100%;\n  position: relative;\n  overflow: hidden;\n  background-color: #ddd; }\n\n.loader:before {\n  display: block;\n  position: absolute;\n  content: \"\";\n  left: -200px;\n  width: 200px;\n  height: 4px;\n  background-color: #2980b9;\n  animation: loading 2s linear infinite; }\n\n@keyframes loading {\n  from {\n    left: -200px;\n    width: 30%; }\n  50% {\n    width: 30%; }\n  70% {\n    width: 70%; }\n  80% {\n    left: 50%; }\n  95% {\n    left: 120%; }\n  to {\n    left: 100%; } }\n\n.griddle-container {\n  border: none !important; }\n\n.griddle .top-section {\n  clear: both;\n  display: table;\n  width: 100%; }\n\n.griddle .griddle-filter {\n  float: left;\n  width: 50%;\n  text-align: left;\n  color: #222;\n  min-height: 1px; }\n\n.griddle-body {\n  font-size: 1em;\n  overflow-x: scroll; }\n\n.griddle .griddle-settings-toggle {\n  float: left;\n  width: 50%;\n  text-align: right;\n  color: #f8f8f8; }\n\n.griddle .griddle-settings {\n  background-color: #FFF;\n  border: 1px solid #DDD;\n  color: #222;\n  padding: 10px;\n  margin-bottom: 10px; }\n\n.griddle .griddle-settings .settings {\n  color: #f8f8f8; }\n\n.griddle .griddle-settings .griddle-columns {\n  clear: both;\n  display: table;\n  width: 100%;\n  border-bottom: 1px solid #EDEDED;\n  margin-bottom: 10px; }\n\n.griddle .griddle-settings .griddle-column-selection {\n  float: left;\n  width: 20%; }\n\n.griddle table {\n  width: 100%;\n  table-layout: auto !important; }\n\n.griddle th {\n  background-color: #EDEDEF;\n  border: 0px;\n  border-bottom: 1px solid #DDD;\n  color: #222;\n  padding: 5px; }\n\n.griddle td {\n  padding: 5px;\n  background-color: #FFF;\n  border-top-color: #DDD;\n  color: #222; }\n\n.griddle .footer-container {\n  padding: 0px;\n  background-color: #EDEDED;\n  border: 0px;\n  color: #222; }\n\n.griddle button {\n  font-weight: bold;\n  color: #232f32; }\n\n.griddle .griddle-previous, .griddle .griddle-page, .griddle .griddle-next {\n  float: left;\n  width: 33%;\n  min-height: 1px;\n  margin-top: 5px; }\n\n.griddle .griddle-page {\n  text-align: center; }\n\n.griddle .griddle-next {\n  text-align: right; }\n", ""]);
+	exports.push([module.id, "body,\nhtml {\n  background: #f2f2f2;\n  height: 100%;\n  font-family: roboto;\n  color: #1a1b1b; }\n\nbody {\n  -webkit-animation-delay: 0.1s;\n  -webkit-animation-name: fontfix;\n  -webkit-animation-duration: 0.1s;\n  -webkit-animation-iteration-count: 1;\n  -webkit-animation-timing-function: linear; }\n\n@-webkit-keyframes fontfix {\n  from {\n    opacity: 1; }\n  to {\n    opacity: 1; } }\n\n.row {\n  max-width: 100rem; }\n\n.loading-overlay {\n  background-color: rgba(10, 10, 10, 0.45) !important;\n  position: fixed;\n  top: 0;\n  bottom: 0;\n  left: 0;\n  right: 0; }\n\ndiv#offCanvas {\n  width: 350px;\n  height: 100%;\n  padding: 1.5rem;\n  background: #e8e8e8; }\n\n.is-open-right {\n  transform: translateX(-350px); }\n\n.off-canvas.position-right {\n  right: -350px; }\n\n.off-canvas-content {\n  background: #f2f2f2; }\n\na {\n  color: #6abedb; }\n\nhr {\n  border-color: #bdbdbd;\n  margin-top: 0.5rem;\n  max-width: 100%; }\n\n@media only screen and (max-width: 480px) {\n  .allSensors,\n  .buildingCharts {\n    display: none; } }\n\n.divider {\n  border-color: #bdbdbd;\n  margin-bottom: 10px; }\n\n.reveal {\n  top: 100px !important; }\n\ntable thead {\n  background: #d3d3d3;\n  color: #1a1b1b;\n  border: 1px solid #e4e4e4; }\n\ntable tbody {\n  color: #1a1b1b;\n  border: 1px solid #e4e4e4; }\n\n.margin-top-large {\n  margin-top: 4rem; }\n\n.margin-bottom-large {\n  margin-bottom: 4rem; }\n\n.margin-right-small {\n  margin-right: 2rem; }\n\n.margin-left-small {\n  margin-left: 2rem; }\n\n.margin-left-tiny {\n  margin-left: 0.5rem; }\n\n.margin-right-tiny {\n  margin-right: 0.5rem; }\n\n.margin-top-md {\n  margin-top: 2rem; }\n\n.margin-top-small {\n  margin-top: 1rem; }\n\n.margin-bottom-md {\n  margin-bottom: 2rem; }\n\n.margin-bottom-small {\n  margin-bottom: 1rem; }\n\n.textAlignCenter {\n  text-align: center; }\n\nul.header-list {\n  display: inline-block;\n  list-style: none;\n  margin-bottom: 0; }\n\n.sticky {\n  z-index: 10000;\n  left: 0 !important; }\n\n.callout {\n  background-color: #fff; }\n\n.callout-dark {\n  padding: 1.5rem;\n  background-color: #fff;\n  border: 2px solid #bdbdbd;\n  border-top: none;\n  margin-top: 0;\n  border-bottom-right-radius: 4px;\n  border-bottom-left-radius: 4px; }\n\n.scroll {\n  max-height: 100vh;\n  overflow-y: scroll; }\n\n.callout-dark-header {\n  padding: 0.5rem;\n  background-color: #fff;\n  border: 2px solid #bdbdbd;\n  border-bottom: 1px solid #bdbdbd;\n  border-top-left-radius: 4px;\n  border-top-right-radius: 4px;\n  margin-bottom: 0; }\n\n.callout-top-header {\n  padding: 1rem;\n  background-color: #f2f2f2;\n  border: 2px solid #bdbdbd;\n  border-radius: 4px; }\n\n.callout-minimize {\n  margin-bottom: 1rem;\n  border-radius: 4px 4px;\n  padding: 0.5rem; }\n\n.icon-btn-text-small {\n  font-family: 'Roboto', sans-serif;\n  text-transform: Captitalize;\n  top: 15px;\n  right: 15px;\n  position: absolute;\n  color: #323232;\n  font-size: 1.1rem; }\n\n.test {\n  font-family: 'Pathway Gothic One', sans-serif;\n  text-transform: uppercase;\n  color: #fff;\n  font-size: 1rem;\n  background: #6abedb; }\n\nlabel {\n  text-transform: capitalize;\n  color: #232f32; }\n\n.header {\n  color: #323232;\n  margin-bottom: 0;\n  text-transform: capitalize;\n  font-weight: 500;\n  font-family: 'Roboto', sans-serif; }\n\n.sub-header {\n  color: #232f32;\n  font-size: 1.3rem;\n  font-family: 'Pathway Gothic One', sans-serif; }\n  .sub-header a {\n    text-transform: capitalize; }\n\n#watchList {\n  display: none; }\n\n.page-title {\n  color: #323232;\n  font-family: 'Roboto', sans-serif;\n  font-weight: 500;\n  font-size: 1.2rem; }\n\ninput[type=search] {\n  box-shadow: none; }\n\n.top-bar-upper {\n  color: #333;\n  font-size: 0.5rem; }\n\n.app-header {\n  font-size: 1.3rem; }\n\ntable.overview-custom tbody,\ntable.overview-custom th,\ntable.overview-custom thead,\ntable.overview-custom tr {\n  text-align: center; }\n\ntable.sensor-details-table tbody {\n  text-align: left; }\n\n.statusText {\n  color: red;\n  margin-bottom: 1rem;\n  text-transform: uppercase;\n  font-size: 0.8em;\n  font-weight: bold; }\n\n.notificationHeader {\n  color: #fff;\n  text-transform: uppercase;\n  font-size: 0.5em;\n  font-weight: bold; }\n\n.sensorBlock {\n  height: 30px;\n  border-radius: 30px;\n  width: auto;\n  color: #fff;\n  text-align: center;\n  font-family: 'Pathway Gothic One', sans-serif;\n  text-transform: uppercase; }\n\n.sensorBlockSquare {\n  height: 30px;\n  width: 30px;\n  border-radius: 4px;\n  cursor: pointer;\n  text-align: center;\n  line-height: 28px;\n  color: white;\n  font-weight: bold; }\n\n.sensorBlockSquare:hover {\n  opacity: 0.5; }\n\n.sensorList {\n  display: inline-block;\n  margin-right: 1px; }\n\n#uptime-form select {\n  margin-right: 2rem; }\n\n.recharts-tooltip-wrapper {\n  z-index: 1000;\n  box-shadow: 1px 1px 4px #323232;\n  background-color: #fff; }\n\n#glance-tooltip > table tr:nth-of-type(even) {\n  background-color: transparent !important; }\n\n.button-custom {\n  height: 30px;\n  width: auto !important;\n  margin: 0;\n  color: #fff !important;\n  text-align: center;\n  font-family: 'Pathway Gothic One', sans-serif;\n  text-transform: uppercase; }\n\n.proceed {\n  background: #6abedb; }\n\n.cancel {\n  background: #990000; }\n\n.cancel:hover {\n  background: #7a0000; }\n\n.remove {\n  border: 1px solid #990000;\n  background-color: #fff;\n  color: #990000;\n  cursor: pointer; }\n\n.remove:hover {\n  background-color: #990000;\n  color: #fff !important; }\n\n.pin {\n  border: 1px solid #008000;\n  background-color: #fff;\n  color: #008000;\n  cursor: pointer; }\n\n.pin:hover {\n  background-color: #006600;\n  color: #fff !important; }\n\n.disabled {\n  pointer-events: none;\n  background: #e8e8e8;\n  border: none;\n  color: white;\n  cursor: default; }\n\n.disabled:hover {\n  pointer-events: none;\n  background: #e8e8e8;\n  border: none;\n  color: white;\n  cursor: default; }\n\n.tableOptions > li > a {\n  color: #323232;\n  font-weight: normal;\n  font-size: 1rem;\n  padding: 0.5rem 0.7rem; }\n\n.menuHeader:hover,\n.tableOptions .menuHeader {\n  background-color: #232f32 !important;\n  color: #fff;\n  padding: 0.3rem 0.7rem;\n  text-transform: uppercase; }\n\n.tableOptions > li {\n  border-bottom: 1px solid #f2f2f2; }\n\n.tableOptions > li:hover {\n  background-color: #f2f2f2; }\n\n.dropdown-pane {\n  padding: 0; }\n\n.panel-grey {\n  background-color: #e4e4e4;\n  padding-top: 1rem; }\n\n#emailPanel,\n#namePanel,\n#passwordPanel {\n  display: none;\n  padding: 1rem;\n  background: #e4e4e4; }\n\ninput[type=checkbox]:checked ~ #port {\n  display: none; }\n\n#port {\n  display: block; }\n\n.inactive-link {\n  display: none; }\n\n.button-cancel {\n  border-color: #990000 !important;\n  color: #990000 !important; }\n\n.green {\n  background-color: #008000; }\n\n.orange {\n  background-color: #cc7a00; }\n\n.red {\n  background-color: #990000; }\n\n.black {\n  background-color: #1a1b1b; }\n\n.yellow {\n  background-color: #ffcc00; }\n\n.grey {\n  background-color: #737373; }\n\n.loader {\n  height: 4px;\n  width: 100%;\n  position: relative;\n  overflow: hidden;\n  background-color: #ddd; }\n\n.loader:before {\n  display: block;\n  position: absolute;\n  content: \"\";\n  left: -200px;\n  width: 200px;\n  height: 4px;\n  background-color: #2980b9;\n  animation: loading 2s linear infinite; }\n\n@keyframes loading {\n  from {\n    left: -200px;\n    width: 30%; }\n  50% {\n    width: 30%; }\n  70% {\n    width: 70%; }\n  80% {\n    left: 50%; }\n  95% {\n    left: 120%; }\n  to {\n    left: 100%; } }\n\n.griddle-container {\n  border: none !important; }\n\n.griddle .top-section {\n  clear: both;\n  display: table;\n  width: 100%; }\n\n.griddle .griddle-filter {\n  float: left;\n  width: 50%;\n  text-align: left;\n  color: #222;\n  min-height: 1px; }\n\n.griddle-body {\n  font-size: 1em;\n  overflow-x: scroll; }\n\n.griddle .griddle-settings-toggle {\n  float: left;\n  width: 50%;\n  text-align: right;\n  color: #f8f8f8; }\n\n.griddle .griddle-settings {\n  background-color: #FFF;\n  border: 1px solid #DDD;\n  color: #222;\n  padding: 10px;\n  margin-bottom: 10px; }\n\n.griddle .griddle-settings .settings {\n  color: #f8f8f8; }\n\n.griddle .griddle-settings .griddle-columns {\n  clear: both;\n  display: table;\n  width: 100%;\n  border-bottom: 1px solid #EDEDED;\n  margin-bottom: 10px; }\n\n.griddle .griddle-settings .griddle-column-selection {\n  float: left;\n  width: 20%; }\n\n.griddle table {\n  width: 100%;\n  table-layout: auto !important; }\n\n.griddle th {\n  background-color: #EDEDEF;\n  border: 0px;\n  border-bottom: 1px solid #DDD;\n  color: #222;\n  padding: 5px; }\n\n.griddle td {\n  padding: 5px;\n  background-color: #FFF;\n  border-top-color: #DDD;\n  color: #222; }\n\n.griddle .footer-container {\n  padding: 0px;\n  background-color: #EDEDED;\n  border: 0px;\n  color: #222; }\n\n.griddle button {\n  font-weight: bold;\n  color: #232f32; }\n\n.griddle .griddle-previous, .griddle .griddle-page, .griddle .griddle-next {\n  float: left;\n  width: 33%;\n  min-height: 1px;\n  margin-top: 5px; }\n\n.griddle .griddle-page {\n  text-align: center; }\n\n.griddle .griddle-next {\n  text-align: right; }\n", ""]);
 
 	// exports
 
