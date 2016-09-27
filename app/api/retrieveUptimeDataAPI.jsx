@@ -1,12 +1,13 @@
-const RETRIEVE_UPTIME_DATA_URL = 'http://opsdev.sence.io/backend/get_historical_uptime.php';
+const RETRIEVE_UPTIME_DATA_URL = 'http://opsdev.sence.io/backend/get_historical_uptime_exp.php';
 
 module.exports = {
 
-    retrieveUptimeData: function(buildingName, numDays, interval) {
+    retrieveUptimeData: function(buildingName, startDate, endDate, interval) {
 
         var data = {
           building: buildingName,
-          days: numDays,
+          'start_date': startDate,
+          'end_date': endDate,
           interval: interval
         }
 

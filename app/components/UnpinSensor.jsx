@@ -19,13 +19,11 @@ class UnpinSensor extends React.Component {
     var that = this;
 
     updateWatchList.updateWatchList(macAdd, false).then(function (response) {
-        console.log("removed sensor?", response);
 
         if (response.error) {
             that.setState({message: response.error});
         } else {
-            that.setState({message: response.msg});
-            $('#unpin-sensor-modal').foundation('close');
+            that.setState({message: response.success});
         }
     });
   }
@@ -78,7 +76,6 @@ class UnpinSensorMessage extends React.Component {
 }
 
 function mapStateToProps(state, ownProps) {
-    console.log("state", state);
     return { pin_mac: state.pin_mac }
 }
 

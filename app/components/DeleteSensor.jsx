@@ -26,7 +26,7 @@ class DeleteSensor extends React.Component {
                 that.setState({message: response.error});
             } else {
                 that.setState({message: response.msg});
-                $('#delete-sensor-modal').foundation('close');
+                // $('#delete-sensor-modal').foundation('close');
             }
         });
     }
@@ -80,7 +80,6 @@ class DeleteSensorMessage extends React.Component {
 }
 
 function mapStateToProps(state, ownProps) {
-    console.log("state", state);
     return {deleteMac: state.macAddress}
 }
 

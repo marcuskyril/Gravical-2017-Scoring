@@ -45,10 +45,20 @@ class Uptime extends React.Component {
     super(props);
     //console.log("work pls", props.params.buildingName);
 
+    var d = new Date();
+    d.setDate(d.getDate() - 7);
+
+    var startDate = d.toISOString().substring(0, 10);
+    var endDate = new Date().toISOString().substring(0, 10);
+
     this.state = {
       buildingName: props.params.buildingName,
       data: null,
-      isLoading: false
+      isLoading: false,
+      message: '',
+      startDate: startDate,
+      endDate: endDate,
+      interval: 15
     }
   }
 
@@ -59,28 +69,43 @@ class Uptime extends React.Component {
     });
 
     window.scrollTo(0, 0);
-    this.retrieveData(1, 10);
+
+    var {startDate, endDate, interval} = this.state;
+
+    this.retrieveData(startDate, endDate, interval);
   }
 
   onSubmit() {
 
-    var numDays = parseInt(this.refs.numDays.value);
+    var startDate = this.refs.startDate.value;
+    var endDate = this.refs.endDate.value;
     var interval = parseInt(this.refs.interval.value);
 
-    this.setState({
-      data: "",
-      isLoading: true
-    });
+    console.log("startDate", startDate);
+    console.log("endDate", endDate);
 
-    this.retrieveData(numDays, interval);
 
+    if(Date.parse(endDate) < Date.parse(startDate)) {
+        this.setState({message: 'End date is before start date. Please try again.'});
+    } else {
+        this.setState({
+          data: "",
+          isLoading: true,
+          startDate: startDate,
+          endDate: endDate,
+          interval: interval
+        });
+
+        this.retrieveData(startDate, endDate, interval);
+    }
   }
 
-  retrieveData(numDays, interval) {
+  retrieveData(startDate, endDate, interval) {
 
     var that = this;
-    retrieveUptimeDataAPI.retrieveUptimeData(that.state.buildingName, numDays, interval).then(function(response) {
-        // console.log("response", response);
+    retrieveUptimeDataAPI.retrieveUptimeData(that.state.buildingName, startDate, endDate, interval).then(function(response) {
+        // console.log("response", response)
+
         that.setState({
           data: response,
           isLoading: false
@@ -101,7 +126,7 @@ class Uptime extends React.Component {
   render() {
 
     // console.log("data", this.state.data);
-    var {isLoading, data, buildingName} = this.state;
+    var {isLoading, data, buildingName, startDate, endDate, interval, message} = this.state;
     var that = this;
 
     function renderContent() {
@@ -124,28 +149,26 @@ class Uptime extends React.Component {
                 </button>
             </div>
             <form id="uptime-form" style={{display: 'flex'}}>
-              <select ref="numDays">
-                <option value="0">Select number of days</option>
-                <option value="1">1</option>
-                <option value="2">2</option>
-                <option value="3">3</option>
-                <option value="4">4</option>
-                <option value="5">5</option>
-                <option value="6">6</option>
-                <option value="7">7</option>
-              </select>
+                <label className="margin-right-tiny">Start Date
+                  <input type="date" name="startDate" ref="startDate"/>
+                </label>
+                <label className="margin-right-tiny">End Date
+                    <input type="date" name="endDate" ref="endDate"/>
+                </label>
 
-              <select ref="interval">
-                <option value="0">Select interval</option>
-                <option value="30">30 mins</option>
-                <option value="25">25 mins</option>
-                <option value="20">20 mins</option>
-                <option value="15">15 mins</option>
-                <option value="10">10 mins</option>
-              </select>
+                <label className="margin-right-tiny"> Interval
+                  <select ref="interval">
+                    <option value="30">30 mins</option>
+                    <option value="15">15 mins</option>
+                  </select>
+              </label>
 
-              <a className="button proceed expanded" onClick={(e) => that.onSubmit()}>Go</a>
+              <a className="button proceed expanded" style={{height: '40px', width: '100px', alignSelf: 'flex-end'}} onClick={(e) => that.onSubmit()}>Go</a>
             </form>
+
+            <div id="uptimeMessage"><UptimeMessage message={message}/></div>
+            <div className="margin-bottom-small">You are viewing historical data for {buildingName} between {startDate} & {endDate} at an interval of {interval} minutes.</div>
+
             <hr/>
           </div>
         );
@@ -164,6 +187,17 @@ class Uptime extends React.Component {
       </div>
     );
   }
+}
+
+class UptimeMessage extends React.Component {
+    render() {
+        var message = this.props.message;
+        // console.log("message from parent: ", message);
+
+        return (
+          <div className="statusText">{message}</div>
+        );
+    }
 }
 
 class UptimeList extends React.Component {

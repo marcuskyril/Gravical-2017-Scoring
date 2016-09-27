@@ -25,12 +25,10 @@ export var completeSensorDataFetch = (data) => {
 };
 
 export var completeDeleteSensor = (macAddress) => {
-    console.log("completeDeleteSensor", macAddress);
     return {type: 'COMPLETE_DELETE_SENSOR', macAddress}
 }
 
 export var completeUpdateWatchList = (pin_mac) => {
-    console.log("completeUpdateWatchList", pin_mac);
     return {type: 'COMPLETE_UPDATE_WATCHLIST', pin_mac}
 }
 
@@ -43,7 +41,6 @@ export var logout = () => {
 };
 
 export var startAddSensor = (inputMac, inputRegion, inputLocationLevel, inputLocationID, inputBuilding) => {
-    console.log("Start add sensor process");
 
     return (dispatch, getState) => {
         var baseUrl = "http://52.74.119.147/PisaSchitt/insert-new-sensor.php";
@@ -64,16 +61,12 @@ export var startAddSensor = (inputMac, inputRegion, inputLocationLevel, inputLoc
 };
 
 export var startDeleteSensor = (macAddress) => {
-  console.log("deleting " +macAddress +" from actions.jsx");
-
   return (dispatch, getState) => {
     dispatch(completeDeleteSensor(macAddress));
   };
 };
 
 export var startUpdateWatchList = (pin_mac) => {
-  console.log("adding/removing " +pin_mac +" from actions.jsx");
-
   return (dispatch, getState) => {
     dispatch(completeUpdateWatchList(pin_mac));
   };

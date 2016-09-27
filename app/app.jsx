@@ -21,7 +21,7 @@ firebase.auth().onAuthStateChanged((user) => {
 // -----------------------------
 
 store.subscribe(() => {
-  console.log('New state', store.getState());
+  // console.log('New state', store.getState());
 });
 
 // Load foundation

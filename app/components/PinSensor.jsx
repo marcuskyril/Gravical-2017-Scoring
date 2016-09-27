@@ -18,20 +18,19 @@ class PinSensor extends React.Component {
         var that = this;
 
         updateWatchList.updateWatchList(macAdd, true).then(function(response) {
-            console.log("Added sensor to watchlist", response);
+            // console.log("Added sensor to watchlist", response);
 
             if (response.error) {
                 that.setState({message: response.error});
             } else {
-                that.setState({message: response.msg});
-                $('#pin-sensor-modal').foundation('close');
+                that.setState({message: response.success});
             }
         });
     }
 
     render() {
         // console.log("delete sensor state ", this.state);
-        var message = this.state.message;
+        var {message} = this.state;
         var that = this;
 
         // resets message to empty string on close
@@ -68,7 +67,8 @@ class PinSensor extends React.Component {
 
 class PinSensorMessage extends React.Component {
     render() {
-        var message = this.props.message;
+
+        var {message} = this.props;
 
         return (
             <div className="statusText">{message}</div>
@@ -77,7 +77,6 @@ class PinSensorMessage extends React.Component {
 }
 
 function mapStateToProps(state, ownProps) {
-    console.log("state", state);
     return {pin_mac: state.pin_mac}
 }
 

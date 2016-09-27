@@ -11,9 +11,9 @@ class SensorBlockComponent extends React.Component {
 
         var colorMap = {
           "ok" : "sensorBlock green",
-          "warning" : "sensorBlock orange",
-          "danger" : "sensorBlock red",
-          "down" : "sensorBlock black",
+          "warning" : "sensorBlock yellow",
+          "danger" : "sensorBlock orange",
+          "down" : "sensorBlock red",
           "-" : "sensorBlock grey",
         }
 
@@ -35,24 +35,15 @@ class PinComponent extends React.Component {
         $('#pin-sensor-modal').foundation('open');
     }
 
-    renderButton(){
-        if(this.props.data.watchlist) {
-            return(
-                <div id="pin-btn" onClick={() => this.handleClick(this.props.data.mac)} className="sensorBlock pin disabled">Pin</div>
-            );
-        } else {
-            return (
-                <div id="pin-btn" onClick={() => this.handleClick(this.props.data.mac)} className="sensorBlock pin">Pin</div>
-            );
-        }
+    renderClass(){
+        return (
+            this.props.data.watchlist ? "sensorBlock pin disabled" : "sensorBlock pin"
+        );
     }
 
     render() {
-
       return (
-        <div>
-            {this.renderButton()}
-        </div>
+        <div id="pin-btn" onClick={() => this.handleClick(this.props.data.mac)} className={this.renderClass()}>Pin</div>
       );
 
     }
