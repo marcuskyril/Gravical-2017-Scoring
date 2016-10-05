@@ -1,6 +1,19 @@
 // string
 
-export var deleteSensorReducer = (state = {macAddress: 'something_stupid'}, action) => {
+export var syncDataReducer = (state = {currentTime: '-', userId: '-'}, action) => {
+    switch(action.type) {
+        case 'STORE_SYNC_DATA':
+
+            return {
+                currentTime: action.currentTime,
+                userId: action.userId
+            }
+        default:
+            return state;
+    }
+}
+
+export var deleteSensorReducer = (state = {macAddress: ''}, action) => {
 
   switch(action.type) {
     case 'COMPLETE_DELETE_SENSOR':

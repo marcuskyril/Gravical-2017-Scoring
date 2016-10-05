@@ -158,6 +158,9 @@ try {
                 parseFloat(response["top_5_processes"]["5"]["usage"])
             ];
 
+            //uncolor table rows
+            $("#tableaux-mini").find(".table-row-highlight").removeClass("table-row-highlight");
+
             if (response["diagnosis"] == "nil") {
                 $(".diagnosis").hide();
             } else {
@@ -166,10 +169,8 @@ try {
                 //console.log("fields to color: ", response["diagnosis"]["fields"]);
                 var fields = response["diagnosis"]["fields"];
 
-                //uncolor table rows
-                $("#tableaux-mini").find(".table-row-highlight").removeClass("table-row-highlight");
-
-                for (var i = 0; i < fields.length; i++) {
+                for (var i = 0; i < Object.keys(fields).length; i++) {
+                    console.log("field: ",fields[i]);
                     // console.log("field: ", fields[i]);
                     // console.log("painting the walls red");
                     document.getElementById(fields[i]).parentNode.className = "table-row-highlight";

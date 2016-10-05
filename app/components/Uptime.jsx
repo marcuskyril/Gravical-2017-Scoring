@@ -16,7 +16,6 @@ var colorMap = {
 class SimpleBarChart extends React.Component{
 	render () {
 
-    // console.log("uptime data", this.props.uptimeData);
     var width = $('.row').width() * 0.95;
 
   	return (
@@ -197,7 +196,6 @@ class UptimeMessage extends React.Component {
 
 class UptimeList extends React.Component {
     render() {
-
         var dataList = this.props.data;
         var rows = [];
 
@@ -241,9 +239,9 @@ class SensorList extends React.Component {
         var building = sensor["building"];
         var level = sensor["level"];
         var id = sensor["id"];
-        var uptimeData = sensor["uptimeData"];
+        var data = sensor["data"];
 
-        rows.push(<SimpleBarChart key={mac} mac={mac} id={id} level={level} uptimeData={uptimeData}/>);
+        rows.push(<SimpleBarChart key={mac} mac={mac} id={id} level={level} uptimeData={data}/>);
       }
     }
 

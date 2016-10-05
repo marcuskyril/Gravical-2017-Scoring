@@ -1,4 +1,4 @@
-const RETRIEVE_UPTIME_DATA_URL = 'http://opsdev.sence.io/backend/get_historical_uptime_exp.php';
+const RETRIEVE_UPTIME_DATA_URL = 'http://opsdev.sence.io/backend/get_historical_chart.php';
 
 module.exports = {
 
@@ -8,7 +8,8 @@ module.exports = {
           building: buildingName,
           'start_date': startDate,
           'end_date': endDate,
-          interval: interval
+          interval: interval,
+          metric: "uptime"
         }
 
         return $.ajax({

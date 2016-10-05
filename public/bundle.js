@@ -12916,7 +12916,7 @@
 	Object.defineProperty(exports, "__esModule", {
 	    value: true
 	});
-	exports.startCreateAccount = exports.startLogout = exports.startLogin = exports.startResetPassword = exports.startUpdateWatchList = exports.startDeleteSensor = exports.startAddSensor = exports.logout = exports.login = exports.completeUpdateWatchList = exports.completeDeleteSensor = exports.completeSensorDataFetch = exports.startSensorDataFetch = exports.fetchSensorData = undefined;
+	exports.startCreateAccount = exports.startLogout = exports.startLogin = exports.startResetPassword = exports.startUpdateWatchList = exports.startDeleteSensor = exports.startAddSensor = exports.logout = exports.login = exports.completeUpdateWatchList = exports.completeDeleteSensor = exports.completeSensorDataFetch = exports.startSensorDataFetch = exports.fetchSensorData = exports.storeSyncData = undefined;
 
 	var _firebase = __webpack_require__(10);
 
@@ -12925,6 +12925,10 @@
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	var axios = __webpack_require__(140);
+
+	var storeSyncData = exports.storeSyncData = function storeSyncData(currentTime, userId) {
+	    return { type: 'STORE_SYNC_DATA', currentTime: currentTime, userId: userId };
+	};
 
 	var fetchSensorData = exports.fetchSensorData = function fetchSensorData(numRows) {
 	    return function (dispatch, getState) {
@@ -14299,7 +14303,6 @@
 	    key: 'render',
 	    value: function render() {
 
-	      // console.log("uptime data", this.props.uptimeData);
 	      var width = $('.row').width() * 0.95;
 
 	      return React.createElement(
@@ -14591,7 +14594,6 @@
 	  _createClass(UptimeList, [{
 	    key: 'render',
 	    value: function render() {
-
 	      var dataList = this.props.data;
 	      var rows = [];
 
@@ -14650,9 +14652,9 @@
 	          var building = sensor["building"];
 	          var level = sensor["level"];
 	          var id = sensor["id"];
-	          var uptimeData = sensor["uptimeData"];
+	          var data = sensor["data"];
 
-	          rows.push(React.createElement(SimpleBarChart, { key: mac, mac: mac, id: id, level: level, uptimeData: uptimeData }));
+	          rows.push(React.createElement(SimpleBarChart, { key: mac, mac: mac, id: id, level: level, uptimeData: data }));
 	        }
 	      }
 
@@ -62851,7 +62853,7 @@
 
 	/* WEBPACK VAR INJECTION */(function($) {'use strict';
 
-	var RETRIEVE_UPTIME_DATA_URL = 'http://opsdev.sence.io/backend/get_historical_uptime_exp.php';
+	var RETRIEVE_UPTIME_DATA_URL = 'http://opsdev.sence.io/backend/get_historical_chart.php';
 
 	module.exports = {
 
@@ -62861,7 +62863,8 @@
 	            building: buildingName,
 	            'start_date': startDate,
 	            'end_date': endDate,
-	            interval: interval
+	            interval: interval,
+	            metric: "uptime"
 	        };
 
 	        return $.ajax({
@@ -71805,10 +71808,18 @@
 	                console.log('Logged out!');
 	            });
 	        }
+
+	        // componentDidUpdate(prevProps) {
+	        //     console.log(prevProps);
+	        //     // var {currentTime, userId} = props;
+	        //     // // console.log("what this be?",this.props);
+	        //     // console.log("currentTime", currentTime);
+	        //     // console.log("userId", userId);
+	        // }
+
 	    }, {
 	        key: 'render',
 	        value: function render() {
-
 	            return _react2.default.createElement(
 	                'div',
 	                { className: 'top-bar' },
@@ -71915,7 +71926,14 @@
 
 	;
 
-	module.exports = Redux.connect()(Nav);
+	function mapStateToProps(state, ownProps) {
+	    return {
+	        currentTime: state.currentTime,
+	        userId: state.userId
+	    };
+	}
+
+	module.exports = Redux.connect(mapStateToProps)(Nav);
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(9)))
 
 /***/ },
@@ -71963,6 +71981,7 @@
 	    onCreateAccount: function onCreateAccount() {
 	        var dispatch = this.props.dispatch;
 
+	        console.log("Creating new account now");
 	        dispatch(actions.startCreateAccount());
 	    },
 	    render: function render() {
@@ -72037,6 +72056,19 @@
 	                                                'a',
 	                                                { href: '#' },
 	                                                'Forgot your password?'
+	                                            )
+	                                        )
+	                                    ),
+	                                    _react2.default.createElement(
+	                                        'div',
+	                                        { className: 'row' },
+	                                        _react2.default.createElement(
+	                                            'div',
+	                                            { className: 'large-12 large-centered columns' },
+	                                            _react2.default.createElement(
+	                                                'a',
+	                                                { onClick: this.onCreateAccount },
+	                                                'Register a new account'
 	                                            )
 	                                        )
 	                                    )
@@ -72671,11 +72703,15 @@
 	        key: 'componentDidMount',
 	        value: function componentDidMount() {
 	            // initiate websocket
-	            //console.log("location", this.props.location.pathname);
+	            var dispatch = this.props.dispatch;
+
 	            var that = this;
+	            var timestamp = '';
+	            var userDisplayName = '';
 
 	            firebase.auth().onAuthStateChanged(function (user) {
 	                if (user) {
+	                    userDisplayName = user.displayName;
 	                    that.setState({ userDisplayName: user.displayName });
 	                }
 	            }, function (error) {
@@ -72685,7 +72721,8 @@
 	            var connection = new ab.Session(HOST, function () {
 	                connection.subscribe('', function (topic, data) {
 
-	                    var timestamp = new Date().toLocaleString();
+	                    timestamp = new Date().toLocaleString();
+	                    dispatch(actions.storeSyncData(timestamp, userDisplayName));
 
 	                    that.setState({
 	                        connection: connection,
@@ -73971,6 +74008,11 @@
 	          $('#terminal').foundation('open');
 
 	          break;
+	        case 'GENERATE_CHART_ACTION':
+
+	          alert("One moment please.");
+
+	          break;
 
 	        default:
 	          console.warn('Invalid request.');
@@ -74093,7 +74135,18 @@
 	              )
 	            ),
 	            this.renderWatchlistLink(),
-	            this.renderTerminalLink()
+	            this.renderTerminalLink(),
+	            React.createElement(
+	              'li',
+	              null,
+	              React.createElement(
+	                'a',
+	                { onClick: function onClick() {
+	                    return _this4.handleClick(_this4.props.sensorData, 'GENERATE_CHART_ACTION');
+	                  } },
+	                'View historical data'
+	              )
+	            )
 	          )
 	        )
 	      );
@@ -74138,7 +74191,8 @@
 	    sensorData: _reducers.sensorDataReducer,
 	    auth: _reducers.authReducer,
 	    macAddress: _reducers.deleteSensorReducer,
-	    pin_mac: _reducers.updateWatchListReducer
+	    pin_mac: _reducers.updateWatchListReducer,
+	    syncData: _reducers.syncDataReducer
 	  });
 
 	  var store = redux.createStore(reducer, initialState, redux.compose(redux.applyMiddleware(_reduxThunk2.default), window.devToolsExtension ? window.devToolsExtension() : function (f) {
@@ -74187,8 +74241,24 @@
 	});
 	// string
 
+	var syncDataReducer = exports.syncDataReducer = function syncDataReducer() {
+	  var state = arguments.length <= 0 || arguments[0] === undefined ? { currentTime: '-', userId: '-' } : arguments[0];
+	  var action = arguments[1];
+
+	  switch (action.type) {
+	    case 'STORE_SYNC_DATA':
+
+	      return {
+	        currentTime: action.currentTime,
+	        userId: action.userId
+	      };
+	    default:
+	      return state;
+	  }
+	};
+
 	var deleteSensorReducer = exports.deleteSensorReducer = function deleteSensorReducer() {
-	  var state = arguments.length <= 0 || arguments[0] === undefined ? { macAddress: 'something_stupid' } : arguments[0];
+	  var state = arguments.length <= 0 || arguments[0] === undefined ? { macAddress: '' } : arguments[0];
 	  var action = arguments[1];
 
 

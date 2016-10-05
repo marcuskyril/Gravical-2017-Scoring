@@ -41,11 +41,14 @@ class Dashboard extends React.Component {
 
     componentDidMount() {
         // initiate websocket
-        //console.log("location", this.props.location.pathname);
+        var {dispatch} = this.props;
         var that = this;
+        var timestamp = '';
+        var userDisplayName = '';
 
         firebase.auth().onAuthStateChanged(function(user) {
             if (user) {
+                userDisplayName = user.displayName;
                 that.setState({userDisplayName: user.displayName});
             }
         }, function(error) {
@@ -55,7 +58,8 @@ class Dashboard extends React.Component {
         var connection = new ab.Session(HOST, function() {
             connection.subscribe('', function(topic, data) {
 
-                var timestamp = new Date().toLocaleString();
+                timestamp = new Date().toLocaleString();
+                dispatch(actions.storeSyncData(timestamp, userDisplayName));
 
                 that.setState({
                     connection: connection,

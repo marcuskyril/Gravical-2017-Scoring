@@ -27,10 +27,16 @@ class Nav extends React.Component {
         });
     }
 
+    // componentDidUpdate(prevProps) {
+    //     console.log(prevProps);
+    //     // var {currentTime, userId} = props;
+    //     // // console.log("what this be?",this.props);
+    //     // console.log("currentTime", currentTime);
+    //     // console.log("userId", userId);
+    // }
+
     render() {
-
         return (
-
             <div className="top-bar">
                 <div className="top-bar-title">
                     <IndexLink to="/" activeClassName="active" activeStyle={{
@@ -79,4 +85,11 @@ class Nav extends React.Component {
     }
 };
 
-module.exports = Redux.connect()(Nav);
+function mapStateToProps(state, ownProps) {
+    return {
+        currentTime: state.currentTime,
+        userId: state.userId
+    }
+}
+
+module.exports = Redux.connect(mapStateToProps)(Nav);

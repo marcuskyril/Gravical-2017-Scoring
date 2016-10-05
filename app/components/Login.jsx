@@ -18,6 +18,7 @@ export var Login = React.createClass({
 
     onCreateAccount() {
       var{dispatch} = this.props;
+      console.log("Creating new account now");
       dispatch(actions.startCreateAccount());
     },
 
@@ -51,6 +52,11 @@ export var Login = React.createClass({
                                         <div className="row">
                                             <div className="large-12 large-centered columns">
                                                 <a href="#">Forgot your password?</a>
+                                            </div>
+                                        </div>
+                                        <div className="row">
+                                            <div className="large-12 large-centered columns">
+                                                <a onClick={this.onCreateAccount}>Register a new account</a>
                                             </div>
                                         </div>
 

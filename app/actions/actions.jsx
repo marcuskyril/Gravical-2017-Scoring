@@ -1,6 +1,10 @@
 import firebase, {firebaseRef} from 'app/firebase/';
 var axios = require('axios');
 
+export var storeSyncData = (currentTime, userId) => {
+    return {type: 'STORE_SYNC_DATA', currentTime, userId}
+}
+
 export var fetchSensorData = (numRows) => {
     return (dispatch, getState) => {
         dispatch(startSensorDataFetch());

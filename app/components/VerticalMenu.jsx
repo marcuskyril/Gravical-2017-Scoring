@@ -96,6 +96,11 @@ class VerticalMenu extends React.Component {
             $('#terminal').foundation('open');
 
             break;
+          case 'GENERATE_CHART_ACTION':
+
+            alert("One moment please.");
+
+            break;
 
           default:
             console.warn('Invalid request.');
@@ -140,6 +145,7 @@ class VerticalMenu extends React.Component {
                        <li><a onClick={() => this.handleClick(this.props.sensorData, 'DELETE_ACTION')}>Delete sensor</a></li>
                        {this.renderWatchlistLink()}
                        {this.renderTerminalLink()}
+                       <li><a onClick={() => this.handleClick(this.props.sensorData, 'GENERATE_CHART_ACTION')}>View historical data</a></li>
                     </ul>
                </div>
            </li>
