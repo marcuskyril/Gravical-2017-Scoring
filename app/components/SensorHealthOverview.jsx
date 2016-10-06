@@ -182,13 +182,13 @@ class LevelList extends React.Component {
               var status = sensorData[1];
               var id = sensorData[2];
               var region = sensorData[3];
-              var building = sensorData[4];
+              var buildingName = sensorData[4];
               level = sensorData[5];
               port = sensorData[6];
               var reboot = sensorData[7];
               var watchlist = sensorData[8];
 
-              temp.push(<VerticalMenu key={macAdd} macAdd={macAdd} sensorData={sensorData} class={colorMap[status]} id={id} reboot={reboot} watchlist={watchlist}/>);
+              temp.push(<VerticalMenu key={macAdd} macAdd={macAdd} buildingName={buildingName} sensorData={sensorData} class={colorMap[status]} id={id} reboot={reboot} watchlist={watchlist}/>);
 
           });
 

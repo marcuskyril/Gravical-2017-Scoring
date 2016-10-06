@@ -3,6 +3,7 @@ import * as Redux from 'react-redux';
 import * as actions from 'actions';
 import {connect} from 'react-redux';
 const HOST = 'http://opsdev.sence.io:4201/';
+var {Link, IndexLink} = require('react-router');
 var store = require('configureStore').configure();
 
 class VerticalMenu extends React.Component {
@@ -133,8 +134,9 @@ class VerticalMenu extends React.Component {
     }
 
     render() {
+        var uptimeLink = `/historical/${this.props.buildingName}`;
+        
         return (
-
            <li className="sensorList">
             <div className={this.props.class} onClick={() => this.handleClick(this.props.sensorData, 'NO_ACTION')}>{this.props.id}</div>
             <div className="dropdown-pane" id={this.props.macAdd} data-dropdown data-options="data-hover:true; data-close-on-click:true">
@@ -145,7 +147,7 @@ class VerticalMenu extends React.Component {
                        <li><a onClick={() => this.handleClick(this.props.sensorData, 'DELETE_ACTION')}>Delete sensor</a></li>
                        {this.renderWatchlistLink()}
                        {this.renderTerminalLink()}
-                       <li><a onClick={() => this.handleClick(this.props.sensorData, 'GENERATE_CHART_ACTION')}>View historical data</a></li>
+                       <li style={{borderTop: '1px solid #222'}}><IndexLink activeClassName='active' to={uptimeLink}>View historical data</IndexLink></li>
                     </ul>
                </div>
            </li>

@@ -52,6 +52,7 @@ module.exports = {
       Dashboard: 'app/components/Dashboard.jsx',
       DeleteSensor: 'app/components/DeleteSensor.jsx',
       EditSensor: 'app/components/EditSensor.jsx',
+      HistoricalChart: 'app/components/HistoricalChart.jsx',
       WatchList: 'app/components/WatchList.jsx',
       Login: 'app/components/Login.jsx',
       Main: 'app/components/Main.jsx',
@@ -77,7 +78,7 @@ module.exports = {
       rebootSensorAPI: 'app/api/rebootSensorAPI.jsx',
       updateWatchList: 'app/api/updateWatchlistAPI.jsx',
       retrieveSensorDetails: 'app/api/retrieveSensorDetails.jsx',
-      retrieveUptimeDataAPI: 'app/api/retrieveUptimeDataAPI.jsx',
+      retrieveHistoricalDataAPI: 'app/api/retrieveHistoricalDataAPI.jsx',
 
       applicationStyles: 'app/styles/app.scss',
       griddleStyles: 'app/styles/griddle.scss',

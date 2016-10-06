@@ -1,16 +1,6 @@
 var React = require('react');
 var axios = require('axios');
 var FontAwesome = require('react-fontawesome');
-var BarChart = require('react-d3-components').BarChart;
-
-var barChartData = [{
-    label: 'Top 5 Processes',
-    values: [{x: 'x', y: 0}, {x: 'x', y: 0}, {x: 'x', y: 0}, {x: 'x', y: 0}, {x: 'x', y: 0}]
-}];
-
-var barToolTip = function(x, y0, y) {
-  return "x: " + x + " y: " + y;
-}
 
 class SensorDetails extends React.Component{
 

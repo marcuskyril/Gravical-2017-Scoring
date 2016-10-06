@@ -4,6 +4,7 @@ var Main = require('Main');
 var Dashboard = require('Dashboard');
 import AccountSettings from 'AccountSettings';
 import Uptime from 'Uptime';
+import HistoricalChart from 'HistoricalChart';
 import NotificationLog from 'NotificationLog';
 import PageNotFound from 'PageNotFound';
 import Login from 'Login';
@@ -31,6 +32,7 @@ export default(
           <Route path="/accountSettings" component={AccountSettings} onEnter={requireLogin}/>
           <Route path="/notificationLog" component={NotificationLog} onEnter={requireLogin}/>
           <Route path="/uptime(/:buildingName)" component={Uptime} onEnter={requireLogin}/>
+          <Route path="/historical(/:buildingName)" component={HistoricalChart} onEnter={requireLogin}/>
           <IndexRoute component={Dashboard}/>
       </Route>
       <Route path="/" component={Login} onEnter={redirectIfLoggedIn}/>

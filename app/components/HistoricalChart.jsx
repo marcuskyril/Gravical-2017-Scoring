@@ -37,7 +37,7 @@ class SimpleBarChart extends React.Component{
   }
 };
 
-class Uptime extends React.Component {
+class HistoricalChart extends React.Component {
 
   constructor(props) {
     super(props);
@@ -93,15 +93,21 @@ class Uptime extends React.Component {
 
   retrieveData(startDate, endDate, interval) {
 
-    var that = this;
-    retrieveHistoricalDataAPI.retrieveHistoricalData(that.state.buildingName, startDate, endDate, interval, "uptime").then(function(response) {
+    var {buildingName} = this.state;
 
+    var that = this;
+
+    var metrics = ['cpu', 'ram', 'storage', "network_up", "network_down"];
+
+    retrieveHistoricalDataAPI.retrieveHistoricalDatasets(buildingName, metrics, startDate, endDate, interval).then(function(response) {
+
+        console.log("response", response);
         that.setState({
-          data: response,
-          isLoading: false,
-          startDate: startDate,
-          endDate: endDate,
-          interval: interval
+              data: response,
+              isLoading: false,
+              startDate: startDate,
+              endDate: endDate,
+              interval: interval
         });
     });
   }
@@ -118,7 +124,6 @@ class Uptime extends React.Component {
 
   render() {
 
-    // console.log("data", this.state.data);
     var {isLoading, data, buildingName, startDate, endDate, interval, message} = this.state;
     var that = this;
 
@@ -172,9 +177,7 @@ class Uptime extends React.Component {
       <div id="uptime-wrapper" className="margin-top-large">
         <div className="row" style={{minHeight: '100vh'}}>
           <div className="columns large-12">
-
             {renderContent()}
-            <UptimeList data={this.state.data}/>
           </div>
         </div>
       </div>
@@ -193,74 +196,7 @@ class UptimeMessage extends React.Component {
     }
 }
 
-class UptimeList extends React.Component {
-    render() {
-        var dataList = this.props.data;
-        var rows = [];
-
-        for(var level in dataList) {
-          if (dataList.hasOwnProperty(level)) {
-
-              var sensorsOnLevel = dataList[level];
-              rows.push(<SensorList key={level} level={level} data={sensorsOnLevel}/>);
-          }
-        }
-
-        return (
-            <div>
-                {rows}
-            </div>
-        );
-    }
-}
-
-class SensorList extends React.Component {
-
-  minimize(level) {
-    var pane = $('#'+level);
-
-    if(pane.css('display') === 'block') {
-      pane.slideUp();
-    } else {
-      pane.slideDown();
-    }
-  }
-
-  render() {
-    var sensorsOnLevel = this.props.data;
-    var rows = [];
-    var currentLevel = `Level ${this.props.level}`
-
-    for(var sensor in sensorsOnLevel) {
-      if(sensorsOnLevel.hasOwnProperty(sensor)) {
-        var sensor = sensorsOnLevel[sensor];
-        var mac = sensor["mac"];
-        var building = sensor["building"];
-        var level = sensor["level"];
-        var id = sensor["id"];
-        var data = sensor["data"];
-
-        rows.push(<SimpleBarChart key={mac} mac={mac} id={id} level={level} uptimeData={data}/>);
-      }
-    }
-
-    return (
-      <div key={this.props.level} className="margin-bottom-md">
-        <div className="callout callout-dark-header">
-          <div className="page-title">{currentLevel}</div>
-          <button onClick={() => this.minimize(this.props.level)} className="icon-btn-text-small">
-              <FontAwesome name='expand'/>
-          </button>
-        </div>
-        <div key={this.props.level} id={this.props.level} className="callout callout-dark">
-          {rows}
-        </div>
-      </div>
-    );
-  }
-}
-
-module.exports = Uptime;
+module.exports = HistoricalChart;
 
 class CustomTooltip extends React.Component{
 
