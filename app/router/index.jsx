@@ -32,7 +32,7 @@ export default(
           <Route path="/accountSettings" component={AccountSettings} onEnter={requireLogin}/>
           <Route path="/notificationLog" component={NotificationLog} onEnter={requireLogin}/>
           <Route path="/uptime(/:buildingName)" component={Uptime} onEnter={requireLogin}/>
-          <Route path="/historical(/:buildingName)" component={HistoricalChart} onEnter={requireLogin}/>
+          <Route path="/historical(/:macAddress)" component={HistoricalChart} onEnter={requireLogin}/>
           <IndexRoute component={Dashboard}/>
       </Route>
       <Route path="/" component={Login} onEnter={redirectIfLoggedIn}/>

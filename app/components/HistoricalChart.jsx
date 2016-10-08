@@ -2,188 +2,300 @@ var React = require('react');
 var Recharts = require('recharts');
 var FontAwesome = require('react-fontawesome');
 var retrieveHistoricalDataAPI = require('retrieveHistoricalDataAPI');
-const {XAxis, Cell, YAxis, Legend, BarChart, Bar, CartesianGrid, Tooltip, Brush, ResponsiveContainer} = Recharts;
+const {
+    XAxis,
+    Cell,
+    YAxis,
+    Legend,
+    BarChart,
+    Bar,
+    AreaChart,
+    Area,
+    LineChart,
+    Line,
+    CartesianGrid,
+    Tooltip,
+    Brush,
+    ResponsiveContainer
+} = Recharts;
 
 var colorMap = {
-  "ok" : "#006600",
-  "warning" : "#ffcc00",
-  "danger" : "#cc7a00",
-  "down" : "#990000",
-  "no data" : "#737373"
+    "ok": "#006600",
+    "warning": "#ffcc00",
+    "danger": "#cc7a00",
+    "down": "#990000",
+    "no data": "#737373"
 }
-
-class SimpleBarChart extends React.Component{
-	render () {
-
-    var width = $('.row').width() * 0.95;
-
-  	return (
-      <div key={this.props.id}>
-        <div className="header">{this.props.id} | {this.props.mac}</div>
-        <BarChart width={width} height={40} data={this.props.uptimeData}
-                  margin={{top: 5, right: 30, left: 20, bottom: 5}} barGap={0} barCategoryGap={0}>
-             <CartesianGrid strokeDasharray="3 3"/>
-             <Tooltip content={<CustomTooltip external={this.props.uptimeData}/>}/>
-             <Bar dataKey="value">
-               {
-                 this.props.uptimeData.map((entry, index) =>(
-                  <Cell key={`cell=${index}`} stroke={colorMap[entry['status']]} fill={colorMap[entry['status']]} />
-                 ))
-               }
-             </Bar>
-        </BarChart>
-      </div>
-    );
-  }
-};
 
 class HistoricalChart extends React.Component {
 
-  constructor(props) {
-    super(props);
-    //console.log("work pls", props.params.buildingName);
+    constructor(props) {
+        super(props);
 
-    var d = new Date();
-    d.setDate(d.getDate() - 6);
+        var d = new Date();
+        d.setDate(d.getDate() - 6);
 
-    var startDate = d.toISOString().substring(0, 10);
-    var endDate = new Date().toISOString().substring(0, 10);
+        var startDate = d.toISOString().substring(0, 10);
+        var endDate = new Date().toISOString().substring(0, 10);
 
-    this.state = {
-      buildingName: props.params.buildingName,
-      data: null,
-      isLoading: false,
-      message: '',
-      startDate: startDate,
-      endDate: endDate,
-      interval: 15
+        this.state = {
+            macAdd: props.params.macAddress,
+            data: {
+                cpu: null,
+                ram: null,
+                storage: null,
+                network: null
+            },
+            isLoading: false,
+            message: '',
+            startDate: startDate,
+            endDate: endDate,
+            interval: 15
+        }
     }
-  }
 
-  componentDidMount() {
+    componentDidMount() {
 
-    this.setState({
-      isLoading: true
-    });
-
-    window.scrollTo(0, 0);
-
-    var {startDate, endDate, interval} = this.state;
-
-    this.retrieveData(startDate, endDate, interval);
-  }
-
-  onSubmit() {
-
-    var startDate = this.refs.startDate.value;
-    var endDate = this.refs.endDate.value;
-    var interval = parseInt(this.refs.interval.value);
-
-    if(Date.parse(endDate) < Date.parse(startDate)) {
-        this.setState({message: 'End date is before start date. Please try again.'});
-    } else {
-        this.setState({
-          data: "",
-          isLoading: true
-        });
-
+        this.setState({isLoading: true});
+        window.scrollTo(0, 0);
+        var {startDate, endDate, interval} = this.state;
         this.retrieveData(startDate, endDate, interval);
     }
-  }
 
-  retrieveData(startDate, endDate, interval) {
+    onSubmit() {
 
-    var {buildingName} = this.state;
+        var startDate = this.refs.startDate.value;
+        var endDate = this.refs.endDate.value;
+        var interval = parseInt(this.refs.interval.value);
 
-    var that = this;
+        if (Date.parse(endDate) < Date.parse(startDate)) {
+            this.setState({message: 'End date is before start date. Please try again.'});
+        } else {
+            this.setState({isLoading: true});
+            console.log("holllerrrrrr", startDate, endDate, interval);
+            this.retrieveData(startDate, endDate, interval);
+        }
+    }
 
-    var metrics = ['cpu', 'ram', 'storage', "network_up", "network_down"];
+    retrieveData(startDate, endDate, interval) {
 
-    retrieveHistoricalDataAPI.retrieveHistoricalDatasets(buildingName, metrics, startDate, endDate, interval).then(function(response) {
+        var {macAdd} = this.state;
 
-        console.log("response", response);
-        that.setState({
-              data: response,
-              isLoading: false,
-              startDate: startDate,
-              endDate: endDate,
-              interval: interval
+        var that = this;
+
+        $.when(retrieveHistoricalDataAPI.retrieveHistoricalChart(macAdd, startDate, endDate, interval, "cpu"), retrieveHistoricalDataAPI.retrieveHistoricalChart(macAdd, startDate, endDate, interval, "ram"), retrieveHistoricalDataAPI.retrieveHistoricalChart(macAdd, startDate, endDate, interval, "storage"), retrieveHistoricalDataAPI.retrieveHistoricalChart(macAdd, startDate, endDate, interval, "network")).then(function(cpuData, ramData, storageData, networkData) {
+            // console.log("cpuData", cpuData[0]);
+            // console.log("ramData", ramData[0]);
+            // console.log("storageData", storageData[0]);
+            // console.log("upData", networkData[0]);
+
+            that.setState({
+                data: {
+                    cpu: cpuData[0],
+                    ram: ramData[0],
+                    storage: storageData[0],
+                    network: networkData[0]
+                },
+                isLoading: false,
+                startDate: startDate,
+                endDate: endDate,
+                interval: interval
+            });
         });
-    });
-  }
-
-  minimizeAll() {
-    var panels = $('.callout-dark');
-
-    if(panels.css('display') === 'block') {
-      panels.slideUp();
-    } else {
-      panels.slideDown();
     }
-  }
 
-  render() {
+    minimizeAll() {
+        var panels = $('.callout-dark');
 
-    var {isLoading, data, buildingName, startDate, endDate, interval, message} = this.state;
-    var that = this;
+        if (panels.css('display') === 'block') {
+            panels.slideUp();
+        } else {
+            panels.slideDown();
+        }
+    }
 
-    function renderContent() {
-      if(isLoading) {
+    render() {
+
+        var {
+            macAdd,
+            isLoading,
+            data,
+            buildingName,
+            startDate,
+            endDate,
+            interval,
+            message
+        } = this.state;
+
+        var that = this;
+
+        function renderContent() {
+            if (isLoading) {
+
+                return (
+                    <div className="loader"></div>
+                );
+
+            } else {
+                return (
+                    <div>
+                        <div className="margin-bottom-small" style={{
+                            display: 'flex'
+                        }}>
+                            <div className="page-title">{macAdd}</div>
+                            <button className="margin-left-small" onClick={that.minimizeAll}>
+                                <FontAwesome name='expand' style={{
+                                    marginRight: '0.5rem'
+                                }}/>
+                                Show/Hide all
+                            </button>
+                        </div>
+                        <form id="uptime-form" style={{
+                            display: 'flex'
+                        }}>
+                            <label className="margin-right-tiny">Start Date
+                                <input type="date" name="startDate" ref="startDate"/>
+                            </label>
+                            <label className="margin-right-tiny">End Date
+                                <input type="date" name="endDate" ref="endDate"/>
+                            </label>
+
+                            <label className="margin-right-tiny">
+                                Interval
+                                <select ref="interval">
+                                    <option value="30">30 mins</option>
+                                    <option value="15">15 mins</option>
+                                </select>
+                            </label>
+
+                            <a className="button proceed expanded" style={{
+                                height: '40px',
+                                width: '100px',
+                                alignSelf: 'flex-end'
+                            }} onClick={(e) => that.onSubmit()}>Go</a>
+                        </form>
+
+                        <div id="uptimeMessage"><UptimeMessage message={message}/></div>
+                        <div className="margin-bottom-small">You are viewing historical data for {buildingName}
+                            between {startDate}
+                            & {endDate}
+                            at an interval of {interval}
+                            minutes.</div>
+
+                        <hr/>
+                    </div>
+                );
+            }
+        }
 
         return (
-          <div className="loader"></div>
-        );
+            <div id="uptime-wrapper" className="margin-top-large">
+                <div className="row" style={{
+                    minHeight: '100vh'
+                }}>
+                    <div className="columns large-12">
+                        {renderContent()}
+                        <div className="callout callout-dark-header">
+                            <div className="page-title">CPU Usage</div>
+                            <button onClick={() => this.minimize("cpu")} className="icon-btn-text-small">
+                                <FontAwesome name='expand'/>
+                            </button>
+                        </div>
 
-      } else {
-        return (
-          <div>
-            <div className="margin-bottom-small" style={{display: 'flex'}}>
-                <div className="page-title">{buildingName}</div>
-                <button className="margin-left-small" onClick={that.minimizeAll}>
-                    <FontAwesome name='expand' style={{
-                        marginRight: '0.5rem'
-                    }}/>
-                  Show/Hide all
-                </button>
+                        <div id="cpu" className="callout callout-dark">
+                            <SimpleAreaChart data={data['cpu']}/>
+                        </div>
+
+                        <div className="callout callout-dark-header">
+                            <div className="page-title">RAM Usage</div>
+                            <button onClick={() => this.minimize("ram")} className="icon-btn-text-small">
+                                <FontAwesome name='expand'/>
+                            </button>
+                        </div>
+
+                        <div id="ram" className="callout callout-dark">
+                            <SimpleAreaChart data={data['ram']}/>
+                        </div>
+
+                        <div className="callout callout-dark-header">
+                            <div className="page-title">Storage</div>
+                            <button onClick={() => this.minimize("storage")} className="icon-btn-text-small">
+                                <FontAwesome name='expand'/>
+                            </button>
+                        </div>
+
+                        <div id="ram" className="callout callout-dark">
+                            <SimpleAreaChart data={data['storage']}/>
+                        </div>
+
+                        <div className="callout callout-dark-header">
+                            <div className="page-title">Network</div>
+                            <button onClick={() => this.minimize("network")} className="icon-btn-text-small">
+                                <FontAwesome name='expand'/>
+                            </button>
+                        </div>
+
+                        <div id="network" className="callout callout-dark">
+                            <SimpleLineChart data={data['network']}/>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <form id="uptime-form" style={{display: 'flex'}}>
-                <label className="margin-right-tiny">Start Date
-                  <input type="date" name="startDate" ref="startDate"/>
-                </label>
-                <label className="margin-right-tiny">End Date
-                    <input type="date" name="endDate" ref="endDate"/>
-                </label>
-
-                <label className="margin-right-tiny"> Interval
-                  <select ref="interval">
-                    <option value="30">30 mins</option>
-                    <option value="15">15 mins</option>
-                  </select>
-              </label>
-
-              <a className="button proceed expanded" style={{height: '40px', width: '100px', alignSelf: 'flex-end'}} onClick={(e) => that.onSubmit()}>Go</a>
-            </form>
-
-            <div id="uptimeMessage"><UptimeMessage message={message}/></div>
-            <div className="margin-bottom-small">You are viewing historical data for {buildingName} between {startDate} & {endDate} at an interval of {interval} minutes.</div>
-
-            <hr/>
-          </div>
         );
-      }
     }
-
-    return (
-      <div id="uptime-wrapper" className="margin-top-large">
-        <div className="row" style={{minHeight: '100vh'}}>
-          <div className="columns large-12">
-            {renderContent()}
-          </div>
-        </div>
-      </div>
-    );
-  }
 }
+
+// <SimpleLineChart dataUp={data['network_up'] dataDown={data['network_down']}}/>
+
+class SimpleAreaChart extends React.Component {
+    render() {
+        var width = $('.row').width() * 0.95;
+
+        console.log("CPU charts", this.props.data);
+        return (
+            <AreaChart width={width} height={400} data={this.props.data} margin={{
+                top: 10,
+                right: 30,
+                left: 0,
+                bottom: 0
+            }}>
+                <XAxis dataKey="timestamp"/>
+                <YAxis/>
+                <CartesianGrid strokeDasharray="3 3"/>
+                <Tooltip/>
+                <Area connectNulls={true} type='monotone' dataKey='value' stroke='#006600' fill='#009900'/>
+            </AreaChart>
+        );
+    }
+}
+
+const SimpleLineChart = React.createClass({
+    render() {
+        // <Line type="monotone" dataKey="uv" stroke="#82ca9d" />
+        var width = $('.row').width() * 0.95;
+
+        return (
+            <LineChart width={width} height={400} data={this.props.data} margin={{
+                top: 5,
+                right: 30,
+                left: 20,
+                bottom: 5
+            }}>
+                <XAxis dataKey="name"/>
+                <YAxis/>
+                <CartesianGrid strokeDasharray="3 3"/>
+                <Tooltip/>
+                <Legend/>
+                <Line connectNulls={true} dot={false} type="monotone" dataKey="network_up" stroke="#006600" activeDot={{
+                    r: 2
+                }}/>
+            <Line connectNulls={true} dot={false} type="monotone" dataKey="network_down" stroke="#990000" activeDot={{
+                    r: 2
+                }}/>
+            </LineChart>
+        );
+    }
+})
 
 class UptimeMessage extends React.Component {
     render() {
@@ -191,14 +303,14 @@ class UptimeMessage extends React.Component {
         // console.log("message from parent: ", message);
 
         return (
-          <div className="statusText">{message}</div>
+            <div className="statusText">{message}</div>
         );
     }
 }
 
 module.exports = HistoricalChart;
 
-class CustomTooltip extends React.Component{
+class CustomTooltip extends React.Component {
 
     getDetails(label) {
 
@@ -215,10 +327,10 @@ class CustomTooltip extends React.Component{
     }
 
     render() {
-        const { active } = this.props;
+        const {active} = this.props;
 
         if (active) {
-            const { payload, external, label } = this.props;
+            const {payload, external, label} = this.props;
 
             return (
                 <div className="custom-tooltip">
@@ -226,12 +338,12 @@ class CustomTooltip extends React.Component{
                 </div>
             );
         }
-    return null;
+        return null;
     }
 };
 
 CustomTooltip.propTypes = {
-  type: React.PropTypes.string,
-  payload: React.PropTypes.array,
-  label: React.PropTypes.number
+    type: React.PropTypes.string,
+    payload: React.PropTypes.array,
+    label: React.PropTypes.number
 }

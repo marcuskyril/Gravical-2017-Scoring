@@ -132,31 +132,35 @@ class Uptime extends React.Component {
       } else {
         return (
           <div>
-            <div className="margin-bottom-small" style={{display: 'flex'}}>
-                <div className="page-title">{buildingName}</div>
+
+            <form id="uptime-form">
+                <select className="page-title no-border" ref="buildingName">
+                    <option value={buildingName}>{buildingName}</option>
+                    <option value="">Test</option>
+                </select>
                 <button className="margin-left-small" onClick={that.minimizeAll}>
                     <FontAwesome name='expand' style={{
                         marginRight: '0.5rem'
                     }}/>
                   Show/Hide all
                 </button>
-            </div>
-            <form id="uptime-form" style={{display: 'flex'}}>
-                <label className="margin-right-tiny">Start Date
-                  <input type="date" name="startDate" ref="startDate"/>
-                </label>
-                <label className="margin-right-tiny">End Date
-                    <input type="date" name="endDate" ref="endDate"/>
-                </label>
+                <div style={{display: 'flex'}}>
+                    <label className="margin-right-tiny">Start Date
+                      <input type="date" name="startDate" ref="startDate"/>
+                    </label>
+                    <label className="margin-right-tiny">End Date
+                        <input type="date" name="endDate" ref="endDate"/>
+                    </label>
 
-                <label className="margin-right-tiny"> Interval
-                  <select ref="interval">
-                    <option value="30">30 mins</option>
-                    <option value="15">15 mins</option>
-                  </select>
-              </label>
+                    <label className="margin-right-tiny"> Interval
+                      <select ref="interval">
+                        <option value="30">30 mins</option>
+                        <option value="15">15 mins</option>
+                      </select>
+                    </label>
 
-              <a className="button proceed expanded" style={{height: '40px', width: '100px', alignSelf: 'flex-end'}} onClick={(e) => that.onSubmit()}>Go</a>
+                    <a className="button proceed expanded" style={{height: '40px', width: '100px', alignSelf: 'flex-end'}} onClick={(e) => that.onSubmit()}>Go</a>
+                </div>
             </form>
 
             <div id="uptimeMessage"><UptimeMessage message={message}/></div>
@@ -185,7 +189,6 @@ class Uptime extends React.Component {
 class UptimeMessage extends React.Component {
     render() {
         var message = this.props.message;
-        // console.log("message from parent: ", message);
 
         return (
           <div className="statusText">{message}</div>

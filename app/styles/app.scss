@@ -508,6 +508,12 @@ input[type=checkbox]:checked ~ #port {
   animation: loading 2s linear infinite;
 }
 
+.no-border {
+    border: none;
+    width: inherit;
+    background-color: transparent;
+}
+
 @keyframes loading {
     from {left: -200px; width: 30%;}
     50% {width: 30%;}
