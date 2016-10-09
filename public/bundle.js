@@ -14309,6 +14309,8 @@
 
 	      var width = $('.row').width() * 0.95;
 
+	      console.log("uptimedata", this.props.uptimeData);
+
 	      return React.createElement(
 	        'div',
 	        { key: this.props.id },
@@ -63031,10 +63033,6 @@
 	            var that = this;
 
 	            $.when(retrieveHistoricalDataAPI.retrieveHistoricalChart(macAdd, startDate, endDate, interval, "cpu"), retrieveHistoricalDataAPI.retrieveHistoricalChart(macAdd, startDate, endDate, interval, "ram"), retrieveHistoricalDataAPI.retrieveHistoricalChart(macAdd, startDate, endDate, interval, "storage"), retrieveHistoricalDataAPI.retrieveHistoricalChart(macAdd, startDate, endDate, interval, "network")).then(function (cpuData, ramData, storageData, networkData) {
-	                // console.log("cpuData", cpuData[0]);
-	                // console.log("ramData", ramData[0]);
-	                // console.log("storageData", storageData[0]);
-	                // console.log("upData", networkData[0]);
 
 	                that.setState({
 	                    data: {
@@ -63051,6 +63049,17 @@
 	            });
 	        }
 	    }, {
+	        key: 'minimize',
+	        value: function minimize(metric) {
+	            var pane = $('#' + metric);
+
+	            if (pane.css('display') === 'block') {
+	                pane.slideUp();
+	            } else {
+	                pane.slideDown();
+	            }
+	        }
+	    }, {
 	        key: 'minimizeAll',
 	        value: function minimizeAll() {
 	            var panels = $('.callout-dark');
@@ -63064,8 +63073,6 @@
 	    }, {
 	        key: 'render',
 	        value: function render() {
-	            var _this2 = this;
-
 	            var _state2 = this.state;
 	            var macAdd = _state2.macAdd;
 	            var isLoading = _state2.isLoading;
@@ -63076,6 +63083,8 @@
 	            var interval = _state2.interval;
 	            var message = _state2.message;
 
+
+	            var desc = 'You are viewing historical data for ' + buildingName + ' between ' + startDate + '\n                        & ' + endDate + ' at an interval of ' + interval + ' minutes.';
 
 	            var that = this;
 
@@ -63089,106 +63098,86 @@
 	                        null,
 	                        React.createElement(
 	                            'div',
-	                            { className: 'margin-bottom-small', style: {
-	                                    display: 'flex'
-	                                } },
+	                            null,
 	                            React.createElement(
 	                                'div',
-	                                { className: 'page-title' },
-	                                macAdd
-	                            ),
-	                            React.createElement(
-	                                'button',
-	                                { className: 'margin-left-small', onClick: that.minimizeAll },
-	                                React.createElement(FontAwesome, { name: 'expand', style: {
-	                                        marginRight: '0.5rem'
-	                                    } }),
-	                                'Show/Hide all'
-	                            )
-	                        ),
-	                        React.createElement(
-	                            'form',
-	                            { id: 'uptime-form', style: {
-	                                    display: 'flex'
-	                                } },
-	                            React.createElement(
-	                                'label',
-	                                { className: 'margin-right-tiny' },
-	                                'Start Date',
-	                                React.createElement('input', { type: 'date', name: 'startDate', ref: 'startDate' })
-	                            ),
-	                            React.createElement(
-	                                'label',
-	                                { className: 'margin-right-tiny' },
-	                                'End Date',
-	                                React.createElement('input', { type: 'date', name: 'endDate', ref: 'endDate' })
-	                            ),
-	                            React.createElement(
-	                                'label',
-	                                { className: 'margin-right-tiny' },
-	                                'Interval',
+	                                { className: 'margin-bottom-small', style: {
+	                                        display: 'flex'
+	                                    } },
 	                                React.createElement(
-	                                    'select',
-	                                    { ref: 'interval' },
-	                                    React.createElement(
-	                                        'option',
-	                                        { value: '30' },
-	                                        '30 mins'
-	                                    ),
-	                                    React.createElement(
-	                                        'option',
-	                                        { value: '15' },
-	                                        '15 mins'
-	                                    )
+	                                    'div',
+	                                    { className: 'page-title' },
+	                                    macAdd
+	                                ),
+	                                React.createElement(
+	                                    'button',
+	                                    { className: 'margin-left-small', onClick: that.minimizeAll },
+	                                    React.createElement(FontAwesome, { name: 'expand', style: {
+	                                            marginRight: '0.5rem'
+	                                        } }),
+	                                    'Show/Hide all'
 	                                )
 	                            ),
 	                            React.createElement(
-	                                'a',
-	                                { className: 'button proceed expanded', style: {
-	                                        height: '40px',
-	                                        width: '100px',
-	                                        alignSelf: 'flex-end'
-	                                    }, onClick: function onClick(e) {
-	                                        return that.onSubmit();
+	                                'form',
+	                                { id: 'uptime-form', style: {
+	                                        display: 'flex'
 	                                    } },
-	                                'Go'
-	                            )
+	                                React.createElement(
+	                                    'label',
+	                                    { className: 'margin-right-tiny' },
+	                                    'Start Date',
+	                                    React.createElement('input', { type: 'date', name: 'startDate', ref: 'startDate' })
+	                                ),
+	                                React.createElement(
+	                                    'label',
+	                                    { className: 'margin-right-tiny' },
+	                                    'End Date',
+	                                    React.createElement('input', { type: 'date', name: 'endDate', ref: 'endDate' })
+	                                ),
+	                                React.createElement(
+	                                    'label',
+	                                    { className: 'margin-right-tiny' },
+	                                    'Interval',
+	                                    React.createElement(
+	                                        'select',
+	                                        { ref: 'interval' },
+	                                        React.createElement(
+	                                            'option',
+	                                            { value: '30' },
+	                                            '30 mins'
+	                                        ),
+	                                        React.createElement(
+	                                            'option',
+	                                            { value: '15' },
+	                                            '15 mins'
+	                                        )
+	                                    )
+	                                ),
+	                                React.createElement(
+	                                    'a',
+	                                    { className: 'button proceed expanded', style: {
+	                                            height: '40px',
+	                                            width: '100px',
+	                                            alignSelf: 'flex-end'
+	                                        }, onClick: function onClick(e) {
+	                                            return that.onSubmit();
+	                                        } },
+	                                    'Go'
+	                                )
+	                            ),
+	                            React.createElement(
+	                                'div',
+	                                { id: 'uptimeMessage' },
+	                                React.createElement(UptimeMessage, { message: message })
+	                            ),
+	                            React.createElement(
+	                                'div',
+	                                { className: 'margin-bottom-small' },
+	                                desc
+	                            ),
+	                            React.createElement('hr', null)
 	                        ),
-	                        React.createElement(
-	                            'div',
-	                            { id: 'uptimeMessage' },
-	                            React.createElement(UptimeMessage, { message: message })
-	                        ),
-	                        React.createElement(
-	                            'div',
-	                            { className: 'margin-bottom-small' },
-	                            'You are viewing historical data for ',
-	                            buildingName,
-	                            'between ',
-	                            startDate,
-	                            '& ',
-	                            endDate,
-	                            'at an interval of ',
-	                            interval,
-	                            'minutes.'
-	                        ),
-	                        React.createElement('hr', null)
-	                    );
-	                }
-	            }
-
-	            return React.createElement(
-	                'div',
-	                { id: 'uptime-wrapper', className: 'margin-top-large' },
-	                React.createElement(
-	                    'div',
-	                    { className: 'row', style: {
-	                            minHeight: '100vh'
-	                        } },
-	                    React.createElement(
-	                        'div',
-	                        { className: 'columns large-12' },
-	                        renderContent(),
 	                        React.createElement(
 	                            'div',
 	                            { className: 'callout callout-dark-header' },
@@ -63200,7 +63189,7 @@
 	                            React.createElement(
 	                                'button',
 	                                { onClick: function onClick() {
-	                                        return _this2.minimize("cpu");
+	                                        return that.minimize("cpu");
 	                                    }, className: 'icon-btn-text-small' },
 	                                React.createElement(FontAwesome, { name: 'expand' })
 	                            )
@@ -63221,7 +63210,7 @@
 	                            React.createElement(
 	                                'button',
 	                                { onClick: function onClick() {
-	                                        return _this2.minimize("ram");
+	                                        return that.minimize("ram");
 	                                    }, className: 'icon-btn-text-small' },
 	                                React.createElement(FontAwesome, { name: 'expand' })
 	                            )
@@ -63242,14 +63231,14 @@
 	                            React.createElement(
 	                                'button',
 	                                { onClick: function onClick() {
-	                                        return _this2.minimize("storage");
+	                                        return that.minimize("storage");
 	                                    }, className: 'icon-btn-text-small' },
 	                                React.createElement(FontAwesome, { name: 'expand' })
 	                            )
 	                        ),
 	                        React.createElement(
 	                            'div',
-	                            { id: 'ram', className: 'callout callout-dark' },
+	                            { id: 'storage', className: 'callout callout-dark' },
 	                            React.createElement(SimpleAreaChart, { data: data['storage'] })
 	                        ),
 	                        React.createElement(
@@ -63263,7 +63252,7 @@
 	                            React.createElement(
 	                                'button',
 	                                { onClick: function onClick() {
-	                                        return _this2.minimize("network");
+	                                        return that.minimize("network");
 	                                    }, className: 'icon-btn-text-small' },
 	                                React.createElement(FontAwesome, { name: 'expand' })
 	                            )
@@ -63273,6 +63262,22 @@
 	                            { id: 'network', className: 'callout callout-dark' },
 	                            React.createElement(SimpleLineChart, { data: data['network'] })
 	                        )
+	                    );
+	                }
+	            }
+
+	            return React.createElement(
+	                'div',
+	                { id: 'uptime-wrapper', className: 'margin-top-large' },
+	                React.createElement(
+	                    'div',
+	                    { className: 'row', style: {
+	                            minHeight: '100vh'
+	                        } },
+	                    React.createElement(
+	                        'div',
+	                        { className: 'columns large-12' },
+	                        renderContent()
 	                    )
 	                )
 	            );

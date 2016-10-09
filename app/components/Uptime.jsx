@@ -17,6 +17,8 @@ class SimpleBarChart extends React.Component{
 
     var width = $('.row').width() * 0.95;
 
+    console.log("uptimedata", this.props.uptimeData);
+
   	return (
       <div key={this.props.id}>
         <div className="header">{this.props.id} | {this.props.mac}</div>

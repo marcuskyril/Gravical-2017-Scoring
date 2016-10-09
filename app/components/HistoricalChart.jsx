@@ -84,10 +84,6 @@ class HistoricalChart extends React.Component {
         var that = this;
 
         $.when(retrieveHistoricalDataAPI.retrieveHistoricalChart(macAdd, startDate, endDate, interval, "cpu"), retrieveHistoricalDataAPI.retrieveHistoricalChart(macAdd, startDate, endDate, interval, "ram"), retrieveHistoricalDataAPI.retrieveHistoricalChart(macAdd, startDate, endDate, interval, "storage"), retrieveHistoricalDataAPI.retrieveHistoricalChart(macAdd, startDate, endDate, interval, "network")).then(function(cpuData, ramData, storageData, networkData) {
-            // console.log("cpuData", cpuData[0]);
-            // console.log("ramData", ramData[0]);
-            // console.log("storageData", storageData[0]);
-            // console.log("upData", networkData[0]);
 
             that.setState({
                 data: {
@@ -102,6 +98,16 @@ class HistoricalChart extends React.Component {
                 interval: interval
             });
         });
+    }
+
+    minimize(metric) {
+      var pane = $('#'+metric);
+
+      if(pane.css('display') === 'block') {
+        pane.slideUp();
+      } else {
+        pane.slideDown();
+      }
     }
 
     minimizeAll() {
@@ -127,6 +133,9 @@ class HistoricalChart extends React.Component {
             message
         } = this.state;
 
+        var desc = `You are viewing historical data for ${buildingName} between ${startDate}
+                        & ${endDate} at an interval of ${interval} minutes.`;
+
         var that = this;
 
         function renderContent() {
@@ -139,50 +148,92 @@ class HistoricalChart extends React.Component {
             } else {
                 return (
                     <div>
-                        <div className="margin-bottom-small" style={{
-                            display: 'flex'
-                        }}>
-                            <div className="page-title">{macAdd}</div>
-                            <button className="margin-left-small" onClick={that.minimizeAll}>
-                                <FontAwesome name='expand' style={{
-                                    marginRight: '0.5rem'
-                                }}/>
-                                Show/Hide all
+                        <div>
+                            <div className="margin-bottom-small" style={{
+                                display: 'flex'
+                            }}>
+                                <div className="page-title">{macAdd}</div>
+                                <button className="margin-left-small" onClick={that.minimizeAll}>
+                                    <FontAwesome name='expand' style={{
+                                        marginRight: '0.5rem'
+                                    }}/>
+                                    Show/Hide all
+                                </button>
+                            </div>
+                            <form id="uptime-form" style={{
+                                display: 'flex'
+                            }}>
+                                <label className="margin-right-tiny">Start Date
+                                    <input type="date" name="startDate" ref="startDate"/>
+                                </label>
+                                <label className="margin-right-tiny">End Date
+                                    <input type="date" name="endDate" ref="endDate"/>
+                                </label>
+
+                                <label className="margin-right-tiny">
+                                    Interval
+                                    <select ref="interval">
+                                        <option value="30">30 mins</option>
+                                        <option value="15">15 mins</option>
+                                    </select>
+                                </label>
+
+                                <a className="button proceed expanded" style={{
+                                    height: '40px',
+                                    width: '100px',
+                                    alignSelf: 'flex-end'
+                                }} onClick={(e) => that.onSubmit()}>Go</a>
+                            </form>
+
+                            <div id="uptimeMessage"><UptimeMessage message={message}/></div>
+                            <div className="margin-bottom-small">{desc}</div>
+
+                            <hr/>
+                        </div>
+
+                        <div className="callout callout-dark-header">
+                            <div className="page-title">CPU Usage</div>
+                            <button onClick={() => that.minimize("cpu")} className="icon-btn-text-small">
+                                <FontAwesome name='expand'/>
                             </button>
                         </div>
-                        <form id="uptime-form" style={{
-                            display: 'flex'
-                        }}>
-                            <label className="margin-right-tiny">Start Date
-                                <input type="date" name="startDate" ref="startDate"/>
-                            </label>
-                            <label className="margin-right-tiny">End Date
-                                <input type="date" name="endDate" ref="endDate"/>
-                            </label>
 
-                            <label className="margin-right-tiny">
-                                Interval
-                                <select ref="interval">
-                                    <option value="30">30 mins</option>
-                                    <option value="15">15 mins</option>
-                                </select>
-                            </label>
+                        <div id="cpu" className="callout callout-dark">
+                            <SimpleAreaChart data={data['cpu']}/>
+                        </div>
 
-                            <a className="button proceed expanded" style={{
-                                height: '40px',
-                                width: '100px',
-                                alignSelf: 'flex-end'
-                            }} onClick={(e) => that.onSubmit()}>Go</a>
-                        </form>
+                        <div className="callout callout-dark-header">
+                            <div className="page-title">RAM Usage</div>
+                            <button onClick={() => that.minimize("ram")} className="icon-btn-text-small">
+                                <FontAwesome name='expand'/>
+                            </button>
+                        </div>
 
-                        <div id="uptimeMessage"><UptimeMessage message={message}/></div>
-                        <div className="margin-bottom-small">You are viewing historical data for {buildingName}
-                            between {startDate}
-                            & {endDate}
-                            at an interval of {interval}
-                            minutes.</div>
+                        <div id="ram" className="callout callout-dark">
+                            <SimpleAreaChart data={data['ram']}/>
+                        </div>
 
-                        <hr/>
+                        <div className="callout callout-dark-header">
+                            <div className="page-title">Storage</div>
+                            <button onClick={() => that.minimize("storage")} className="icon-btn-text-small">
+                                <FontAwesome name='expand'/>
+                            </button>
+                        </div>
+
+                        <div id="storage" className="callout callout-dark">
+                            <SimpleAreaChart data={data['storage']}/>
+                        </div>
+
+                        <div className="callout callout-dark-header">
+                            <div className="page-title">Network</div>
+                            <button onClick={() => that.minimize("network")} className="icon-btn-text-small">
+                                <FontAwesome name='expand'/>
+                            </button>
+                        </div>
+
+                        <div id="network" className="callout callout-dark">
+                            <SimpleLineChart data={data['network']}/>
+                        </div>
                     </div>
                 );
             }
@@ -195,49 +246,6 @@ class HistoricalChart extends React.Component {
                 }}>
                     <div className="columns large-12">
                         {renderContent()}
-                        <div className="callout callout-dark-header">
-                            <div className="page-title">CPU Usage</div>
-                            <button onClick={() => this.minimize("cpu")} className="icon-btn-text-small">
-                                <FontAwesome name='expand'/>
-                            </button>
-                        </div>
-
-                        <div id="cpu" className="callout callout-dark">
-                            <SimpleAreaChart data={data['cpu']}/>
-                        </div>
-
-                        <div className="callout callout-dark-header">
-                            <div className="page-title">RAM Usage</div>
-                            <button onClick={() => this.minimize("ram")} className="icon-btn-text-small">
-                                <FontAwesome name='expand'/>
-                            </button>
-                        </div>
-
-                        <div id="ram" className="callout callout-dark">
-                            <SimpleAreaChart data={data['ram']}/>
-                        </div>
-
-                        <div className="callout callout-dark-header">
-                            <div className="page-title">Storage</div>
-                            <button onClick={() => this.minimize("storage")} className="icon-btn-text-small">
-                                <FontAwesome name='expand'/>
-                            </button>
-                        </div>
-
-                        <div id="ram" className="callout callout-dark">
-                            <SimpleAreaChart data={data['storage']}/>
-                        </div>
-
-                        <div className="callout callout-dark-header">
-                            <div className="page-title">Network</div>
-                            <button onClick={() => this.minimize("network")} className="icon-btn-text-small">
-                                <FontAwesome name='expand'/>
-                            </button>
-                        </div>
-
-                        <div id="network" className="callout callout-dark">
-                            <SimpleLineChart data={data['network']}/>
-                        </div>
                     </div>
                 </div>
             </div>
@@ -289,7 +297,7 @@ const SimpleLineChart = React.createClass({
                 <Line connectNulls={true} dot={false} type="monotone" dataKey="network_up" stroke="#006600" activeDot={{
                     r: 2
                 }}/>
-            <Line connectNulls={true} dot={false} type="monotone" dataKey="network_down" stroke="#990000" activeDot={{
+                <Line connectNulls={true} dot={false} type="monotone" dataKey="network_down" stroke="#990000" activeDot={{
                     r: 2
                 }}/>
             </LineChart>
