@@ -114,7 +114,7 @@ class VerticalMenu extends React.Component {
 
         if(reboot_available) {
             return (
-              <li style={{borderTop: '1px solid #222'}}><a onClick={() => this.handleClick(this.props.sensorData, 'LAUNCH_TERMINAL_ACTION')}>Launch terminal</a></li>
+              <li style={{borderTop: '0.5px solid #222'}}><a onClick={() => this.handleClick(this.props.sensorData, 'LAUNCH_TERMINAL_ACTION')}>Launch terminal</a></li>
             );
         }
     }
@@ -143,11 +143,11 @@ class VerticalMenu extends React.Component {
                     <ul className="vertical menu tableOptions">
                        <li className="menuHeader">{this.props.macAdd}</li>
                        <li><a onClick={() => this.handleClick(this.props.sensorData, 'OPEN_CANVAS_ACTION')} data-toggle="offCanvas">More details &raquo;</a></li>
-                       <li style={{borderTop: '1px solid #222'}}><a onClick={() => this.handleClick(this.props.sensorData, 'EDIT_ACTION')}>Edit sensor</a></li>
+                       <li style={{borderTop: '0.5px solid #222'}}><a onClick={() => this.handleClick(this.props.sensorData, 'EDIT_ACTION')}>Edit sensor</a></li>
                        <li><a onClick={() => this.handleClick(this.props.sensorData, 'DELETE_ACTION')}>Delete sensor</a></li>
                        {this.renderWatchlistLink()}
                        {this.renderTerminalLink()}
-                       <li style={{borderTop: '1px solid #222'}}><IndexLink activeClassName='active' to={historicalUrl}>View historical data &raquo;</IndexLink></li>
+                       <li style={{borderTop: '0.5px solid #222'}}><IndexLink activeClassName='active' to={historicalUrl}>View historical data &raquo;</IndexLink></li>
                     </ul>
                </div>
            </li>

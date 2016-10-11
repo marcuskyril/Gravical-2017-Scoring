@@ -23,6 +23,17 @@ class PinSensor extends React.Component {
             if (response.error) {
                 that.setState({message: response.error});
             } else {
+
+                var myCustomEvent = document.createEvent("Event");
+
+                myCustomEvent.data = {
+                    type: 'pinSensor',
+                    macAdd: macAdd
+                };
+
+                myCustomEvent.initEvent("customEvent", true, true);
+                document.dispatchEvent(myCustomEvent);
+
                 that.setState({message: response.success});
             }
         });

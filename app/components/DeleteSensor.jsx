@@ -25,8 +25,20 @@ class DeleteSensor extends React.Component {
             if (response.error) {
                 that.setState({message: response.error});
             } else {
-                that.setState({message: response.msg});
-                // $('#delete-sensor-modal').foundation('close');
+                that.setState({message: response.success});
+
+                var myCustomEvent = document.createEvent("Event");
+
+                myCustomEvent.data = {
+                    type: 'deleteSensor',
+                    macAdd: inputMac,
+                    building: inputBuilding,
+                    location: `${inputLocationLevel}${inputLocationID}`
+                };
+
+                myCustomEvent.initEvent("customEvent", true, true);
+                document.dispatchEvent(myCustomEvent);
+
             }
         });
     }

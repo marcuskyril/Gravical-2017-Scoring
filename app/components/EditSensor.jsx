@@ -40,6 +40,19 @@ class EditSensor extends React.Component {
           message: response.error
         });
       } else {
+
+          var myCustomEvent = document.createEvent("Event");
+
+          myCustomEvent.data = {
+              type: 'editSensor',
+              macAdd: inputMac,
+              building: inputBuilding,
+              location: `${inputLocationLevel}${inputLocationID}`
+          };
+
+          myCustomEvent.initEvent("customEvent", true, true);
+          document.dispatchEvent(myCustomEvent);
+
         that.setState({
           message: response.success
         });

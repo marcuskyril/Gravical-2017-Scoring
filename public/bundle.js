@@ -14309,8 +14309,6 @@
 
 	      var width = $('.row').width() * 0.95;
 
-	      console.log("uptimedata", this.props.uptimeData);
-
 	      return React.createElement(
 	        'div',
 	        { key: this.props.id },
@@ -74602,7 +74600,7 @@
 	      if (reboot_available) {
 	        return React.createElement(
 	          'li',
-	          { style: { borderTop: '1px solid #222' } },
+	          { style: { borderTop: '0.5px solid #222' } },
 	          React.createElement(
 	            'a',
 	            { onClick: function onClick() {
@@ -74688,7 +74686,7 @@
 	            ),
 	            React.createElement(
 	              'li',
-	              { style: { borderTop: '1px solid #222' } },
+	              { style: { borderTop: '0.5px solid #222' } },
 	              React.createElement(
 	                'a',
 	                { onClick: function onClick() {
@@ -74712,7 +74710,7 @@
 	            this.renderTerminalLink(),
 	            React.createElement(
 	              'li',
-	              { style: { borderTop: '1px solid #222' } },
+	              { style: { borderTop: '0.5px solid #222' } },
 	              React.createElement(
 	                IndexLink,
 	                { activeClassName: 'active', to: historicalUrl },
@@ -75547,81 +75545,118 @@
 	var React = __webpack_require__(14);
 
 	var NotificationBar = function (_React$Component) {
-	  _inherits(NotificationBar, _React$Component);
+	    _inherits(NotificationBar, _React$Component);
 
-	  function NotificationBar(props) {
-	    _classCallCheck(this, NotificationBar);
+	    function NotificationBar(props) {
+	        _classCallCheck(this, NotificationBar);
 
-	    var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(NotificationBar).call(this, props));
+	        var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(NotificationBar).call(this, props));
 
-	    _this.state = {
-	      notifications: (0, _immutable.OrderedSet)(),
-	      count: 0
-	    };
+	        _this.state = {
+	            notifications: (0, _immutable.OrderedSet)(),
+	            count: 0
+	        };
 
-	    _this.removeNotification = _this.removeNotification.bind(_this);
-	    return _this;
-	  }
-
-	  _createClass(NotificationBar, [{
-	    key: 'removeNotification',
-	    value: function removeNotification(count) {
-	      var notifications = this.state.notifications;
-
-	      this.setState({
-	        notifications: notifications.filter(function (n) {
-	          return n.key !== count;
-	        })
-	      });
+	        _this.removeNotification = _this.removeNotification.bind(_this);
+	        return _this;
 	    }
-	  }, {
-	    key: 'componentWillReceiveProps',
-	    value: function componentWillReceiveProps(nextProps) {
-	      var _this2 = this;
 
-	      var currentTime = this.props.timestamp;
-
-	      var _state = this.state;
-	      var notifications = _state.notifications;
-	      var count = _state.count;
-
-	      var id = notifications.size + 1;
-	      var newCount = count + 1;
-
-	      if (nextProps.notificationData) {
-	        if (nextProps.notificationData !== this.props.notificationData && nextProps.notificationData.length > 0) {
-	          this.setState({
-	            count: newCount,
-	            notifications: notifications.add({
-	              title: nextProps.notificationData[0].building + ' (' + nextProps.notificationData[0].level + nextProps.notificationData[0].id + ')',
-	              message: ' | ' + nextProps.notificationData[0].problem.status + ' | ' + nextProps.notificationData[0].timestamp.date,
-	              key: newCount,
-	              action: 'Dismiss',
-	              dismissAfter: 5000,
-	              onClick: function onClick() {
-	                return _this2.removeNotification(newCount);
-	              }
-	            })
-	          });
+	    _createClass(NotificationBar, [{
+	        key: 'componentDidMount',
+	        value: function componentDidMount() {
+	            var that = this;
+	            window.addEventListener('customEvent', function (e) {
+	                //   console.log("evt", e);
+	                //   alert('booyah', e);
+	                that.addProgressNotification(e.data);
+	            }, false);
 	        }
-	      }
-	    }
-	  }, {
-	    key: 'render',
-	    value: function render() {
-	      var _this3 = this;
+	    }, {
+	        key: 'removeNotification',
+	        value: function removeNotification(count) {
+	            var notifications = this.state.notifications;
 
-	      return React.createElement(_reactNotification.NotificationStack, {
-	        notifications: this.state.notifications.toArray(),
-	        onDismiss: function onDismiss(notification) {
-	          return _this3.setState({
-	            notifications: _this3.state.notifications.delete(notification)
-	          });
-	        } });
-	    }
-	  }]);
+	            this.setState({
+	                notifications: notifications.filter(function (n) {
+	                    return n.key !== count;
+	                })
+	            });
+	        }
+	    }, {
+	        key: 'addProgressNotification',
+	        value: function addProgressNotification(data) {
+	            var _this2 = this;
 
-	  return NotificationBar;
+	            //   const newCount = count + 1;
+
+	            var msgArr = {
+	                'addSensor': 'Un momento por favor, adding ' + data.macAdd + ' to ' + data.building + ' ' + data.location,
+	                'editSensor': 'Un momento por favor, editing ' + data.macAdd + ' at ' + data.building + ' ' + data.location,
+	                'pinSensor': 'Un momento por favor, adding ' + data.macAdd + ' to the Watch List',
+	                'unpinSensor': 'Un momento por favor, removing ' + data.macAdd + ' from the Watch List',
+	                'deleteSensor': 'Un momento por favor, deleting ' + data.macAdd
+	            };
+
+	            return this.setState({
+	                notifications: this.state.notifications.add({
+	                    message: msgArr[data.type],
+	                    key: data.macAdd,
+	                    action: 'Dismiss',
+	                    barStyle: {
+	                        backgroundColor: "#006600",
+	                        color: '#fff'
+	                    },
+	                    dismissAfter: 7000,
+	                    onClick: function onClick() {
+	                        return _this2.removeNotification('some UID');
+	                    }
+	                })
+	            });
+	        }
+	    }, {
+	        key: 'componentWillReceiveProps',
+	        value: function componentWillReceiveProps(nextProps) {
+	            var _this3 = this;
+
+	            var currentTime = this.props.timestamp;
+
+	            var _state = this.state;
+	            var notifications = _state.notifications;
+	            var count = _state.count;
+
+	            var id = notifications.size + 1;
+	            var newCount = count + 1;
+
+	            if (nextProps.notificationData) {
+	                if (nextProps.notificationData !== this.props.notificationData && nextProps.notificationData.length > 0) {
+	                    this.setState({
+	                        count: newCount,
+	                        notifications: notifications.add({
+	                            title: nextProps.notificationData[0].building + ' (' + nextProps.notificationData[0].level + nextProps.notificationData[0].id + ')',
+	                            message: ' | ' + nextProps.notificationData[0].problem.status + ' | ' + nextProps.notificationData[0].timestamp.date,
+	                            key: newCount,
+	                            action: 'Dismiss',
+	                            dismissAfter: 5000,
+	                            onClick: function onClick() {
+	                                return _this3.removeNotification(newCount);
+	                            }
+	                        })
+	                    });
+	                }
+	            }
+	        }
+	    }, {
+	        key: 'render',
+	        value: function render() {
+	            var _this4 = this;
+
+	            return React.createElement(_reactNotification.NotificationStack, { notifications: this.state.notifications.toArray(), onDismiss: function onDismiss(notification) {
+	                    return _this4.setState({ notifications: _this4.state.notifications.delete(notification) });
+	                } });
+	        }
+	    }]);
+
+	    return NotificationBar;
 	}(React.Component);
 
 	module.exports = NotificationBar;
@@ -81415,240 +81450,251 @@
 	var addSensorAPI = __webpack_require__(813);
 
 	var AddSensor = function (_React$Component) {
-	  _inherits(AddSensor, _React$Component);
+	    _inherits(AddSensor, _React$Component);
 
-	  function AddSensor(props) {
-	    _classCallCheck(this, AddSensor);
+	    function AddSensor(props) {
+	        _classCallCheck(this, AddSensor);
 
-	    var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(AddSensor).call(this, props));
+	        var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(AddSensor).call(this, props));
 
-	    _this.state = {
-	      message: ''
-	    };
-	    return _this;
-	  }
-
-	  _createClass(AddSensor, [{
-	    key: 'updateRegion',
-	    value: function updateRegion() {
-
-	      var that = this;
-
-	      if ($('#isServer').prop('checked')) {
-	        that.refs.region.value = 'virtual';
-	      } else {
-	        that.refs.region.value = '';
-	      }
+	        _this.state = {
+	            message: ''
+	        };
+	        return _this;
 	    }
-	  }, {
-	    key: 'onAddSensor',
-	    value: function onAddSensor(e) {
-	      // console.log("test type: ", this.props.type);
 
-	      e.preventDefault();
+	    _createClass(AddSensor, [{
+	        key: 'updateRegion',
+	        value: function updateRegion() {
 
-	      var inputMac = this.refs.macAddress.value;
-	      var inputRegion = this.refs.region.value;
-	      var inputLocationLevel = this.refs.sensorLocationLevel.value;
-	      var inputLocationID = this.refs.sensorLocationID.value;
-	      var inputBuilding = this.refs.building.value;
-	      var inputPort = this.refs.port.value;
-	      var isServer = this.refs.isServer.value;
+	            var that = this;
 
-	      var that = this;
-
-	      addSensorAPI.addSensor(inputMac, inputRegion, inputLocationLevel, inputLocationID, inputBuilding, inputPort, isServer).then(function (response) {
-
-	        if (response.error) {
-	          that.setState({
-	            message: response.error
-	          });
-	        } else {
-	          that.setState({
-	            message: response.success
-	          });
+	            if ($('#isServer').prop('checked')) {
+	                that.refs.region.value = 'virtual';
+	            } else {
+	                that.refs.region.value = '';
+	            }
 	        }
-	        //console.log("message", that.state.message);
+	    }, {
+	        key: 'onAddSensor',
+	        value: function onAddSensor(e) {
+	            // console.log("test type: ", this.props.type);
 
-	        that.refs.macAddress.value = '';
-	        that.refs.port.value = '';
-	        that.refs.region.value = '';
-	        that.refs.sensorLocationLevel.value = '';
-	        that.refs.sensorLocationID.value = '';
-	        that.refs.building.value = '';
-	        that.refs.isServer.value = false;
-	      });
-	    }
-	  }, {
-	    key: 'render',
-	    value: function render() {
-	      var message = this.state.message;
-	      var that = this;
+	            e.preventDefault();
 
-	      $('#add-sensor-modal').on('closed.zf.reveal', function () {
-	        that.setState({
-	          message: ''
-	        });
-	      });
+	            var inputMac = this.refs.macAddress.value;
+	            var inputRegion = this.refs.region.value;
+	            var inputLocationLevel = this.refs.sensorLocationLevel.value;
+	            var inputLocationID = this.refs.sensorLocationID.value;
+	            var inputBuilding = this.refs.building.value;
+	            var inputPort = this.refs.port.value;
+	            var isServer = this.refs.isServer.value;
 
-	      return React.createElement(
-	        'div',
-	        { id: 'add-sensor-modal', className: 'reveal medium', 'data-reveal': '' },
-	        React.createElement(
-	          'form',
-	          null,
-	          React.createElement(
-	            'div',
-	            { className: 'row' },
-	            React.createElement(
-	              'div',
-	              { className: 'page-title', style: { paddingLeft: '0.9375rem' } },
-	              'Add Sensor / Server'
-	            ),
-	            React.createElement(
-	              'div',
-	              { className: 'large-6 columns' },
-	              React.createElement(
-	                'label',
-	                null,
-	                'Mac Address',
-	                React.createElement('input', { type: 'text', name: 'macAddress', ref: 'macAddress', placeholder: 'Mac Address' })
-	              ),
-	              React.createElement(
-	                'fieldset',
-	                null,
-	                React.createElement('input', { id: 'isServer', ref: 'isServer', type: 'checkbox', onClick: this.updateRegion.bind(this) }),
+	            var that = this;
+
+	            addSensorAPI.addSensor(inputMac, inputRegion, inputLocationLevel, inputLocationID, inputBuilding, inputPort, isServer).then(function (response) {
+
+	                if (response.error) {
+	                    that.setState({ message: response.error });
+	                } else {
+
+	                    var myCustomEvent = document.createEvent("Event");
+
+	                    myCustomEvent.data = {
+	                        type: 'addSensor',
+	                        macAdd: inputMac,
+	                        building: inputBuilding,
+	                        location: '' + inputLocationLevel + inputLocationID
+	                    };
+
+	                    myCustomEvent.initEvent("customEvent", true, true);
+	                    document.dispatchEvent(myCustomEvent);
+
+	                    that.setState({ message: response.success });
+	                }
+	                //console.log("message", that.state.message);
+
+	                that.refs.macAddress.value = '';
+	                that.refs.port.value = '';
+	                that.refs.region.value = '';
+	                that.refs.sensorLocationLevel.value = '';
+	                that.refs.sensorLocationID.value = '';
+	                that.refs.building.value = '';
+	                that.refs.isServer.value = false;
+	            });
+	        }
+	    }, {
+	        key: 'render',
+	        value: function render() {
+	            var message = this.state.message;
+	            var that = this;
+
+	            $('#add-sensor-modal').on('closed.zf.reveal', function () {
+	                that.setState({ message: '' });
+	            });
+
+	            return React.createElement(
+	                'div',
+	                { id: 'add-sensor-modal', className: 'reveal medium', 'data-reveal': '' },
 	                React.createElement(
-	                  'label',
-	                  null,
-	                  'Server?'
-	                ),
-	                React.createElement(
-	                  'div',
-	                  { id: 'port' },
-	                  React.createElement(
-	                    'label',
+	                    'form',
 	                    null,
-	                    'Port',
-	                    React.createElement('input', { type: 'text', name: 'port', id: 'inputPort', ref: 'port', placeholder: 'Port' })
-	                  )
+	                    React.createElement(
+	                        'div',
+	                        { className: 'row' },
+	                        React.createElement(
+	                            'div',
+	                            { className: 'page-title', style: {
+	                                    paddingLeft: '0.9375rem'
+	                                } },
+	                            'Add Sensor / Server'
+	                        ),
+	                        React.createElement(
+	                            'div',
+	                            { className: 'large-6 columns' },
+	                            React.createElement(
+	                                'label',
+	                                null,
+	                                'Mac Address',
+	                                React.createElement('input', { type: 'text', name: 'macAddress', ref: 'macAddress', placeholder: 'Mac Address' })
+	                            ),
+	                            React.createElement(
+	                                'fieldset',
+	                                null,
+	                                React.createElement('input', { id: 'isServer', ref: 'isServer', type: 'checkbox', onClick: this.updateRegion.bind(this) }),
+	                                React.createElement(
+	                                    'label',
+	                                    null,
+	                                    'Server?'
+	                                ),
+	                                React.createElement(
+	                                    'div',
+	                                    { id: 'port' },
+	                                    React.createElement(
+	                                        'label',
+	                                        null,
+	                                        'Port',
+	                                        React.createElement('input', { type: 'text', name: 'port', id: 'inputPort', ref: 'port', placeholder: 'Port' })
+	                                    )
+	                                )
+	                            )
+	                        ),
+	                        React.createElement(
+	                            'div',
+	                            { className: 'large-6 columns', style: {
+	                                    'borderLeft': 'solid 1px #e4e4e4'
+	                                } },
+	                            React.createElement(
+	                                'label',
+	                                null,
+	                                'Region',
+	                                React.createElement(
+	                                    'select',
+	                                    { ref: 'region', name: 'region' },
+	                                    React.createElement('option', { value: '' }),
+	                                    React.createElement(
+	                                        'option',
+	                                        { value: 'north' },
+	                                        'North'
+	                                    ),
+	                                    React.createElement(
+	                                        'option',
+	                                        { value: 'south' },
+	                                        'South'
+	                                    ),
+	                                    React.createElement(
+	                                        'option',
+	                                        { value: 'east' },
+	                                        'East'
+	                                    ),
+	                                    React.createElement(
+	                                        'option',
+	                                        { value: 'west' },
+	                                        'West'
+	                                    ),
+	                                    React.createElement(
+	                                        'option',
+	                                        { value: 'central' },
+	                                        'Central'
+	                                    ),
+	                                    React.createElement(
+	                                        'option',
+	                                        { value: 'virtual' },
+	                                        'Virtual'
+	                                    )
+	                                )
+	                            ),
+	                            React.createElement(
+	                                'label',
+	                                null,
+	                                'Building level / Group Level',
+	                                React.createElement('input', { type: 'text', name: 'sensorLocationLevel', ref: 'sensorLocationLevel', placeholder: 'Building / Group Level' })
+	                            ),
+	                            React.createElement(
+	                                'label',
+	                                null,
+	                                'Area / Server ID',
+	                                React.createElement('input', { type: 'text', name: 'sensorLocationID', ref: 'sensorLocationID', placeholder: 'Area / Server ID' })
+	                            ),
+	                            React.createElement(
+	                                'label',
+	                                null,
+	                                'Building / Cluster',
+	                                React.createElement('input', { type: 'text', name: 'building', ref: 'building', placeholder: 'Building / Cluster Level' })
+	                            )
+	                        )
+	                    ),
+	                    React.createElement(
+	                        'div',
+	                        { className: 'row' },
+	                        React.createElement(
+	                            'div',
+	                            { id: 'sensorMessage' },
+	                            React.createElement(AddSensorMessage, { message: message })
+	                        ),
+	                        React.createElement(
+	                            'a',
+	                            { className: 'button proceed expanded', onClick: this.onAddSensor.bind(this) },
+	                            'Add Sensor'
+	                        ),
+	                        React.createElement(
+	                            'a',
+	                            { className: 'button cancel expanded close-reveal-modal', 'data-close': '', 'aria-label': 'Close' },
+	                            'Cancel'
+	                        )
+	                    )
 	                )
-	              )
-	            ),
-	            React.createElement(
-	              'div',
-	              { className: 'large-6 columns', style: { 'borderLeft': 'solid 1px #e4e4e4' } },
-	              React.createElement(
-	                'label',
-	                null,
-	                'Region',
-	                React.createElement(
-	                  'select',
-	                  { ref: 'region', name: 'region' },
-	                  React.createElement('option', { value: '' }),
-	                  React.createElement(
-	                    'option',
-	                    { value: 'north' },
-	                    'North'
-	                  ),
-	                  React.createElement(
-	                    'option',
-	                    { value: 'south' },
-	                    'South'
-	                  ),
-	                  React.createElement(
-	                    'option',
-	                    { value: 'east' },
-	                    'East'
-	                  ),
-	                  React.createElement(
-	                    'option',
-	                    { value: 'west' },
-	                    'West'
-	                  ),
-	                  React.createElement(
-	                    'option',
-	                    { value: 'central' },
-	                    'Central'
-	                  ),
-	                  React.createElement(
-	                    'option',
-	                    { value: 'virtual' },
-	                    'Virtual'
-	                  )
-	                )
-	              ),
-	              React.createElement(
-	                'label',
-	                null,
-	                'Building level / Group Level',
-	                React.createElement('input', { type: 'text', name: 'sensorLocationLevel', ref: 'sensorLocationLevel', placeholder: 'Building / Group Level' })
-	              ),
-	              React.createElement(
-	                'label',
-	                null,
-	                'Area / Server ID',
-	                React.createElement('input', { type: 'text', name: 'sensorLocationID', ref: 'sensorLocationID', placeholder: 'Area / Server ID' })
-	              ),
-	              React.createElement(
-	                'label',
-	                null,
-	                'Building / Cluster',
-	                React.createElement('input', { type: 'text', name: 'building', ref: 'building', placeholder: 'Building / Cluster Level' })
-	              )
-	            )
-	          ),
-	          React.createElement(
-	            'div',
-	            { className: 'row' },
-	            React.createElement(
-	              'div',
-	              { id: 'sensorMessage' },
-	              React.createElement(AddSensorMessage, { message: message })
-	            ),
-	            React.createElement(
-	              'a',
-	              { className: 'button proceed expanded', onClick: this.onAddSensor.bind(this) },
-	              'Add Sensor'
-	            ),
-	            React.createElement(
-	              'a',
-	              { className: 'button cancel expanded close-reveal-modal', 'data-close': '', 'aria-label': 'Close' },
-	              ' Cancel'
-	            )
-	          )
-	        )
-	      );
-	    }
-	  }]);
+	            );
+	        }
+	    }]);
 
-	  return AddSensor;
+	    return AddSensor;
 	}(React.Component);
 
 	var AddSensorMessage = function (_React$Component2) {
-	  _inherits(AddSensorMessage, _React$Component2);
+	    _inherits(AddSensorMessage, _React$Component2);
 
-	  function AddSensorMessage() {
-	    _classCallCheck(this, AddSensorMessage);
+	    function AddSensorMessage() {
+	        _classCallCheck(this, AddSensorMessage);
 
-	    return _possibleConstructorReturn(this, Object.getPrototypeOf(AddSensorMessage).apply(this, arguments));
-	  }
-
-	  _createClass(AddSensorMessage, [{
-	    key: 'render',
-	    value: function render() {
-	      var message = this.props.message;
-	      // console.log("message from parent: ", message);
-
-	      return React.createElement(
-	        'div',
-	        { className: 'statusText' },
-	        message
-	      );
+	        return _possibleConstructorReturn(this, Object.getPrototypeOf(AddSensorMessage).apply(this, arguments));
 	    }
-	  }]);
 
-	  return AddSensorMessage;
+	    _createClass(AddSensorMessage, [{
+	        key: 'render',
+	        value: function render() {
+	            var message = this.props.message;
+	            // console.log("message from parent: ", message);
+
+	            return React.createElement(
+	                'div',
+	                { className: 'statusText' },
+	                message
+	            );
+	        }
+	    }]);
+
+	    return AddSensorMessage;
 	}(React.Component);
 
 	module.exports = AddSensor;
@@ -81756,6 +81802,19 @@
 	            message: response.error
 	          });
 	        } else {
+
+	          var myCustomEvent = document.createEvent("Event");
+
+	          myCustomEvent.data = {
+	            type: 'editSensor',
+	            macAdd: inputMac,
+	            building: inputBuilding,
+	            location: '' + inputLocationLevel + inputLocationID
+	          };
+
+	          myCustomEvent.initEvent("customEvent", true, true);
+	          document.dispatchEvent(myCustomEvent);
+
 	          that.setState({
 	            message: response.success
 	          });
@@ -82027,8 +82086,19 @@
 	                if (response.error) {
 	                    that.setState({ message: response.error });
 	                } else {
-	                    that.setState({ message: response.msg });
-	                    // $('#delete-sensor-modal').foundation('close');
+	                    that.setState({ message: response.success });
+
+	                    var myCustomEvent = document.createEvent("Event");
+
+	                    myCustomEvent.data = {
+	                        type: 'deleteSensor',
+	                        macAdd: inputMac,
+	                        building: inputBuilding,
+	                        location: '' + inputLocationLevel + inputLocationID
+	                    };
+
+	                    myCustomEvent.initEvent("customEvent", true, true);
+	                    document.dispatchEvent(myCustomEvent);
 	                }
 	            });
 	        }
@@ -82188,125 +82258,136 @@
 	var store = __webpack_require__(797).configure();
 
 	var UnpinSensor = function (_React$Component) {
-	  _inherits(UnpinSensor, _React$Component);
+	    _inherits(UnpinSensor, _React$Component);
 
-	  function UnpinSensor(props) {
-	    _classCallCheck(this, UnpinSensor);
+	    function UnpinSensor(props) {
+	        _classCallCheck(this, UnpinSensor);
 
-	    var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(UnpinSensor).call(this, props));
+	        var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(UnpinSensor).call(this, props));
 
-	    _this.state = {
-	      message: ''
-	    };
-	    return _this;
-	  }
+	        _this.state = {
+	            message: ''
+	        };
+	        return _this;
+	    }
 
-	  _createClass(UnpinSensor, [{
-	    key: 'onUnpinSensor',
-	    value: function onUnpinSensor() {
+	    _createClass(UnpinSensor, [{
+	        key: 'onUnpinSensor',
+	        value: function onUnpinSensor() {
 
-	      var macAdd = this.props.pin_mac.pin_mac;
-	      var that = this;
+	            var macAdd = this.props.pin_mac.pin_mac;
+	            var that = this;
 
-	      updateWatchList.updateWatchList(macAdd, false).then(function (response) {
+	            updateWatchList.updateWatchList(macAdd, false).then(function (response) {
 
-	        if (response.error) {
-	          that.setState({ message: response.error });
-	        } else {
-	          that.setState({ message: response.success });
+	                if (response.error) {
+	                    that.setState({ message: response.error });
+	                } else {
+
+	                    var myCustomEvent = document.createEvent("Event");
+
+	                    myCustomEvent.data = {
+	                        type: 'unpinSensor',
+	                        macAdd: macAdd
+	                    };
+
+	                    myCustomEvent.initEvent("customEvent", true, true);
+	                    document.dispatchEvent(myCustomEvent);
+
+	                    that.setState({ message: response.success });
+	                }
+	            });
 	        }
-	      });
-	    }
-	  }, {
-	    key: 'render',
-	    value: function render() {
-	      // console.log("delete sensor state ", this.state);
-	      var message = this.state.message;
-	      var that = this;
+	    }, {
+	        key: 'render',
+	        value: function render() {
+	            // console.log("delete sensor state ", this.state);
+	            var message = this.state.message;
+	            var that = this;
 
-	      // resets message to empty string on close
-	      $('#unpin-sensor-modal').on('closed.zf.reveal', function () {
-	        //console.log("close");
-	        that.setState({
-	          message: ''
-	        });
-	      });
+	            // resets message to empty string on close
+	            $('#unpin-sensor-modal').on('closed.zf.reveal', function () {
+	                //console.log("close");
+	                that.setState({
+	                    message: ''
+	                });
+	            });
 
-	      return React.createElement(
-	        'div',
-	        { id: 'unpin-sensor-modal', className: 'reveal tiny text-center', 'data-reveal': '' },
-	        React.createElement(
-	          'form',
-	          null,
-	          React.createElement(
-	            'div',
-	            { className: 'row' },
-	            React.createElement(
-	              'div',
-	              { className: 'large-12 columns' },
-	              React.createElement(
+	            return React.createElement(
 	                'div',
-	                { className: 'page-title' },
-	                'Unpin Sensor'
-	              ),
-	              React.createElement(
-	                'div',
-	                { className: 'header', style: { color: '#990000' } },
-	                'Unpin this sensor, you want to?'
-	              ),
-	              React.createElement('input', { id: 'unpinMac', value: '', hidden: true }),
-	              React.createElement(
-	                'div',
-	                { id: 'unpinSensorMessage' },
-	                React.createElement(UnpinSensorMessage, { message: message })
-	              ),
-	              React.createElement(
-	                'a',
-	                { className: 'button proceed expanded', onClick: this.onUnpinSensor.bind(this) },
-	                'Yes I do'
-	              ),
-	              React.createElement(
-	                'a',
-	                { className: 'button cancel expanded close-reveal-modal', 'data-close': '', 'aria-label': 'Close', id: 'closeUnpin' },
-	                'Slow Down, Cowboy'
-	              )
-	            )
-	          )
-	        )
-	      );
-	    }
-	  }]);
+	                { id: 'unpin-sensor-modal', className: 'reveal tiny text-center', 'data-reveal': '' },
+	                React.createElement(
+	                    'form',
+	                    null,
+	                    React.createElement(
+	                        'div',
+	                        { className: 'row' },
+	                        React.createElement(
+	                            'div',
+	                            { className: 'large-12 columns' },
+	                            React.createElement(
+	                                'div',
+	                                { className: 'page-title' },
+	                                'Unpin Sensor'
+	                            ),
+	                            React.createElement(
+	                                'div',
+	                                { className: 'header', style: { color: '#990000' } },
+	                                'Unpin this sensor, you want to?'
+	                            ),
+	                            React.createElement('input', { id: 'unpinMac', value: '', hidden: true }),
+	                            React.createElement(
+	                                'div',
+	                                { id: 'unpinSensorMessage' },
+	                                React.createElement(UnpinSensorMessage, { message: message })
+	                            ),
+	                            React.createElement(
+	                                'a',
+	                                { className: 'button proceed expanded', onClick: this.onUnpinSensor.bind(this) },
+	                                'Yes I do'
+	                            ),
+	                            React.createElement(
+	                                'a',
+	                                { className: 'button cancel expanded close-reveal-modal', 'data-close': '', 'aria-label': 'Close', id: 'closeUnpin' },
+	                                'Slow Down, Cowboy'
+	                            )
+	                        )
+	                    )
+	                )
+	            );
+	        }
+	    }]);
 
-	  return UnpinSensor;
+	    return UnpinSensor;
 	}(React.Component);
 
 	var UnpinSensorMessage = function (_React$Component2) {
-	  _inherits(UnpinSensorMessage, _React$Component2);
+	    _inherits(UnpinSensorMessage, _React$Component2);
 
-	  function UnpinSensorMessage() {
-	    _classCallCheck(this, UnpinSensorMessage);
+	    function UnpinSensorMessage() {
+	        _classCallCheck(this, UnpinSensorMessage);
 
-	    return _possibleConstructorReturn(this, Object.getPrototypeOf(UnpinSensorMessage).apply(this, arguments));
-	  }
-
-	  _createClass(UnpinSensorMessage, [{
-	    key: 'render',
-	    value: function render() {
-	      var message = this.props.message;
-
-	      return React.createElement(
-	        'div',
-	        { className: 'statusText' },
-	        message
-	      );
+	        return _possibleConstructorReturn(this, Object.getPrototypeOf(UnpinSensorMessage).apply(this, arguments));
 	    }
-	  }]);
 
-	  return UnpinSensorMessage;
+	    _createClass(UnpinSensorMessage, [{
+	        key: 'render',
+	        value: function render() {
+	            var message = this.props.message;
+
+	            return React.createElement(
+	                'div',
+	                { className: 'statusText' },
+	                message
+	            );
+	        }
+	    }]);
+
+	    return UnpinSensorMessage;
 	}(React.Component);
 
 	function mapStateToProps(state, ownProps) {
-	  return { pin_mac: state.pin_mac };
+	    return { pin_mac: state.pin_mac };
 	}
 
 	module.exports = connect(mapStateToProps)(UnpinSensor);
@@ -82568,6 +82649,17 @@
 	                if (response.error) {
 	                    that.setState({ message: response.error });
 	                } else {
+
+	                    var myCustomEvent = document.createEvent("Event");
+
+	                    myCustomEvent.data = {
+	                        type: 'pinSensor',
+	                        macAdd: macAdd
+	                    };
+
+	                    myCustomEvent.initEvent("customEvent", true, true);
+	                    document.dispatchEvent(myCustomEvent);
+
 	                    that.setState({ message: response.success });
 	                }
 	            });
