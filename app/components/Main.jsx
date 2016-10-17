@@ -1,6 +1,7 @@
 var React = require('react');
 var Nav = require('Nav');
 var Dashboard = require('Dashboard');
+import SensorDetails from 'SensorDetails';
 import {StickyContainer, Sticky} from 'react-sticky';
 import firebase from 'app/firebase/';
 
@@ -23,13 +24,8 @@ render() {
 
             <div className="off-canvas-wrapper">
                 <div className="off-canvas-wrapper-inner" data-off-canvas-wrapper>
-                    <div className="off-canvas position-right" data-position="right" id="offCanvas" data-off-canvas style={{
-                        padding: 0
-                    }}>
-                        <div id="sensorDetails"></div>
-                        <iframe id="sensorDetailsIFrame" src={iframeLink} width="350px" style={{
-                            border: "none"
-                        }} height="99%"></iframe>
+                    <div className="off-canvas position-right" data-position="right" id="offCanvas" data-off-canvas>
+                        <SensorDetails/>
                     </div>
 
                     <div className="off-canvas-content" data-off-canvas-content>

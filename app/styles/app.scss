@@ -522,3 +522,34 @@ input[type=checkbox]:checked ~ #port {
     95% {left: 120%;}
     to {left: 100%;}
 }
+
+table.sensor-details-table tbody {
+    text-align: left;
+    font-size: 1.2rem;
+}
+
+table.sensor-details-table td:first-child {
+    width: 1px;
+}
+
+.top-five-table {
+  font-size: 1.2rem;
+}
+
+.statusText {
+    color: red;
+    margin-bottom: 1rem;
+    text-transform: uppercase;
+    font-size: 0.5em;
+    font-weight: bold;
+}
+
+.table-container {
+    text-align: center;
+}
+
+.table-row-highlight {
+    font-weight: bold;
+    border: solid 1px rgb(153, 0, 0);
+    background-color: rgba(153,0,0,0.4) !important;
+}

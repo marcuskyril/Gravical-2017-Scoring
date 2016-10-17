@@ -1,6 +1,7 @@
 var React = require('react');
 var axios = require('axios');
 var FontAwesome = require('react-fontawesome');
+var socket;
 
 class SensorDetails extends React.Component {
 
@@ -38,29 +39,31 @@ class SensorDetails extends React.Component {
 
     componentDidMount() {
 
-        var socket;
+        var that = this;
 
         const SOCKET_URL = "ws://opsdev.sence.io:9010/SensorStatus";
 
+        // TO DO:
+        // Retrieve mac address from redux
+        var macAddress = "B8:27:EB:05:B0:B0";
+
         try {
             socket = new WebSocket(SOCKET_URL);
-            // log('WebSocket - status ' + socket.readyState);
+
             socket.onopen = function(msg) {
                 console.log("connected");
 
-                // TO DO:
-                // Retrieve mac address from redux
-                send(macAddress);
+                that.send(macAddress);
                 // console.log("1st send");
             };
             socket.onmessage = function(msg) {
 
                 var response = JSON.parse(msg.data);
 
-                console.log("response", response);
+                // console.log("response", response);
 
                 setTimeout(function() {
-                    send(macAddress);
+                    that.send(macAddress);
                 }, 5000);
 
             };
@@ -71,13 +74,128 @@ class SensorDetails extends React.Component {
         } catch (ex) {
             console.warn(ex);
         }
+    }
 
+    send(msg) {
+        // console.log("sent: " + msg);
+        try {
+            socket.send(msg);
+            // console.log('Sent');
+        } catch (ex) {
+            console.warn(ex);
+        }
+    }
+
+    quit() {
+        if (socket != null) {
+            log("Goodbye!");
+            socket.close();
+            socket = null;
+        }
     }
 
     render() {
+        // <div className="sub-header" id="mac_address"></div>
+        // <div className="header" id="status"></div>
+        // <div className="sub-header" id="itsDeadJim"></div>
+
         return (
-            <div>
-                Guess who's back?
+            <div className="textAlignCenter">
+                <div className="page-title" id="building">Loading</div>
+                <hr/>
+                <div id="last_reboot">loading...</div>
+
+                <div className="page-title margin-top-md">Statistics</div>
+                <table className="sensor-details-table">
+                    <tbody>
+                        <tr>
+                            <td>Uptime</td>
+                            <td id="uptime">-</td>
+                            <td>%</td>
+                        </tr>
+                        <tr>
+                            <td>Temperature</td>
+                            <td id="temperature">-</td>
+                            <td>&deg;C</td>
+                        </tr>
+                        <tr>
+                            <td>CPU Usage</td>
+                            <td id="cpu">-</td>
+                            <td>%</td>
+                        </tr>
+                        <tr>
+                            <td>Storage</td>
+                            <td id="storage">-</td>
+                            <td>%</td>
+                        </tr>
+                        <tr>
+                            <td>RAM</td>
+                            <td id="ram">-</td>
+                            <td>%</td>
+                        </tr>
+                        <tr>
+                            <td>Flapping</td>
+                            <td id="flapping">-</td>
+                            <td></td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div className="top-5">
+                    <div className="page-title">Top 5 Processes</div>
+                    <table className="top-five-table">
+                        <tbody>
+                            <tr>
+                                <td>1</td>
+                                <td id="top1"></td>
+                                <td id="top1-usage"></td>
+                            </tr>
+                            <tr>
+                                <td>2</td>
+                                <td id="top2"></td>
+                                <td id="top2-usage"></td>
+                            </tr>
+                            <tr>
+                                <td>3</td>
+                                <td id="top3"></td>
+                                <td id="top3-usage"></td>
+                            </tr>
+                            <tr>
+                                <td>4</td>
+                                <td id="top4"></td>
+                                <td id="top4-usage"></td>
+                            </tr>
+                            <tr>
+                                <td>5</td>
+                                <td id="top5"></td>
+                                <td id="top5-usage"></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <a className="button proceed expanded">
+                    Edit
+                </a>
+                <a className="button cancel expanded">
+                    Delete
+                </a>
+
+                <a className="button proceed expanded">
+                    Pin
+                </a>
+
+                <a className="button proceed expanded">
+                    Cmd _>
+                </a>
+
+                <a className="button proceed expanded">
+                    Reboot
+                </a>
+                <a className="button proceed expanded">
+                    Charts
+                </a>
+
             </div>
         );
     }

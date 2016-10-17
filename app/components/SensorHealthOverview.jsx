@@ -52,9 +52,9 @@ class SearchBar extends React.Component {
     }
 
     handleChange() {
-
         this.props.onUserInput(this.refs.filterTextInput.value);
     }
+    
     render() {
 
         return (

@@ -137,7 +137,8 @@ class AddSensor extends React.Component {
                             Add Sensor
                         </a>
                         <a className="button cancel expanded close-reveal-modal" data-close="" aria-label="Close">
-                            Cancel</a>
+                            Cancel
+                        </a>
                     </div>
 
                 </form>

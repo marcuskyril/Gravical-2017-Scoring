@@ -30,7 +30,7 @@ class VerticalMenu extends React.Component {
 
         console.log(sensorData);
 
-        document.getElementById("sensorDetailsIFrame").src = "./offCrepe.html?offCanMac=" + macAdd;
+        // document.getElementById("sensorDetailsIFrame").src = "./offCrepe.html?offCanMac=" + macAdd;
         dispatch(actions.storeActiveSensor(sensorData));
     }
 
