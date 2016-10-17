@@ -10,14 +10,6 @@ var {Link, IndexLink} = require('react-router');
 import {connect} from 'react-redux';
 const HOST = 'http://opsdev.sence.io:4201/';
 
-var colorMap = {
-  "ok" : "sensorBlockSquare green sensorList",
-  "warning" : "sensorBlockSquare yellow sensorList",
-  "danger" : "sensorBlockSquare orange sensorList",
-  "down" : "sensorBlockSquare red sensorList",
-  "no data" : "sensorBlockSquare grey sensorList"
-}
-
 var dataList = [];
 
 class Building extends React.Component {
@@ -30,17 +22,23 @@ class Building extends React.Component {
 
                 <div className="header">
                     {this.props.buildingName}
-                    <div style={{float:'right'}}>
-                        <span>Total Count: {this.props.sensorCount}</span>
+                    <div style={{
+                        float: 'right'
+                    }}>
+                        <span style={{
+                            fontWeight: '300'
+                        }}>Total Count: {this.props.sensorCount}</span>
                         <span>
                             <IndexLink activeClassName='active' to={uptimeLink}>
-                                <FontAwesome name='bar-chart' style={{marginLeft: '5px'}}/>
+                                <FontAwesome name='bar-chart' style={{
+                                    marginLeft: '5px'
+                                }}/>
                             </IndexLink>
                         </span>
                     </div>
                 </div>
                 <table className="sensorHealthTable">
-                    <BuildingHeader areaArray={this.props.areaNames}/>
+                    <BuildingHeader speedTest={this.props.speedTest}/>
                     <LevelList areaArray={this.props.areaNames} levelArray={this.props.levelNames} sensors={this.props.sensors}/>
                 </table>
             </div>
@@ -89,7 +87,8 @@ class BuildingList extends React.Component {
                     areaNames: buildings[property]["area_names"],
                     levelNames: buildings[property]["level_names"],
                     sensors: buildings[property]["sensors"],
-                    sensorCount: buildings[property]["sensor_count"]
+                    sensorCount: buildings[property]["sensor_count"],
+                    speed_test: buildings[property]["speed_test"]
                 }
 
                 allBuildings.push(temp);
@@ -102,11 +101,12 @@ class BuildingList extends React.Component {
             var levelNames = building.levelNames;
             var sensors = building.sensors;
             var sensorCount = building.sensorCount;
+            var speedTest = building.speed_test;
             if ((buildingName.toLowerCase()).indexOf((this.props.filterText.toLowerCase())) === -1) {
                 return <div></div>
             }
 
-            rows.push(<Building key={buildingName} buildingName={buildingName} areaNames={areaNames} levelNames={levelNames} sensors={sensors} sensorCount={sensorCount}/>);
+            rows.push(<Building key={buildingName} buildingName={buildingName} areaNames={areaNames} levelNames={levelNames} sensors={sensors} sensorCount={sensorCount} speedTest={speedTest}/>);
         }.bind(this));
 
         return (
@@ -119,17 +119,40 @@ class BuildingList extends React.Component {
 
 class BuildingHeader extends React.Component {
 
+    handleClick() {
+        // $('#edit-speed-tester-modal').foundation('open');
+    }
+
     render() {
 
+        var speedTest = this.props.speedTest;
+
+        //<th colSpan="2" style={{textAlign: "center",width: '20%'}}>Level</th>
         return (
             <thead>
-              <tr>
-                <th style={{
-                    textAlign: "center",
-                    width: '20%'
-                }}>Level</th>
-                <th></th>
-              </tr>
+                <tr>
+                    <td style={{
+                        width: "8rem"
+                    }}></td>
+                    <td style={{
+                        "textAlign": "right",
+                        "fontSize": "0.8rem",
+                        fontWeight: '300'
+                    }}>
+                        <span style={{
+                            fontWeight: '500'
+                        }}>Upload</span>: {speedTest.upload_speed}
+                        Mbit/s |
+                        <span style={{
+                            fontWeight: '500'
+                        }}>Download</span>: {speedTest.download_speed}
+                        Mbit/s
+                        <a onClick={() => this.handleClick()}><FontAwesome name='cog' style={{
+                color: '#232f32',
+                marginLeft: '1rem'
+            }}/></a>
+                    </td>
+                </tr>
             </thead>
         );
     }
@@ -138,7 +161,7 @@ class BuildingHeader extends React.Component {
 class LevelList extends React.Component {
 
     constructor(props) {
-      super(props);
+        super(props);
     }
 
     render() {
@@ -158,110 +181,96 @@ class LevelList extends React.Component {
             var superTemp = [];
 
             for (var j = 0; j < sensorsOnThisFloor.length; j++) {
-              // console.log("sensorsOnThisFloor", sensorsOnThisFloor[j]);
-              var sensorId = sensorsOnThisFloor[j]['id'];
-              var status = sensorsOnThisFloor[j]['status'];
-              var macAdd = sensorsOnThisFloor[j]['mac'];
-              var region = sensorsOnThisFloor[j]['region'];
-              var building = sensorsOnThisFloor[j]['building'];
-              var level = sensorsOnThisFloor[j]['level'];
-              var port = sensorsOnThisFloor[j]['port'];
-              var reboot = sensorsOnThisFloor[j]['reboot_available'];
-              var watchlist = sensorsOnThisFloor[j]['watchlist'];
-              //console.log("macAdd", macAdd);
 
-              // console.log("areaArray", areaArray);
+                var position = areaArray.indexOf(sensorsOnThisFloor[j]['id']);
 
-              var thePos = areaArray.indexOf(sensorId);
-              superTemp[thePos] = [macAdd, status, sensorId, region, building, level, port, reboot, watchlist];
+                superTemp[position] = {
+                    macAdd: sensorsOnThisFloor[j]['mac'],
+                    status: sensorsOnThisFloor[j]['status'],
+                    sensorId: sensorsOnThisFloor[j]['id'],
+                    region: sensorsOnThisFloor[j]['region'],
+                    building: sensorsOnThisFloor[j]['building'],
+                    level: sensorsOnThisFloor[j]['level'],
+                    port: sensorsOnThisFloor[j]['port'],
+                    reboot: sensorsOnThisFloor[j]['reboot_available'],
+                    watchlist: sensorsOnThisFloor[j]['watchlist']
+                }
             }
 
             superTemp.forEach(function(sensorData) {
 
-              var macAdd = sensorData[0];
-              var status = sensorData[1];
-              var id = sensorData[2];
-              var region = sensorData[3];
-              var buildingName = sensorData[4];
-              level = sensorData[5];
-              port = sensorData[6];
-              var reboot = sensorData[7];
-              var watchlist = sensorData[8];
+                level = sensorData['level'];
+                port = sensorData['port'];
 
-              temp.push(<VerticalMenu key={macAdd} macAdd={macAdd} buildingName={buildingName} sensorData={sensorData} class={colorMap[status]} id={id} reboot={reboot} watchlist={watchlist}/>);
+                temp.push(<VerticalMenu key={sensorData['macAdd']} macAdd={sensorData['macAdd']} sensorData={sensorData}/>);
 
-          });
+            });
 
-          tableRows.push(
-              <tr key={level}>
-                <th>
-                    {level.length === 1 ? `0${level}` : level}
-                </th>
-                <td>
-                  <ul style={{margin:'0px'}}>
-                    {temp}
-                  </ul>
-                </td>
-              </tr>
-          );
+            tableRows.push(
+                <tr key={level}>
+                    <th>
+                        {level.length === 1
+                            ? `0${level}`
+                            : level}
+                    </th>
+                    <td>
+                        <ul style={{
+                            margin: '0px'
+                        }}>
+                            {temp}
+                        </ul>
+                    </td>
+                </tr>
+            );
         }
 
         return (
-          <tbody>
-               {tableRows}
-          </tbody>
+            <tbody>
+                {tableRows}
+            </tbody>
         );
     }
 }
 
 class SensorHealthOverview extends React.Component {
 
-constructor(props) {
-    super(props);
-    this.state = {
-        filterText: this.props.filter
-    };
-}
+    constructor(props) {
+        super(props);
+        this.state = {
+            filterText: this.props.filter
+        };
+    }
 
-componentDidMount() {
-  if(this.state.filterText === undefined) {
-    this.setState({
-      filterText: ''
-    });
-  }
-}
+    componentDidMount() {
+        if (this.state.filterText === undefined) {
+            this.setState({filterText: ''});
+        }
+    }
 
-handleUserInput(filterText) {
-    this.setState({filterText: filterText});
-}
+    handleUserInput(filterText) {
+        this.setState({filterText: filterText});
+    }
 
-launchTerminal() {
-    document.getElementById('terminalIFrame').src = HOST;
-    $('#terminal').foundation('open');
-}
+    render() {
+        // console.log("Cool stuff from serverOverview", this.props.serverData);
 
-render() {
-    // console.log("Cool stuff from serverOverview", this.props.serverData);
+        return (
+            <div>
+                <SearchBar filterText={this.state.filterText} onUserInput={this.handleUserInput.bind(this)}/>
 
-    return (
-        <div>
-            <SearchBar filterText={this.state.filterText}
-                        onUserInput={this.handleUserInput.bind(this)}/>
+                <div className="page-title">Sensors</div>
+                <hr className="divider"/>
 
-            <div className="page-title">Sensors</div>
-            <hr className="divider"/>
+                <BuildingList data={this.props.data} filterText={this.state.filterText}/>
 
-            <BuildingList data={this.props.data}
-                            filterText={this.state.filterText}/>
+                <div className="page-title">Servers</div>
+                <hr className="divider"/>
 
-            <div className="page-title">Servers</div>
-            <hr className="divider"/>
+                <ServerList data={this.props.serverData}/>
 
-            <ServerList data={this.props.serverData}/>
-
-        </div>
-    );
-  }
+            </div>
+        );
+    }
 }
 
 module.exports = connect()(SensorHealthOverview);

@@ -5,21 +5,6 @@ export var storeSyncData = (currentTime, userId) => {
     return {type: 'STORE_SYNC_DATA', currentTime, userId}
 }
 
-export var fetchSensorData = (numRows) => {
-    return (dispatch, getState) => {
-        dispatch(startSensorDataFetch());
-
-        var baseUrl = 'http://52.74.119.147/sensor-data-generator.php?number=';
-        var url = baseUrl + numRows;
-
-        axios.get(url).then(function(res) {
-            var data = res.data;
-
-            dispatch(completeSensorDataFetch(data));
-        });
-    };
-};
-
 export var startSensorDataFetch = () => {
     return {type: 'START_SENSOR_DATA_FETCH'};
 };
@@ -34,6 +19,16 @@ export var completeDeleteSensor = (macAddress) => {
 
 export var completeUpdateWatchList = (pin_mac) => {
     return {type: 'COMPLETE_UPDATE_WATCHLIST', pin_mac}
+}
+
+export var addToLog = (action) => {
+    console.log("action: ", action);
+
+    return {type: 'ADD_TO_LOG', action}
+}
+
+export var storeActiveSensor = (sensorData) => {
+    console.log("hello", sensorData);
 }
 
 export var login = (uid) => {

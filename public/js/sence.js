@@ -12,7 +12,6 @@ var deleteSensorModal;
 var unpinSensorModal;
 var rebootSensorModal;
 
-
 $(document).ready(function() {
     deleteSensorModal = new Foundation.Reveal($('#deleteSensorModal'));
     unpinSensorModal = new Foundation.Reveal($('#unpinSensorModal'));
@@ -93,6 +92,16 @@ try {
 
         if (typeof response.error == "undefined") {
 
+            if (response["am_i_alive"]) {
+                document.getElementById('circle').style.backgroundColor = colorMap['ok'];
+            } else {
+                document.getElementById('circle').style.backgroundColor = colorMap['down'];
+            }
+
+            if (response["router_latency"] != "-") {
+                $('#latency').html(parseFloat(Math.round(response["router_latency"] * 100) / 100).toFixed(2));
+            }
+
             document.getElementById("building").innerHTML = response["building"] + " " +response["sensor_location_level"] +response["sensor_location_id"];
             // document.getElementById("level").innerHTML = response["sensor_location_level"];
             // document.getElementById("id").innerHTML = response["sensor_location_id"];
@@ -161,18 +170,17 @@ try {
             //uncolor table rows
             $("#tableaux-mini").find(".table-row-highlight").removeClass("table-row-highlight");
 
-            if (response["diagnosis"] == "nil") {
+            // console.log(response["diagnosis"]);
+
+            if (response["diagnosis"]["result"] == "nil") {
                 $(".diagnosis").hide();
             } else {
-                document.getElementById("diagnosis").innerHTML = response["diagnosis"]["result"];
+                document.getElementById("diagnosis").innerHTML = Object.keys(response["diagnosis"]["result"]).map(function(x){return response["diagnosis"]["result"][x];}).join(',')
 
-                //console.log("fields to color: ", response["diagnosis"]["fields"]);
                 var fields = response["diagnosis"]["fields"];
 
                 for (var i = 0; i < Object.keys(fields).length; i++) {
                     console.log("field: ",fields[i]);
-                    // console.log("field: ", fields[i]);
-                    // console.log("painting the walls red");
                     document.getElementById(fields[i]).parentNode.className = "table-row-highlight";
                 }
 
@@ -193,8 +201,6 @@ try {
             document.getElementById("last_reboot").innerHTML = "";
         }
 
-        // send(macAddress);
-
         setTimeout(function() {
             send(macAddress);
         }, 5000);
@@ -212,10 +218,9 @@ document.getElementById("mac_address").innerHTML = macAddress;
 
 $("#reboot-modal-submit").on('submit', function (e) {
 
-    console.log($(this).serialize());
+    // console.log($(this).serialize());
 
     e.preventDefault();
-
     var form = $(this);
 
     $.ajax({
@@ -223,7 +228,6 @@ $("#reboot-modal-submit").on('submit', function (e) {
         url: REBOOT_SENSOR_URL,
         data: $(this).serialize(),
         success: function (response) {
-          // console.log("success", response);
 
           if(response.error) {
             document.getElementById('rebootSensorMessage').innerHTML = response.error;
@@ -310,9 +314,6 @@ $(document).on('closed.zf.reveal', function() {
 
 function pinToWatchList(macAddress, pin) {
     const PIN_TO_WATCHLIST_URL = "http://opsdev.sence.io/backend/sensor-watchlist-pin.php";
-
-    // console.log("Hola", macAddress);
-    // console.log("Hola", pin);
 
     var data = {
         "MAC": macAddress,

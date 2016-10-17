@@ -1,7 +1,8 @@
 var React = require('react');
 var updateWatchList = require('updateWatchList');
-var {connect} = require('react-redux');
-var pinMac = "";
+import * as Redux from 'react-redux';
+import * as actions from 'actions';
+import {connect} from 'react-redux';
 
 class PinSensor extends React.Component {
     constructor(props) {
@@ -13,7 +14,7 @@ class PinSensor extends React.Component {
     }
 
     onPinSensor() {
-
+        var {dispatch} = this.props;
         var macAdd = this.props.pin_mac.pin_mac;
         var that = this;
 
@@ -33,6 +34,11 @@ class PinSensor extends React.Component {
 
                 myCustomEvent.initEvent("customEvent", true, true);
                 document.dispatchEvent(myCustomEvent);
+
+                // let's try to add this to firebase
+                var action = `Pinned ${macAdd} to watch list`;
+
+                dispatch(actions.addToLog(action));
 
                 that.setState({message: response.success});
             }

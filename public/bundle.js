@@ -182,7 +182,7 @@
 	"use strict";
 
 	Object.defineProperty(exports, "__esModule", {
-	  value: true
+	    value: true
 	});
 	exports.firebaseRef = undefined;
 
@@ -193,17 +193,15 @@
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	try {
-	  var config = {
-	    apiKey: "AIzaSyCq8Ww6PAF-7xYOTIXnEU6-ykJWipxKPJ0",
-	    authDomain: "ortsolutions-77549.firebaseapp.com",
-	    databaseURL: "https://ortsolutions-77549.firebaseio.com",
-	    storageBucket: "ortsolutions-77549.appspot.com"
-	  };
-
-	  // console.log('config', config);
-	  _firebase2.default.initializeApp(config);
+	    var config = {
+	        apiKey: "AIzaSyCq8Ww6PAF-7xYOTIXnEU6-ykJWipxKPJ0",
+	        authDomain: "ortsolutions-77549.firebaseapp.com",
+	        databaseURL: "https://ortsolutions-77549.firebaseio.com",
+	        storageBucket: "ortsolutions-77549.appspot.com"
+	    };
+	    _firebase2.default.initializeApp(config);
 	} catch (e) {
-	  console.log("pfft", e);
+	    console.log("pfft", e);
 	}
 
 	var firebaseRef = exports.firebaseRef = _firebase2.default.database().ref();
@@ -12921,7 +12919,7 @@
 	Object.defineProperty(exports, "__esModule", {
 	    value: true
 	});
-	exports.startCreateAccount = exports.startLogout = exports.startLogin = exports.startResetPassword = exports.startUpdateWatchList = exports.startDeleteSensor = exports.startAddSensor = exports.logout = exports.login = exports.completeUpdateWatchList = exports.completeDeleteSensor = exports.completeSensorDataFetch = exports.startSensorDataFetch = exports.fetchSensorData = exports.storeSyncData = undefined;
+	exports.startCreateAccount = exports.startLogout = exports.startLogin = exports.startResetPassword = exports.startUpdateWatchList = exports.startDeleteSensor = exports.startAddSensor = exports.logout = exports.login = exports.storeActiveSensor = exports.addToLog = exports.completeUpdateWatchList = exports.completeDeleteSensor = exports.completeSensorDataFetch = exports.startSensorDataFetch = exports.storeSyncData = undefined;
 
 	var _firebase = __webpack_require__(10);
 
@@ -12933,21 +12931,6 @@
 
 	var storeSyncData = exports.storeSyncData = function storeSyncData(currentTime, userId) {
 	    return { type: 'STORE_SYNC_DATA', currentTime: currentTime, userId: userId };
-	};
-
-	var fetchSensorData = exports.fetchSensorData = function fetchSensorData(numRows) {
-	    return function (dispatch, getState) {
-	        dispatch(startSensorDataFetch());
-
-	        var baseUrl = 'http://52.74.119.147/sensor-data-generator.php?number=';
-	        var url = baseUrl + numRows;
-
-	        axios.get(url).then(function (res) {
-	            var data = res.data;
-
-	            dispatch(completeSensorDataFetch(data));
-	        });
-	    };
 	};
 
 	var startSensorDataFetch = exports.startSensorDataFetch = function startSensorDataFetch() {
@@ -12964,6 +12947,16 @@
 
 	var completeUpdateWatchList = exports.completeUpdateWatchList = function completeUpdateWatchList(pin_mac) {
 	    return { type: 'COMPLETE_UPDATE_WATCHLIST', pin_mac: pin_mac };
+	};
+
+	var addToLog = exports.addToLog = function addToLog(action) {
+	    console.log("action: ", action);
+
+	    return { type: 'ADD_TO_LOG', action: action };
+	};
+
+	var storeActiveSensor = exports.storeActiveSensor = function storeActiveSensor(sensorData) {
+	    console.log("hello", sensorData);
 	};
 
 	var login = exports.login = function login(uid) {
@@ -72456,7 +72449,7 @@
 	                                        { to: '/', activeClassName: 'active', activeStyle: {
 	                                                color: '#222`'
 	                                            } },
-	                                        'Sensor Log'
+	                                        'Action Log'
 	                                    )
 	                                ),
 	                                _react2.default.createElement(
@@ -73720,7 +73713,7 @@
 /* 794 */
 /***/ function(module, exports, __webpack_require__) {
 
-	/* WEBPACK VAR INJECTION */(function($) {'use strict';
+	'use strict';
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
@@ -73748,14 +73741,6 @@
 
 	var HOST = 'http://opsdev.sence.io:4201/';
 
-	var colorMap = {
-	    "ok": "sensorBlockSquare green sensorList",
-	    "warning": "sensorBlockSquare yellow sensorList",
-	    "danger": "sensorBlockSquare orange sensorList",
-	    "down": "sensorBlockSquare red sensorList",
-	    "no data": "sensorBlockSquare grey sensorList"
-	};
-
 	var dataList = [];
 
 	var Building = function (_React$Component) {
@@ -73782,10 +73767,14 @@
 	                    this.props.buildingName,
 	                    React.createElement(
 	                        'div',
-	                        { style: { float: 'right' } },
+	                        { style: {
+	                                float: 'right'
+	                            } },
 	                        React.createElement(
 	                            'span',
-	                            null,
+	                            { style: {
+	                                    fontWeight: '300'
+	                                } },
 	                            'Total Count: ',
 	                            this.props.sensorCount
 	                        ),
@@ -73795,7 +73784,9 @@
 	                            React.createElement(
 	                                IndexLink,
 	                                { activeClassName: 'active', to: uptimeLink },
-	                                React.createElement(FontAwesome, { name: 'bar-chart', style: { marginLeft: '5px' } })
+	                                React.createElement(FontAwesome, { name: 'bar-chart', style: {
+	                                        marginLeft: '5px'
+	                                    } })
 	                            )
 	                        )
 	                    )
@@ -73803,7 +73794,7 @@
 	                React.createElement(
 	                    'table',
 	                    { className: 'sensorHealthTable' },
-	                    React.createElement(BuildingHeader, { areaArray: this.props.areaNames }),
+	                    React.createElement(BuildingHeader, { speedTest: this.props.speedTest }),
 	                    React.createElement(LevelList, { areaArray: this.props.areaNames, levelArray: this.props.levelNames, sensors: this.props.sensors })
 	                )
 	            );
@@ -73875,7 +73866,8 @@
 	                        areaNames: buildings[property]["area_names"],
 	                        levelNames: buildings[property]["level_names"],
 	                        sensors: buildings[property]["sensors"],
-	                        sensorCount: buildings[property]["sensor_count"]
+	                        sensorCount: buildings[property]["sensor_count"],
+	                        speed_test: buildings[property]["speed_test"]
 	                    };
 
 	                    allBuildings.push(temp);
@@ -73888,11 +73880,12 @@
 	                var levelNames = building.levelNames;
 	                var sensors = building.sensors;
 	                var sensorCount = building.sensorCount;
+	                var speedTest = building.speed_test;
 	                if (buildingName.toLowerCase().indexOf(this.props.filterText.toLowerCase()) === -1) {
 	                    return React.createElement('div', null);
 	                }
 
-	                rows.push(React.createElement(Building, { key: buildingName, buildingName: buildingName, areaNames: areaNames, levelNames: levelNames, sensors: sensors, sensorCount: sensorCount }));
+	                rows.push(React.createElement(Building, { key: buildingName, buildingName: buildingName, areaNames: areaNames, levelNames: levelNames, sensors: sensors, sensorCount: sensorCount, speedTest: speedTest }));
 	            }.bind(this));
 
 	            return React.createElement(
@@ -73916,24 +73909,65 @@
 	    }
 
 	    _createClass(BuildingHeader, [{
+	        key: 'handleClick',
+	        value: function handleClick() {
+	            // $('#edit-speed-tester-modal').foundation('open');
+	        }
+	    }, {
 	        key: 'render',
 	        value: function render() {
+	            var _this5 = this;
 
+	            var speedTest = this.props.speedTest;
+
+	            //<th colSpan="2" style={{textAlign: "center",width: '20%'}}>Level</th>
 	            return React.createElement(
 	                'thead',
 	                null,
 	                React.createElement(
 	                    'tr',
 	                    null,
+	                    React.createElement('td', { style: {
+	                            width: "8rem"
+	                        } }),
 	                    React.createElement(
-	                        'th',
+	                        'td',
 	                        { style: {
-	                                textAlign: "center",
-	                                width: '20%'
+	                                "textAlign": "right",
+	                                "fontSize": "0.8rem",
+	                                fontWeight: '300'
 	                            } },
-	                        'Level'
-	                    ),
-	                    React.createElement('th', null)
+	                        React.createElement(
+	                            'span',
+	                            { style: {
+	                                    fontWeight: '500'
+	                                } },
+	                            'Upload'
+	                        ),
+	                        ': ',
+	                        speedTest.upload_speed,
+	                        'Mbit/s |',
+	                        React.createElement(
+	                            'span',
+	                            { style: {
+	                                    fontWeight: '500'
+	                                } },
+	                            'Download'
+	                        ),
+	                        ': ',
+	                        speedTest.download_speed,
+	                        'Mbit/s',
+	                        React.createElement(
+	                            'a',
+	                            { onClick: function onClick() {
+	                                    return _this5.handleClick();
+	                                } },
+	                            React.createElement(FontAwesome, { name: 'cog', style: {
+	                                    color: '#232f32',
+	                                    marginLeft: '1rem'
+	                                } })
+	                        )
+	                    )
 	                )
 	            );
 	        }
@@ -73970,37 +74004,28 @@
 	                var superTemp = [];
 
 	                for (var j = 0; j < sensorsOnThisFloor.length; j++) {
-	                    // console.log("sensorsOnThisFloor", sensorsOnThisFloor[j]);
-	                    var sensorId = sensorsOnThisFloor[j]['id'];
-	                    var status = sensorsOnThisFloor[j]['status'];
-	                    var macAdd = sensorsOnThisFloor[j]['mac'];
-	                    var region = sensorsOnThisFloor[j]['region'];
-	                    var building = sensorsOnThisFloor[j]['building'];
-	                    var level = sensorsOnThisFloor[j]['level'];
-	                    var port = sensorsOnThisFloor[j]['port'];
-	                    var reboot = sensorsOnThisFloor[j]['reboot_available'];
-	                    var watchlist = sensorsOnThisFloor[j]['watchlist'];
-	                    //console.log("macAdd", macAdd);
 
-	                    // console.log("areaArray", areaArray);
+	                    var position = areaArray.indexOf(sensorsOnThisFloor[j]['id']);
 
-	                    var thePos = areaArray.indexOf(sensorId);
-	                    superTemp[thePos] = [macAdd, status, sensorId, region, building, level, port, reboot, watchlist];
+	                    superTemp[position] = {
+	                        macAdd: sensorsOnThisFloor[j]['mac'],
+	                        status: sensorsOnThisFloor[j]['status'],
+	                        sensorId: sensorsOnThisFloor[j]['id'],
+	                        region: sensorsOnThisFloor[j]['region'],
+	                        building: sensorsOnThisFloor[j]['building'],
+	                        level: sensorsOnThisFloor[j]['level'],
+	                        port: sensorsOnThisFloor[j]['port'],
+	                        reboot: sensorsOnThisFloor[j]['reboot_available'],
+	                        watchlist: sensorsOnThisFloor[j]['watchlist']
+	                    };
 	                }
 
 	                superTemp.forEach(function (sensorData) {
 
-	                    var macAdd = sensorData[0];
-	                    var status = sensorData[1];
-	                    var id = sensorData[2];
-	                    var region = sensorData[3];
-	                    var buildingName = sensorData[4];
-	                    level = sensorData[5];
-	                    port = sensorData[6];
-	                    var reboot = sensorData[7];
-	                    var watchlist = sensorData[8];
+	                    level = sensorData['level'];
+	                    port = sensorData['port'];
 
-	                    temp.push(React.createElement(VerticalMenu, { key: macAdd, macAdd: macAdd, buildingName: buildingName, sensorData: sensorData, 'class': colorMap[status], id: id, reboot: reboot, watchlist: watchlist }));
+	                    temp.push(React.createElement(VerticalMenu, { key: sensorData['macAdd'], macAdd: sensorData['macAdd'], sensorData: sensorData }));
 	                });
 
 	                tableRows.push(React.createElement(
@@ -74016,7 +74041,9 @@
 	                        null,
 	                        React.createElement(
 	                            'ul',
-	                            { style: { margin: '0px' } },
+	                            { style: {
+	                                    margin: '0px'
+	                                } },
 	                            temp
 	                        )
 	                    )
@@ -74040,33 +74067,25 @@
 	    function SensorHealthOverview(props) {
 	        _classCallCheck(this, SensorHealthOverview);
 
-	        var _this6 = _possibleConstructorReturn(this, Object.getPrototypeOf(SensorHealthOverview).call(this, props));
+	        var _this7 = _possibleConstructorReturn(this, Object.getPrototypeOf(SensorHealthOverview).call(this, props));
 
-	        _this6.state = {
-	            filterText: _this6.props.filter
+	        _this7.state = {
+	            filterText: _this7.props.filter
 	        };
-	        return _this6;
+	        return _this7;
 	    }
 
 	    _createClass(SensorHealthOverview, [{
 	        key: 'componentDidMount',
 	        value: function componentDidMount() {
 	            if (this.state.filterText === undefined) {
-	                this.setState({
-	                    filterText: ''
-	                });
+	                this.setState({ filterText: '' });
 	            }
 	        }
 	    }, {
 	        key: 'handleUserInput',
 	        value: function handleUserInput(filterText) {
 	            this.setState({ filterText: filterText });
-	        }
-	    }, {
-	        key: 'launchTerminal',
-	        value: function launchTerminal() {
-	            document.getElementById('terminalIFrame').src = HOST;
-	            $('#terminal').foundation('open');
 	        }
 	    }, {
 	        key: 'render',
@@ -74076,16 +74095,14 @@
 	            return React.createElement(
 	                'div',
 	                null,
-	                React.createElement(SearchBar, { filterText: this.state.filterText,
-	                    onUserInput: this.handleUserInput.bind(this) }),
+	                React.createElement(SearchBar, { filterText: this.state.filterText, onUserInput: this.handleUserInput.bind(this) }),
 	                React.createElement(
 	                    'div',
 	                    { className: 'page-title' },
 	                    'Sensors'
 	                ),
 	                React.createElement('hr', { className: 'divider' }),
-	                React.createElement(BuildingList, { data: this.props.data,
-	                    filterText: this.state.filterText }),
+	                React.createElement(BuildingList, { data: this.props.data, filterText: this.state.filterText }),
 	                React.createElement(
 	                    'div',
 	                    { className: 'page-title' },
@@ -74101,7 +74118,6 @@
 	}(React.Component);
 
 	module.exports = (0, _reactRedux.connect)()(SensorHealthOverview);
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(9)))
 
 /***/ },
 /* 795 */
@@ -74449,7 +74465,7 @@
 /* 796 */
 /***/ function(module, exports, __webpack_require__) {
 
-	/* WEBPACK VAR INJECTION */(function($) {'use strict';
+	'use strict';
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
@@ -74471,8 +74487,6 @@
 
 	var React = __webpack_require__(14);
 
-	var HOST = 'http://opsdev.sence.io:4201/';
-
 	var _require = __webpack_require__(47);
 
 	var Link = _require.Link;
@@ -74480,254 +74494,69 @@
 
 	var store = __webpack_require__(797).configure();
 
+	var colorMap = {
+	    "ok": "sensorBlockSquare green sensorList",
+	    "warning": "sensorBlockSquare yellow sensorList",
+	    "danger": "sensorBlockSquare orange sensorList",
+	    "down": "sensorBlockSquare red sensorList",
+	    "no data": "sensorBlockSquare grey sensorList"
+	};
+
 	var VerticalMenu = function (_React$Component) {
-	  _inherits(VerticalMenu, _React$Component);
+	    _inherits(VerticalMenu, _React$Component);
 
-	  function VerticalMenu(props) {
-	    _classCallCheck(this, VerticalMenu);
+	    function VerticalMenu(props) {
+	        _classCallCheck(this, VerticalMenu);
 
-	    var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(VerticalMenu).call(this, props));
+	        var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(VerticalMenu).call(this, props));
 
-	    _this.state = {
-	      reboot_available: _this.props.reboot,
-	      isWatched: _this.props.watchlist
-	    };
-	    return _this;
-	  }
-
-	  _createClass(VerticalMenu, [{
-	    key: 'handleClick',
-	    value: function handleClick(sensorData, action) {
-	      var dispatch = this.props.dispatch;
-
-
-	      var macAddress = sensorData[0];
-	      var region = sensorData[3];
-	      var level = sensorData[5];
-	      var areaID = sensorData[2];
-	      var buildingName = sensorData[4];
-	      var port = sensorData[6];
-	      var watchlist = sensorData[8];
-
-	      switch (action) {
-	        case 'EDIT_ACTION':
-
-	          $('#inputMac').val(macAddress);
-	          $('#inputRegion').val(region.toLowerCase());
-	          $('#inputLocationLevel').val(level);
-	          $('#inputSensorLocationID').val(areaID);
-	          $('#inputBuildingName').val(buildingName);
-	          $('#edit-sensor-modal').foundation('open');
-
-	          break;
-	        case 'DELETE_ACTION':
-
-	          document.getElementById('deleteDetails').innerHTML = buildingName + ": " + level + areaID;
-	          document.getElementById('deleteMac').innerHTML = macAddress;
-
-	          dispatch(actions.startDeleteSensor(macAddress));
-	          $('#delete-sensor-modal').foundation('open');
-
-	          break;
-
-	        case 'NO_ACTION':
-	          var dropdowns = document.getElementsByClassName("dropdown-pane");
-	          var i;
-
-	          for (i = 0; i < dropdowns.length; i++) {
-	            var openDropdown = dropdowns[i];
-	            if (openDropdown.style.visibility === "visible") {
-	              openDropdown.style.visibility = "hidden";
-	            }
-	          }
-
-	          if (document.getElementById(macAddress).style.visibility === "visible") {
-	            document.getElementById(macAddress).style.visibility = "hidden";
-	          } else {
-	            document.getElementById(macAddress).style.visibility = "visible";
-	          }
-
-	          break;
-
-	        case 'OPEN_CANVAS_ACTION':
-	          document.getElementById("sensorDetailsIFrame").src = "./offCrepe.html?offCanMac=" + macAddress;
-	          break;
-
-	        case 'PIN_WATCHLIST_ACTION':
-
-	          dispatch(actions.startUpdateWatchList(macAddress));
-	          $('#pin-sensor-modal').foundation('open');
-
-	          break;
-
-	        case 'UNPIN_WATCHLIST_ACTION':
-
-	          dispatch(actions.startUpdateWatchList(macAddress));
-	          $('#unpin-sensor-modal').foundation('open');
-
-	          break;
-
-	        case 'LAUNCH_TERMINAL_ACTION':
-
-	          console.log("port", port);
-
-	          if (port.length > 0) {
-	            document.getElementById("terminalIFrame").src = HOST + '?username=pi&port=' + port;
-	          }
-
-	          $('#terminal').foundation('open');
-
-	          break;
-	        case 'GENERATE_CHART_ACTION':
-
-	          alert("One moment please.");
-
-	          break;
-
-	        default:
-	          console.warn('Invalid request.');
-	          break;
-	      }
+	        _this.state = {
+	            reboot_available: _this.props.sensorData['reboot'],
+	            isWatched: _this.props.sensorData['watchlist']
+	        };
+	        return _this;
 	    }
-	  }, {
-	    key: 'renderTerminalLink',
-	    value: function renderTerminalLink() {
-	      var _this2 = this;
 
-	      var reboot_available = this.state.reboot_available;
+	    _createClass(VerticalMenu, [{
+	        key: 'handleClick',
+	        value: function handleClick(sensorData, action) {
+	            var dispatch = this.props.dispatch;
 
+	            var macAdd = sensorData['macAdd'];
 
-	      if (reboot_available) {
-	        return React.createElement(
-	          'li',
-	          { style: { borderTop: '0.5px solid #222' } },
-	          React.createElement(
-	            'a',
-	            { onClick: function onClick() {
-	                return _this2.handleClick(_this2.props.sensorData, 'LAUNCH_TERMINAL_ACTION');
-	              } },
-	            'Launch terminal'
-	          )
-	        );
-	      }
-	    }
-	  }, {
-	    key: 'renderWatchlistLink',
-	    value: function renderWatchlistLink() {
-	      var _this3 = this;
+	            console.log(sensorData);
 
-	      var isWatched = this.state.isWatched;
+	            document.getElementById("sensorDetailsIFrame").src = "./offCrepe.html?offCanMac=" + macAdd;
+	            dispatch(actions.storeActiveSensor(sensorData));
+	        }
+	    }, {
+	        key: 'render',
+	        value: function render() {
+	            var _this2 = this;
 
+	            // var historicalUrl = `/historical/${this.props.macAdd}`;
 
-	      if (isWatched) {
-	        return React.createElement(
-	          'li',
-	          null,
-	          React.createElement(
-	            'a',
-	            { onClick: function onClick() {
-	                return _this3.handleClick(_this3.props.sensorData, 'UNPIN_WATCHLIST_ACTION');
-	              } },
-	            'Unpin sensor'
-	          )
-	        );
-	      } else {
-	        return React.createElement(
-	          'li',
-	          null,
-	          React.createElement(
-	            'a',
-	            { onClick: function onClick() {
-	                return _this3.handleClick(_this3.props.sensorData, 'PIN_WATCHLIST_ACTION');
-	              } },
-	            'Pin sensor'
-	          )
-	        );
-	      }
-	    }
-	  }, {
-	    key: 'render',
-	    value: function render() {
-	      var _this4 = this;
+	            var cls = colorMap[this.props.sensorData['status']];
+	            var id = this.props.sensorData['sensorId'];
 
-	      var historicalUrl = '/historical/' + this.props.macAdd;
+	            return React.createElement(
+	                'li',
+	                { className: 'sensorList' },
+	                React.createElement(
+	                    'div',
+	                    { className: cls, 'data-toggle': 'offCanvas', onClick: function onClick() {
+	                            return _this2.handleClick(_this2.props.sensorData);
+	                        } },
+	                    id
+	                )
+	            );
+	        }
+	    }]);
 
-	      return React.createElement(
-	        'li',
-	        { className: 'sensorList' },
-	        React.createElement(
-	          'div',
-	          { className: this.props.class, onClick: function onClick() {
-	              return _this4.handleClick(_this4.props.sensorData, 'NO_ACTION');
-	            } },
-	          this.props.id
-	        ),
-	        React.createElement(
-	          'div',
-	          { className: 'dropdown-pane', id: this.props.macAdd, 'data-dropdown': true, 'data-options': 'data-hover:true; data-close-on-click:true' },
-	          React.createElement(
-	            'ul',
-	            { className: 'vertical menu tableOptions' },
-	            React.createElement(
-	              'li',
-	              { className: 'menuHeader' },
-	              this.props.macAdd
-	            ),
-	            React.createElement(
-	              'li',
-	              null,
-	              React.createElement(
-	                'a',
-	                { onClick: function onClick() {
-	                    return _this4.handleClick(_this4.props.sensorData, 'OPEN_CANVAS_ACTION');
-	                  }, 'data-toggle': 'offCanvas' },
-	                'More details »'
-	              )
-	            ),
-	            React.createElement(
-	              'li',
-	              { style: { borderTop: '0.5px solid #222' } },
-	              React.createElement(
-	                'a',
-	                { onClick: function onClick() {
-	                    return _this4.handleClick(_this4.props.sensorData, 'EDIT_ACTION');
-	                  } },
-	                'Edit sensor'
-	              )
-	            ),
-	            React.createElement(
-	              'li',
-	              null,
-	              React.createElement(
-	                'a',
-	                { onClick: function onClick() {
-	                    return _this4.handleClick(_this4.props.sensorData, 'DELETE_ACTION');
-	                  } },
-	                'Delete sensor'
-	              )
-	            ),
-	            this.renderWatchlistLink(),
-	            this.renderTerminalLink(),
-	            React.createElement(
-	              'li',
-	              { style: { borderTop: '0.5px solid #222' } },
-	              React.createElement(
-	                IndexLink,
-	                { activeClassName: 'active', to: historicalUrl },
-	                'View historical data »'
-	              )
-	            )
-	          )
-	        )
-	      );
-	    }
-	  }]);
-
-	  return VerticalMenu;
+	    return VerticalMenu;
 	}(React.Component);
 
 	module.exports = (0, _reactRedux.connect)()(VerticalMenu);
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(9)))
 
 /***/ },
 /* 797 */
@@ -82607,6 +82436,16 @@
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
+	var _reactRedux = __webpack_require__(111);
+
+	var Redux = _interopRequireWildcard(_reactRedux);
+
+	var _actions = __webpack_require__(139);
+
+	var actions = _interopRequireWildcard(_actions);
+
+	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
@@ -82615,12 +82454,6 @@
 
 	var React = __webpack_require__(14);
 	var updateWatchList = __webpack_require__(802);
-
-	var _require = __webpack_require__(111);
-
-	var connect = _require.connect;
-
-	var pinMac = "";
 
 	var PinSensor = function (_React$Component) {
 	    _inherits(PinSensor, _React$Component);
@@ -82639,6 +82472,7 @@
 	    _createClass(PinSensor, [{
 	        key: 'onPinSensor',
 	        value: function onPinSensor() {
+	            var dispatch = this.props.dispatch;
 
 	            var macAdd = this.props.pin_mac.pin_mac;
 	            var that = this;
@@ -82659,6 +82493,11 @@
 
 	                    myCustomEvent.initEvent("customEvent", true, true);
 	                    document.dispatchEvent(myCustomEvent);
+
+	                    // let's try to add this to firebase
+	                    var action = 'Pinned ' + macAdd + ' to watch list';
+
+	                    dispatch(actions.addToLog(action));
 
 	                    that.setState({ message: response.success });
 	                }
@@ -82758,7 +82597,7 @@
 	    return { pin_mac: state.pin_mac };
 	}
 
-	module.exports = connect(mapStateToProps)(PinSensor);
+	module.exports = (0, _reactRedux.connect)(mapStateToProps)(PinSensor);
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(9)))
 
 /***/ },

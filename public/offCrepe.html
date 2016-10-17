@@ -14,6 +14,11 @@
 <body>
 
     <div class="sensor-details">
+        <div class="amIAlive">
+            <span>
+                <div id="circle"></div> | Latency: <span id="latency"> - </span> ms
+            </span>
+        </div>
         <div class="header textAlignCenter" id="building">Loading</div>
         <hr/>
         <div class="sub-header textAlignCenter" id="mac_address"></div>
@@ -28,69 +33,51 @@
                 <tbody>
                     <tr>
                         <td>
-                            <i class="fa fa-arrow-up" aria-hidden="true"></i> Uptime
+                            <i class="fa fa-arrow-up" aria-hidden="true"></i>
                         </td>
-                        <td id="uptime">
-                            -
-                        </td>
-                        <td>
-                            %
-                        </td>
+                        <td>Uptime</td>
+                        <td id="uptime">-</td>
+                        <td>%</td>
                     </tr>
                     <tr>
                         <td>
-                            <i class="fa fa-fire" aria-hidden="true"></i> Temperature
+                            <i class="fa fa-fire" aria-hidden="true"></i>
                         </td>
-                        <td id="temperature">
-                            -
-                        </td>
-                        <td>
-                            &deg;C
-                        </td>
+                        <td>Temperature</td>
+                        <td id="temperature">-</td>
+                        <td>&deg;C</td>
                     </tr>
                     <tr>
                         <td>
-                            <i class="fa fa-hdd-o" aria-hidden="true"></i> CPU Usage
+                            <i class="fa fa-hdd-o" aria-hidden="true"></i>
                         </td>
-                        <td id="cpu">
-                            -
-                        </td>
-                        <td>
-                            %
-                        </td>
+                        <td>CPU Usage</td>
+                        <td id="cpu">-</td>
+                        <td>%</td>
                     </tr>
                     <tr>
                         <td>
-                            <i class="fa fa-database" aria-hidden="true"></i> Storage
+                            <i class="fa fa-database" aria-hidden="true"></i>
                         </td>
-                        <td id="storage">
-                            -
-                        </td>
-                        <td>
-                            %
-                        </td>
+                        <td>Storage</td>
+                        <td id="storage">-</td>
+                        <td>%</td>
                     </tr>
                     <tr>
                         <td>
-                            <i class="fa fa-tachometer" aria-hidden="true"></i> RAM
+                            <i class="fa fa-tachometer" aria-hidden="true"></i>
                         </td>
-                        <td id="ram">
-                            -
-                        </td>
-                        <td>
-                            %
-                        </td>
+                        <td>RAM</td>
+                        <td id="ram">-</td>
+                        <td>%</td>
                     </tr>
                     <tr>
                         <td>
-                            <i class="fa fa-arrows-v" aria-hidden="true"></i> Flapping
+                            <i class="fa fa-arrows-v" aria-hidden="true"></i>
                         </td>
-                        <td id="flapping">
-                            -
-                        </td>
-                        <td>
-
-                        </td>
+                        <td>Flapping</td>
+                        <td id="flapping">-</td>
+                        <td></td>
                     </tr>
                 </tbody>
             </table>

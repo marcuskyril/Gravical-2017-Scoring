@@ -67,7 +67,7 @@ class Nav extends React.Component {
                                 <li>
                                     <Link to="/" activeClassName="active" activeStyle={{
                                         color: '#222`'
-                                    }}>Sensor Log</Link>
+                                    }}>Action Log</Link>
                                 </li>
                                 <li>
                                     <a href="#">Configure Settings</a>

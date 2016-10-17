@@ -22,6 +22,15 @@ html {
     pointer-events: none;
 }
 
+#circle {
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    border-radius: 5px;
+    background: green;
+}
 
 #diagnosis {
     color: #1a1b1b;
@@ -36,6 +45,13 @@ html {
 hr {
     border-color: #373837;
     margin-top: 0.5rem;
+    /*margin-bottom: 0;*/
+}
+
+.amIAlive{
+    margin-top: -1rem;
+    margin-bottom: 0.5rem;
+    color: #232f32;
 }
 
 .proceed {
@@ -221,6 +237,10 @@ table.overview-custom tr {
 table.sensor-details-table tbody {
     text-align: left;
     font-size: 1.2rem;
+}
+
+table.sensor-details-table td:first-child {
+    width: 1px;
 }
 
 .top-five-table {
