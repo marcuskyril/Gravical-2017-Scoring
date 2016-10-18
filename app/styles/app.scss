@@ -57,7 +57,6 @@ body {
 div#offCanvas {
     width: 350px;
     height: 100%;
-    padding: 1.5rem;
     background: $not-so-dark-grey;
 }
 
@@ -525,15 +524,10 @@ input[type=checkbox]:checked ~ #port {
 
 table.sensor-details-table tbody {
     text-align: left;
-    font-size: 1.2rem;
 }
 
 table.sensor-details-table td:first-child {
     width: 1px;
-}
-
-.top-five-table {
-  font-size: 1.2rem;
 }
 
 .statusText {

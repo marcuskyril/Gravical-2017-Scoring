@@ -19,31 +19,14 @@ class SensorDetails extends React.Component {
 
         this.state = {
             isLoading: false,
-            mac_address: '',
-            building_name: '',
-            building_level: '',
-            area_id: '',
-            CPU_usage: '',
-            days: '',
-            flapping: '',
-            hours: '',
-            last_reboot: '',
-            mins: '',
-            ram: '',
+            macAdd: '',
+            latency: '',
+            amIAlive: '',
+            location: '',
             status: '',
-            storage: '',
-            temperature: '',
-            uptime_percentage: '',
-            process1name: '',
-            process1value: '',
-            process2name: '',
-            process2value: '',
-            process3name: '',
-            process3value: '',
-            process4name: '',
-            process4value: '',
-            process5name: '',
-            process5value: ''
+            lastReboot: '',
+            stats: {},
+            top5: []
         };
     }
 
@@ -81,8 +64,33 @@ class SensorDetails extends React.Component {
                             latency = parseFloat(Math.round(response["router_latency"] * 100) / 100).toFixed(2);
                         }
 
+                        that.setState({
+                            macAdd: macAdd,
+                            latency: latency,
+                            amIAlive: response["am_i_alive"],
+                            location: `${response["sensor_location_level"]}${response["sensor_location_id"]}`,
+                            status: response["status"], // add class?
+                            lastReboot: response["last_reboot"],
+                            stats: {
+                                uptime: `${response["uptime_percentage"]}%`,
+                                temperature: `${response["temperature"]} C`,
+                                cpu: `${response["cpu"]}%`,
+                                storage: `${response["storage"]}%`,
+                                ram: `${response["ram"]}%`,
+                                flapping: response["flapping"]
+                            },
+                            top5: [
+                                {process: response["top_5_processes"]["1"]["process"], usage: response["top_5_processes"]["1"]["usage"]},
+                                {process: response["top_5_processes"]["2"]["process"], usage: response["top_5_processes"]["2"]["usage"]},
+                                {process: response["top_5_processes"]["3"]["process"], usage: response["top_5_processes"]["3"]["usage"]},
+                                {process: response["top_5_processes"]["4"]["process"], usage: response["top_5_processes"]["4"]["usage"]},
+                                {process: response["top_5_processes"]["5"]["process"], usage: response["top_5_processes"]["5"]["usage"]}
+                            ]
+                        });
+
                     } else {
                         // no shit here
+                        console.log("woah, nothing here buddy");
                     }
 
                     setTimeout(function() {
@@ -99,11 +107,6 @@ class SensorDetails extends React.Component {
             }
 
         }, false);
-
-        $(document).on('opened.zf.offcanvas', function(e) {
-            var macAdd = that.props.sensorData.sensorData;
-
-        });
     }
 
     send(msg) {
@@ -125,107 +128,101 @@ class SensorDetails extends React.Component {
     }
 
     render() {
-        // <div className="sub-header" id="mac_address"></div>
-        // <div className="header" id="status"></div>
-        // <div className="sub-header" id="itsDeadJim"></div>
+
+        var {macAdd, latency, amIAlive, status, location, lastReboot, stats, top5} = this.state;
+
+        function renderStats(stats) {
+
+            if(stats != undefined) {
+                var rows = [];
+
+                for(var key in stats) {
+                    rows.push(
+                        <tr key={key}>
+                            <td>{key}</td>
+                            <td>{stats[key]}</td>
+                        </tr>
+                    );
+                }
+
+                return (
+                    <tbody>
+                        {rows}
+                    </tbody>
+                );
+            }
+        }
+
+        function renderTop5(top5) {
+            if(top5 != undefined) {
+                var rows = [];
+                for(var i = 0; i < top5.length; i++) {
+                    rows.push(
+                        <tr>
+                            <td>{i+1}</td>
+                            <td>{top5[i]['process']}</td>
+                            <td>{top5[i]['usage']}</td>
+                        </tr>
+                    );
+                }
+
+                return (
+                    <tbody>
+                        {rows}
+                    </tbody>
+                );
+            }
+        }
 
         return (
-            <div className="textAlignCenter">
-                <div className="page-title" id="building">Loading</div>
-                <hr/>
-                <div id="last_reboot">loading...</div>
+            <div>
 
-                <div className="page-title margin-top-md">Statistics</div>
-                <table className="sensor-details-table">
-                    <tbody>
-                        <tr>
-                            <td>Uptime</td>
-                            <td id="uptime">-</td>
-                            <td>%</td>
-                        </tr>
-                        <tr>
-                            <td>Temperature</td>
-                            <td id="temperature">-</td>
-                            <td>&deg;C</td>
-                        </tr>
-                        <tr>
-                            <td>CPU Usage</td>
-                            <td id="cpu">-</td>
-                            <td>%</td>
-                        </tr>
-                        <tr>
-                            <td>Storage</td>
-                            <td id="storage">-</td>
-                            <td>%</td>
-                        </tr>
-                        <tr>
-                            <td>RAM</td>
-                            <td id="ram">-</td>
-                            <td>%</td>
-                        </tr>
-                        <tr>
-                            <td>Flapping</td>
-                            <td id="flapping">-</td>
-                            <td></td>
-                        </tr>
-                    </tbody>
-                </table>
-
-                <div className="top-5">
-                    <div className="page-title">Top 5 Processes</div>
-                    <table className="top-five-table">
-                        <tbody>
-                            <tr>
-                                <td>1</td>
-                                <td id="top1"></td>
-                                <td id="top1-usage"></td>
-                            </tr>
-                            <tr>
-                                <td>2</td>
-                                <td id="top2"></td>
-                                <td id="top2-usage"></td>
-                            </tr>
-                            <tr>
-                                <td>3</td>
-                                <td id="top3"></td>
-                                <td id="top3-usage"></td>
-                            </tr>
-                            <tr>
-                                <td>4</td>
-                                <td id="top4"></td>
-                                <td id="top4-usage"></td>
-                            </tr>
-                            <tr>
-                                <td>5</td>
-                                <td id="top5"></td>
-                                <td id="top5-usage"></td>
-                            </tr>
-                        </tbody>
-                    </table>
+                <div className="top-bar margin-bottom-small">
+                    <div className="top-bar-left" style={{color: '#fff'}}>
+                        {macAdd}
+                    </div>
+                    <div className="top-bar-right">
+                        <ul className="dropdown menu" data-dropdown-menu>
+                            <li>
+                              <a><FontAwesome name='edit'/></a>
+                            </li>
+                            <li>
+                              <a><FontAwesome name='trash'/></a>
+                            </li>
+                            <li>
+                              <a><FontAwesome name='thumb-tack'/></a>
+                            </li>
+                        </ul>
+                    </div>
                 </div>
+                <div className="textAlignCenter" style={{padding: '1.5rem'}}>
+                    <div className="page-title">Loading</div>
+                    <hr/>
+                    <div>Just fucking wait, ok?</div>
 
-                <a className="button proceed expanded">
-                    Edit
-                </a>
-                <a className="button cancel expanded">
-                    Delete
-                </a>
+                    <div className="page-title margin-top-md">Statistics</div>
+                        <table className="sensor-details-table">
+                            {renderStats(stats)}
+                        </table>
 
-                <a className="button proceed expanded">
-                    Pin
-                </a>
+                    <div className="page-title">Top 5 Processes</div>
 
-                <a className="button proceed expanded">
-                    Cmd _>
-                </a>
+                        <table className="sensor-details-table">
+                            {renderTop5(top5)}
+                        </table>
 
-                <a className="button proceed expanded">
-                    Reboot
-                </a>
-                <a className="button proceed expanded">
-                    Charts
-                </a>
 
+                    <a className="button proceed expanded">
+                        Launch Terminal
+                    </a>
+
+                    <a className="button proceed expanded">
+                        Reboot Sensor
+                    </a>
+                    <a className="button proceed expanded">
+                        Historical Charts
+                    </a>
+                </div>
             </div>
         );
     }

@@ -147,7 +147,8 @@ try {
             document.getElementById("top5").innerHTML = response["top_5_processes"]["5"]["process"];
 
 
-            data = [response["top_5_processes"]["1"]["process"],
+            data =
+                [response["top_5_processes"]["1"]["process"],
                 response["top_5_processes"]["2"]["process"],
                 response["top_5_processes"]["3"]["process"],
                 response["top_5_processes"]["4"]["process"],
