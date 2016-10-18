@@ -27,8 +27,8 @@ export var addToLog = (action) => {
     return {type: 'ADD_TO_LOG', action}
 }
 
-export var storeActiveSensor = (sensorData) => {
-    console.log("hello", sensorData);
+export var storeActiveSensor = (macAdd) => {
+    return {type: 'STORE_ACTIVE_SENSOR', macAdd}
 }
 
 export var login = (uid) => {

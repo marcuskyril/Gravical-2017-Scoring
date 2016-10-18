@@ -17,21 +17,25 @@ class VerticalMenu extends React.Component {
 
     constructor(props) {
         super(props);
-
-        this.state = {
-            reboot_available: this.props.sensorData['reboot'],
-            isWatched: this.props.sensorData['watchlist']
-        }
     }
 
     handleClick(sensorData, action) {
         var {dispatch} = this.props;
         var macAdd = sensorData['macAdd'];
 
-        console.log(sensorData);
+        console.log("To REDUX: ", macAdd);
 
-        // document.getElementById("sensorDetailsIFrame").src = "./offCrepe.html?offCanMac=" + macAdd;
-        dispatch(actions.storeActiveSensor(sensorData));
+        var tobascoSauce = document.createEvent("Event");
+
+        tobascoSauce.data = {
+            macAdd: macAdd            
+        };
+
+        tobascoSauce.initEvent("tobascoSauce", true, true);
+        document.dispatchEvent(tobascoSauce);
+
+        dispatch(actions.storeActiveSensor(macAdd));
+
     }
 
     render() {

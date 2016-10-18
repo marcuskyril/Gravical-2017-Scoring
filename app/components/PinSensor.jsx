@@ -35,11 +35,6 @@ class PinSensor extends React.Component {
                 myCustomEvent.initEvent("customEvent", true, true);
                 document.dispatchEvent(myCustomEvent);
 
-                // let's try to add this to firebase
-                var action = `Pinned ${macAdd} to watch list`;
-
-                dispatch(actions.addToLog(action));
-
                 that.setState({message: response.success});
             }
         });

@@ -54,7 +54,7 @@ class SearchBar extends React.Component {
     handleChange() {
         this.props.onUserInput(this.refs.filterTextInput.value);
     }
-    
+
     render() {
 
         return (
@@ -128,6 +128,7 @@ class BuildingHeader extends React.Component {
         var speedTest = this.props.speedTest;
 
         //<th colSpan="2" style={{textAlign: "center",width: '20%'}}>Level</th>
+
         return (
             <thead>
                 <tr>
@@ -148,9 +149,9 @@ class BuildingHeader extends React.Component {
                         }}>Download</span>: {speedTest.download_speed}
                         Mbit/s
                         <a onClick={() => this.handleClick()}><FontAwesome name='cog' style={{
-                color: '#232f32',
-                marginLeft: '1rem'
-            }}/></a>
+                            color: '#232f32',
+                            marginLeft: '1rem'
+                        }}/></a>
                     </td>
                 </tr>
             </thead>

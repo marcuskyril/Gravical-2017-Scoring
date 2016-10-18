@@ -1,7 +1,16 @@
 var React = require('react');
 var axios = require('axios');
 var FontAwesome = require('react-fontawesome');
+var {connect} = require('react-redux');
+
 var socket;
+var colorMap = {
+  "ok" : "#006600",
+  "warning" : "#ffcc00",
+  "danger" : "#cc7a00",
+  "down" : "#990000",
+  "no data" : "#737373"
+}
 
 class SensorDetails extends React.Component {
 
@@ -9,6 +18,7 @@ class SensorDetails extends React.Component {
         super(props);
 
         this.state = {
+            isLoading: false,
             mac_address: '',
             building_name: '',
             building_level: '',
@@ -43,37 +53,57 @@ class SensorDetails extends React.Component {
 
         const SOCKET_URL = "ws://opsdev.sence.io:9010/SensorStatus";
 
-        // TO DO:
-        // Retrieve mac address from redux
-        var macAddress = "B8:27:EB:05:B0:B0";
+        window.addEventListener('tobascoSauce', function(e) {
 
-        try {
-            socket = new WebSocket(SOCKET_URL);
+            var macAdd = e.data.macAdd;
+            console.log("From REDUX: ", macAdd);
 
-            socket.onopen = function(msg) {
-                console.log("connected");
+            try {
+                socket = new WebSocket(SOCKET_URL);
 
-                that.send(macAddress);
-                // console.log("1st send");
-            };
-            socket.onmessage = function(msg) {
+                socket.onopen = function(msg) {
+                    console.log("connected");
 
-                var response = JSON.parse(msg.data);
+                    that.send(macAdd);
+                    // console.log("1st send");
+                };
 
-                // console.log("response", response);
+                socket.onmessage = function(msg) {
 
-                setTimeout(function() {
-                    that.send(macAddress);
-                }, 5000);
+                    var response = JSON.parse(msg.data);
+                    if (typeof response.error == "undefined") {
+                        console.log("response", response);
 
-            };
-            socket.onclose = function(msg) {
-                console.log("Disconnected");
-            };
+                        // {response["am_i_alive"] ? colorMap['ok'] : colorMap['down']}
+                        var latency = '';
 
-        } catch (ex) {
-            console.warn(ex);
-        }
+                        if (response["router_latency"] != "-") {
+                            latency = parseFloat(Math.round(response["router_latency"] * 100) / 100).toFixed(2);
+                        }
+
+                    } else {
+                        // no shit here
+                    }
+
+                    setTimeout(function() {
+                        that.send(macAdd);
+                    }, 5000);
+
+                };
+                socket.onclose = function(msg) {
+                    console.log("Disconnected");
+                };
+
+            } catch (ex) {
+                console.warn(ex);
+            }
+
+        }, false);
+
+        $(document).on('opened.zf.offcanvas', function(e) {
+            var macAdd = that.props.sensorData.sensorData;
+
+        });
     }
 
     send(msg) {
@@ -201,4 +231,8 @@ class SensorDetails extends React.Component {
     }
 };
 
-module.exports = SensorDetails;
+function mapStateToProps(state, ownProps) {
+    return {sensorData: state.activeSensor}
+}
+
+module.exports = connect(mapStateToProps)(SensorDetails);

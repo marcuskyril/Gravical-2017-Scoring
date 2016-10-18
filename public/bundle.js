@@ -12955,8 +12955,8 @@
 	    return { type: 'ADD_TO_LOG', action: action };
 	};
 
-	var storeActiveSensor = exports.storeActiveSensor = function storeActiveSensor(sensorData) {
-	    console.log("hello", sensorData);
+	var storeActiveSensor = exports.storeActiveSensor = function storeActiveSensor(macAdd) {
+	    return { type: 'STORE_ACTIVE_SENSOR', macAdd: macAdd };
 	};
 
 	var login = exports.login = function login(uid) {
@@ -73919,6 +73919,7 @@
 	            var speedTest = this.props.speedTest;
 
 	            //<th colSpan="2" style={{textAlign: "center",width: '20%'}}>Level</th>
+
 	            return React.createElement(
 	                'thead',
 	                null,
@@ -74506,13 +74507,7 @@
 	    function VerticalMenu(props) {
 	        _classCallCheck(this, VerticalMenu);
 
-	        var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(VerticalMenu).call(this, props));
-
-	        _this.state = {
-	            reboot_available: _this.props.sensorData['reboot'],
-	            isWatched: _this.props.sensorData['watchlist']
-	        };
-	        return _this;
+	        return _possibleConstructorReturn(this, Object.getPrototypeOf(VerticalMenu).call(this, props));
 	    }
 
 	    _createClass(VerticalMenu, [{
@@ -74522,10 +74517,18 @@
 
 	            var macAdd = sensorData['macAdd'];
 
-	            console.log(sensorData);
+	            console.log("To REDUX: ", macAdd);
 
-	            // document.getElementById("sensorDetailsIFrame").src = "./offCrepe.html?offCanMac=" + macAdd;
-	            dispatch(actions.storeActiveSensor(sensorData));
+	            var tobascoSauce = document.createEvent("Event");
+
+	            tobascoSauce.data = {
+	                macAdd: macAdd
+	            };
+
+	            tobascoSauce.initEvent("tobascoSauce", true, true);
+	            document.dispatchEvent(tobascoSauce);
+
+	            dispatch(actions.storeActiveSensor(macAdd));
 	        }
 	    }, {
 	        key: 'render',
@@ -74585,11 +74588,11 @@
 	  var initialState = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
 
 	  var reducer = redux.combineReducers({
-	    sensorData: _reducers.sensorDataReducer,
 	    auth: _reducers.authReducer,
 	    macAddress: _reducers.deleteSensorReducer,
 	    pin_mac: _reducers.updateWatchListReducer,
-	    syncData: _reducers.syncDataReducer
+	    syncData: _reducers.syncDataReducer,
+	    activeSensor: _reducers.activeSensorReducer
 	  });
 
 	  var store = redux.createStore(reducer, initialState, redux.compose(redux.applyMiddleware(_reduxThunk2.default), window.devToolsExtension ? window.devToolsExtension() : function (f) {
@@ -74717,6 +74720,21 @@
 	      };
 	    case 'LOGOUT':
 	      return {};
+	    default:
+	      return state;
+	  }
+	};
+
+	var activeSensorReducer = exports.activeSensorReducer = function activeSensorReducer() {
+	  var state = arguments.length <= 0 || arguments[0] === undefined ? { macAdd: '' } : arguments[0];
+	  var action = arguments[1];
+
+
+	  switch (action.type) {
+	    case 'STORE_ACTIVE_SENSOR':
+	      return {
+	        sensorData: action.macAdd
+	      };
 	    default:
 	      return state;
 	  }
@@ -82492,11 +82510,6 @@
 	                    myCustomEvent.initEvent("customEvent", true, true);
 	                    document.dispatchEvent(myCustomEvent);
 
-	                    // let's try to add this to firebase
-	                    var action = 'Pinned ' + macAdd + ' to watch list';
-
-	                    dispatch(actions.addToLog(action));
-
 	                    that.setState({ message: response.success });
 	                }
 	            });
@@ -83197,7 +83210,7 @@
 /* 835 */
 /***/ function(module, exports, __webpack_require__) {
 
-	'use strict';
+	/* WEBPACK VAR INJECTION */(function($) {'use strict';
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
@@ -83210,7 +83223,20 @@
 	var React = __webpack_require__(14);
 	var axios = __webpack_require__(140);
 	var FontAwesome = __webpack_require__(581);
+
+	var _require = __webpack_require__(111);
+
+	var connect = _require.connect;
+
+
 	var socket;
+	var colorMap = {
+	    "ok": "#006600",
+	    "warning": "#ffcc00",
+	    "danger": "#cc7a00",
+	    "down": "#990000",
+	    "no data": "#737373"
+	};
 
 	var SensorDetails = function (_React$Component) {
 	    _inherits(SensorDetails, _React$Component);
@@ -83221,6 +83247,7 @@
 	        var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(SensorDetails).call(this, props));
 
 	        _this.state = {
+	            isLoading: false,
 	            mac_address: '',
 	            building_name: '',
 	            building_level: '',
@@ -83258,35 +83285,52 @@
 
 	            var SOCKET_URL = "ws://opsdev.sence.io:9010/SensorStatus";
 
-	            // TO DO:
-	            // Retrieve mac address from redux
-	            var macAddress = "B8:27:EB:05:B0:B0";
+	            window.addEventListener('tobascoSauce', function (e) {
 
-	            try {
-	                socket = new WebSocket(SOCKET_URL);
+	                var macAdd = e.data.macAdd;
+	                console.log("From REDUX: ", macAdd);
 
-	                socket.onopen = function (msg) {
-	                    console.log("connected");
+	                try {
+	                    socket = new WebSocket(SOCKET_URL);
 
-	                    that.send(macAddress);
-	                    // console.log("1st send");
-	                };
-	                socket.onmessage = function (msg) {
+	                    socket.onopen = function (msg) {
+	                        console.log("connected");
 
-	                    var response = JSON.parse(msg.data);
+	                        that.send(macAdd);
+	                        // console.log("1st send");
+	                    };
 
-	                    // console.log("response", response);
+	                    socket.onmessage = function (msg) {
 
-	                    setTimeout(function () {
-	                        that.send(macAddress);
-	                    }, 5000);
-	                };
-	                socket.onclose = function (msg) {
-	                    console.log("Disconnected");
-	                };
-	            } catch (ex) {
-	                console.warn(ex);
-	            }
+	                        var response = JSON.parse(msg.data);
+	                        if (typeof response.error == "undefined") {
+	                            console.log("response", response);
+
+	                            // {response["am_i_alive"] ? colorMap['ok'] : colorMap['down']}
+	                            var latency = '';
+
+	                            if (response["router_latency"] != "-") {
+	                                latency = parseFloat(Math.round(response["router_latency"] * 100) / 100).toFixed(2);
+	                            }
+	                        } else {
+	                            // no shit here
+	                        }
+
+	                        setTimeout(function () {
+	                            that.send(macAdd);
+	                        }, 5000);
+	                    };
+	                    socket.onclose = function (msg) {
+	                        console.log("Disconnected");
+	                    };
+	                } catch (ex) {
+	                    console.warn(ex);
+	                }
+	            }, false);
+
+	            $(document).on('opened.zf.offcanvas', function (e) {
+	                var macAdd = that.props.sensorData.sensorData;
+	            });
 	        }
 	    }, {
 	        key: 'send',
@@ -83563,7 +83607,12 @@
 
 	;
 
-	module.exports = SensorDetails;
+	function mapStateToProps(state, ownProps) {
+	    return { sensorData: state.activeSensor };
+	}
+
+	module.exports = connect(mapStateToProps)(SensorDetails);
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(9)))
 
 /***/ }
 /******/ ]);
