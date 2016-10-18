@@ -19,6 +19,7 @@ class SensorDetails extends React.Component {
 
         this.state = {
             isLoading: false,
+            building: '',
             macAdd: '',
             latency: '',
             amIAlive: '',
@@ -67,6 +68,7 @@ class SensorDetails extends React.Component {
                         that.setState({
                             macAdd: macAdd,
                             latency: latency,
+                            building: response['building'],
                             amIAlive: response["am_i_alive"],
                             location: `${response["sensor_location_level"]}${response["sensor_location_id"]}`,
                             status: response["status"], // add class?
@@ -129,7 +131,9 @@ class SensorDetails extends React.Component {
 
     render() {
 
-        var {macAdd, latency, amIAlive, status, location, lastReboot, stats, top5} = this.state;
+        var {macAdd, building, latency, amIAlive, status, location, lastReboot, stats, top5} = this.state;
+
+        var location = `${building} ${location}`
 
         function renderStats(stats) {
 
@@ -158,7 +162,7 @@ class SensorDetails extends React.Component {
                 var rows = [];
                 for(var i = 0; i < top5.length; i++) {
                     rows.push(
-                        <tr>
+                        <tr key={i}>
                             <td>{i+1}</td>
                             <td>{top5[i]['process']}</td>
                             <td>{top5[i]['usage']}</td>
@@ -196,9 +200,9 @@ class SensorDetails extends React.Component {
                     </div>
                 </div>
                 <div className="textAlignCenter" style={{padding: '1.5rem'}}>
-                    <div className="page-title">Loading</div>
+                    <div className="page-title">{location}</div>
                     <hr/>
-                    <div>Just fucking wait, ok?</div>
+                    <div>Data last collected at {lastReboot}</div>
 
                     <div className="page-title margin-top-md">Statistics</div>
                         <table className="sensor-details-table">
