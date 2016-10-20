@@ -522,6 +522,10 @@ input[type=checkbox]:checked ~ #port {
     to {left: 100%;}
 }
 
+table.sensor-details-table td:nth-child(1) {
+    text-transform: Capitalize;
+}
+
 table.sensor-details-table tbody {
     text-align: left;
 }
@@ -546,4 +550,13 @@ table.sensor-details-table td:nth-child(2) {
     font-weight: bold;
     border: solid 1px rgb(153, 0, 0);
     background-color: rgba(153,0,0,0.4) !important;
+}
+
+.button-disabled {
+    pointer-events: none;
+    color: #000 !important;
+}
+
+#top-bar-pin:hover, #top-bar-delete:hover, #top-bar-edit:hover {
+    color: $header-color;
 }

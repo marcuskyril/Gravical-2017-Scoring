@@ -1,7 +1,14 @@
 var React = require('react');
 var axios = require('axios');
+var DeleteSensor = require('DeleteSensor');
+var PinSensor = require('PinSensor');
+var EditSensor = require('EditSensor');
+var Terminal = require('Terminal');
 var FontAwesome = require('react-fontawesome');
+import * as Redux from 'react-redux';
+import * as actions from 'actions';
 var {connect} = require('react-redux');
+var {Link, IndexLink} = require('react-router');
 
 var socket;
 var colorMap = {
@@ -55,21 +62,34 @@ class SensorDetails extends React.Component {
                 socket.onmessage = function(msg) {
 
                     var response = JSON.parse(msg.data);
-                    if (typeof response.error == "undefined") {
-                        console.log("response", response);
 
-                        // {response["am_i_alive"] ? colorMap['ok'] : colorMap['down']}
+                    // console.log("response", response);
+
+                    if (response.error !== "no data") {
+                        console.log("response", response);
                         var latency = '';
 
                         if (response["router_latency"] != "-") {
                             latency = parseFloat(Math.round(response["router_latency"] * 100) / 100).toFixed(2);
                         }
 
+                        console.log("responsewatchlist", response["watchlist"]);
+
+                        if(response["watchlist"]) {
+                            $('#top-bar-pin').addClass('button-disabled');
+                        } else {
+                            $('#top-bar-pin').removeClass('button-disabled');
+                        }
+
                         that.setState({
                             macAdd: macAdd,
                             latency: latency,
+                            port: response["port"],
+                            region: response["geo_region"],
                             building: response['building'],
                             amIAlive: response["am_i_alive"],
+                            level: response["sensor_location_level"],
+                            areaID: response["sensor_location_id"],
                             location: `${response["sensor_location_level"]}${response["sensor_location_id"]}`,
                             status: response["status"], // add class?
                             lastReboot: response["last_reboot"],
@@ -91,8 +111,15 @@ class SensorDetails extends React.Component {
                         });
 
                     } else {
-                        // no shit here
-                        console.log("woah, nothing here buddy");
+                        that.setState({
+                            macAdd: macAdd,
+                            building: response['building'],
+                            amIAlive: response["am_i_alive"],
+                            region: respponse["geo_region"],
+                            level: response["sensor_location_level"],
+                            areaID: response["sensor_location_id"],
+                            location: `${response["sensor_location_level"]}${response["sensor_location_id"]}`
+                        });
                     }
 
                     setTimeout(function() {
@@ -109,31 +136,61 @@ class SensorDetails extends React.Component {
             }
 
         }, false);
+
+
+        $(document).on('closed.zf.offcanvas', function() {
+            that.quit();
+        });
+
     }
 
     send(msg) {
-        // console.log("sent: " + msg);
-        try {
-            socket.send(msg);
-            // console.log('Sent');
-        } catch (ex) {
-            console.warn(ex);
+        if(socket != null) {
+            try {
+                socket.send(msg);
+                // console.log('Sent');
+            } catch (ex) {
+                console.warn(ex);
+            }
         }
     }
 
     quit() {
         if (socket != null) {
-            log("Goodbye!");
+            console.log("Ciao bella.");
             socket.close();
             socket = null;
+        }
+    }
+
+    handleClick(type) {
+
+        switch(type) {
+            case 'delete':
+                $('#delete-sensor-modal').foundation('open');
+                //dispatch(actions.startUpdateWatchList(macAddress));
+                break;
+
+            case 'pin':
+                $('#pin-sensor-modal').foundation('open');
+                //dispatch(actions.startUpdateWatchList(macAddress));
+                break;
+
+            case 'edit':
+                $('#edit-sensor-modal').foundation('open');
+                //dispatch(actions.startUpdateWatchList(macAddress));
+                break;
         }
     }
 
     render() {
 
         var {macAdd, building, latency, amIAlive, status, location, lastReboot, stats, top5} = this.state;
-
         var location = `${building} ${location}`
+        var amIAliveColor = amIAlive ? "green" : colorMap['down'];
+
+        var historicalLink = `/historical/${macAdd}`
+
 
         function renderStats(stats) {
 
@@ -180,38 +237,53 @@ class SensorDetails extends React.Component {
 
         return (
             <div>
-
                 <div className="top-bar margin-bottom-small">
-                    <div className="top-bar-left" style={{color: '#fff'}}>
+                    <div className="top-bar-left" style={{color: '#fff',marginTop:'1rem',fontWeight:'bold'}}>
                         {macAdd}
+                    </div>
+                    <div className="top-bar-left" style={{color: '#fff',position:'absolute',top:'14px',fontSize:'0.75rem'}}>
+                        <div style={{height: '10px',
+                            width: '10px',
+                            backgroundColor: amIAliveColor,
+                            float: 'left',
+                            marginTop: '4px',
+                            borderRadius: '35px',
+                            marginRight: '4px'}}>
+                        </div>
+                        Latency: {latency} ms
                     </div>
                     <div className="top-bar-right">
                         <ul className="dropdown menu" data-dropdown-menu>
                             <li>
-                              <a><FontAwesome name='edit'/></a>
+                              <a id="top-bar-edit" onClick={this.handleClick.bind(this, 'edit')}><FontAwesome name='edit'/></a>
                             </li>
                             <li>
-                              <a><FontAwesome name='trash'/></a>
+                              <a id="top-bar-delete" onClick={this.handleClick.bind(this, 'delete')}><FontAwesome name='trash'/></a>
                             </li>
                             <li>
-                              <a><FontAwesome name='thumb-tack'/></a>
+                              <a id="top-bar-pin" onClick={this.handleClick.bind(this, 'pin')}><FontAwesome name='thumb-tack'/></a>
                             </li>
                         </ul>
                     </div>
                 </div>
-                <div className="textAlignCenter" style={{padding: '1.5rem'}}>
-                    <div className="page-title">{location}</div>
-                    <hr/>
-                    <div>Data last collected at {lastReboot}</div>
+                <div className="textAlignCenter" style={{padding: '0.5rem 1.5rem'}}>
+                    <div className="page-title" style={{fontWeight:'bold'}}>{location}</div>
+                    <div style={{height: '4px',
+                        width: '170px',
+                        backgroundColor: colorMap[status],
+                        top: '18px',
+                        borderRadius: '9px',
+                        margin: '0.2rem auto 1rem auto'}}>
+                    </div>
+                    <div style={{fontWeight:'100',marginBottom:'1.5rem'}}>Data last collected at {lastReboot}</div>
 
-                    <div className="page-title margin-top-md">Statistics</div>
-                        <table className="sensor-details-table">
+                        <table className="sensor-details-table" style={{width:'90%',margin:'0rem auto 2rem auto',fontWeight:'100'}}>
                             {renderStats(stats)}
                         </table>
 
                     <div className="page-title">Top 5 Processes</div>
 
-                        <table className="sensor-details-table">
+                        <table className="sensor-details-table" style={{fontWeight:'100',marginBottom:'2rem'}}>
                             {renderTop5(top5)}
                         </table>
 
@@ -223,10 +295,15 @@ class SensorDetails extends React.Component {
                     <a className="button proceed expanded">
                         Reboot Sensor
                     </a>
-                    <a className="button proceed expanded">
+
+                    <IndexLink className="button proceed expanded" activeClassName='active' to={historicalLink}>
                         Historical Charts
-                    </a>
+                    </IndexLink>
                 </div>
+                <DeleteSensor macAdd={macAdd}/>
+                <PinSensor macAdd={macAdd}/>
+                <EditSensor {...this.state}/>
+                <Terminal macAdd={macAdd}/>
             </div>
         );
     }

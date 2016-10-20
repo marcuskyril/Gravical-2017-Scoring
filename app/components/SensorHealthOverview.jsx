@@ -253,7 +253,16 @@ class SensorHealthOverview extends React.Component {
     }
 
     render() {
-        // console.log("Cool stuff from serverOverview", this.props.serverData);
+
+        var overviewData = this.props.data;
+        var serverData = {};
+
+        for (var building in overviewData) {
+            if (overviewData.hasOwnProperty(building) && overviewData[building]['geo_region'] == "VIRTUAL") {
+                serverData[building] = overviewData[building];
+                delete overviewData[building];
+            }
+        }
 
         return (
             <div>
@@ -267,7 +276,7 @@ class SensorHealthOverview extends React.Component {
                 <div className="page-title">Servers</div>
                 <hr className="divider"/>
 
-                <ServerList data={this.props.serverData}/>
+                <ServerList data={serverData}/>
 
             </div>
         );

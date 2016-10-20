@@ -47,7 +47,7 @@ class Server extends React.Component {
 class ServerGroupList extends React.Component {
     render() {
 
-        var groups = this.props.data;
+        var groups = this.props.data['sensors'];
         var rows = [];
 
         for(var property in groups) {
@@ -77,20 +77,23 @@ class GroupRow extends React.Component {
     var rows = [];
     var group;
 
+    var visitedIds = [];
+
     longAndThin.forEach(function(server) {
-        // console.log("server", server);
+        if (visitedIds.indexOf(server['id']) < 0) {
 
-        var cluster = server["cluster"];
-        group = server["group"];
-        var id = server["id"];
-        var mac = server["mac"];
-        var status = server["status"];
+            var cluster = server["building"];
+            group = server["level"];
+            var id = server["id"];
+            var mac = server["mac"];
+            var status = server["status"];
 
-        // console.log("colorMap", status, colorMap[status]);
+            rows.push(
+                <VerticalMenu key={id} macAdd={mac} serverData={server} id={id} class={colorMap[status]}/>
+            );
+            visitedIds.push(id);
+        }
 
-        rows.push(
-            <VerticalMenu key={id} macAdd={mac} serverData={server} id={id} class={colorMap[status]}/>
-        );
     });
 
     return (
@@ -115,12 +118,6 @@ class VerticalMenu extends React.Component {
     constructor(props) {
       super(props);
     }
-
-    // var cluster = server["cluster"];
-    // group = server["group"];
-    // var id = server["id"];
-    // var mac = server["mac"];
-    // var status = server["status"];
 
     handleClick(serverData, action) {
         var macAddress = serverData["mac"];

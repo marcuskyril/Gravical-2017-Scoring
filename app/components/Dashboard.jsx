@@ -168,11 +168,8 @@ class Dashboard extends React.Component {
                                     Add Sensor / Server
                                 </button>
                                 <AddSensor type={this.state.type}/>
-                                <EditSensor/>
                                 <UnpinSensor/>
-                                <RebootSensor/>
-                                <Terminal/>
-                                <DeleteSensor/>
+                                <Terminal/>                                
                                 <PinSensor/>
                             </div>
                             <div className="callout callout-dark">

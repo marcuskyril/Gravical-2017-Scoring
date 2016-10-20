@@ -9,16 +9,25 @@ class DeleteSensor extends React.Component {
         super(props);
 
         this.state = {
-            message: ''
+            message: '',
+            macAdd: this.props.macAdd
         }
+    }
+
+    componentWillReceiveProps(props) {
+        this.setState({
+            macAdd: props.macAdd
+        });
     }
 
     onDeleteSensor(event) {
 
         event.preventDefault();
 
+        var {macAdd} = this.state;
         var that = this;
-        var macAdd = that.props.deleteMac.macAddress;
+
+        console.log("To be deleted: ", macAdd);
 
         deleteSensorAPI.deleteSensor(macAdd).then(function(response) {
 
@@ -31,7 +40,7 @@ class DeleteSensor extends React.Component {
 
                 myCustomEvent.data = {
                     type: 'deleteSensor',
-                    macAdd: inputMac,
+                    macAdd: macAdd,
                     building: inputBuilding,
                     location: `${inputLocationLevel}${inputLocationID}`
                 };
@@ -45,7 +54,7 @@ class DeleteSensor extends React.Component {
 
     render() {
         // console.log("delete sensor state ", this.state);
-        var {message} = this.state;
+        var {message, macAdd} = this.state;
         var that = this;
 
         // resets message to empty string on close
@@ -65,7 +74,7 @@ class DeleteSensor extends React.Component {
                                 color: '#990000'
                             }}>Hold up. You really wanna delete this bad boy?</div>
                             <div className="header" id="deleteDetails"></div>
-                            <div className="header" id="deleteMac">{this.props.deleteMac.macAddress}</div>
+                            <div className="header" id="deleteMac">{this.props.macAdd}</div>
 
                             <div id="deleteSensorMessage"><DeleteSensorMessage message={message}/></div>
 
@@ -92,7 +101,7 @@ class DeleteSensorMessage extends React.Component {
 }
 
 function mapStateToProps(state, ownProps) {
-    return {deleteMac: state.macAddress}
+    return {sensorData: state.activeSensor}
 }
 
 module.exports = connect(mapStateToProps)(DeleteSensor);
