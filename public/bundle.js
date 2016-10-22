@@ -130,7 +130,7 @@
 	var browserHistory = _require2.browserHistory;
 
 	var actions = __webpack_require__(139);
-	var store = __webpack_require__(798).configure();
+	var store = __webpack_require__(791).configure();
 
 	_firebase2.default.auth().onAuthStateChanged(function (user) {
 	  if (user) {
@@ -852,7 +852,7 @@
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	var Main = __webpack_require__(787);
-	var Dashboard = __webpack_require__(793);
+	var Dashboard = __webpack_require__(803);
 
 
 	var requireLogin = function requireLogin(nextState, replace, next) {
@@ -14405,7 +14405,7 @@
 	    value: function retrieveData(startDate, endDate, interval) {
 
 	      var that = this;
-	      retrieveHistoricalDataAPI.retrieveHistoricalData(that.state.buildingName, startDate, endDate, interval, "uptime").then(function (response) {
+	      retrieveHistoricalDataAPI.retrieveHistoricalDataAlt(that.state.buildingName, startDate, endDate, interval).then(function (response) {
 
 	        that.setState({
 	          data: response,
@@ -14413,6 +14413,7 @@
 	          startDate: startDate,
 	          endDate: endDate,
 	          interval: interval
+
 	        });
 	      });
 	    }
@@ -14603,6 +14604,8 @@
 	      var rows = [];
 
 	      for (var level in dataList) {
+
+	        console.log("level", level);
 	        if (dataList.hasOwnProperty(level)) {
 
 	          var sensorsOnLevel = dataList[level];
@@ -62860,8 +62863,31 @@
 
 	var RETRIEVE_UPTIME_URL = 'http://opsdev.sence.io/backend/get_uptime_chart.php';
 	var RETRIEVE_HISTORICAL_DATA_URL = 'http://opsdev.sence.io/backend/get_historical_chart.php';
+	var RETRIEVE_HISTORICAL_DATA_ALT_URL = '';
 
 	module.exports = {
+
+	    retrieveHistoricalDataAlt: function retrieveHistoricalDataAlt(building, startDate, endDate, interval) {
+
+	        var data = {
+	            building: building,
+	            start_date: startDate,
+	            end_date: endDate,
+	            interval: interval
+	        };
+
+	        return $.ajax({
+	            type: 'POST',
+	            beforeSend: function beforeSend(request) {
+	                request.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+	            },
+	            url: RETRIEVE_HISTORICAL_DATA_ALT_URL,
+	            data: data,
+	            success: function success(response) {
+	                console.log("Sombrero", response);
+	            }
+	        });
+	    },
 
 	    retrieveHistoricalData: function retrieveHistoricalData(buildingName, startDate, endDate, interval) {
 
@@ -72653,7 +72679,7 @@
 
 	var _SensorDetails2 = _interopRequireDefault(_SensorDetails);
 
-	var _reactSticky = __webpack_require__(789);
+	var _reactSticky = __webpack_require__(799);
 
 	var _firebase = __webpack_require__(10);
 
@@ -72669,7 +72695,7 @@
 
 	var React = __webpack_require__(14);
 	var Nav = __webpack_require__(785);
-	var Dashboard = __webpack_require__(793);
+	var Dashboard = __webpack_require__(803);
 
 	var Main = function (_React$Component) {
 	    _inherits(Main, _React$Component);
@@ -72763,10 +72789,10 @@
 
 	var React = __webpack_require__(14);
 	var axios = __webpack_require__(140);
-	var DeleteSensor = __webpack_require__(817);
-	var PinSensor = __webpack_require__(822);
-	var EditSensor = __webpack_require__(815);
-	var Terminal = __webpack_require__(823);
+	var DeleteSensor = __webpack_require__(789);
+	var PinSensor = __webpack_require__(794);
+	var EditSensor = __webpack_require__(796);
+	var Terminal = __webpack_require__(798);
 	var FontAwesome = __webpack_require__(581);
 
 	var _require = __webpack_require__(111);
@@ -72946,6 +72972,11 @@
 	                    $('#edit-sensor-modal').foundation('open');
 	                    //dispatch(actions.startUpdateWatchList(macAddress));
 	                    break;
+	                case 'terminal':
+	                    $('#terminal').foundation('open');
+	                    break;
+	                case 'reboot':
+	                    break;
 	            }
 	        }
 	    }, {
@@ -72956,6 +72987,7 @@
 	            var building = _state.building;
 	            var latency = _state.latency;
 	            var amIAlive = _state.amIAlive;
+	            var port = _state.port;
 	            var status = _state.status;
 	            var location = _state.location;
 	            var lastReboot = _state.lastReboot;
@@ -73128,7 +73160,7 @@
 	                    ),
 	                    React.createElement(
 	                        'a',
-	                        { className: 'button proceed expanded' },
+	                        { className: 'button proceed expanded', onClick: this.handleClick.bind(this, 'terminal') },
 	                        'Launch Terminal'
 	                    ),
 	                    React.createElement(
@@ -73142,10 +73174,10 @@
 	                        'Historical Charts'
 	                    )
 	                ),
-	                React.createElement(DeleteSensor, { macAdd: macAdd }),
+	                React.createElement(DeleteSensor, { macAdd: macAdd, port: port }),
 	                React.createElement(PinSensor, { macAdd: macAdd }),
 	                React.createElement(EditSensor, this.state),
-	                React.createElement(Terminal, { macAdd: macAdd })
+	                React.createElement(Terminal, { macAdd: macAdd, port: port })
 	            );
 	        }
 	    }]);
@@ -73166,6 +73198,1039 @@
 /* 789 */
 /***/ function(module, exports, __webpack_require__) {
 
+	/* WEBPACK VAR INJECTION */(function($) {'use strict';
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	var React = __webpack_require__(14);
+	var deleteSensorAPI = __webpack_require__(790);
+	var deleteMac = "";
+
+	var _require = __webpack_require__(111);
+
+	var connect = _require.connect;
+
+	var store = __webpack_require__(791).configure();
+
+	var DeleteSensor = function (_React$Component) {
+	    _inherits(DeleteSensor, _React$Component);
+
+	    function DeleteSensor(props) {
+	        _classCallCheck(this, DeleteSensor);
+
+	        var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(DeleteSensor).call(this, props));
+
+	        _this.state = {
+	            message: '',
+	            macAdd: _this.props.macAdd
+	        };
+	        return _this;
+	    }
+
+	    _createClass(DeleteSensor, [{
+	        key: 'componentWillReceiveProps',
+	        value: function componentWillReceiveProps(props) {
+	            this.setState({
+	                macAdd: props.macAdd
+	            });
+	        }
+	    }, {
+	        key: 'onDeleteSensor',
+	        value: function onDeleteSensor(event) {
+
+	            event.preventDefault();
+
+	            var macAdd = this.state.macAdd;
+
+	            var that = this;
+
+	            console.log("To be deleted: ", macAdd);
+
+	            deleteSensorAPI.deleteSensor(macAdd).then(function (response) {
+
+	                if (response.error) {
+	                    that.setState({ message: response.error });
+	                } else {
+	                    that.setState({ message: response.success });
+
+	                    var myCustomEvent = document.createEvent("Event");
+
+	                    myCustomEvent.data = {
+	                        type: 'deleteSensor',
+	                        macAdd: macAdd,
+	                        building: inputBuilding,
+	                        location: '' + inputLocationLevel + inputLocationID
+	                    };
+
+	                    myCustomEvent.initEvent("customEvent", true, true);
+	                    document.dispatchEvent(myCustomEvent);
+	                }
+	            });
+	        }
+	    }, {
+	        key: 'render',
+	        value: function render() {
+	            // console.log("delete sensor state ", this.state);
+	            var _state = this.state;
+	            var message = _state.message;
+	            var macAdd = _state.macAdd;
+
+	            var that = this;
+
+	            // resets message to empty string on close
+	            $('#delete-sensor-modal').on('closed.zf.reveal', function () {
+	                //console.log("close");
+	                that.setState({ message: '' });
+	            });
+
+	            return React.createElement(
+	                'div',
+	                { id: 'delete-sensor-modal', className: 'reveal tiny text-center', 'data-reveal': '' },
+	                React.createElement(
+	                    'form',
+	                    null,
+	                    React.createElement(
+	                        'div',
+	                        { className: 'row' },
+	                        React.createElement(
+	                            'div',
+	                            { className: 'large-12 columns' },
+	                            React.createElement(
+	                                'div',
+	                                { className: 'page-title' },
+	                                'Delete Sensor'
+	                            ),
+	                            React.createElement(
+	                                'div',
+	                                { className: 'header', style: {
+	                                        color: '#990000'
+	                                    } },
+	                                'Hold up. You really wanna delete this bad boy?'
+	                            ),
+	                            React.createElement('div', { className: 'header', id: 'deleteDetails' }),
+	                            React.createElement(
+	                                'div',
+	                                { className: 'header', id: 'deleteMac' },
+	                                this.props.macAdd
+	                            ),
+	                            React.createElement(
+	                                'div',
+	                                { id: 'deleteSensorMessage' },
+	                                React.createElement(DeleteSensorMessage, { message: message })
+	                            ),
+	                            React.createElement(
+	                                'a',
+	                                { className: 'button proceed expanded', onClick: this.onDeleteSensor.bind(this) },
+	                                'Yes I do'
+	                            ),
+	                            React.createElement(
+	                                'a',
+	                                { id: 'deleteClose', className: 'button cancel expanded close-reveal-modal', 'data-close': '', 'aria-label': 'Close' },
+	                                'Slow Down, Cowboy'
+	                            )
+	                        )
+	                    )
+	                )
+	            );
+	        }
+	    }]);
+
+	    return DeleteSensor;
+	}(React.Component);
+
+	var DeleteSensorMessage = function (_React$Component2) {
+	    _inherits(DeleteSensorMessage, _React$Component2);
+
+	    function DeleteSensorMessage() {
+	        _classCallCheck(this, DeleteSensorMessage);
+
+	        return _possibleConstructorReturn(this, Object.getPrototypeOf(DeleteSensorMessage).apply(this, arguments));
+	    }
+
+	    _createClass(DeleteSensorMessage, [{
+	        key: 'render',
+	        value: function render() {
+	            var message = this.props.message;
+
+	            return React.createElement(
+	                'div',
+	                { className: 'statusText' },
+	                message
+	            );
+	        }
+	    }]);
+
+	    return DeleteSensorMessage;
+	}(React.Component);
+
+	function mapStateToProps(state, ownProps) {
+	    return { sensorData: state.activeSensor };
+	}
+
+	module.exports = connect(mapStateToProps)(DeleteSensor);
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(9)))
+
+/***/ },
+/* 790 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/* WEBPACK VAR INJECTION */(function($) {"use strict";
+
+	var DELETE_SENSOR_URL = "http://opsdev.sence.io/backend/delete-sensor.php";
+
+	module.exports = {
+
+	    deleteSensor: function deleteSensor(macAddress) {
+	        console.log(macAddress);
+
+	        return $.ajax({
+	            type: "POST",
+	            beforeSend: function beforeSend(request) {
+	                request.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+	            },
+	            url: DELETE_SENSOR_URL,
+	            data: {
+	                "MAC": macAddress
+	            },
+	            success: function success(response) {
+	                console.log("Que pasar?", response);
+	            }
+	        });
+	    }
+	};
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(9)))
+
+/***/ },
+/* 791 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.configure = undefined;
+
+	var _redux = __webpack_require__(118);
+
+	var redux = _interopRequireWildcard(_redux);
+
+	var _reduxThunk = __webpack_require__(792);
+
+	var _reduxThunk2 = _interopRequireDefault(_reduxThunk);
+
+	var _reducers = __webpack_require__(793);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+
+	var configure = exports.configure = function configure() {
+	  var initialState = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
+
+	  var reducer = redux.combineReducers({
+	    auth: _reducers.authReducer,
+	    macAddress: _reducers.deleteSensorReducer,
+	    pin_mac: _reducers.updateWatchListReducer,
+	    syncData: _reducers.syncDataReducer,
+	    activeSensor: _reducers.activeSensorReducer
+	  });
+
+	  var store = redux.createStore(reducer, initialState, redux.compose(redux.applyMiddleware(_reduxThunk2.default), window.devToolsExtension ? window.devToolsExtension() : function (f) {
+	    return f;
+	  }));
+
+	  return store;
+	};
+
+/***/ },
+/* 792 */
+/***/ function(module, exports) {
+
+	'use strict';
+
+	exports.__esModule = true;
+	function createThunkMiddleware(extraArgument) {
+	  return function (_ref) {
+	    var dispatch = _ref.dispatch;
+	    var getState = _ref.getState;
+	    return function (next) {
+	      return function (action) {
+	        if (typeof action === 'function') {
+	          return action(dispatch, getState, extraArgument);
+	        }
+
+	        return next(action);
+	      };
+	    };
+	  };
+	}
+
+	var thunk = createThunkMiddleware();
+	thunk.withExtraArgument = createThunkMiddleware;
+
+	exports['default'] = thunk;
+
+/***/ },
+/* 793 */
+/***/ function(module, exports) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	// string
+
+	var syncDataReducer = exports.syncDataReducer = function syncDataReducer() {
+	  var state = arguments.length <= 0 || arguments[0] === undefined ? { currentTime: '-', userId: '-' } : arguments[0];
+	  var action = arguments[1];
+
+	  switch (action.type) {
+	    case 'STORE_SYNC_DATA':
+
+	      return {
+	        currentTime: action.currentTime,
+	        userId: action.userId
+	      };
+	    default:
+	      return state;
+	  }
+	};
+
+	var deleteSensorReducer = exports.deleteSensorReducer = function deleteSensorReducer() {
+	  var state = arguments.length <= 0 || arguments[0] === undefined ? { macAddress: '' } : arguments[0];
+	  var action = arguments[1];
+
+
+	  switch (action.type) {
+	    case 'COMPLETE_DELETE_SENSOR':
+	      return {
+	        macAddress: action.macAddress
+	      };
+	    default:
+	      return state;
+	  }
+	};
+
+	var updateWatchListReducer = exports.updateWatchListReducer = function updateWatchListReducer() {
+	  var state = arguments.length <= 0 || arguments[0] === undefined ? { pin_mac: '' } : arguments[0];
+	  var action = arguments[1];
+
+	  switch (action.type) {
+	    case 'COMPLETE_UPDATE_WATCHLIST':
+	      return {
+	        pin_mac: action.pin_mac
+	      };
+	    default:
+	      return state;
+	  }
+	};
+
+	var sensorDataReducer = exports.sensorDataReducer = function sensorDataReducer() {
+	  var state = arguments.length <= 0 || arguments[0] === undefined ? { isFetching: false, data: undefined } : arguments[0];
+	  var action = arguments[1];
+
+
+	  switch (action.type) {
+	    case 'START_SENSOR_DATA_FETCH':
+	      return {
+	        isFetching: true,
+	        data: undefined
+	      };
+
+	    case 'COMPLETE_SENSOR_DATA_FETCH':
+	      return {
+	        isFetching: false,
+	        data: action.data
+	      };
+
+	    default:
+	      return state;
+	  }
+	};
+
+	var authReducer = exports.authReducer = function authReducer() {
+	  var state = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
+	  var action = arguments[1];
+
+	  switch (action.type) {
+	    case 'LOGIN':
+	      return {
+	        uid: action.uid
+	      };
+	    case 'LOGOUT':
+	      return {};
+	    default:
+	      return state;
+	  }
+	};
+
+	var activeSensorReducer = exports.activeSensorReducer = function activeSensorReducer() {
+	  var state = arguments.length <= 0 || arguments[0] === undefined ? { macAdd: '' } : arguments[0];
+	  var action = arguments[1];
+
+
+	  switch (action.type) {
+	    case 'STORE_ACTIVE_SENSOR':
+	      return {
+	        sensorData: action.macAdd
+	      };
+	    default:
+	      return state;
+	  }
+	};
+
+/***/ },
+/* 794 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/* WEBPACK VAR INJECTION */(function($) {'use strict';
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	var _reactRedux = __webpack_require__(111);
+
+	var Redux = _interopRequireWildcard(_reactRedux);
+
+	var _actions = __webpack_require__(139);
+
+	var actions = _interopRequireWildcard(_actions);
+
+	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	var React = __webpack_require__(14);
+	var updateWatchList = __webpack_require__(795);
+
+	var PinSensor = function (_React$Component) {
+	    _inherits(PinSensor, _React$Component);
+
+	    function PinSensor(props) {
+	        _classCallCheck(this, PinSensor);
+
+	        var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(PinSensor).call(this, props));
+
+	        _this.state = {
+	            message: ''
+	        };
+	        return _this;
+	    }
+
+	    _createClass(PinSensor, [{
+	        key: 'onPinSensor',
+	        value: function onPinSensor() {
+	            var dispatch = this.props.dispatch;
+
+	            var macAdd = this.props.pin_mac.pin_mac;
+	            var that = this;
+
+	            updateWatchList.updateWatchList(macAdd, true).then(function (response) {
+	                // console.log("Added sensor to watchlist", response);
+
+	                if (response.error) {
+	                    that.setState({ message: response.error });
+	                } else {
+
+	                    var myCustomEvent = document.createEvent("Event");
+
+	                    myCustomEvent.data = {
+	                        type: 'pinSensor',
+	                        macAdd: macAdd
+	                    };
+
+	                    myCustomEvent.initEvent("customEvent", true, true);
+	                    document.dispatchEvent(myCustomEvent);
+
+	                    that.setState({ message: response.success });
+	                }
+	            });
+	        }
+	    }, {
+	        key: 'render',
+	        value: function render() {
+	            // console.log("delete sensor state ", this.state);
+	            var message = this.state.message;
+
+	            var that = this;
+
+	            // resets message to empty string on close
+	            $('#pin-sensor-modal').on('closed.zf.reveal', function () {
+	                //console.log("close");
+	                that.setState({ message: '' });
+	            });
+
+	            return React.createElement(
+	                'div',
+	                { id: 'pin-sensor-modal', className: 'reveal tiny text-center', 'data-reveal': '' },
+	                React.createElement(
+	                    'form',
+	                    null,
+	                    React.createElement(
+	                        'div',
+	                        { className: 'row' },
+	                        React.createElement(
+	                            'div',
+	                            { className: 'large-12 columns' },
+	                            React.createElement(
+	                                'div',
+	                                { className: 'page-title' },
+	                                'Pin Sensor'
+	                            ),
+	                            React.createElement(
+	                                'div',
+	                                { className: 'header', style: {
+	                                        color: '#990000'
+	                                    } },
+	                                'Pin this sensor, you want to?'
+	                            ),
+	                            React.createElement('input', { id: 'pinMac', value: '', hidden: true }),
+	                            React.createElement(
+	                                'div',
+	                                { id: 'pinSensorMessage' },
+	                                React.createElement(PinSensorMessage, { message: message })
+	                            ),
+	                            React.createElement(
+	                                'a',
+	                                { className: 'button proceed expanded', onClick: this.onPinSensor.bind(this) },
+	                                'Yes I do'
+	                            ),
+	                            React.createElement(
+	                                'a',
+	                                { className: 'button cancel expanded close-reveal-modal', 'data-close': '', 'aria-label': 'Close', id: 'closePin' },
+	                                'Slow Down, Cowboy'
+	                            )
+	                        )
+	                    )
+	                )
+	            );
+	        }
+	    }]);
+
+	    return PinSensor;
+	}(React.Component);
+
+	var PinSensorMessage = function (_React$Component2) {
+	    _inherits(PinSensorMessage, _React$Component2);
+
+	    function PinSensorMessage() {
+	        _classCallCheck(this, PinSensorMessage);
+
+	        return _possibleConstructorReturn(this, Object.getPrototypeOf(PinSensorMessage).apply(this, arguments));
+	    }
+
+	    _createClass(PinSensorMessage, [{
+	        key: 'render',
+	        value: function render() {
+	            var message = this.props.message;
+
+
+	            return React.createElement(
+	                'div',
+	                { className: 'statusText' },
+	                message
+	            );
+	        }
+	    }]);
+
+	    return PinSensorMessage;
+	}(React.Component);
+
+	function mapStateToProps(state, ownProps) {
+	    return { pin_mac: state.pin_mac };
+	}
+
+	module.exports = (0, _reactRedux.connect)(mapStateToProps)(PinSensor);
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(9)))
+
+/***/ },
+/* 795 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/* WEBPACK VAR INJECTION */(function($) {'use strict';
+
+	var axios = __webpack_require__(140);
+
+	var UPDATE_WATCHLIST_URL = 'http://opsdev.sence.io/backend/sensor-watchlist-pin.php';
+
+	module.exports = {
+
+	    updateWatchList: function updateWatchList(macAddress, pin_status) {
+	        console.log("trying to update: ", macAddress, pin_status);
+
+	        var data = {
+	            "MAC": macAddress,
+	            "pin_status": pin_status
+	        };
+
+	        return $.ajax({
+	            type: "POST",
+	            beforeSend: function beforeSend(request) {
+	                request.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+	            },
+	            url: UPDATE_WATCHLIST_URL,
+	            data: data,
+	            success: function success(msg) {
+	                console.log("Que pasar?", msg);
+	            },
+	            error: function error(e) {
+	                console.log("Remove sensor", e);
+	            }
+	        });
+	    }
+	};
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(9)))
+
+/***/ },
+/* 796 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/* WEBPACK VAR INJECTION */(function($) {'use strict';
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	var React = __webpack_require__(14);
+	var editSensorAPI = __webpack_require__(797);
+
+	var EditSensor = function (_React$Component) {
+	    _inherits(EditSensor, _React$Component);
+
+	    function EditSensor(props) {
+	        _classCallCheck(this, EditSensor);
+
+	        var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(EditSensor).call(this, props));
+
+	        _this.state = {
+	            message: ''
+	        };
+	        return _this;
+	    }
+
+	    _createClass(EditSensor, [{
+	        key: 'componentWillReceiveProps',
+	        value: function componentWillReceiveProps(props) {
+	            if (props.macAdd) {
+	                this.setState({
+	                    macAdd: props.macAdd,
+	                    port: props.port,
+	                    region: props.region.toLowerCase(),
+	                    building: props.building,
+	                    level: props.level,
+	                    areaID: props.areaID
+	                });
+	            }
+	        }
+	    }, {
+	        key: 'onEditSensor',
+	        value: function onEditSensor(e) {
+	            // console.log("test type: ", this.props.type);
+
+	            e.preventDefault();
+
+	            var inputMac = this.refs.macAddress.value;
+	            var inputRegion = this.refs.region.value;
+	            var inputLocationLevel = this.refs.sensorLocationLevel.value;
+	            var inputLocationID = this.refs.sensorLocationID.value;
+	            var inputBuilding = this.refs.building.value;
+	            var inputPort = this.refs.port.value;
+
+	            var that = this;
+
+	            console.log("MAC", inputMac);
+	            console.log("region", inputRegion);
+	            console.log("level", inputLocationLevel);
+	            console.log("id", inputLocationID);
+	            console.log("building", inputBuilding);
+	            console.log("port", inputPort);
+
+	            // editSensorAPI.editSensor(inputMac, inputRegion, inputLocationLevel, inputLocationID, inputPort, inputBuilding).then(function(response){
+	            editSensorAPI.editSensor(inputMac, inputRegion, inputLocationLevel, inputLocationID, inputBuilding, inputPort).then(function (response) {
+
+	                if (response.error) {
+	                    that.setState({ message: response.error });
+	                } else {
+
+	                    var myCustomEvent = document.createEvent("Event");
+
+	                    myCustomEvent.data = {
+	                        type: 'editSensor',
+	                        macAdd: inputMac,
+	                        building: inputBuilding,
+	                        location: '' + inputLocationLevel + inputLocationID
+	                    };
+
+	                    myCustomEvent.initEvent("customEvent", true, true);
+	                    document.dispatchEvent(myCustomEvent);
+
+	                    that.setState({ message: response.success });
+	                }
+	                //console.log("message", that.state.message);
+
+	                that.refs.macAddress.value = '';
+	                that.refs.port.value = '';
+	                that.refs.region.value = '';
+	                that.refs.sensorLocationLevel.value = '';
+	                that.refs.sensorLocationID.value = '';
+	                that.refs.building.value = '';
+	                that.refs.port.value = '';
+	            });
+	        }
+	    }, {
+	        key: 'render',
+	        value: function render() {
+	            var message = this.state.message;
+	            var _state = this.state;
+	            var message = _state.message;
+	            var macAdd = _state.macAdd;
+	            var building = _state.building;
+	            var level = _state.level;
+	            var areaID = _state.areaID;
+	            var port = _state.port;
+	            var region = _state.region;
+
+	            var that = this;
+
+	            $('#edit-sensor-modal').on('closed.zf.reveal', function () {
+	                that.setState({ message: '' });
+	            });
+
+	            return React.createElement(
+	                'div',
+	                { id: 'edit-sensor-modal', className: 'reveal medium', 'data-reveal': '' },
+	                React.createElement(
+	                    'form',
+	                    null,
+	                    React.createElement(
+	                        'div',
+	                        { className: 'row' },
+	                        React.createElement(
+	                            'div',
+	                            { className: 'page-title', style: {
+	                                    paddingLeft: '0.9375rem'
+	                                } },
+	                            'Edit Sensor'
+	                        ),
+	                        React.createElement(
+	                            'div',
+	                            { className: 'large-6 columns' },
+	                            React.createElement(
+	                                'label',
+	                                null,
+	                                'Mac Address',
+	                                React.createElement('input', { type: 'text', name: 'macAddress', id: 'inputMac', ref: 'macAddress', placeholder: 'Mac Address', value: macAdd, disabled: true })
+	                            ),
+	                            React.createElement(
+	                                'label',
+	                                null,
+	                                'Port',
+	                                React.createElement('input', { type: 'text', name: 'port', id: 'inputPort', ref: 'port', placeholder: 'Port', value: port })
+	                            )
+	                        ),
+	                        React.createElement(
+	                            'div',
+	                            { className: 'large-6 columns', style: {
+	                                    'borderLeft': 'solid 1px #e4e4e4'
+	                                } },
+	                            React.createElement(
+	                                'label',
+	                                null,
+	                                'Region',
+	                                React.createElement(
+	                                    'select',
+	                                    { ref: 'region', name: 'region', id: 'inputRegion', value: region },
+	                                    React.createElement('option', { value: '' }),
+	                                    React.createElement(
+	                                        'option',
+	                                        { value: 'north' },
+	                                        'North'
+	                                    ),
+	                                    React.createElement(
+	                                        'option',
+	                                        { value: 'south' },
+	                                        'South'
+	                                    ),
+	                                    React.createElement(
+	                                        'option',
+	                                        { value: 'east' },
+	                                        'East'
+	                                    ),
+	                                    React.createElement(
+	                                        'option',
+	                                        { value: 'west' },
+	                                        'West'
+	                                    ),
+	                                    React.createElement(
+	                                        'option',
+	                                        { value: 'central' },
+	                                        'Central'
+	                                    ),
+	                                    React.createElement(
+	                                        'option',
+	                                        { value: 'virtual' },
+	                                        'Virtual'
+	                                    )
+	                                )
+	                            ),
+	                            React.createElement(
+	                                'label',
+	                                null,
+	                                'Sensor Location level',
+	                                React.createElement('input', { type: 'text', name: 'sensorLocationLevel', id: 'inputLocationLevel', ref: 'sensorLocationLevel', placeholder: 'Sensor Location Level', value: level })
+	                            ),
+	                            React.createElement(
+	                                'label',
+	                                null,
+	                                'Sensor Location ID',
+	                                React.createElement('input', { type: 'text', name: 'sensorLocationID', id: 'inputSensorLocationID', ref: 'sensorLocationID', placeholder: 'Sensor Location ID', value: areaID })
+	                            ),
+	                            React.createElement(
+	                                'label',
+	                                null,
+	                                'Building',
+	                                React.createElement('input', { type: 'text', name: 'building', id: 'inputBuildingName', ref: 'building', placeholder: 'Building', value: building })
+	                            )
+	                        )
+	                    ),
+	                    React.createElement(
+	                        'div',
+	                        { className: 'row' },
+	                        React.createElement(
+	                            'div',
+	                            { id: 'sensorMessage' },
+	                            React.createElement(EditSensorMessage, { message: message })
+	                        ),
+	                        React.createElement(
+	                            'a',
+	                            { className: 'button proceed expanded', onClick: this.onEditSensor.bind(this) },
+	                            'Edit Sensor'
+	                        ),
+	                        React.createElement(
+	                            'a',
+	                            { className: 'button cancel expanded close-reveal-modal', 'data-close': '', 'aria-label': 'Close' },
+	                            'Cancel'
+	                        )
+	                    )
+	                )
+	            );
+	        }
+	    }]);
+
+	    return EditSensor;
+	}(React.Component);
+
+	var EditSensorMessage = function (_React$Component2) {
+	    _inherits(EditSensorMessage, _React$Component2);
+
+	    function EditSensorMessage() {
+	        _classCallCheck(this, EditSensorMessage);
+
+	        return _possibleConstructorReturn(this, Object.getPrototypeOf(EditSensorMessage).apply(this, arguments));
+	    }
+
+	    _createClass(EditSensorMessage, [{
+	        key: 'render',
+	        value: function render() {
+	            var message = this.props.message;
+	            // console.log("message from parent: ", message);
+
+	            return React.createElement(
+	                'div',
+	                { className: 'statusText' },
+	                message
+	            );
+	        }
+	    }]);
+
+	    return EditSensorMessage;
+	}(React.Component);
+
+	module.exports = EditSensor;
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(9)))
+
+/***/ },
+/* 797 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/* WEBPACK VAR INJECTION */(function($) {'use strict';
+
+	var axios = __webpack_require__(140);
+
+	var EDIT_SENSOR_URL = 'http://opsdev.sence.io/backend/edit-sensor.php';
+
+	module.exports = {
+
+	    editSensor: function editSensor(inputMac, inputRegion, inputLocationLevel, inputLocationID, inputBuilding, inputPort) {
+
+	        var data = {
+	            MAC: inputMac,
+	            "geo-region": inputRegion,
+	            "sensor-location-level": inputLocationLevel,
+	            "sensor-location-id": inputLocationID,
+	            "building": inputBuilding,
+	            "port": inputPort
+	        };
+
+	        console.log("edit data", data);
+
+	        return $.ajax({
+	            type: "POST",
+	            beforeSend: function beforeSend(request) {
+	                request.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+	            },
+	            url: EDIT_SENSOR_URL,
+	            data: data,
+	            success: function success(response) {
+	                console.log("Que pasar?", response);
+	                // if(response.status != 200) {
+	                //   throw new Error(response.error);
+	                // }
+	            }
+	        });
+	    }
+	};
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(9)))
+
+/***/ },
+/* 798 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/* WEBPACK VAR INJECTION */(function($) {"use strict";
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	var React = __webpack_require__(14);
+	var IFRAMEURL = "http://opsdev.sence.io:4201";
+	var IFRAMEURL_MAC = "http://opsdev.sence.io:4201/?username=pi&port=";
+	var FontAwesome = __webpack_require__(581);
+
+	var Terminal = function (_React$Component) {
+	    _inherits(Terminal, _React$Component);
+
+	    function Terminal(props) {
+	        _classCallCheck(this, Terminal);
+
+	        var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(Terminal).call(this, props));
+
+	        _this.state = {
+	            macAdd: '',
+	            port: ''
+	        };
+
+	        return _this;
+	    }
+
+	    _createClass(Terminal, [{
+	        key: "componentWillReceiveProps",
+	        value: function componentWillReceiveProps(props) {
+	            var that = this;
+
+	            if (props.port) {
+	                console.log("port", props.port);
+	                that.setState({ macAdd: props.macAdd, port: props.port });
+	            }
+	        }
+	    }, {
+	        key: "refresh",
+	        value: function refresh() {
+	            $('#terminalIFrame').attr('src', function (i, val) {
+	                return val;
+	            });
+	        }
+	    }, {
+	        key: "close",
+	        value: function close() {
+	            $('#terminal').foundation('close');
+	        }
+	    }, {
+	        key: "render",
+	        value: function render() {
+	            var _state = this.state;
+	            var macAdd = _state.macAdd;
+	            var port = _state.port;
+
+	            var IFRAME_URL = '';
+
+	            function renderIFrame(port) {
+
+	                if (port.length > 0) {
+	                    IFRAME_URL = IFRAMEURL_MAC + "/" + port;
+	                } else {
+	                    IFRAME_URL = IFRAMEURL;
+	                }
+
+	                return React.createElement("iframe", { id: "terminalIFrame", src: IFRAME_URL, width: "100%", style: {
+	                        border: "none"
+	                    }, height: "500px" });
+	            }
+
+	            return React.createElement(
+	                "div",
+	                { id: "terminal", className: "reveal large", "data-reveal": "", style: {
+	                        padding: '0',
+	                        border: 'none',
+	                        background: '#000'
+	                    } },
+	                React.createElement(
+	                    "div",
+	                    { className: "top-bar" },
+	                    React.createElement(
+	                        "div",
+	                        { style: { color: "#fff" }, className: "top-bar-left" },
+	                        macAdd
+	                    ),
+	                    React.createElement(
+	                        "div",
+	                        { className: "top-bar-right" },
+	                        React.createElement(
+	                            "a",
+	                            { className: "margin-right-tiny", onClick: this.refresh },
+	                            React.createElement(FontAwesome, { name: "refresh" })
+	                        ),
+	                        React.createElement(
+	                            "a",
+	                            { onClick: this.close },
+	                            React.createElement(FontAwesome, { name: "close" })
+	                        )
+	                    )
+	                ),
+	                renderIFrame(port)
+	            );
+	        }
+	    }]);
+
+	    return Terminal;
+	}(React.Component);
+
+	module.exports = Terminal;
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(9)))
+
+/***/ },
+/* 799 */
+/***/ function(module, exports, __webpack_require__) {
+
 	'use strict';
 
 	Object.defineProperty(exports, "__esModule", {
@@ -73173,15 +74238,15 @@
 	});
 	exports.Channel = exports.StickyContainer = exports.Sticky = undefined;
 
-	var _sticky = __webpack_require__(790);
+	var _sticky = __webpack_require__(800);
 
 	var _sticky2 = _interopRequireDefault(_sticky);
 
-	var _container = __webpack_require__(791);
+	var _container = __webpack_require__(801);
 
 	var _container2 = _interopRequireDefault(_container);
 
-	var _channel = __webpack_require__(792);
+	var _channel = __webpack_require__(802);
 
 	var _channel2 = _interopRequireDefault(_channel);
 
@@ -73193,7 +74258,7 @@
 	exports.default = _sticky2.default;
 
 /***/ },
-/* 790 */
+/* 800 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -73463,7 +74528,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 791 */
+/* 801 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -73482,7 +74547,7 @@
 
 	var _reactDom2 = _interopRequireDefault(_reactDom);
 
-	var _channel = __webpack_require__(792);
+	var _channel = __webpack_require__(802);
 
 	var _channel2 = _interopRequireDefault(_channel);
 
@@ -73568,7 +74633,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 792 */
+/* 802 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -73606,7 +74671,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 793 */
+/* 803 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function($) {'use strict';
@@ -73630,21 +74695,21 @@
 	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 	var React = __webpack_require__(14);
-	var Abnormal = __webpack_require__(794);
+	var Abnormal = __webpack_require__(804);
 	var Uptime = __webpack_require__(159);
-	var SensorHealthOverview = __webpack_require__(795);
-	var WatchList = __webpack_require__(801);
-	var Tableaux = __webpack_require__(804);
-	var NotificationBar = __webpack_require__(805);
+	var SensorHealthOverview = __webpack_require__(805);
+	var WatchList = __webpack_require__(808);
+	var Tableaux = __webpack_require__(810);
+	var NotificationBar = __webpack_require__(811);
 	var FontAwesome = __webpack_require__(581);
-	var BuildingOverview = __webpack_require__(812);
-	var AddSensor = __webpack_require__(813);
-	var EditSensor = __webpack_require__(815);
-	var DeleteSensor = __webpack_require__(817);
-	var UnpinSensor = __webpack_require__(819);
-	var RebootSensor = __webpack_require__(820);
-	var PinSensor = __webpack_require__(822);
-	var Terminal = __webpack_require__(823);
+	var BuildingOverview = __webpack_require__(818);
+	var AddSensor = __webpack_require__(819);
+	var EditSensor = __webpack_require__(796);
+	var DeleteSensor = __webpack_require__(789);
+	var UnpinSensor = __webpack_require__(821);
+	var RebootSensor = __webpack_require__(822);
+	var PinSensor = __webpack_require__(794);
+	var Terminal = __webpack_require__(798);
 
 	var _require = __webpack_require__(111);
 
@@ -73923,7 +74988,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(9)))
 
 /***/ },
-/* 794 */
+/* 804 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function($) {'use strict';
@@ -74131,7 +75196,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(9)))
 
 /***/ },
-/* 795 */
+/* 805 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -74147,9 +75212,9 @@
 	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 	var React = __webpack_require__(14);
-	var ServerList = __webpack_require__(796);
+	var ServerList = __webpack_require__(806);
 	var FontAwesome = __webpack_require__(581);
-	var VerticalMenu = __webpack_require__(797);
+	var VerticalMenu = __webpack_require__(807);
 	var deleteModal = null;
 	var editModal = null;
 	var rebootModal = null;
@@ -74278,16 +75343,13 @@
 	                if (buildings.hasOwnProperty(property)) {
 	                    var buildingName = property;
 
-	                    // console.log("buildings[property]", buildings[property]);
-	                    // console.log("areaNames", buildings[property]["area_names"]);
-
 	                    var temp = {
 	                        buildingName: buildingName,
 	                        areaNames: buildings[property]["area_names"],
 	                        levelNames: buildings[property]["level_names"],
 	                        sensors: buildings[property]["sensors"],
 	                        sensorCount: buildings[property]["sensor_count"],
-	                        speed_test: buildings[property]["speed_test"]
+	                        speed_test: buildings[property]["snmp_speed_test"]
 	                    };
 
 	                    allBuildings.push(temp);
@@ -74301,6 +75363,7 @@
 	                var sensors = building.sensors;
 	                var sensorCount = building.sensorCount;
 	                var speedTest = building.speed_test;
+
 	                if (buildingName.toLowerCase().indexOf(this.props.filterText.toLowerCase()) === -1) {
 	                    return React.createElement('div', null);
 	                }
@@ -74339,8 +75402,6 @@
 	            var _this5 = this;
 
 	            var speedTest = this.props.speedTest;
-
-	            //<th colSpan="2" style={{textAlign: "center",width: '20%'}}>Level</th>
 
 	            return React.createElement(
 	                'thead',
@@ -74550,7 +75611,7 @@
 	module.exports = (0, _reactRedux.connect)()(SensorHealthOverview);
 
 /***/ },
-/* 796 */
+/* 806 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -74888,7 +75949,7 @@
 	}(React.Component);
 
 /***/ },
-/* 797 */
+/* 807 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -74918,7 +75979,7 @@
 	var Link = _require.Link;
 	var IndexLink = _require.IndexLink;
 
-	var store = __webpack_require__(798).configure();
+	var store = __webpack_require__(791).configure();
 
 	var colorMap = {
 	    "ok": "sensorBlockSquare green sensorList",
@@ -74987,188 +76048,7 @@
 	module.exports = (0, _reactRedux.connect)()(VerticalMenu);
 
 /***/ },
-/* 798 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-	exports.configure = undefined;
-
-	var _redux = __webpack_require__(118);
-
-	var redux = _interopRequireWildcard(_redux);
-
-	var _reduxThunk = __webpack_require__(799);
-
-	var _reduxThunk2 = _interopRequireDefault(_reduxThunk);
-
-	var _reducers = __webpack_require__(800);
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
-
-	var configure = exports.configure = function configure() {
-	  var initialState = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
-
-	  var reducer = redux.combineReducers({
-	    auth: _reducers.authReducer,
-	    macAddress: _reducers.deleteSensorReducer,
-	    pin_mac: _reducers.updateWatchListReducer,
-	    syncData: _reducers.syncDataReducer,
-	    activeSensor: _reducers.activeSensorReducer
-	  });
-
-	  var store = redux.createStore(reducer, initialState, redux.compose(redux.applyMiddleware(_reduxThunk2.default), window.devToolsExtension ? window.devToolsExtension() : function (f) {
-	    return f;
-	  }));
-
-	  return store;
-	};
-
-/***/ },
-/* 799 */
-/***/ function(module, exports) {
-
-	'use strict';
-
-	exports.__esModule = true;
-	function createThunkMiddleware(extraArgument) {
-	  return function (_ref) {
-	    var dispatch = _ref.dispatch;
-	    var getState = _ref.getState;
-	    return function (next) {
-	      return function (action) {
-	        if (typeof action === 'function') {
-	          return action(dispatch, getState, extraArgument);
-	        }
-
-	        return next(action);
-	      };
-	    };
-	  };
-	}
-
-	var thunk = createThunkMiddleware();
-	thunk.withExtraArgument = createThunkMiddleware;
-
-	exports['default'] = thunk;
-
-/***/ },
-/* 800 */
-/***/ function(module, exports) {
-
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-	// string
-
-	var syncDataReducer = exports.syncDataReducer = function syncDataReducer() {
-	  var state = arguments.length <= 0 || arguments[0] === undefined ? { currentTime: '-', userId: '-' } : arguments[0];
-	  var action = arguments[1];
-
-	  switch (action.type) {
-	    case 'STORE_SYNC_DATA':
-
-	      return {
-	        currentTime: action.currentTime,
-	        userId: action.userId
-	      };
-	    default:
-	      return state;
-	  }
-	};
-
-	var deleteSensorReducer = exports.deleteSensorReducer = function deleteSensorReducer() {
-	  var state = arguments.length <= 0 || arguments[0] === undefined ? { macAddress: '' } : arguments[0];
-	  var action = arguments[1];
-
-
-	  switch (action.type) {
-	    case 'COMPLETE_DELETE_SENSOR':
-	      return {
-	        macAddress: action.macAddress
-	      };
-	    default:
-	      return state;
-	  }
-	};
-
-	var updateWatchListReducer = exports.updateWatchListReducer = function updateWatchListReducer() {
-	  var state = arguments.length <= 0 || arguments[0] === undefined ? { pin_mac: '' } : arguments[0];
-	  var action = arguments[1];
-
-	  switch (action.type) {
-	    case 'COMPLETE_UPDATE_WATCHLIST':
-	      return {
-	        pin_mac: action.pin_mac
-	      };
-	    default:
-	      return state;
-	  }
-	};
-
-	var sensorDataReducer = exports.sensorDataReducer = function sensorDataReducer() {
-	  var state = arguments.length <= 0 || arguments[0] === undefined ? { isFetching: false, data: undefined } : arguments[0];
-	  var action = arguments[1];
-
-
-	  switch (action.type) {
-	    case 'START_SENSOR_DATA_FETCH':
-	      return {
-	        isFetching: true,
-	        data: undefined
-	      };
-
-	    case 'COMPLETE_SENSOR_DATA_FETCH':
-	      return {
-	        isFetching: false,
-	        data: action.data
-	      };
-
-	    default:
-	      return state;
-	  }
-	};
-
-	var authReducer = exports.authReducer = function authReducer() {
-	  var state = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
-	  var action = arguments[1];
-
-	  switch (action.type) {
-	    case 'LOGIN':
-	      return {
-	        uid: action.uid
-	      };
-	    case 'LOGOUT':
-	      return {};
-	    default:
-	      return state;
-	  }
-	};
-
-	var activeSensorReducer = exports.activeSensorReducer = function activeSensorReducer() {
-	  var state = arguments.length <= 0 || arguments[0] === undefined ? { macAdd: '' } : arguments[0];
-	  var action = arguments[1];
-
-
-	  switch (action.type) {
-	    case 'STORE_ACTIVE_SENSOR':
-	      return {
-	        sensorData: action.macAdd
-	      };
-	    default:
-	      return state;
-	  }
-	};
-
-/***/ },
-/* 801 */
+/* 808 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function($) {'use strict';
@@ -75194,8 +76074,8 @@
 	var React = __webpack_require__(14);
 	var axios = __webpack_require__(140);
 	var Griddle = __webpack_require__(585);
-	var retrieveSensorDetails = __webpack_require__(802);
-	var updateWatchList = __webpack_require__(803);
+	var retrieveSensorDetails = __webpack_require__(809);
+	var updateWatchList = __webpack_require__(795);
 	var ReactDOM = __webpack_require__(490);
 
 
@@ -75430,7 +76310,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(9)))
 
 /***/ },
-/* 802 */
+/* 809 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -75455,45 +76335,7 @@
 	};
 
 /***/ },
-/* 803 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/* WEBPACK VAR INJECTION */(function($) {'use strict';
-
-	var axios = __webpack_require__(140);
-
-	var UPDATE_WATCHLIST_URL = 'http://opsdev.sence.io/backend/sensor-watchlist-pin.php';
-
-	module.exports = {
-
-	    updateWatchList: function updateWatchList(macAddress, pin_status) {
-	        console.log("trying to update: ", macAddress, pin_status);
-
-	        var data = {
-	            "MAC": macAddress,
-	            "pin_status": pin_status
-	        };
-
-	        return $.ajax({
-	            type: "POST",
-	            beforeSend: function beforeSend(request) {
-	                request.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-	            },
-	            url: UPDATE_WATCHLIST_URL,
-	            data: data,
-	            success: function success(msg) {
-	                console.log("Que pasar?", msg);
-	            },
-	            error: function error(e) {
-	                console.log("Remove sensor", e);
-	            }
-	        });
-	    }
-	};
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(9)))
-
-/***/ },
-/* 804 */
+/* 810 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function($) {'use strict';
@@ -75797,16 +76639,16 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(9)))
 
 /***/ },
-/* 805 */
+/* 811 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-	var _reactNotification = __webpack_require__(806);
+	var _reactNotification = __webpack_require__(812);
 
-	var _immutable = __webpack_require__(811);
+	var _immutable = __webpack_require__(817);
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -75934,7 +76776,7 @@
 	module.exports = NotificationBar;
 
 /***/ },
-/* 806 */
+/* 812 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -75944,11 +76786,11 @@
 	});
 	exports.NotificationStack = exports.Notification = undefined;
 
-	var _notification = __webpack_require__(807);
+	var _notification = __webpack_require__(813);
 
 	var _notification2 = _interopRequireDefault(_notification);
 
-	var _notificationStack = __webpack_require__(809);
+	var _notificationStack = __webpack_require__(815);
 
 	var _notificationStack2 = _interopRequireDefault(_notificationStack);
 
@@ -75958,7 +76800,7 @@
 	exports.NotificationStack = _notificationStack2.default;
 
 /***/ },
-/* 807 */
+/* 813 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -75973,7 +76815,7 @@
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _defaultPropTypes = __webpack_require__(808);
+	var _defaultPropTypes = __webpack_require__(814);
 
 	var _defaultPropTypes2 = _interopRequireDefault(_defaultPropTypes);
 
@@ -76174,7 +77016,7 @@
 	exports.default = Notification;
 
 /***/ },
-/* 808 */
+/* 814 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -76202,7 +77044,7 @@
 	};
 
 /***/ },
-/* 809 */
+/* 815 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -76217,11 +77059,11 @@
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _defaultPropTypes = __webpack_require__(808);
+	var _defaultPropTypes = __webpack_require__(814);
 
 	var _defaultPropTypes2 = _interopRequireDefault(_defaultPropTypes);
 
-	var _stackedNotification = __webpack_require__(810);
+	var _stackedNotification = __webpack_require__(816);
 
 	var _stackedNotification2 = _interopRequireDefault(_stackedNotification);
 
@@ -76275,7 +77117,7 @@
 	exports.default = NotificationStack;
 
 /***/ },
-/* 810 */
+/* 816 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -76292,7 +77134,7 @@
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _notification = __webpack_require__(807);
+	var _notification = __webpack_require__(813);
 
 	var _notification2 = _interopRequireDefault(_notification);
 
@@ -76357,7 +77199,7 @@
 	exports.default = StackedNotification;
 
 /***/ },
-/* 811 */
+/* 817 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -81341,7 +82183,7 @@
 	}));
 
 /***/ },
-/* 812 */
+/* 818 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -81705,7 +82547,7 @@
 	module.exports = BuildingOverview;
 
 /***/ },
-/* 813 */
+/* 819 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function($) {'use strict';
@@ -81719,7 +82561,7 @@
 	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 	var React = __webpack_require__(14);
-	var addSensorAPI = __webpack_require__(814);
+	var addSensorAPI = __webpack_require__(820);
 
 	var AddSensor = function (_React$Component) {
 	    _inherits(AddSensor, _React$Component);
@@ -81973,7 +82815,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(9)))
 
 /***/ },
-/* 814 */
+/* 820 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function($) {'use strict';
@@ -82013,7 +82855,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(9)))
 
 /***/ },
-/* 815 */
+/* 821 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function($) {'use strict';
@@ -82027,541 +82869,14 @@
 	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 	var React = __webpack_require__(14);
-	var editSensorAPI = __webpack_require__(816);
-
-	var EditSensor = function (_React$Component) {
-	    _inherits(EditSensor, _React$Component);
-
-	    function EditSensor(props) {
-	        _classCallCheck(this, EditSensor);
-
-	        var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(EditSensor).call(this, props));
-
-	        _this.state = {
-	            message: ''
-	        };
-	        return _this;
-	    }
-
-	    _createClass(EditSensor, [{
-	        key: 'componentWillReceiveProps',
-	        value: function componentWillReceiveProps(props) {
-	            if (props.macAdd) {
-	                this.setState({
-	                    macAdd: props.macAdd,
-	                    port: props.port,
-	                    region: props.region.toLowerCase(),
-	                    building: props.building,
-	                    level: props.level,
-	                    areaID: props.areaID
-	                });
-	            }
-	        }
-	    }, {
-	        key: 'onEditSensor',
-	        value: function onEditSensor(e) {
-	            // console.log("test type: ", this.props.type);
-
-	            e.preventDefault();
-
-	            var inputMac = this.refs.macAddress.value;
-	            var inputRegion = this.refs.region.value;
-	            var inputLocationLevel = this.refs.sensorLocationLevel.value;
-	            var inputLocationID = this.refs.sensorLocationID.value;
-	            var inputBuilding = this.refs.building.value;
-	            var inputPort = this.refs.port.value;
-
-	            var that = this;
-
-	            console.log("MAC", inputMac);
-	            console.log("region", inputRegion);
-	            console.log("level", inputLocationLevel);
-	            console.log("id", inputLocationID);
-	            console.log("building", inputBuilding);
-	            console.log("port", inputPort);
-
-	            // editSensorAPI.editSensor(inputMac, inputRegion, inputLocationLevel, inputLocationID, inputPort, inputBuilding).then(function(response){
-	            editSensorAPI.editSensor(inputMac, inputRegion, inputLocationLevel, inputLocationID, inputBuilding, inputPort).then(function (response) {
-
-	                if (response.error) {
-	                    that.setState({ message: response.error });
-	                } else {
-
-	                    var myCustomEvent = document.createEvent("Event");
-
-	                    myCustomEvent.data = {
-	                        type: 'editSensor',
-	                        macAdd: inputMac,
-	                        building: inputBuilding,
-	                        location: '' + inputLocationLevel + inputLocationID
-	                    };
-
-	                    myCustomEvent.initEvent("customEvent", true, true);
-	                    document.dispatchEvent(myCustomEvent);
-
-	                    that.setState({ message: response.success });
-	                }
-	                //console.log("message", that.state.message);
-
-	                that.refs.macAddress.value = '';
-	                that.refs.port.value = '';
-	                that.refs.region.value = '';
-	                that.refs.sensorLocationLevel.value = '';
-	                that.refs.sensorLocationID.value = '';
-	                that.refs.building.value = '';
-	                that.refs.port.value = '';
-	            });
-	        }
-	    }, {
-	        key: 'render',
-	        value: function render() {
-	            var message = this.state.message;
-	            var _state = this.state;
-	            var message = _state.message;
-	            var macAdd = _state.macAdd;
-	            var building = _state.building;
-	            var level = _state.level;
-	            var areaID = _state.areaID;
-	            var port = _state.port;
-	            var region = _state.region;
-
-	            var that = this;
-
-	            $('#edit-sensor-modal').on('closed.zf.reveal', function () {
-	                that.setState({ message: '' });
-	            });
-
-	            return React.createElement(
-	                'div',
-	                { id: 'edit-sensor-modal', className: 'reveal medium', 'data-reveal': '' },
-	                React.createElement(
-	                    'form',
-	                    null,
-	                    React.createElement(
-	                        'div',
-	                        { className: 'row' },
-	                        React.createElement(
-	                            'div',
-	                            { className: 'page-title', style: {
-	                                    paddingLeft: '0.9375rem'
-	                                } },
-	                            'Edit Sensor'
-	                        ),
-	                        React.createElement(
-	                            'div',
-	                            { className: 'large-6 columns' },
-	                            React.createElement(
-	                                'label',
-	                                null,
-	                                'Mac Address',
-	                                React.createElement('input', { type: 'text', name: 'macAddress', id: 'inputMac', ref: 'macAddress', placeholder: 'Mac Address', value: macAdd, disabled: true })
-	                            ),
-	                            React.createElement(
-	                                'label',
-	                                null,
-	                                'Port',
-	                                React.createElement('input', { type: 'text', name: 'port', id: 'inputPort', ref: 'port', placeholder: 'Port', value: port })
-	                            )
-	                        ),
-	                        React.createElement(
-	                            'div',
-	                            { className: 'large-6 columns', style: {
-	                                    'borderLeft': 'solid 1px #e4e4e4'
-	                                } },
-	                            React.createElement(
-	                                'label',
-	                                null,
-	                                'Region',
-	                                React.createElement(
-	                                    'select',
-	                                    { ref: 'region', name: 'region', id: 'inputRegion', value: region },
-	                                    React.createElement('option', { value: '' }),
-	                                    React.createElement(
-	                                        'option',
-	                                        { value: 'north' },
-	                                        'North'
-	                                    ),
-	                                    React.createElement(
-	                                        'option',
-	                                        { value: 'south' },
-	                                        'South'
-	                                    ),
-	                                    React.createElement(
-	                                        'option',
-	                                        { value: 'east' },
-	                                        'East'
-	                                    ),
-	                                    React.createElement(
-	                                        'option',
-	                                        { value: 'west' },
-	                                        'West'
-	                                    ),
-	                                    React.createElement(
-	                                        'option',
-	                                        { value: 'central' },
-	                                        'Central'
-	                                    ),
-	                                    React.createElement(
-	                                        'option',
-	                                        { value: 'virtual' },
-	                                        'Virtual'
-	                                    )
-	                                )
-	                            ),
-	                            React.createElement(
-	                                'label',
-	                                null,
-	                                'Sensor Location level',
-	                                React.createElement('input', { type: 'text', name: 'sensorLocationLevel', id: 'inputLocationLevel', ref: 'sensorLocationLevel', placeholder: 'Sensor Location Level', value: level })
-	                            ),
-	                            React.createElement(
-	                                'label',
-	                                null,
-	                                'Sensor Location ID',
-	                                React.createElement('input', { type: 'text', name: 'sensorLocationID', id: 'inputSensorLocationID', ref: 'sensorLocationID', placeholder: 'Sensor Location ID', value: areaID })
-	                            ),
-	                            React.createElement(
-	                                'label',
-	                                null,
-	                                'Building',
-	                                React.createElement('input', { type: 'text', name: 'building', id: 'inputBuildingName', ref: 'building', placeholder: 'Building', value: building })
-	                            )
-	                        )
-	                    ),
-	                    React.createElement(
-	                        'div',
-	                        { className: 'row' },
-	                        React.createElement(
-	                            'div',
-	                            { id: 'sensorMessage' },
-	                            React.createElement(EditSensorMessage, { message: message })
-	                        ),
-	                        React.createElement(
-	                            'a',
-	                            { className: 'button proceed expanded', onClick: this.onEditSensor.bind(this) },
-	                            'Edit Sensor'
-	                        ),
-	                        React.createElement(
-	                            'a',
-	                            { className: 'button cancel expanded close-reveal-modal', 'data-close': '', 'aria-label': 'Close' },
-	                            'Cancel'
-	                        )
-	                    )
-	                )
-	            );
-	        }
-	    }]);
-
-	    return EditSensor;
-	}(React.Component);
-
-	var EditSensorMessage = function (_React$Component2) {
-	    _inherits(EditSensorMessage, _React$Component2);
-
-	    function EditSensorMessage() {
-	        _classCallCheck(this, EditSensorMessage);
-
-	        return _possibleConstructorReturn(this, Object.getPrototypeOf(EditSensorMessage).apply(this, arguments));
-	    }
-
-	    _createClass(EditSensorMessage, [{
-	        key: 'render',
-	        value: function render() {
-	            var message = this.props.message;
-	            // console.log("message from parent: ", message);
-
-	            return React.createElement(
-	                'div',
-	                { className: 'statusText' },
-	                message
-	            );
-	        }
-	    }]);
-
-	    return EditSensorMessage;
-	}(React.Component);
-
-	module.exports = EditSensor;
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(9)))
-
-/***/ },
-/* 816 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/* WEBPACK VAR INJECTION */(function($) {'use strict';
-
-	var axios = __webpack_require__(140);
-
-	var EDIT_SENSOR_URL = 'http://opsdev.sence.io/backend/edit-sensor.php';
-
-	module.exports = {
-
-	    editSensor: function editSensor(inputMac, inputRegion, inputLocationLevel, inputLocationID, inputBuilding, inputPort) {
-
-	        var data = {
-	            MAC: inputMac,
-	            "geo-region": inputRegion,
-	            "sensor-location-level": inputLocationLevel,
-	            "sensor-location-id": inputLocationID,
-	            "building": inputBuilding,
-	            "port": inputPort
-	        };
-
-	        console.log("edit data", data);
-
-	        return $.ajax({
-	            type: "POST",
-	            beforeSend: function beforeSend(request) {
-	                request.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-	            },
-	            url: EDIT_SENSOR_URL,
-	            data: data,
-	            success: function success(response) {
-	                console.log("Que pasar?", response);
-	                // if(response.status != 200) {
-	                //   throw new Error(response.error);
-	                // }
-	            }
-	        });
-	    }
-	};
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(9)))
-
-/***/ },
-/* 817 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/* WEBPACK VAR INJECTION */(function($) {'use strict';
-
-	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-	var React = __webpack_require__(14);
-	var deleteSensorAPI = __webpack_require__(818);
-	var deleteMac = "";
-
-	var _require = __webpack_require__(111);
-
-	var connect = _require.connect;
-
-	var store = __webpack_require__(798).configure();
-
-	var DeleteSensor = function (_React$Component) {
-	    _inherits(DeleteSensor, _React$Component);
-
-	    function DeleteSensor(props) {
-	        _classCallCheck(this, DeleteSensor);
-
-	        var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(DeleteSensor).call(this, props));
-
-	        _this.state = {
-	            message: '',
-	            macAdd: _this.props.macAdd
-	        };
-	        return _this;
-	    }
-
-	    _createClass(DeleteSensor, [{
-	        key: 'componentWillReceiveProps',
-	        value: function componentWillReceiveProps(props) {
-	            this.setState({
-	                macAdd: props.macAdd
-	            });
-	        }
-	    }, {
-	        key: 'onDeleteSensor',
-	        value: function onDeleteSensor(event) {
-
-	            event.preventDefault();
-
-	            var macAdd = this.state.macAdd;
-
-	            var that = this;
-
-	            console.log("To be deleted: ", macAdd);
-
-	            deleteSensorAPI.deleteSensor(macAdd).then(function (response) {
-
-	                if (response.error) {
-	                    that.setState({ message: response.error });
-	                } else {
-	                    that.setState({ message: response.success });
-
-	                    var myCustomEvent = document.createEvent("Event");
-
-	                    myCustomEvent.data = {
-	                        type: 'deleteSensor',
-	                        macAdd: macAdd,
-	                        building: inputBuilding,
-	                        location: '' + inputLocationLevel + inputLocationID
-	                    };
-
-	                    myCustomEvent.initEvent("customEvent", true, true);
-	                    document.dispatchEvent(myCustomEvent);
-	                }
-	            });
-	        }
-	    }, {
-	        key: 'render',
-	        value: function render() {
-	            // console.log("delete sensor state ", this.state);
-	            var _state = this.state;
-	            var message = _state.message;
-	            var macAdd = _state.macAdd;
-
-	            var that = this;
-
-	            // resets message to empty string on close
-	            $('#delete-sensor-modal').on('closed.zf.reveal', function () {
-	                //console.log("close");
-	                that.setState({ message: '' });
-	            });
-
-	            return React.createElement(
-	                'div',
-	                { id: 'delete-sensor-modal', className: 'reveal tiny text-center', 'data-reveal': '' },
-	                React.createElement(
-	                    'form',
-	                    null,
-	                    React.createElement(
-	                        'div',
-	                        { className: 'row' },
-	                        React.createElement(
-	                            'div',
-	                            { className: 'large-12 columns' },
-	                            React.createElement(
-	                                'div',
-	                                { className: 'page-title' },
-	                                'Delete Sensor'
-	                            ),
-	                            React.createElement(
-	                                'div',
-	                                { className: 'header', style: {
-	                                        color: '#990000'
-	                                    } },
-	                                'Hold up. You really wanna delete this bad boy?'
-	                            ),
-	                            React.createElement('div', { className: 'header', id: 'deleteDetails' }),
-	                            React.createElement(
-	                                'div',
-	                                { className: 'header', id: 'deleteMac' },
-	                                this.props.macAdd
-	                            ),
-	                            React.createElement(
-	                                'div',
-	                                { id: 'deleteSensorMessage' },
-	                                React.createElement(DeleteSensorMessage, { message: message })
-	                            ),
-	                            React.createElement(
-	                                'a',
-	                                { className: 'button proceed expanded', onClick: this.onDeleteSensor.bind(this) },
-	                                'Yes I do'
-	                            ),
-	                            React.createElement(
-	                                'a',
-	                                { id: 'deleteClose', className: 'button cancel expanded close-reveal-modal', 'data-close': '', 'aria-label': 'Close' },
-	                                'Slow Down, Cowboy'
-	                            )
-	                        )
-	                    )
-	                )
-	            );
-	        }
-	    }]);
-
-	    return DeleteSensor;
-	}(React.Component);
-
-	var DeleteSensorMessage = function (_React$Component2) {
-	    _inherits(DeleteSensorMessage, _React$Component2);
-
-	    function DeleteSensorMessage() {
-	        _classCallCheck(this, DeleteSensorMessage);
-
-	        return _possibleConstructorReturn(this, Object.getPrototypeOf(DeleteSensorMessage).apply(this, arguments));
-	    }
-
-	    _createClass(DeleteSensorMessage, [{
-	        key: 'render',
-	        value: function render() {
-	            var message = this.props.message;
-
-	            return React.createElement(
-	                'div',
-	                { className: 'statusText' },
-	                message
-	            );
-	        }
-	    }]);
-
-	    return DeleteSensorMessage;
-	}(React.Component);
-
-	function mapStateToProps(state, ownProps) {
-	    return { sensorData: state.activeSensor };
-	}
-
-	module.exports = connect(mapStateToProps)(DeleteSensor);
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(9)))
-
-/***/ },
-/* 818 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/* WEBPACK VAR INJECTION */(function($) {"use strict";
-
-	var DELETE_SENSOR_URL = "http://opsdev.sence.io/backend/delete-sensor.php";
-
-	module.exports = {
-
-	    deleteSensor: function deleteSensor(macAddress) {
-	        console.log(macAddress);
-
-	        return $.ajax({
-	            type: "POST",
-	            beforeSend: function beforeSend(request) {
-	                request.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-	            },
-	            url: DELETE_SENSOR_URL,
-	            data: {
-	                "MAC": macAddress
-	            },
-	            success: function success(response) {
-	                console.log("Que pasar?", response);
-	            }
-	        });
-	    }
-	};
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(9)))
-
-/***/ },
-/* 819 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/* WEBPACK VAR INJECTION */(function($) {'use strict';
-
-	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-	var React = __webpack_require__(14);
-	var updateWatchList = __webpack_require__(803);
+	var updateWatchList = __webpack_require__(795);
 	var unpinMac = "";
 
 	var _require = __webpack_require__(111);
 
 	var connect = _require.connect;
 
-	var store = __webpack_require__(798).configure();
+	var store = __webpack_require__(791).configure();
 
 	var UnpinSensor = function (_React$Component) {
 	    _inherits(UnpinSensor, _React$Component);
@@ -82700,7 +83015,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(9)))
 
 /***/ },
-/* 820 */
+/* 822 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function($) {'use strict';
@@ -82714,7 +83029,7 @@
 	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 	var React = __webpack_require__(14);
-	var rebootSensorAPI = __webpack_require__(821);
+	var rebootSensorAPI = __webpack_require__(823);
 	var rebootMac = "";
 
 	var RebootSensor = function (_React$Component) {
@@ -82870,7 +83185,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(9)))
 
 /***/ },
-/* 821 */
+/* 823 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function($) {"use strict";
@@ -82903,254 +83218,6 @@
 	        });
 	    }
 	};
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(9)))
-
-/***/ },
-/* 822 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/* WEBPACK VAR INJECTION */(function($) {'use strict';
-
-	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-	var _reactRedux = __webpack_require__(111);
-
-	var Redux = _interopRequireWildcard(_reactRedux);
-
-	var _actions = __webpack_require__(139);
-
-	var actions = _interopRequireWildcard(_actions);
-
-	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
-
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-	var React = __webpack_require__(14);
-	var updateWatchList = __webpack_require__(803);
-
-	var PinSensor = function (_React$Component) {
-	    _inherits(PinSensor, _React$Component);
-
-	    function PinSensor(props) {
-	        _classCallCheck(this, PinSensor);
-
-	        var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(PinSensor).call(this, props));
-
-	        _this.state = {
-	            message: ''
-	        };
-	        return _this;
-	    }
-
-	    _createClass(PinSensor, [{
-	        key: 'onPinSensor',
-	        value: function onPinSensor() {
-	            var dispatch = this.props.dispatch;
-
-	            var macAdd = this.props.pin_mac.pin_mac;
-	            var that = this;
-
-	            updateWatchList.updateWatchList(macAdd, true).then(function (response) {
-	                // console.log("Added sensor to watchlist", response);
-
-	                if (response.error) {
-	                    that.setState({ message: response.error });
-	                } else {
-
-	                    var myCustomEvent = document.createEvent("Event");
-
-	                    myCustomEvent.data = {
-	                        type: 'pinSensor',
-	                        macAdd: macAdd
-	                    };
-
-	                    myCustomEvent.initEvent("customEvent", true, true);
-	                    document.dispatchEvent(myCustomEvent);
-
-	                    that.setState({ message: response.success });
-	                }
-	            });
-	        }
-	    }, {
-	        key: 'render',
-	        value: function render() {
-	            // console.log("delete sensor state ", this.state);
-	            var message = this.state.message;
-
-	            var that = this;
-
-	            // resets message to empty string on close
-	            $('#pin-sensor-modal').on('closed.zf.reveal', function () {
-	                //console.log("close");
-	                that.setState({ message: '' });
-	            });
-
-	            return React.createElement(
-	                'div',
-	                { id: 'pin-sensor-modal', className: 'reveal tiny text-center', 'data-reveal': '' },
-	                React.createElement(
-	                    'form',
-	                    null,
-	                    React.createElement(
-	                        'div',
-	                        { className: 'row' },
-	                        React.createElement(
-	                            'div',
-	                            { className: 'large-12 columns' },
-	                            React.createElement(
-	                                'div',
-	                                { className: 'page-title' },
-	                                'Pin Sensor'
-	                            ),
-	                            React.createElement(
-	                                'div',
-	                                { className: 'header', style: {
-	                                        color: '#990000'
-	                                    } },
-	                                'Pin this sensor, you want to?'
-	                            ),
-	                            React.createElement('input', { id: 'pinMac', value: '', hidden: true }),
-	                            React.createElement(
-	                                'div',
-	                                { id: 'pinSensorMessage' },
-	                                React.createElement(PinSensorMessage, { message: message })
-	                            ),
-	                            React.createElement(
-	                                'a',
-	                                { className: 'button proceed expanded', onClick: this.onPinSensor.bind(this) },
-	                                'Yes I do'
-	                            ),
-	                            React.createElement(
-	                                'a',
-	                                { className: 'button cancel expanded close-reveal-modal', 'data-close': '', 'aria-label': 'Close', id: 'closePin' },
-	                                'Slow Down, Cowboy'
-	                            )
-	                        )
-	                    )
-	                )
-	            );
-	        }
-	    }]);
-
-	    return PinSensor;
-	}(React.Component);
-
-	var PinSensorMessage = function (_React$Component2) {
-	    _inherits(PinSensorMessage, _React$Component2);
-
-	    function PinSensorMessage() {
-	        _classCallCheck(this, PinSensorMessage);
-
-	        return _possibleConstructorReturn(this, Object.getPrototypeOf(PinSensorMessage).apply(this, arguments));
-	    }
-
-	    _createClass(PinSensorMessage, [{
-	        key: 'render',
-	        value: function render() {
-	            var message = this.props.message;
-
-
-	            return React.createElement(
-	                'div',
-	                { className: 'statusText' },
-	                message
-	            );
-	        }
-	    }]);
-
-	    return PinSensorMessage;
-	}(React.Component);
-
-	function mapStateToProps(state, ownProps) {
-	    return { pin_mac: state.pin_mac };
-	}
-
-	module.exports = (0, _reactRedux.connect)(mapStateToProps)(PinSensor);
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(9)))
-
-/***/ },
-/* 823 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/* WEBPACK VAR INJECTION */(function($) {'use strict';
-
-	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-	var React = __webpack_require__(14);
-	var iframeLink = "http://opsdev.sence.io:4201/";
-	var FontAwesome = __webpack_require__(581);
-
-	var Terminal = function (_React$Component) {
-	  _inherits(Terminal, _React$Component);
-
-	  function Terminal(props) {
-	    _classCallCheck(this, Terminal);
-
-	    return _possibleConstructorReturn(this, Object.getPrototypeOf(Terminal).call(this, props));
-	  }
-
-	  _createClass(Terminal, [{
-	    key: 'refresh',
-	    value: function refresh() {
-	      $('#terminalIFrame').attr('src', function (i, val) {
-	        return val;
-	      });
-	    }
-	  }, {
-	    key: 'close',
-	    value: function close() {
-	      $('#terminal').foundation('close');
-	    }
-	  }, {
-	    key: 'render',
-	    value: function render() {
-	      return React.createElement(
-	        'div',
-	        { id: 'terminal', className: 'reveal large', 'data-reveal': '', style: { padding: '0', border: 'none', background: '#000' } },
-	        React.createElement(
-	          'div',
-	          { className: 'top-bar' },
-	          React.createElement(
-	            'div',
-	            { className: 'top-bar-title' },
-	            'terminal'
-	          ),
-	          React.createElement(
-	            'div',
-	            { className: 'top-bar-right' },
-	            React.createElement(
-	              'a',
-	              { className: 'margin-right-tiny', onClick: this.refresh },
-	              React.createElement(FontAwesome, { name: 'refresh' })
-	            ),
-	            React.createElement(
-	              'a',
-	              { onClick: this.close },
-	              React.createElement(FontAwesome, { name: 'close' })
-	            )
-	          )
-	        ),
-	        React.createElement('iframe', { id: 'terminalIFrame', src: iframeLink, width: '100%', style: {
-	            border: "none"
-	          }, height: '500px' })
-	      );
-	    }
-	  }]);
-
-	  return Terminal;
-	}(React.Component);
-
-	module.exports = Terminal;
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(9)))
 
 /***/ },

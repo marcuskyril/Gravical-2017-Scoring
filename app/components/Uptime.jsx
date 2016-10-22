@@ -94,7 +94,7 @@ class Uptime extends React.Component {
   retrieveData(startDate, endDate, interval) {
 
     var that = this;
-    retrieveHistoricalDataAPI.retrieveHistoricalData(that.state.buildingName, startDate, endDate, interval, "uptime").then(function(response) {
+    retrieveHistoricalDataAPI.retrieveHistoricalDataAlt(that.state.buildingName, startDate, endDate, interval).then(function(response) {
 
         that.setState({
           data: response,
@@ -102,6 +102,7 @@ class Uptime extends React.Component {
           startDate: startDate,
           endDate: endDate,
           interval: interval
+
         });
     });
   }
@@ -202,11 +203,13 @@ class UptimeList extends React.Component {
         var rows = [];
 
         for(var level in dataList) {
-          if (dataList.hasOwnProperty(level)) {
 
-              var sensorsOnLevel = dataList[level];
-              rows.push(<SensorList key={level} level={level} data={sensorsOnLevel}/>);
-          }
+            console.log("level", level);
+            if (dataList.hasOwnProperty(level)) {
+
+                var sensorsOnLevel = dataList[level];
+                rows.push(<SensorList key={level} level={level} data={sensorsOnLevel}/>);
+            }
         }
 
         return (

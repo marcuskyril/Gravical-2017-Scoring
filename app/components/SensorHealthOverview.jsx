@@ -79,16 +79,13 @@ class BuildingList extends React.Component {
             if (buildings.hasOwnProperty(property)) {
                 var buildingName = property;
 
-                // console.log("buildings[property]", buildings[property]);
-                // console.log("areaNames", buildings[property]["area_names"]);
-
                 var temp = {
                     buildingName: buildingName,
                     areaNames: buildings[property]["area_names"],
                     levelNames: buildings[property]["level_names"],
                     sensors: buildings[property]["sensors"],
                     sensorCount: buildings[property]["sensor_count"],
-                    speed_test: buildings[property]["speed_test"]
+                    speed_test: buildings[property]["snmp_speed_test"]
                 }
 
                 allBuildings.push(temp);
@@ -102,6 +99,7 @@ class BuildingList extends React.Component {
             var sensors = building.sensors;
             var sensorCount = building.sensorCount;
             var speedTest = building.speed_test;
+
             if ((buildingName.toLowerCase()).indexOf((this.props.filterText.toLowerCase())) === -1) {
                 return <div></div>
             }
@@ -126,8 +124,6 @@ class BuildingHeader extends React.Component {
     render() {
 
         var speedTest = this.props.speedTest;
-
-        //<th colSpan="2" style={{textAlign: "center",width: '20%'}}>Level</th>
 
         return (
             <thead>

@@ -180,12 +180,17 @@ class SensorDetails extends React.Component {
                 $('#edit-sensor-modal').foundation('open');
                 //dispatch(actions.startUpdateWatchList(macAddress));
                 break;
+            case 'terminal':
+                $('#terminal').foundation('open');
+                break;
+            case 'reboot':
+                break;
         }
     }
 
     render() {
 
-        var {macAdd, building, latency, amIAlive, status, location, lastReboot, stats, top5} = this.state;
+        var {macAdd, building, latency, amIAlive, port, status, location, lastReboot, stats, top5} = this.state;
         var location = `${building} ${location}`
         var amIAliveColor = amIAlive ? "green" : colorMap['down'];
 
@@ -288,7 +293,7 @@ class SensorDetails extends React.Component {
                         </table>
 
 
-                    <a className="button proceed expanded">
+                    <a className="button proceed expanded" onClick={this.handleClick.bind(this, 'terminal')}>
                         Launch Terminal
                     </a>
 
@@ -300,10 +305,10 @@ class SensorDetails extends React.Component {
                         Historical Charts
                     </IndexLink>
                 </div>
-                <DeleteSensor macAdd={macAdd}/>
+                <DeleteSensor macAdd={macAdd} port={port}/>
                 <PinSensor macAdd={macAdd}/>
                 <EditSensor {...this.state}/>
-                <Terminal macAdd={macAdd}/>
+                <Terminal macAdd={macAdd} port={port}/>
             </div>
         );
     }
