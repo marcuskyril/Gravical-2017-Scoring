@@ -38,7 +38,8 @@ class NotificationBar extends React.Component {
             'editSensor': `Un momento por favor, editing ${data.macAdd} at ${data.building} ${data.location}`,
             'pinSensor': `Un momento por favor, adding ${data.macAdd} to the Watch List`,
             'unpinSensor': `Un momento por favor, removing ${data.macAdd} from the Watch List`,
-            'deleteSensor': `Un momento por favor, deleting ${data.macAdd}`
+            'deleteSensor': `Un momento por favor, deleting ${data.macAdd}`,
+            'rebootSensor': `Un momento por favor, rebooting ${data.macAdd}`
         }
 
         return this.setState({

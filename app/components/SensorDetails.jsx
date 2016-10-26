@@ -5,6 +5,9 @@ var PinSensor = require('PinSensor');
 var EditSensor = require('EditSensor');
 var RebootSensor = require('RebootSensor');
 var Terminal = require('Terminal');
+import * as Redux from 'react-redux';
+import * as actions from 'actions';
+var {connect} = require('react-redux');
 var FontAwesome = require('react-fontawesome');
 var {Link, IndexLink} = require('react-router');
 
@@ -161,6 +164,11 @@ class SensorDetails extends React.Component {
 
     handleClick(type) {
 
+        var userId = this.props.userId;
+        var {dispatch} = this.props;
+        console.log("sensorDetails", this.state);
+        var {macAdd, location, building} = this.state;
+
         switch(type) {
             case 'delete':
                 $('#delete-sensor-modal').foundation('open');
@@ -174,9 +182,11 @@ class SensorDetails extends React.Component {
 
             case 'edit':
                 $('#edit-sensor-modal').foundation('open');
-                //dispatch(actions.startUpdateWatchList(macAddress));
                 break;
             case 'terminal':
+                var actionDesc = `Launched terminal for ${macAdd} (${building} ${location})`;
+                dispatch(actions.startAddToLog(userId, actionDesc));
+
                 $('#terminal').foundation('open');
                 break;
             case 'reboot':
@@ -306,4 +316,8 @@ class SensorDetails extends React.Component {
     }
 };
 
-module.exports = SensorDetails;
+function mapStateToProps(state, ownProps) {
+    return {sensorData: state.activeSensor, userId: state.syncData.userId}
+}
+
+module.exports = connect(mapStateToProps)(SensorDetails);

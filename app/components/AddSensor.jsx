@@ -86,14 +86,14 @@ class AddSensor extends React.Component {
         });
 
         return (
-            <div id="add-sensor-modal" className="reveal medium" data-reveal="">
+            <div id="add-sensor-modal" className="reveal large" data-reveal="">
                 <form>
                     <div className="row">
                         <div className="page-title" style={{
                             paddingLeft: '0.9375rem'
                         }}>Add Sensor / Server</div>
 
-                        <div className="large-6 columns">
+                        <div className="large-4 columns">
 
                             <label>Mac Address
                                 <input type="text" name="macAddress" ref="macAddress" placeholder="Mac Address"/>
@@ -111,7 +111,7 @@ class AddSensor extends React.Component {
                             </fieldset>
                         </div>
 
-                        <div className="large-6 columns" style={{
+                        <div className="large-4 columns" style={{
                             'borderLeft': 'solid 1px #e4e4e4'
                         }}>
                             <label>Region
@@ -138,8 +138,50 @@ class AddSensor extends React.Component {
                                 <input type="text" name="building" ref="building" placeholder="Building / Cluster Level"/>
                             </label>
                         </div>
+                        <div className="large-4 columns" style={{
+                            'borderLeft': 'solid 1px #e4e4e4'
+                        }}>
+                            <div className="page-title">Customize Thresholds</div>
+
+                            <div className="row">
+                                <div className="medium-6 columns">
+                                    <label>Warning
+                                        <input type="text" placeholder="test"/>
+                                    </label>
+                                </div>
+                                <div className="medium-6 columns">
+                                    <label>Danger
+                                        <input type="text" placeholder="test"/>
+                                    </label>
+                                </div>
+                             </div>
+                            <div className="row">
+                                <div className="medium-6 columns">
+                                    <label>Warning
+                                        <input type="text" placeholder="test"/>
+                                    </label>
+                                </div>
+                                <div className="medium-6 columns">
+                                    <label>Danger
+                                        <input type="text" placeholder="test"/>
+                                    </label>
+                                </div>
+                             </div>
+                            <div className="row">
+                                <div className="medium-6 columns">
+                                    <label>Warning
+                                        <input type="text" placeholder="test"/>
+                                    </label>
+                                </div>
+                                <div className="medium-6 columns">
+                                    <label>Danger
+                                        <input type="text" placeholder="test"/>
+                                    </label>
+                                </div>
+                             </div>
+                        </div>
                     </div>
-                    <div className="row">
+                    <div className="columns large-4">
                         <div id="sensorMessage"><AddSensorMessage message={message}/></div>
                         <a className="button proceed expanded" onClick={this.onAddSensor.bind(this)}>
                             Add Sensor
@@ -167,7 +209,6 @@ class AddSensorMessage extends React.Component {
 }
 
 function mapStateToProps(state, ownProps) {
-    console.log("state add sensor", state);
     return {sensorData: state.activeSensor, userId: state.syncData.userId}
 }
 

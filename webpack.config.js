@@ -45,6 +45,8 @@ module.exports = {
     alias: {
       Abnormal: 'app/components/Abnormal.jsx',
       AccountSettings: 'app/components/AccountSettings.jsx',
+      ActionLog: 'app/components/ActionLog.jsx',
+      AppSettings: 'app/components/AppSettings.jsx',
       AddSensor: 'app/components/AddSensor.jsx',
       app: 'app',
       Building: 'app/components/Building.jsx',

@@ -49,6 +49,33 @@ export var addToLog = (action) => {
     return {type: 'ADD_TO_LOG', action}
 }
 
+export var startRetrieveLogs = () => {
+    return (dispatch, getState) => {
+        var logRef = firebaseRef.child('log');
+
+        return logRef.once('value').then((snapshot) => {
+            var logs = snapshot.val() || {};
+
+            var parsedLogs = [];
+
+            Object.keys(logs).forEach((logId) => {
+                parsedLogs.push({
+                    id: logId,
+                    ...logs[logId]
+                });
+            });
+
+            dispatch(retrieveLogs(parsedLogs));
+        });
+    };
+};
+
+export var retrieveLogs = (logs) => {
+    console.log("logs", logs);
+
+    return {type: 'RETRIEVE_LOGS', logs}
+}
+
 // end add to log test
 
 export var storeActiveSensor = (macAdd) => {

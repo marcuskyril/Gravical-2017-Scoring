@@ -17,13 +17,7 @@ class EditSNMPSpeedTest extends React.Component {
     }
 
     componentWillReceiveProps(props) {
-
         console.log("motherfucking props", props);
-        // if(props.macAdd) {
-        //     this.setState({
-        //         macAdd: props.macAdd
-        //     });
-        // }
     }
 
     onEditSNMPSpeedTest(e) {

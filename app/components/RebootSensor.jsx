@@ -1,6 +1,8 @@
 var React = require('react');
 var rebootSensorAPI = require('rebootSensorAPI');
-var rebootMac = "";
+import * as Redux from 'react-redux';
+import * as actions from 'actions';
+var {connect} = require('react-redux');
 
 class RebootSensor extends React.Component {
   constructor(props) {
@@ -15,8 +17,6 @@ class RebootSensor extends React.Component {
   componentWillReceiveProps(props) {
       var that = this;
 
-      console.log("props", props);
-
       if(props.macAdd) {
           that.setState({macAdd: props.macAdd});
       }
@@ -28,6 +28,8 @@ class RebootSensor extends React.Component {
 
     var username = this.refs.username.value;
     var password = this.refs.password.value;
+    var userId = this.props.userId;
+    var {dispatch} = this.props;
     var {macAdd} = this.state;
 
     var that = this;
@@ -43,7 +45,18 @@ class RebootSensor extends React.Component {
           message: response.msg
         });
 
-        $('#closeReboot').click();
+        var myCustomEvent = document.createEvent("Event");
+
+        myCustomEvent.data = {
+            type: 'rebootSensor',
+            macAdd: inputMac
+        };
+
+        myCustomEvent.initEvent("customEvent", true, true);
+        document.dispatchEvent(myCustomEvent);
+
+        var actionDesc = `Rebooted ${macAdd}`;
+        dispatch(actions.startAddToLog(userId, actionDesc));
       }
 
       that.refs.username.value = '';
@@ -104,4 +117,8 @@ class RebootSensorMessage extends React.Component {
   }
 }
 
-module.exports = RebootSensor;
+function mapStateToProps(state, ownProps) {
+    return {sensorData: state.activeSensor, userId: state.syncData.userId}
+}
+
+module.exports = connect(mapStateToProps)(RebootSensor);

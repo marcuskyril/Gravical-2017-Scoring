@@ -9,13 +9,23 @@ class PinSensor extends React.Component {
         super(props);
 
         this.state = {
-            message: ''
+            message: '',
+            macAdd: this.props.pin_mac.pin_mac
+        }
+    }
+
+    componentWillReceiveProps(props) {
+        if(props.macAdd) {
+            this.setState({
+                macAdd: props.macAdd
+            });
         }
     }
 
     onPinSensor() {
         var {dispatch} = this.props;
-        var macAdd = this.props.pin_mac.pin_mac;
+        var {macAdd} = this.state;
+        var userId = this.props.userId;
 
         console.log("MacAdd", macAdd);
 
@@ -26,6 +36,7 @@ class PinSensor extends React.Component {
             if (response.error) {
                 that.setState({message: response.error});
             } else {
+                that.setState({message: response.success});
 
                 var myCustomEvent = document.createEvent("Event");
 
@@ -37,7 +48,9 @@ class PinSensor extends React.Component {
                 myCustomEvent.initEvent("customEvent", true, true);
                 document.dispatchEvent(myCustomEvent);
 
-                that.setState({message: response.success});
+                // var actionDesc = `Added ${macAdd} to ${inputBuilding} ${inputLocationLevel}${inputLocationID}`;
+                var actionDesc = `Pinned ${macAdd} to the watch list`;
+                dispatch(actions.startAddToLog(userId, actionDesc));
             }
         });
     }
@@ -46,9 +59,7 @@ class PinSensor extends React.Component {
         var {message} = this.state;
         var that = this;
 
-        // resets message to empty string on close
         $('#pin-sensor-modal').on('closed.zf.reveal', function() {
-            //console.log("close");
             that.setState({message: ''});
         });
 
@@ -90,7 +101,7 @@ class PinSensorMessage extends React.Component {
 }
 
 function mapStateToProps(state, ownProps) {
-    return {pin_mac: state.pin_mac}
+    return {pin_mac: state.pin_mac, userId: state.syncData.userId}
 }
 
 module.exports = connect(mapStateToProps)(PinSensor);

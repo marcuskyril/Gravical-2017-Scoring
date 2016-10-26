@@ -119,7 +119,7 @@ class NotificationLog extends React.Component {
         var that = this;
 
         return (
-            <div>
+            <div className="row columns">
                 <div className="notificationWrapper" style={{paddingTop: '2rem', paddingBottom: '2rem'}}>
                     <div className="callout callout-dark-header">
                         <div className="header">Your Notifications</div>

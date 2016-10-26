@@ -1,4 +1,13 @@
-// string
+export var auditLogReducer = (state = {logs: []}, action) => {
+    switch(action.type) {
+        case 'RETRIEVE_LOGS':
+            return {
+                logs: action.logs
+            }
+        default:
+            return state;
+    }
+}
 
 export var syncDataReducer = (state = {currentTime: '-', userId: '-'}, action) => {
     switch(action.type) {

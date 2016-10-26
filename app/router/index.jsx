@@ -3,11 +3,13 @@ import {Route, Router, IndexRoute, hashHistory} from 'react-router';
 var Main = require('Main');
 var Dashboard = require('Dashboard');
 import AccountSettings from 'AccountSettings';
+import AppSettings from 'AppSettings';
 import Uptime from 'Uptime';
 import HistoricalChart from 'HistoricalChart';
 import NotificationLog from 'NotificationLog';
 import PageNotFound from 'PageNotFound';
 import Login from 'Login';
+import ActionLog from 'ActionLog';
 import firebase from 'app/firebase/';
 
 var requireLogin = (nextState, replace, next) => {
@@ -30,9 +32,11 @@ export default(
     <Router history={hashHistory}>
       <Route path="/dashboard(/:buildingName)" component={Main} >
           <Route path="/accountSettings" component={AccountSettings} onEnter={requireLogin}/>
+          <Route path="/appSettings" component={AppSettings} onEnter={requireLogin}/>
           <Route path="/notificationLog" component={NotificationLog} onEnter={requireLogin}/>
           <Route path="/uptime(/:buildingName)" component={Uptime} onEnter={requireLogin}/>
           <Route path="/historical(/:macAddress)" component={HistoricalChart} onEnter={requireLogin}/>
+          <Route path="/actionLog" component={ActionLog} onEnter={requireLogin}/>
           <IndexRoute component={Dashboard}/>
       </Route>
       <Route path="/" component={Login} onEnter={redirectIfLoggedIn}/>

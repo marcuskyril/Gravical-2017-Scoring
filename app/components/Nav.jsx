@@ -6,7 +6,6 @@ import firebase, {firebaseRef} from 'app/firebase/';
 var {Link, IndexLink} = require('react-router');
 const HOST = 'http://opsdev.sence.io:4201/';
 
-
 class Nav extends React.Component {
 
     constructor(props) {
@@ -65,12 +64,14 @@ class Nav extends React.Component {
                                     }}>Notification Log</Link>
                                 </li>
                                 <li>
-                                    <Link to="/" activeClassName="active" activeStyle={{
+                                    <Link to="/actionLog" activeClassName="active" activeStyle={{
                                         color: '#222`'
                                     }}>Action Log</Link>
                                 </li>
                                 <li>
-                                    <a href="#">Configure Settings</a>
+                                    <Link to="/appSettings" activeClassName="active" activeStyle={{
+                                        color: '#222`'
+                                    }}>Configure Settings</Link>
                                 </li>
                                 <li>
                                     <a onClick={this.onLogout}>Log Out</a>

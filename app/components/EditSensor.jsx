@@ -1,5 +1,8 @@
 var React = require('react');
 var editSensorAPI = require('editSensorAPI');
+import * as Redux from 'react-redux';
+import * as actions from 'actions';
+var {connect} = require('react-redux');
 
 class EditSensor extends React.Component {
 
@@ -9,11 +12,18 @@ class EditSensor extends React.Component {
         this.state = {
             message: ''
         }
+
+        this.handleChange = this.handleChange.bind(this);
+    }
+
+    handleChange(event) {
+
+        this.setState({
+            [event.target.name]: event.target.value
+        });
     }
 
     componentWillReceiveProps(props) {
-
-        console.log("props", props);
 
         if(props.macAdd) {
             this.setState({
@@ -28,7 +38,6 @@ class EditSensor extends React.Component {
     }
 
     onEditSensor(e) {
-        // console.log("test type: ", this.props.type);
 
         e.preventDefault();
 
@@ -38,22 +47,17 @@ class EditSensor extends React.Component {
         var inputLocationID = this.refs.sensorLocationID.value;
         var inputBuilding = this.refs.building.value;
         var inputPort = this.refs.port.value;
+        var userId = this.props.userId;
+        var {dispatch} = this.props;
 
         var that = this;
 
-        console.log("MAC", inputMac);
-        console.log("region", inputRegion);
-        console.log("level", inputLocationLevel);
-        console.log("id", inputLocationID);
-        console.log("building", inputBuilding);
-        console.log("port", inputPort);
-
-        // editSensorAPI.editSensor(inputMac, inputRegion, inputLocationLevel, inputLocationID, inputPort, inputBuilding).then(function(response){
         editSensorAPI.editSensor(inputMac, inputRegion, inputLocationLevel, inputLocationID, inputBuilding, inputPort).then(function(response) {
 
             if (response.error) {
                 that.setState({message: response.error});
             } else {
+                that.setState({message: response.success});
 
                 var myCustomEvent = document.createEvent("Event");
 
@@ -67,9 +71,9 @@ class EditSensor extends React.Component {
                 myCustomEvent.initEvent("customEvent", true, true);
                 document.dispatchEvent(myCustomEvent);
 
-                that.setState({message: response.success});
+                var actionDesc = `Edited ${inputMac} from ${inputBuilding} ${inputLocationLevel}${inputLocationID}`;
+                dispatch(actions.startAddToLog(userId, actionDesc));
             }
-            //console.log("message", that.state.message);
 
             that.refs.macAddress.value = '';
             that.refs.port.value = '';
@@ -100,11 +104,11 @@ class EditSensor extends React.Component {
 
                         <div className="large-6 columns">
                             <label>Mac Address
-                                <input type="text" name="macAddress" id="inputMac" ref="macAddress" placeholder="Mac Address" value={macAdd} disabled/>
+                                <input type="text" name="macAdd" id="inputMac" ref="macAddress" placeholder="Mac Address" value={macAdd} onChange={this.handleChange} disabled/>
                             </label>
 
                             <label>Port
-                                <input type="text" name="port" id="inputPort" ref="port" placeholder="Port" value={port}/>
+                                <input type="text" name="port" id="inputPort" ref="port" placeholder="Port" value={port} onChange={this.handleChange} />
                             </label>
                         </div>
 
@@ -112,7 +116,7 @@ class EditSensor extends React.Component {
                             'borderLeft': 'solid 1px #e4e4e4'
                         }}>
                             <label>Region
-                                <select ref="region" name="region" id="inputRegion" value={region} >
+                                <select ref="region" name="region" id="inputRegion" value={region} onChange={this.handleChange}  >
                                     <option value=""></option>
                                     <option value="north">North</option>
                                     <option value="south">South</option>
@@ -124,15 +128,15 @@ class EditSensor extends React.Component {
                             </label>
 
                             <label>Sensor Location level
-                                <input type="text" name="sensorLocationLevel" id="inputLocationLevel" ref="sensorLocationLevel" placeholder="Sensor Location Level" value={level}/>
+                                <input type="text" name="level" id="inputLocationLevel" ref="sensorLocationLevel" placeholder="Sensor Location Level" value={level} onChange={this.handleChange} />
                             </label>
 
                             <label>Sensor Location ID
-                                <input type="text" name="sensorLocationID" id="inputSensorLocationID" ref="sensorLocationID" placeholder="Sensor Location ID" value={areaID}/>
+                                <input type="text" name="areaID" id="inputSensorLocationID" ref="sensorLocationID" placeholder="Sensor Location ID" value={areaID} onChange={this.handleChange} />
                             </label>
 
                             <label>Building
-                                <input type="text" name="building" id="inputBuildingName" ref="building" placeholder="Building" value={building}/>
+                                <input type="text" name="building" id="inputBuildingName" ref="building" placeholder="Building" value={building} onChange={this.handleChange} />
                             </label>
                         </div>
                     </div>
@@ -161,4 +165,8 @@ class EditSensorMessage extends React.Component {
     }
 }
 
-module.exports = EditSensor;
+function mapStateToProps(state, ownProps) {
+    return {sensorData: state.activeSensor, userId: state.syncData.userId}
+}
+
+module.exports = connect(mapStateToProps)(EditSensor);
