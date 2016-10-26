@@ -21,13 +21,38 @@ export var completeUpdateWatchList = (pin_mac) => {
     return {type: 'COMPLETE_UPDATE_WATCHLIST', pin_mac}
 }
 
+// add to log test
+
+export var startAddToLog = (userId, action) => {
+
+    return (dispatch, getState) => {
+        var logItem = {
+            userId,
+            action,
+            timestamp: new Date().toLocaleString()
+        };
+
+        var logRef = firebaseRef.child('log').push(logItem);
+
+        return logRef.then(() => {
+            dispatch(addToLog({
+                ...logItem,
+                id: logRef.key
+            }));
+        });
+    };
+};
+
 export var addToLog = (action) => {
     console.log("action: ", action);
 
     return {type: 'ADD_TO_LOG', action}
 }
 
+// end add to log test
+
 export var storeActiveSensor = (macAdd) => {
+    console.log("macAdd", macAdd);
     return {type: 'STORE_ACTIVE_SENSOR', macAdd}
 }
 
@@ -37,26 +62,6 @@ export var login = (uid) => {
 
 export var logout = () => {
     return {type: 'LOGOUT'};
-};
-
-export var startAddSensor = (inputMac, inputRegion, inputLocationLevel, inputLocationID, inputBuilding) => {
-
-    return (dispatch, getState) => {
-        var baseUrl = "http://52.74.119.147/PisaSchitt/insert-new-sensor.php";
-
-        axios.get(baseUrl, {
-            MAC: inputMac,
-            "geo-region": inputRegion,
-            "sensor-location-level": inputLocationlevel,
-            "sensor-location-id": inputLocationID,
-            "building": inputBuilding
-        }).then(function(response) {
-            console.log(response);
-        }).catch(function(error) {
-            console.log("Problem siol", error);
-        });
-
-    };
 };
 
 export var startDeleteSensor = (macAddress) => {

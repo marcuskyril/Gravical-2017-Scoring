@@ -12,6 +12,7 @@ var EditSensor = require('EditSensor');
 var DeleteSensor = require('DeleteSensor');
 var UnpinSensor = require('UnpinSensor');
 var RebootSensor = require('RebootSensor');
+var EditSNMPSpeedTest = require('EditSNMPSpeedTest');
 var PinSensor = require('PinSensor');
 var Terminal = require('Terminal');
 import * as Redux from 'react-redux';
@@ -35,7 +36,7 @@ class Dashboard extends React.Component {
             currentTime: '-',
             userDisplayName: '',
             notificationData: {},
-            filterParam: props.params.buildingName
+            filterParam: props.params.buildingName === undefined ? '' : props.params.buildingName
         }
     }
 
@@ -86,22 +87,20 @@ class Dashboard extends React.Component {
 
         // close dropdowns
         window.addEventListener('click', function(e) {
-
             var pane = e.srcElement;
-            // console.log("pane: ", pane);
-            if (!($(e.target).hasClass("sensorBlockSquare"))) {
-                var dropdowns = document.getElementsByClassName("dropdown-pane");
+            if (!($(e.target).hasClass("pane"))) {
 
+                var dropdowns = document.getElementsByClassName("routerDropdown");
                 var i;
 
                 for (i = 0; i < dropdowns.length; i++) {
                     var openDropdown = dropdowns[i];
-                    if (openDropdown.style.visibility === "visible") {
-                        openDropdown.style.visibility = "hidden";
+
+                    if (openDropdown.style.display === "block") {
+                        openDropdown.style.display = "none";
                     }
                 }
             }
-
         });
     }
 
@@ -131,12 +130,6 @@ class Dashboard extends React.Component {
     }
 
     render() {
-
-        // console.log("overall dashboard: ", this.state.overall);
-        // console.log("bfg dashboard: ", this.state.bfg);
-        // console.log("notifications dashboard: ", this.state.notifications);
-        // console.log("sensorHealthOverviewV2 dashboard: ", this.state.sensorHealthOverviewV2);
-        // console.log("server overview: ", this.state.serverOverview);
 
         return (
 
@@ -169,8 +162,9 @@ class Dashboard extends React.Component {
                                 </button>
                                 <AddSensor type={this.state.type}/>
                                 <UnpinSensor/>
-                                <Terminal/>                                
+                                <Terminal/>
                                 <PinSensor/>
+                                <EditSNMPSpeedTest/>
                             </div>
                             <div className="callout callout-dark">
                                 <SensorHealthOverview filter={this.state.filterParam} data={this.state.sensorHealthOverviewV2} serverData={this.state.serverOverview}/>

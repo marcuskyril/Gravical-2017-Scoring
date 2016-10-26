@@ -12,6 +12,9 @@ class EditSensor extends React.Component {
     }
 
     componentWillReceiveProps(props) {
+
+        console.log("props", props);
+
         if(props.macAdd) {
             this.setState({
                 macAdd: props.macAdd,

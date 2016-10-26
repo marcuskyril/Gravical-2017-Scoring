@@ -3,11 +3,9 @@ var axios = require('axios');
 var DeleteSensor = require('DeleteSensor');
 var PinSensor = require('PinSensor');
 var EditSensor = require('EditSensor');
+var RebootSensor = require('RebootSensor');
 var Terminal = require('Terminal');
 var FontAwesome = require('react-fontawesome');
-import * as Redux from 'react-redux';
-import * as actions from 'actions';
-var {connect} = require('react-redux');
 var {Link, IndexLink} = require('react-router');
 
 var socket;
@@ -26,13 +24,13 @@ class SensorDetails extends React.Component {
 
         this.state = {
             isLoading: false,
-            building: '',
+            building: '-',
             macAdd: '',
-            latency: '',
-            amIAlive: '',
-            location: '',
-            status: '',
-            lastReboot: '',
+            latency: '-',
+            amIAlive: false,
+            location: '-',
+            status: '-',
+            lastReboot: '-',
             stats: {},
             top5: []
         };
@@ -47,16 +45,14 @@ class SensorDetails extends React.Component {
         window.addEventListener('tobascoSauce', function(e) {
 
             var macAdd = e.data.macAdd;
-            console.log("From REDUX: ", macAdd);
+            console.log("Off-canvas mac address: ", macAdd);
 
             try {
                 socket = new WebSocket(SOCKET_URL);
 
                 socket.onopen = function(msg) {
                     console.log("connected");
-
                     that.send(macAdd);
-                    // console.log("1st send");
                 };
 
                 socket.onmessage = function(msg) {
@@ -91,7 +87,7 @@ class SensorDetails extends React.Component {
                             level: response["sensor_location_level"],
                             areaID: response["sensor_location_id"],
                             location: `${response["sensor_location_level"]}${response["sensor_location_id"]}`,
-                            status: response["status"], // add class?
+                            status: response["status"],
                             lastReboot: response["last_reboot"],
                             stats: {
                                 uptime: `${response["uptime_percentage"]}%`,
@@ -115,7 +111,7 @@ class SensorDetails extends React.Component {
                             macAdd: macAdd,
                             building: response['building'],
                             amIAlive: response["am_i_alive"],
-                            region: respponse["geo_region"],
+                            region: response["geo_region"],
                             level: response["sensor_location_level"],
                             areaID: response["sensor_location_id"],
                             location: `${response["sensor_location_level"]}${response["sensor_location_id"]}`
@@ -148,7 +144,6 @@ class SensorDetails extends React.Component {
         if(socket != null) {
             try {
                 socket.send(msg);
-                // console.log('Sent');
             } catch (ex) {
                 console.warn(ex);
             }
@@ -156,6 +151,7 @@ class SensorDetails extends React.Component {
     }
 
     quit() {
+
         if (socket != null) {
             console.log("Ciao bella.");
             socket.close();
@@ -184,6 +180,7 @@ class SensorDetails extends React.Component {
                 $('#terminal').foundation('open');
                 break;
             case 'reboot':
+                $('#reboot-sensor-modal').foundation('open');
                 break;
         }
     }
@@ -244,18 +241,10 @@ class SensorDetails extends React.Component {
             <div>
                 <div className="top-bar margin-bottom-small">
                     <div className="top-bar-left" style={{color: '#fff',marginTop:'1rem',fontWeight:'bold'}}>
-                        {macAdd}
+                        {location}
                     </div>
                     <div className="top-bar-left" style={{color: '#fff',position:'absolute',top:'14px',fontSize:'0.75rem'}}>
-                        <div style={{height: '10px',
-                            width: '10px',
-                            backgroundColor: amIAliveColor,
-                            float: 'left',
-                            marginTop: '4px',
-                            borderRadius: '35px',
-                            marginRight: '4px'}}>
-                        </div>
-                        Latency: {latency} ms
+                        {macAdd}
                     </div>
                     <div className="top-bar-right">
                         <ul className="dropdown menu" data-dropdown-menu>
@@ -272,14 +261,16 @@ class SensorDetails extends React.Component {
                     </div>
                 </div>
                 <div className="textAlignCenter" style={{padding: '0.5rem 1.5rem'}}>
-                    <div className="page-title" style={{fontWeight:'bold'}}>{location}</div>
-                    <div style={{height: '4px',
-                        width: '170px',
-                        backgroundColor: colorMap[status],
-                        top: '18px',
-                        borderRadius: '9px',
-                        margin: '0.2rem auto 1rem auto'}}>
-                    </div>
+                    <div style={{height: '10px',
+                        width: '10px',
+                        backgroundColor: amIAliveColor,
+                        float: 'left',
+                        marginTop: '4px',
+                        borderRadius: '35px',
+                        marginRight: '4px'}}>
+                    </div>{latency} ms
+                    <div className="page-title" style={{fontWeight:'bold', textTransform: 'uppercase', color: colorMap[status]}}>{status}</div>
+
                     <div style={{fontWeight:'100',marginBottom:'1.5rem'}}>Data last collected at {lastReboot}</div>
 
                         <table className="sensor-details-table" style={{width:'90%',margin:'0rem auto 2rem auto',fontWeight:'100'}}>
@@ -297,7 +288,7 @@ class SensorDetails extends React.Component {
                         Launch Terminal
                     </a>
 
-                    <a className="button proceed expanded">
+                    <a className="button proceed expanded" onClick={this.handleClick.bind(this, 'reboot')}>
                         Reboot Sensor
                     </a>
 
@@ -305,17 +296,14 @@ class SensorDetails extends React.Component {
                         Historical Charts
                     </IndexLink>
                 </div>
-                <DeleteSensor macAdd={macAdd} port={port}/>
+                <DeleteSensor {...this.state}/>
                 <PinSensor macAdd={macAdd}/>
                 <EditSensor {...this.state}/>
+                <RebootSensor macAdd={macAdd}/>
                 <Terminal macAdd={macAdd} port={port}/>
             </div>
         );
     }
 };
 
-function mapStateToProps(state, ownProps) {
-    return {sensorData: state.activeSensor}
-}
-
-module.exports = connect(mapStateToProps)(SensorDetails);
+module.exports = SensorDetails;

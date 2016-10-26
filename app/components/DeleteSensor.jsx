@@ -1,8 +1,8 @@
 var React = require('react');
 var deleteSensorAPI = require('deleteSensorAPI');
-var deleteMac = "";
+import * as Redux from 'react-redux';
+import * as actions from 'actions';
 var {connect} = require('react-redux');
-var store = require('configureStore').configure();
 
 class DeleteSensor extends React.Component {
     constructor(props) {
@@ -15,19 +15,28 @@ class DeleteSensor extends React.Component {
     }
 
     componentWillReceiveProps(props) {
-        this.setState({
-            macAdd: props.macAdd
-        });
+
+        if(props.macAdd) {
+            this.setState({
+                macAdd: props.macAdd,
+                port: props.port,
+                region: props.region.toLowerCase(),
+                building: props.building,
+                location: `${props.level}${props.areaID}`
+            });
+        }
     }
 
     onDeleteSensor(event) {
 
         event.preventDefault();
 
-        var {macAdd} = this.state;
+        var {macAdd, location, building} = this.state;
+        var userId = this.props.userId;
+        var {dispatch} = this.props;
         var that = this;
 
-        console.log("To be deleted: ", macAdd);
+        // console.log("To be deleted: ", macAdd);
 
         deleteSensorAPI.deleteSensor(macAdd).then(function(response) {
 
@@ -41,13 +50,15 @@ class DeleteSensor extends React.Component {
                 myCustomEvent.data = {
                     type: 'deleteSensor',
                     macAdd: macAdd,
-                    building: inputBuilding,
-                    location: `${inputLocationLevel}${inputLocationID}`
+                    building: building,
+                    location: location
                 };
 
                 myCustomEvent.initEvent("customEvent", true, true);
                 document.dispatchEvent(myCustomEvent);
+                var actionDesc = `Deleted ${macAdd} from ${location}`;
 
+                dispatch(actions.startAddToLog(userId, actionDesc));
             }
         });
     }
@@ -101,7 +112,7 @@ class DeleteSensorMessage extends React.Component {
 }
 
 function mapStateToProps(state, ownProps) {
-    return {sensorData: state.activeSensor}
+    return {sensorData: state.activeSensor, userId: state.syncData.userId}
 }
 
 module.exports = connect(mapStateToProps)(DeleteSensor);

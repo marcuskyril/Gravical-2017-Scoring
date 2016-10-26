@@ -2,12 +2,11 @@ var React = require('react');
 var ServerList = require('ServerList');
 var FontAwesome = require('react-fontawesome');
 var VerticalMenu = require('VerticalMenu');
-var deleteModal = null;
-var editModal = null;
-var rebootModal = null;
-var terminal = null;
 var {Link, IndexLink} = require('react-router');
 import {connect} from 'react-redux';
+import * as Redux from 'react-redux';
+import * as actions from 'actions';
+
 const HOST = 'http://opsdev.sence.io:4201/';
 
 var dataList = [];
@@ -25,9 +24,9 @@ class Building extends React.Component {
                     <div style={{
                         float: 'right'
                     }}>
-                        <span style={{
-                            fontWeight: '300'
-                        }}>Total Count: {this.props.sensorCount}</span>
+                        <span style={{fontWeight: '300'}}>
+                            Total Count: {this.props.sensorCount}
+                        </span>
                         <span>
                             <IndexLink activeClassName='active' to={uptimeLink}>
                                 <FontAwesome name='bar-chart' style={{
@@ -38,7 +37,7 @@ class Building extends React.Component {
                     </div>
                 </div>
                 <table className="sensorHealthTable">
-                    <BuildingHeader speedTest={this.props.speedTest}/>
+                    <BuildingHeader dispatch={this.props.dispatch} snmpSpeedTest={this.props.speedTest}/>
                     <LevelList areaArray={this.props.areaNames} levelArray={this.props.levelNames} sensors={this.props.sensors}/>
                 </table>
             </div>
@@ -104,7 +103,7 @@ class BuildingList extends React.Component {
                 return <div></div>
             }
 
-            rows.push(<Building key={buildingName} buildingName={buildingName} areaNames={areaNames} levelNames={levelNames} sensors={sensors} sensorCount={sensorCount} speedTest={speedTest}/>);
+            rows.push(<Building key={buildingName} dispatch={this.props.dispatch} buildingName={buildingName} areaNames={areaNames} levelNames={levelNames} sensors={sensors} sensorCount={sensorCount} speedTest={speedTest}/>);
         }.bind(this));
 
         return (
@@ -117,13 +116,37 @@ class BuildingList extends React.Component {
 
 class BuildingHeader extends React.Component {
 
-    handleClick() {
-        // $('#edit-speed-tester-modal').foundation('open');
+    constructor(props) {
+        super(props);
+    }
+
+    handleClick(sensor) {
+        var div = document.getElementById('routerDropdown'+sensor);
+        if (sensor != "-") {
+            if (div.style.display === 'none') {
+                div.style.display = 'block';
+            }  else {
+                div.style.display = 'none';
+            }
+        }
+    }
+
+    launchSpeedTestEdit() {
+        var {snmpSpeedTest, dispatch} = this.props;
+        var {sensor} = snmpSpeedTest;
+        dispatch(actions.storeActiveSensor(sensor));
+        $('#edit-snmp-speedtest-modal').foundation('open');
     }
 
     render() {
 
-        var speedTest = this.props.speedTest;
+        var {snmpSpeedTest} = this.props;
+        var {cpu_freq, cpu_load, current_interval, download_speed, memory_total, memory_used, model, processor_temp, sensor, storage_total, storage_used, system_name, time, upload_speed, uptime} = snmpSpeedTest;
+        var memory = (memory_used/1000).toFixed(2)+" / "+(memory_total/1000).toFixed(2)+"MB";
+        var storage = (storage_used/1000).toFixed(2)+" / "+(storage_total/1000).toFixed(2)+"MB";
+        var temp = (processor_temp-273.15).toFixed(2)+" C";
+
+        var id = "routerDropdown"+sensor;
 
         return (
             <thead>
@@ -138,16 +161,49 @@ class BuildingHeader extends React.Component {
                     }}>
                         <span style={{
                             fontWeight: '500'
-                        }}>Upload</span>: {speedTest.upload_speed}
+                        }}>Upload</span>: {snmpSpeedTest.upload_speed}
                         Mbit/s |
                         <span style={{
                             fontWeight: '500'
-                        }}>Download</span>: {speedTest.download_speed}
+                        }}> Download</span>: {snmpSpeedTest.download_speed}
                         Mbit/s
-                        <a onClick={() => this.handleClick()}><FontAwesome name='cog' style={{
-                            color: '#232f32',
-                            marginLeft: '1rem'
-                        }}/></a>
+
+                        <button type="button" className="pane" onClick={() => this.handleClick(sensor)} style={{marginLeft:'0.5rem'}}>
+                            <FontAwesome className="pane" name='caret-square-o-down' size='lg'/>
+                        </button>
+
+                        <div id={id} className="routerDropdown" style={{display: 'none', position: 'absolute', backgroundColor: '#fff', right: 0, padding: '0.5rem 0.5rem 0 0.5rem', marginRight: '2rem', boxShadow: '3px 3px 3px #888888', borderRadius: '3px'}}>
+                            <a onClick={() => this.launchSpeedTestEdit()}>
+                                <div style={{float:'left'}}>
+                                    <FontAwesome name='edit' size='lg'/>
+                                </div>
+                            </a>
+                            <span style={{fontWeight: '700', fontSize: '1.1rem'}}>{system_name}</span>
+                            <br></br>
+                            <span style={{fontWeight: '400', fontSize: '0.9rem'}}>{model}</span>
+                            <br></br>
+                            <span style={{fontWeight: '100', fontSize: '0.75rem'}}>{time}</span>
+                            <table style={{marginTop: '0.5rem'}}>
+                                <tbody>
+                                    <tr>
+                                        <td style={{fontWeight: '500', fontSize: '0.9rem'}}>Memory</td>
+                                        <td style={{fontSize: '0.8rem', fontWeight: '300'}}>{memory}</td>
+                                    </tr>
+                                    <tr>
+                                        <td style={{fontWeight: '500', fontSize: '0.9rem'}}>Storage</td>
+                                        <td style={{fontSize: '0.8rem', fontWeight: '300'}}>{storage}</td>
+                                    </tr>
+                                    <tr>
+                                        <td style={{fontWeight: '500', fontSize: '0.9rem'}}>CPU load</td>
+                                        <td style={{fontSize: '0.8rem', fontWeight: '300'}}>{cpu_load} %</td>
+                                    </tr>
+                                    <tr>
+                                        <td style={{fontWeight: '500', fontSize: '0.9rem'}}>Temperature</td>
+                                        <td style={{fontSize: '0.8rem', fontWeight: '300'}}>{temp}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
                     </td>
                 </tr>
             </thead>
@@ -233,6 +289,7 @@ class SensorHealthOverview extends React.Component {
 
     constructor(props) {
         super(props);
+        console.log("hello", props);
         this.state = {
             filterText: this.props.filter
         };
@@ -251,6 +308,7 @@ class SensorHealthOverview extends React.Component {
     render() {
 
         var overviewData = this.props.data;
+        var {dispatch} = this.props;
         var serverData = {};
 
         for (var building in overviewData) {
@@ -267,7 +325,7 @@ class SensorHealthOverview extends React.Component {
                 <div className="page-title">Sensors</div>
                 <hr className="divider"/>
 
-                <BuildingList data={this.props.data} filterText={this.state.filterText}/>
+                <BuildingList dispatch={dispatch} data={this.props.data} filterText={this.state.filterText}/>
 
                 <div className="page-title">Servers</div>
                 <hr className="divider"/>

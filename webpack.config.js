@@ -52,6 +52,7 @@ module.exports = {
       Dashboard: 'app/components/Dashboard.jsx',
       DeleteSensor: 'app/components/DeleteSensor.jsx',
       EditSensor: 'app/components/EditSensor.jsx',
+      EditSNMPSpeedTest: 'app/components/EditSNMPSpeedTest.jsx',
       HistoricalChart: 'app/components/HistoricalChart.jsx',
       WatchList: 'app/components/WatchList.jsx',
       Login: 'app/components/Login.jsx',
@@ -73,6 +74,7 @@ module.exports = {
 
       addSensorAPI: 'app/api/addSensorAPI.jsx',
       editSensorAPI: 'app/api/editSensorAPI.jsx',
+      editSNMPSpeedTestAPI: 'app/api/editSNMPSpeedTestAPI.jsx',
       deleteSensorAPI: 'app/api/deleteSensorAPI.jsx',
       notificationLogAPI: 'app/api/notificationLogAPI.jsx',
       rebootSensorAPI: 'app/api/rebootSensorAPI.jsx',

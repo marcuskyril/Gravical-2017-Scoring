@@ -8,8 +8,18 @@ class RebootSensor extends React.Component {
 
     this.state = {
       message: '',
-      macAddress: this.props.rebootMac
+      macAdd: ''
     }
+  }
+
+  componentWillReceiveProps(props) {
+      var that = this;
+
+      console.log("props", props);
+
+      if(props.macAdd) {
+          that.setState({macAdd: props.macAdd});
+      }
   }
 
   onRebootSensor(event) {
@@ -18,10 +28,11 @@ class RebootSensor extends React.Component {
 
     var username = this.refs.username.value;
     var password = this.refs.password.value;
+    var {macAdd} = this.state;
 
     var that = this;
 
-    rebootSensorAPI.rebootSensor(rebootMac, username, password).then(function(response){
+    rebootSensorAPI.rebootSensor(macAdd, username, password).then(function(response){
 
       if(response.error) {
         that.setState({
@@ -43,16 +54,11 @@ class RebootSensor extends React.Component {
 
   render() {
     // console.log("delete sensor state ", this.state);
-    var message = this.state.message;
+    var {macAdd, message} = this.state;
     var that = this;
-
-    if ($('#rebootMac').val() !== "") {
-        rebootMac = $('#rebootMac').val();
-    }
 
     // resets message to empty string on close
     $('#reboot-sensor-modal').on('closed.zf.reveal', function() {
-        //console.log("close");
         that.setState({
           message: ''
         });
@@ -66,7 +72,6 @@ class RebootSensor extends React.Component {
                       <div className="page-title">Reboot Sensor</div>
 
                       <div className="header" style={{color: '#990000'}}>Hold up. You really wanna reboot this bad boy?</div>
-                      <input id="rebootMac" value="" hidden></input>
 
                       <label>Username
                       <input type="text" ref="username" placeholder="Username" ></input>
@@ -92,7 +97,6 @@ class RebootSensor extends React.Component {
 class RebootSensorMessage extends React.Component {
   render() {
     var message = this.props.message;
-    // console.log("message from parent: ", message);
 
     return (
       <div className="statusText">{message}</div>

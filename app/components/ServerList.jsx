@@ -124,32 +124,7 @@ class VerticalMenu extends React.Component {
         var areaID = serverData["id"];
 
         switch(action){
-          case 'EDIT_ACTION':
 
-            // $('#inputMac').val(macAddress);
-            // $('#inputRegion').val(region.toLowerCase());
-            // $('#inputLocationLevel').val(level);
-            // $('#inputSensorLocationID').val(areaID);
-            // $('#inputBuildingName').val(buildingName);
-            //
-            // // editModal.open();
-            // $('#edit-sensor-modal').foundation('open');
-
-            alert("one moment please");
-
-            break;
-
-          case 'DELETE_ACTION':
-
-            // document.getElementById('deleteDetails').innerHTML = buildingName +": " +level +areaID;
-            // document.getElementById('deleteMac').innerHTML = macAddress;
-            //
-            // // deleteModal.open();
-            // $('#delete-sensor-modal').foundation('open');
-
-            alert("one moment please");
-
-            break;
 
           case 'NO_ACTION':
               var dropdowns = document.getElementsByClassName("dropdown-pane");

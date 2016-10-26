@@ -16,10 +16,12 @@ class PinSensor extends React.Component {
     onPinSensor() {
         var {dispatch} = this.props;
         var macAdd = this.props.pin_mac.pin_mac;
+
+        console.log("MacAdd", macAdd);
+
         var that = this;
 
         updateWatchList.updateWatchList(macAdd, true).then(function(response) {
-            // console.log("Added sensor to watchlist", response);
 
             if (response.error) {
                 that.setState({message: response.error});
@@ -41,7 +43,6 @@ class PinSensor extends React.Component {
     }
 
     render() {
-        // console.log("delete sensor state ", this.state);
         var {message} = this.state;
         var that = this;
 

@@ -15,6 +15,7 @@ class UnpinSensor extends React.Component {
 
   onUnpinSensor() {
 
+    var {dispatch} = this.props;
     var macAdd = this.props.pin_mac.pin_mac;
     var that = this;
 
@@ -33,6 +34,10 @@ class UnpinSensor extends React.Component {
 
             myCustomEvent.initEvent("customEvent", true, true);
             document.dispatchEvent(myCustomEvent);
+
+            var testLog = `Pinned ${macAdd} to the watch list`;
+
+            dispatch(actions.startAddToLog(testLog));
 
             that.setState({message: response.success});
         }

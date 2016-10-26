@@ -1,5 +1,8 @@
 var React = require('react');
 var addSensorAPI = require('addSensorAPI');
+import * as Redux from 'react-redux';
+import * as actions from 'actions';
+var {connect} = require('react-redux');
 
 class AddSensor extends React.Component {
 
@@ -34,7 +37,9 @@ class AddSensor extends React.Component {
         var inputBuilding = this.refs.building.value;
         var inputPort = this.refs.port.value;
         var isServer = this.refs.isServer.value;
+        var userId = this.props.userId;
 
+        var {dispatch} = this.props;
         var that = this;
 
         addSensorAPI.addSensor(inputMac, inputRegion, inputLocationLevel, inputLocationID, inputBuilding, inputPort, isServer).then(function(response) {
@@ -42,6 +47,7 @@ class AddSensor extends React.Component {
             if (response.error) {
                 that.setState({message: response.error});
             } else {
+                that.setState({message: response.success});
 
                 var myCustomEvent = document.createEvent("Event");
 
@@ -55,7 +61,9 @@ class AddSensor extends React.Component {
                 myCustomEvent.initEvent("customEvent", true, true);
                 document.dispatchEvent(myCustomEvent);
 
-                that.setState({message: response.success});
+                var actionDesc = `Added ${inputMac} to ${inputBuilding} ${inputLocationLevel}${inputLocationID}`;
+                dispatch(actions.startAddToLog(userId, actionDesc));
+
             }
             //console.log("message", that.state.message);
 
@@ -158,4 +166,9 @@ class AddSensorMessage extends React.Component {
     }
 }
 
-module.exports = AddSensor;
+function mapStateToProps(state, ownProps) {
+    console.log("state add sensor", state);
+    return {sensorData: state.activeSensor, userId: state.syncData.userId}
+}
+
+module.exports = connect(mapStateToProps)(AddSensor);

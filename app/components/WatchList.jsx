@@ -1,5 +1,4 @@
 var React = require('react');
-var axios = require('axios');
 var Griddle = require('griddle-react');
 var retrieveSensorDetails = require('retrieveSensorDetails');
 var updateWatchList = require('updateWatchList');
