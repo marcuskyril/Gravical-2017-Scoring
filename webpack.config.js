@@ -90,6 +90,7 @@ module.exports = {
       griddleStyles: 'app/styles/griddle.scss',
       loginStyles: 'app/styles/login.scss',
       navStyles: 'app/styles/nav.scss',
+      reactSelect: 'app/styles/react-select.scss',
 
       actions: 'app/actions/actions.jsx',
       configureStore: 'app/store/configureStore.jsx',

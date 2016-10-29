@@ -33,6 +33,7 @@ require('style!css!sass!navStyles');
 require('style!css!sass!loginStyles');
 require('style!css!sass!griddleStyles');
 require('style!css!sass!bigCalendarStyles');
+require('style!css!sass!reactSelect');
 
 ReactDOM.render(
   <div>
