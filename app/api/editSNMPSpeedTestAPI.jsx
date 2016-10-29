@@ -1,4 +1,4 @@
-const EDIT_SNMP_SPEEDTEST_URL = 'http://opsdev.sence.io/backend/set_speed_test_interval.php';
+const EDIT_SNMP_SPEEDTEST_URL = 'http://119.81.104.46/backend/set_speed_test_interval.php';
 
 module.exports = {
 

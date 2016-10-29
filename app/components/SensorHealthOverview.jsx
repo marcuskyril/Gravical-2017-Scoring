@@ -1,13 +1,13 @@
 var React = require('react');
 var ServerList = require('ServerList');
 var FontAwesome = require('react-fontawesome');
-var VerticalMenu = require('VerticalMenu');
+var SensorList = require('SensorList');
 var {Link, IndexLink} = require('react-router');
 import {connect} from 'react-redux';
 import * as Redux from 'react-redux';
 import * as actions from 'actions';
 
-const HOST = 'http://opsdev.sence.io:4201/';
+const HOST = 'http://119.81.104.46:4201/';
 
 var dataList = [];
 
@@ -255,7 +255,7 @@ class LevelList extends React.Component {
                 level = sensorData['level'];
                 port = sensorData['port'];
 
-                temp.push(<VerticalMenu key={sensorData['macAdd']} macAdd={sensorData['macAdd']} sensorData={sensorData}/>);
+                temp.push(<SensorList key={sensorData['macAdd']} macAdd={sensorData['macAdd']} sensorData={sensorData}/>);
 
             });
 

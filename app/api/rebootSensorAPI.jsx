@@ -1,4 +1,4 @@
-const REBOOT_SENSOR_URL = "http://opsdev.sence.io/backend/initialize_reboot_sequence.php";
+const REBOOT_SENSOR_URL = "http://119.81.104.46/backend/initialize_reboot_sequence.php";
 
 module.exports = {
 

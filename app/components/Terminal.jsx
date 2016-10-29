@@ -1,6 +1,6 @@
 var React = require('react');
-const IFRAMEURL = "http://opsdev.sence.io:4201";
-const IFRAMEURL_MAC = "http://opsdev.sence.io:4201/?username=pi&port=";
+const IFRAMEURL = "http://119.81.104.46:4201";
+const IFRAMEURL_MAC = "http://119.81.104.46:4201/?username=pi&port=";
 var FontAwesome = require('react-fontawesome');
 
 class Terminal extends React.Component {

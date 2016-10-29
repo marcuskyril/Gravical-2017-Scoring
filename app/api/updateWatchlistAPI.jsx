@@ -1,6 +1,6 @@
 var axios = require('axios');
 
-const UPDATE_WATCHLIST_URL = 'http://opsdev.sence.io/backend/sensor-watchlist-pin.php';
+const UPDATE_WATCHLIST_URL = 'http://119.81.104.46/backend/sensor-watchlist-pin.php';
 
 module.exports = {
 

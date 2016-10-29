@@ -17,11 +17,9 @@ class EditSNMPSpeedTest extends React.Component {
     }
 
     componentWillReceiveProps(props) {
-        console.log("motherfucking props", props);
     }
 
     onEditSNMPSpeedTest(e) {
-        // console.log("test type: ", this.props.type);
 
         e.preventDefault();
 

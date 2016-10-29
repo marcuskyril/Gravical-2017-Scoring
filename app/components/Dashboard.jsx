@@ -19,7 +19,7 @@ import * as Redux from 'react-redux';
 import * as actions from 'actions';
 var {connect} = require('react-redux');
 var {Link, IndexLink} = require('react-router');
-const HOST = 'ws://opsdev.sence.io:9000';
+const HOST = 'ws://119.81.104.46:9000';
 
 class Dashboard extends React.Component {
 

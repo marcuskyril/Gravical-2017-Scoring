@@ -32,6 +32,7 @@ require('style!css!sass!applicationStyles');
 require('style!css!sass!navStyles');
 require('style!css!sass!loginStyles');
 require('style!css!sass!griddleStyles');
+require('style!css!sass!bigCalendarStyles');
 
 ReactDOM.render(
   <div>

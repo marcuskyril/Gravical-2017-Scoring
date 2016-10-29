@@ -319,8 +319,19 @@ class AccountSettings extends React.Component {
                                 </div>
                             </form>
                         </div>
+
+                        <div className="page-title">Email Settings</div>
+                            <p>
+                                Wenda, this is for you
+                            </p>
+                        <div className="page-title">Notification Settings</div>
+                            <p>
+                                Wenda, this is also for you
+                            </p>
                     </div>
-                </div>
+                    </div>
+
+
             </div>
         );
     }

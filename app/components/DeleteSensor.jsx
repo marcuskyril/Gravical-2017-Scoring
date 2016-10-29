@@ -32,8 +32,7 @@ class DeleteSensor extends React.Component {
         event.preventDefault();
 
         var {macAdd, location, building} = this.state;
-        var userId = this.props.userId;
-        var {dispatch} = this.props;
+        var {dispatch, userId} = this.props;
         var that = this;
 
         // console.log("To be deleted: ", macAdd);
@@ -70,7 +69,6 @@ class DeleteSensor extends React.Component {
 
         // resets message to empty string on close
         $('#delete-sensor-modal').on('closed.zf.reveal', function() {
-            //console.log("close");
             that.setState({message: ''});
         });
 

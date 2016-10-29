@@ -1,6 +1,6 @@
-const RETRIEVE_UPTIME_URL = 'http://opsdev.sence.io/backend/get_uptime_chart.php';
-const RETRIEVE_HISTORICAL_DATA_URL = 'http://opsdev.sence.io/backend/get_historical_chart.php';
-const RETRIEVE_HISTORICAL_DATA_ALT_URL = 'http://opsdev.sence.io/backend/get_uptime_chart_alt.php';
+const RETRIEVE_UPTIME_URL = 'http://119.81.104.46/backend/get_uptime_chart.php';
+const RETRIEVE_HISTORICAL_DATA_URL = 'http://119.81.104.46/backend/get_historical_chart.php';
+const RETRIEVE_HISTORICAL_DATA_ALT_URL = 'http://119.81.104.46/backend/get_uptime_chart_alt.php';
 
 module.exports = {
 

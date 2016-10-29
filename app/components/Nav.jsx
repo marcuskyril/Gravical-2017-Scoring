@@ -4,7 +4,7 @@ import * as actions from 'actions';
 var FontAwesome = require('react-fontawesome');
 import firebase, {firebaseRef} from 'app/firebase/';
 var {Link, IndexLink} = require('react-router');
-const HOST = 'http://opsdev.sence.io:4201/';
+const HOST = 'http://119.81.104.46:4201/';
 
 class Nav extends React.Component {
 
@@ -69,9 +69,14 @@ class Nav extends React.Component {
                                     }}>Action Log</Link>
                                 </li>
                                 <li>
-                                    <Link to="/appSettings" activeClassName="active" activeStyle={{
+                                    <Link to="/accountSettings" activeClassName="active" activeStyle={{
                                         color: '#222`'
-                                    }}>Configure Settings</Link>
+                                    }}>Account Settings</Link>
+                                </li>
+                                <li>
+                                    <Link to="/downtimeScheduler" activeClassName="active" activeStyle={{
+                                        color: '#222`'
+                                    }}>Downtime Scheduler</Link>
                                 </li>
                                 <li>
                                     <a onClick={this.onLogout}>Log Out</a>

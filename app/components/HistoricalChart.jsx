@@ -261,7 +261,7 @@ class SimpleAreaChart extends React.Component {
 
         console.log("CPU charts", this.props.data);
         return (
-            <AreaChart width={width} height={400} data={this.props.data} margin={{
+            <AreaChart syncId='chart' width={width} height={400} data={this.props.data} margin={{
                 top: 10,
                 right: 30,
                 left: 0,
@@ -279,11 +279,10 @@ class SimpleAreaChart extends React.Component {
 
 const SimpleLineChart = React.createClass({
     render() {
-        // <Line type="monotone" dataKey="uv" stroke="#82ca9d" />
         var width = $('.row').width() * 0.95;
 
         return (
-            <LineChart width={width} height={400} data={this.props.data} margin={{
+            <LineChart syncId='chart' width={width} height={400} data={this.props.data} margin={{
                 top: 5,
                 right: 30,
                 left: 20,
