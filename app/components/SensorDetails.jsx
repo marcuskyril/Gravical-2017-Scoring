@@ -67,27 +67,24 @@ class SensorDetails extends React.Component {
 
                     console.log("response", response);
 
+                    that.setState({
+                        isLoading: false,
+                        macAdd: macAdd,
+                        building: response['building'],
+                        amIAlive: response["am_i_alive"],
+                        region: response["geo_region"],
+                        level: response["sensor_location_level"],
+                        areaID: response["sensor_location_id"],
+                        location: `${response["sensor_location_level"]}${response["sensor_location_id"]}`
+                    });
+
                     if (response.error !== "no data") {
 
-                        that.setState({
-                            isLoading: false,
-                            macAdd: macAdd,
-                            building: response['building'],
-                            amIAlive: response["am_i_alive"],
-                            region: response["geo_region"],
-                            level: response["sensor_location_level"],
-                            areaID: response["sensor_location_id"],
-                            location: `${response["sensor_location_level"]}${response["sensor_location_id"]}`
-                        });
-
-                        console.log("response", response);
                         var latency = '';
 
                         if (response["router_latency"] != "-") {
                             latency = parseFloat(Math.round(response["router_latency"] * 100) / 100).toFixed(2);
                         }
-
-                        console.log("responsewatchlist", response["watchlist"]);
 
                         if(response["watchlist"]) {
                             $('#top-bar-pin').addClass('button-disabled');
@@ -137,9 +134,19 @@ class SensorDetails extends React.Component {
 
 
         $(document).on('closed.zf.offcanvas', function() {
+
             that.quit();
             that.setState({
-                isLoading: true
+                isLoading: true,
+                building: '-',
+                macAdd: '',
+                latency: '-',
+                amIAlive: false,
+                location: '-',
+                status: '-',
+                lastReboot: '-',
+                stats: {},
+                top5: []
             })
         });
 
@@ -220,7 +227,7 @@ class SensorDetails extends React.Component {
                     <Stats stats={stats}/>
                     <Top5Processes processes={top5}/>
 
-                    <ButtonList dispatch={dispatch} macAdd={macAdd} userId={userId} building={building} location={location}/>
+                    <ButtonList dispatch={dispatch} macAdd={macAdd} userId={userId} building={building} location={location} status={status}/>
                 </div>
                 <DeleteSensor {...this.state}/>
                 <PinSensor macAdd={macAdd}/>
@@ -238,7 +245,7 @@ class Stats extends React.Component {
         var {stats} = this.props;
         var rows = [];
 
-        if(stats != undefined) {
+        if(stats != undefined && Object.keys(stats).length > 0) {
             for(var key in stats) {
                 rows.push(
                     <tr key={key} id={key}>
@@ -247,6 +254,10 @@ class Stats extends React.Component {
                     </tr>
                 );
             }
+        } else {
+            return (
+                <div className="margin-bottom-small">No data available.</div>
+            );
         }
 
         return (
@@ -267,7 +278,7 @@ class Top5Processes extends React.Component {
         var {processes} = this.props;
         var rows = [];
 
-        if(processes != undefined) {
+        if(processes != undefined && processes.length > 0) {
             for(var i = 0; i < processes.length; i++) {
                 rows.push(
                     <tr key={i}>
@@ -277,6 +288,10 @@ class Top5Processes extends React.Component {
                     </tr>
                 );
             }
+        } else {
+            return (
+                <div></div>
+            );
         }
 
         return (
@@ -316,6 +331,14 @@ class ButtonList extends React.Component {
     }
 
     render() {
+        var {status} = this.props;
+
+        if(status === '-') {
+            return (
+                <div></div>
+            );
+        }
+
         var historicalLink = `/historical/${this.props.macAdd}`;
 
         return (
