@@ -11,12 +11,15 @@ class EditSNMPSpeedTest extends React.Component {
 
         this.state = {
             message: '',
-            macAdd: this.props.sensorData,
+            macAdd: '',
             interval: ''
         }
     }
 
     componentWillReceiveProps(props) {
+        this.setState({
+            macAdd: props.sensorData
+        });
     }
 
     onEditSNMPSpeedTest(e) {
@@ -134,7 +137,7 @@ class EditSNMPSpeedTestMessage extends React.Component {
 }
 
 function mapStateToProps(state, ownProps) {
-    return { sensorData: state.macAdd }
+    return { sensorData: state.activeSensor.sensorData }
 }
 
 module.exports = connect(mapStateToProps)(EditSNMPSpeedTest);

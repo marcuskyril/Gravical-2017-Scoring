@@ -26,6 +26,8 @@ var colorMap = {
 class SimpleBarChart extends React.Component {
     render() {
 
+        console.log("puddle", this.props.uptimeData);
+
         // <BarChart width={width} height={40} data={this.props.uptimeData}
         //           margin={{top: 5, right: 30, left: 20, bottom: 5}} barGap={0} barCategoryGap={0}>
         //      <CartesianGrid strokeDasharray="3 3"/>
@@ -76,7 +78,7 @@ class SimpleBarChart extends React.Component {
                     bottom: 5
                 }}>
                     <XAxis hide={true} type="number"/>
-                    <YAxis hide={true} dataKey="name" type="category"/>
+                    <YAxis hide={true} dataKey="status" type="category"/>
                     <CartesianGrid strokeDasharray="3 3"/>
                     <Tooltip content={< CustomTooltip external = {
                         this.props.uptimeData
@@ -158,7 +160,7 @@ class Uptime extends React.Component {
         var that = this;
         retrieveHistoricalDataAPI.retrieveHistoricalDataAlt(that.state.buildingName, startDate, endDate, interval).then(function(response) {
 
-            console.log("respose", response);
+            console.log("response", response);
 
             that.setState({data: response, isLoading: false, startDate: startDate, endDate: endDate, interval: interval});
         });
@@ -324,7 +326,6 @@ class SensorList extends React.Component {
                 var level = sensor["level"];
                 var id = sensor["id"];
                 var data = sensor["data"];
-
                 rows.push(<SimpleBarChart key={mac} mac={mac} id={id} level={level} uptimeData={data}/>);
             }
         }

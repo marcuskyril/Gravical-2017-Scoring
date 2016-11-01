@@ -23,7 +23,7 @@ class SensorList extends React.Component {
         var {dispatch} = this.props;
         var macAdd = sensorData['macAdd'];
 
-        console.log("To REDUX: ", macAdd);
+        // console.log("To REDUX: ", macAdd);
 
         var tobascoSauce = document.createEvent("Event");
 

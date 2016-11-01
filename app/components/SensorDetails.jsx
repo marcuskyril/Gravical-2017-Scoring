@@ -68,6 +68,18 @@ class SensorDetails extends React.Component {
                     console.log("response", response);
 
                     if (response.error !== "no data") {
+
+                        that.setState({
+                            isLoading: false,
+                            macAdd: macAdd,
+                            building: response['building'],
+                            amIAlive: response["am_i_alive"],
+                            region: response["geo_region"],
+                            level: response["sensor_location_level"],
+                            areaID: response["sensor_location_id"],
+                            location: `${response["sensor_location_level"]}${response["sensor_location_id"]}`
+                        });
+
                         console.log("response", response);
                         var latency = '';
 
@@ -84,16 +96,8 @@ class SensorDetails extends React.Component {
                         }
 
                         that.setState({
-                            isLoading: false,
-                            macAdd: macAdd,
                             latency: latency,
                             port: response["port"],
-                            region: response["geo_region"],
-                            building: response['building'],
-                            amIAlive: response["am_i_alive"],
-                            level: response["sensor_location_level"],
-                            areaID: response["sensor_location_id"],
-                            location: `${response["sensor_location_level"]}${response["sensor_location_id"]}`,
                             status: response["status"],
                             lastReboot: response["last_reboot"],
                             diagnosis: response["diagnosis"],
@@ -114,16 +118,6 @@ class SensorDetails extends React.Component {
                             ]
                         });
 
-                    } else {
-                        that.setState({
-                            macAdd: macAdd,
-                            building: response['building'],
-                            amIAlive: response["am_i_alive"],
-                            region: response["geo_region"],
-                            level: response["sensor_location_level"],
-                            areaID: response["sensor_location_id"],
-                            location: `${response["sensor_location_level"]}${response["sensor_location_id"]}`
-                        });
                     }
 
                     setTimeout(function() {
@@ -144,6 +138,9 @@ class SensorDetails extends React.Component {
 
         $(document).on('closed.zf.offcanvas', function() {
             that.quit();
+            that.setState({
+                isLoading: true
+            })
         });
 
     }
@@ -174,6 +171,8 @@ class SensorDetails extends React.Component {
         var location = `${building} ${location}`
         var amIAliveColor = amIAlive ? "green" : colorMap['down'];
 
+        console.log("isLoading", isLoading);
+
         $('#uptime').removeClass('table-row-highlight');
         $('#temp').removeClass('table-row-highlight');
         $('#cpu').removeClass('table-row-highlight');
@@ -189,6 +188,7 @@ class SensorDetails extends React.Component {
         }
 
         function renderSensorDetails() {
+
             if(isLoading) {
                 return (
                     <div className="page-title">Loading... </div>
@@ -205,6 +205,7 @@ class SensorDetails extends React.Component {
                 <TopBar dispatch={dispatch} macAdd={macAdd} userId={userId} building={building} location={location}/>
 
                 <div className="textAlignCenter" style={{padding: '0.5rem 1.5rem'}}>
+                    {renderSensorDetails()}
                     <span style={{height: '10px',
                         width: '10px',
                         backgroundColor: amIAliveColor,
@@ -295,38 +296,15 @@ class ButtonList extends React.Component {
 
     constructor(props) {
         super(props);
-
-        this.state = {
-            dispatch: '-',
-            macAdd: '-',
-            building: '-',
-            location: '-',
-            userId: '-'
-        }
-    }
-
-    componentWillReceiveProps(props) {
-
-        if(props.macAdd) {
-            this.setState({
-                dispatch: this.props.dispatch,
-                macAdd: this.props.macAdd,
-                building: this.props.building,
-                location: this.props.location,
-                userId: this.props.userId
-            });
-
-            console.log("userId", this.props.userId);
-        }
     }
 
     handleClick(type) {
 
-        var {dispatch, macAdd, building, location, userId} = this.state;
+        var {dispatch, macAdd, building, location, userId} = this.props;
 
         switch(type) {
             case 'terminal':
-                var actionDesc = `Launched terminal for ${macAdd} (${building} ${location})`;
+                var actionDesc = `Launched terminal for ${macAdd} (${location})`;
                 dispatch(actions.startAddToLog(userId, actionDesc));
 
                 $('#terminal').foundation('open');
@@ -338,7 +316,8 @@ class ButtonList extends React.Component {
     }
 
     render() {
-        var historicalLink = `/historical/${this.state.macAdd}`;
+        var historicalLink = `/historical/${this.props.macAdd}`;
+
         return (
             <div>
                 <a className="button proceed expanded" onClick={this.handleClick.bind(this, 'terminal')}>
@@ -361,34 +340,9 @@ class TopBar extends React.Component {
 
     constructor(props) {
         super(props);
-
-        this.state = {
-            dispatch: '-',
-            macAdd: '-',
-            building: '-',
-            location: '-',
-            userId: '-'
-        }
-    }
-
-    componentWillReceiveProps(props) {
-
-        if(props.macAdd) {
-            this.setState({
-                dispatch: this.props.dispatch,
-                macAdd: this.props.macAdd,
-                building: this.props.building,
-                location: this.props.location,
-                userId: this.props.userId
-            });
-
-            console.log("userId", this.props.userId);
-        }
     }
 
     handleClick(type) {
-
-        var {dispatch, userId, macAdd, location, building} = this.state;
 
         switch(type) {
             case 'delete':
@@ -402,23 +356,14 @@ class TopBar extends React.Component {
             case 'edit':
                 $('#edit-sensor-modal').foundation('open');
                 break;
-            case 'terminal':
-                var actionDesc = `Launched terminal for ${macAdd} (${building} ${location})`;
-                dispatch(actions.startAddToLog(userId, actionDesc));
-
-                $('#terminal').foundation('open');
-                break;
-            case 'reboot':
-                $('#reboot-sensor-modal').foundation('open');
-                break;
         }
     }
 
 
     render() {
 
-        var {dispatch, userId, macAdd, location, building} = this.state;
-        console.log("macADd", macAdd);
+        var {dispatch, userId, macAdd, location, building} = this.props;
+        console.log("macAdd", macAdd);
 
         return (
             <div className="top-bar margin-bottom-small">

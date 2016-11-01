@@ -133,8 +133,13 @@ class BuildingHeader extends React.Component {
 
     launchSpeedTestEdit() {
         var {snmpSpeedTest, dispatch} = this.props;
-        var {sensor} = snmpSpeedTest;
-        dispatch(actions.storeActiveSensor(sensor));
+        var {sensor, current_interval} = snmpSpeedTest;
+
+        console.log("current interval", current_interval);
+
+        // store macAdd + current interval here
+
+        dispatch(actions.storeActiveSensor(sensor, current_interval));
         $('#edit-snmp-speedtest-modal').foundation('open');
     }
 
@@ -289,7 +294,6 @@ class SensorHealthOverview extends React.Component {
 
     constructor(props) {
         super(props);
-        console.log("hello", props);
         this.state = {
             filterText: this.props.filter
         };
@@ -308,6 +312,7 @@ class SensorHealthOverview extends React.Component {
     render() {
 
         var overviewData = this.props.data;
+        console.log("overviewData", overviewData);
         var {dispatch} = this.props;
         var serverData = {};
 

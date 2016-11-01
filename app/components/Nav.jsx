@@ -37,11 +37,9 @@ class Nav extends React.Component {
     render() {
         return (
             <div className="top-bar">
-                <div className="top-bar-title">
-                    <IndexLink to="/" activeClassName="active" activeStyle={{
-                        color: '#f8f8f8'
-                    }}>sence | mitos</IndexLink>
-                </div>
+                <IndexLink to="/" className="top-bar-title" activeClassName="active" activeStyle={{
+                    color: '#f8f8f8'
+                }}>sence | mitos</IndexLink>
                 <div className="top-bar-right">
                     <ul className="dropdown menu" data-dropdown-menu>
                         <li>

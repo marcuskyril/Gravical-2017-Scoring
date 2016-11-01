@@ -78,8 +78,8 @@ export var retrieveLogs = (logs) => {
 
 // end add to log test
 
-export var storeActiveSensor = (macAdd) => {
-    console.log("macAdd", macAdd);
+export var storeActiveSensor = (macAdd, currentInterval) => {
+    console.log("activeSensor", macAdd, currentInterval);
     return {type: 'STORE_ACTIVE_SENSOR', macAdd}
 }
 

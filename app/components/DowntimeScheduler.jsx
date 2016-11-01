@@ -138,17 +138,20 @@ const timeInterval = [
 const events = [
     {
         'title': '*SCAPE',
-        'allDay': true,
-        'startDate': new Date(2016, 9, 0),
-        'endDate': new Date(2016, 10, 0)
+        'startDate': new Date(2016, 9, 0, 12, 30),
+        'endDate': new Date(2016, 9, 0, 15, 30),
+        'test': {
+            'test1': 'test',
+            'test2': 'hello'
+        }
     }, {
         'title': 'KRH',
-        'startDate': new Date(2016, 9, 7),
-        'endDate': new Date(2016, 9, 10)
+        'startDate': new Date(2016, 9, 12, 14, 30),
+        'endDate': new Date(2016, 9, 12, 18, 30)
     }, {
         'title': 'SCP',
         'startDate': new Date(2016, 9, 13, 0, 0, 0),
-        'endDate': new Date(2016, 9, 20, 0, 0, 0)
+        'endDate': new Date(2016, 9, 13, 0, 0, 0)
     }
 ];
 
@@ -167,6 +170,7 @@ class DowntimeScheduler extends React.Component {
         var that = this;
 
         downtimeSchedulerAPI.retrieveSensors(event.title).then(function(response) {
+            console.log("event", event);
             if(response.error) {
                 console.log("Error", response.error);
             } else {
@@ -191,7 +195,8 @@ class DowntimeScheduler extends React.Component {
                             selectable
                             defaultView='month'
                           events={events}
-                          timeslots={30}
+                          view={['week']}
+                          timeslots={3}
                           startAccessor='startDate'
                           endAccessor='endDate'
                           onSelectEvent={this.viewSensors.bind(this)}
@@ -207,33 +212,30 @@ class DowntimeScheduler extends React.Component {
                         <div className="columns large-6">
                             <div className="page-title">Do some cool stuff</div>
                             <p>Nothing selected</p>
+
+                                <form>
+                                    <label>Start Date
+                                        <input ref="startDate" type="date"/>
+                                    </label>
+                                    <label>Start Time
+                                        <Select options={timeInterval}/>
+                                    </label>
+                                    <label>End Date
+                                        <input ref="endDate" type="date"/>
+                                    </label>
+                                    <label>End Time
+                                        <Select options={timeInterval}/>
+                                    </label>
+                                    <label>Repeat?
+                                        <Select options={repeatInterval}/>
+                                    </label>
+                                    <button className="button proceed expanded margin-top-md">That's it for today.</button>
+                                </form>
                         </div>
                     </div>
 
                     <div style={{height: '500px'}} className="row margin-top-md">
-                        <div className="columns large-6">
-                            <Scheduler />
-                        </div>
-                        <div className="columns large-6">
-                            <form>
-                                <label>Start Date
-                                    <input ref="startDate" type="date"/>
-                                </label>
-                                <label>Start Time
-                                    <Select options={timeInterval}/>
-                                </label>
-                                <label>End Date
-                                    <input ref="endDate" type="date"/>
-                                </label>
-                                <label>End Time
-                                    <Select options={timeInterval}/>
-                                </label>
-                                <label>Repeat?
-                                    <Select options={repeatInterval}/>
-                                </label>
-                                <button className="button proceed expanded margin-top-md">That's it for today.</button>
-                            </form>
-                        </div>
+                        <Scheduler />
                     </div>
                 </div>
             </div>
@@ -286,7 +288,7 @@ class SensorList extends React.Component{
         return(
             <div>
                 <div className="page-title">Manage sensors</div>
-                <p>The following sensors at {building} have been scheduled for downtime</p>
+                <p>The following sensors at {building} have been scheduled for downtime.</p>
                 <table>
                     <tbody>
                         <tr style={{textAlign: 'left'}}>
@@ -307,11 +309,25 @@ class Scheduler extends React.Component {
         super(props);
 
         this.state = {
+            buildingList: [],
             building: '-',
             allSensors: {},
             options: [],
-            value: []
+            value: [],
+            startTime: [],
+            endTime: [],
+            repeat: []
         }
+    }
+
+    componentDidMount() {
+        var that = this;
+        downtimeSchedulerAPI.retrieveBuildings().then(function(response) {
+            console.log("response", response);
+            that.setState({
+                buildingList: response
+            });
+        });
     }
 
     handleChange() {
@@ -351,19 +367,41 @@ class Scheduler extends React.Component {
     }
 
     render() {
+
+        // onChange={this.handleTagInput.bind(this,0)}
         return(
             <div>
-                <div className="page-title">Schedule Downtime</div>
-                <label>Building
-                    <select ref="building" name="building" id="building" onChange={this.handleChange.bind(this)}  >
-                        <option value=""></option>
-                        <option value="*SCAPE">*SCAPE</option>
-                        <option value="KRH">KRH</option>
-                        <option value="SCP">SCP</option>
-                    </select>
-                </label>
+                <div className="columns large-6">
+                    <div className="page-title">Schedule Downtime</div>
+                    <label>Building
+                        <Select name='building-list' options={this.state.buildingList} ref="building" value={this.state.building} onChange={this.handleChange.bind(this)}/>
+                    </label>
 
-                <Select name='sensor-list' options={this.state.options} value={this.state.value} multi onChange={this.handleMultiSelect.bind(this)}/>
+                    <label>Sensor List
+                        <Select name='sensor-list' options={this.state.options} value={this.state.value} multi onChange={this.handleMultiSelect.bind(this)}/>
+                    </label>
+                </div>
+
+                <div className="columns large-6">
+                    <form>
+                        <label>Start Date
+                            <input ref="startDate" type="date"/>
+                        </label>
+                        <label>Start Time
+                            <Select options={timeInterval}/>
+                        </label>
+                        <label>End Date
+                            <input ref="endDate" type="date"/>
+                        </label>
+                        <label>End Time
+                            <Select options={timeInterval}/>
+                        </label>
+                        <label>Repeat?
+                            <Select options={repeatInterval}/>
+                        </label>
+                        <button className="button proceed expanded margin-top-md">That's it for today.</button>
+                    </form>
+                </div>
             </div>
         );
     }
