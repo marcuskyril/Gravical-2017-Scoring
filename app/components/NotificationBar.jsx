@@ -17,8 +17,6 @@ class NotificationBar extends React.Component {
     componentDidMount() {
         var that = this;
         window.addEventListener('customEvent', function(e) {
-            //   console.log("evt", e);
-            //   alert('booyah', e);
             that.addProgressNotification(e.data);
         }, false);
     }
@@ -39,7 +37,8 @@ class NotificationBar extends React.Component {
             'pinSensor': `Un momento por favor, adding ${data.macAdd} to the Watch List`,
             'unpinSensor': `Un momento por favor, removing ${data.macAdd} from the Watch List`,
             'deleteSensor': `Un momento por favor, deleting ${data.macAdd}`,
-            'rebootSensor': `Un momento por favor, rebooting ${data.macAdd}`
+            'rebootSensor': `Un momento por favor, rebooting ${data.macAdd}`,
+            'editSNMPSpeedTest': `Un momento por favor, editing SNMP Speed Test ${data.macAdd}`
         }
 
         return this.setState({

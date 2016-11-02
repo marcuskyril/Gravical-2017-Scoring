@@ -78,12 +78,13 @@ export var authReducer = (state = {}, action) => {
   }
 };
 
-export var activeSensorReducer = (state = {macAdd: ''}, action) => {
+export var activeSensorReducer = (state = {macAdd: '', currentInterval: ''}, action) => {
 
     switch(action.type) {
       case 'STORE_ACTIVE_SENSOR':
         return {
-          sensorData: action.macAdd
+          sensorData: action.macAdd,
+          currentInterval: action.currentInterval
         }
       default:
         return state;

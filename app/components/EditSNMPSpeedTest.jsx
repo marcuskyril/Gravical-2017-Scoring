@@ -14,11 +14,20 @@ class EditSNMPSpeedTest extends React.Component {
             macAdd: '',
             interval: ''
         }
+
+        this.handleChange = this.handleChange.bind(this);
+    }
+
+    handleChange(event) {
+        this.setState({
+            [event.target.name]: event.target.value
+        });
     }
 
     componentWillReceiveProps(props) {
         this.setState({
-            macAdd: props.sensorData
+            macAdd: props.sensorData,
+            interval: props.currentInterval
         });
     }
 
@@ -30,14 +39,7 @@ class EditSNMPSpeedTest extends React.Component {
         var inputUsername = this.refs.inputUsername.value;
         var inputPassword = this.refs.inputPassword.value;
         var inputInterval = this.refs.inputInterval.value;
-
         var that = this;
-
-        console.log("MAC", inputMac);
-        console.log("username", inputUsername);
-        console.log("password", inputPassword);
-        console.log("interval", inputInterval);
-
 
         editSNMPSpeedTestAPI.editSNMPSpeedTest(inputMac, inputUsername, inputPassword, inputInterval).then(function(response) {
 
@@ -49,19 +51,18 @@ class EditSNMPSpeedTest extends React.Component {
 
                 myCustomEvent.data = {
                     type: 'editSNMPSpeedTest',
-                    macAdd: inputMac,
+                    macAdd: inputMac
                 };
 
                 myCustomEvent.initEvent("customEvent", true, true);
                 document.dispatchEvent(myCustomEvent);
 
                 that.setState({
-                    message: response.success,
+                    message: response.message,
                     macAdd: inputMac,
                     interval: inputInterval
                 });
             }
-            //console.log("message", that.state.message);
 
             that.refs.macAddress.value = '';
             that.refs.inputUsername.value = '';
@@ -72,9 +73,6 @@ class EditSNMPSpeedTest extends React.Component {
 
     render() {
         var {message, macAdd, interval} = this.state;
-
-        console.log("macAdd", macAdd);
-
         var that = this;
 
         $('#edit-snmp-speedtest-modal').on('closed.zf.reveal', function() {
@@ -91,7 +89,7 @@ class EditSNMPSpeedTest extends React.Component {
 
                         <div className="large-12 columns">
                             <label>Mac Address
-                                <input type="text" name="macAddress" ref="macAddress" placeholder="Mac Address" value={macAdd} disabled/>
+                                <input type="text" name="macAdd" ref="macAddress" placeholder="Mac Address" value={macAdd} onChange={this.handleChange} disabled/>
                             </label>
 
                             <label>Username
@@ -103,7 +101,7 @@ class EditSNMPSpeedTest extends React.Component {
                             </label>
 
                             <label>Interval
-                                <select ref="inputInterval" name="interval" value={interval}>
+                                <select ref="inputInterval" name="interval" value={interval} onChange={this.handleChange} >
                                     <option value="">Set Interval</option>
                                     <option value="5">5 mins</option>
                                     <option value="15">15 mins</option>
@@ -137,7 +135,11 @@ class EditSNMPSpeedTestMessage extends React.Component {
 }
 
 function mapStateToProps(state, ownProps) {
-    return { sensorData: state.activeSensor.sensorData }
+    return {
+        sensorData: state.activeSensor.sensorData,
+        currentInterval: state.activeSensor.currentInterval
+
+    }
 }
 
 module.exports = connect(mapStateToProps)(EditSNMPSpeedTest);

@@ -11,7 +11,6 @@ class Terminal extends React.Component {
             macAdd: '',
             port: ''
         }
-
     }
 
     componentWillReceiveProps(props) {

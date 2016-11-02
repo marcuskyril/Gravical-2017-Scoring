@@ -5,10 +5,10 @@ module.exports = {
     editSNMPSpeedTest: function(inputMac, inputUsername, inputPassword, inputInterval) {
 
         var data = {
-          MAC: inputMac,
-          username: inputRegion,
-          password: inputLocationLevel,
-          interval: inputLocationID
+              MAC: inputMac,
+              username: inputUsername,
+              password: inputPassword,
+              interval: inputInterval
         }
 
         return $.ajax({

@@ -80,7 +80,7 @@ export var retrieveLogs = (logs) => {
 
 export var storeActiveSensor = (macAdd, currentInterval) => {
     console.log("activeSensor", macAdd, currentInterval);
-    return {type: 'STORE_ACTIVE_SENSOR', macAdd}
+    return {type: 'STORE_ACTIVE_SENSOR', macAdd, currentInterval}
 }
 
 export var login = (uid) => {

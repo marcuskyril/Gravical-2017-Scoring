@@ -11,7 +11,6 @@ var colorMap = {
 class ServerList extends React.Component {
 
   render() {
-    // console.log("ServerList: ", this.props.data);
     var serverList = this.props.data;
 
     var rows = [];
@@ -32,16 +31,15 @@ class ServerList extends React.Component {
 }
 
 class Server extends React.Component {
-  render() {
+    render() {
 
-    // console.log("dr. capsicum", this.props.serverData);
-      return (
-          <div>
-              <div className="header">{this.props.serverName}</div>
-              <ServerGroupList data={this.props.serverData}/>
-          </div>
-      );
-  }
+        return (
+            <div>
+                <div className="header">{this.props.serverName}</div>
+                <ServerGroupList data={this.props.serverData}/>
+            </div>
+        );
+    }
 }
 
 class ServerGroupList extends React.Component {
@@ -116,59 +114,36 @@ module.exports = ServerList;
 class VerticalMenu extends React.Component {
 
     constructor(props) {
-      super(props);
+        super(props);
     }
 
     handleClick(serverData, action) {
-        var macAddress = serverData["mac"];
-        var areaID = serverData["id"];
+        var macAdd = serverData["mac"];
+        var tobascoSauce = document.createEvent("Event");
 
-        switch(action){
+        tobascoSauce.data = {
+            macAdd: macAdd
+        };
 
+        this.setState({
+            macAdd: macAdd
+        })
 
-          case 'NO_ACTION':
-              var dropdowns = document.getElementsByClassName("dropdown-pane");
-
-              var i;
-
-              for (i = 0; i < dropdowns.length; i++) {
-                var openDropdown = dropdowns[i];
-                if (openDropdown.style.visibility === "visible") {
-                  openDropdown.style.visibility = "hidden";
-                }
-              }
-
-              if (document.getElementById(macAddress).style.visibility === "visible") {
-                  document.getElementById(macAddress).style.visibility = "hidden";
-              } else {
-                  document.getElementById(macAddress).style.visibility = "visible";
-              }
-
-              break;
-          case 'OPEN_CANVAS_ACTION':
-            document.getElementById("sensorDetailsIFrame").src = "./offCrepe.html?offCanMac=" + macAddress;
-            break;
-
-          default:
-            console.warn('Invalid request.');
-            break;
-        }
+        tobascoSauce.initEvent("tobascoSauce", true, true);
+        document.dispatchEvent(tobascoSauce);
 
     }
     render() {
-       return (
+
+        var cls = colorMap[this.props.serverData['status']];
+        var id = this.props.id;
+
+        return (
 
            <li className="sensorList">
-             <div className={this.props.class} onClick={() => this.handleClick(this.props.serverData, 'NO_ACTION')}>{this.props.id}</div>
-             <div className="dropdown-pane" id={this.props.macAdd} data-dropdown data-options="data-hover:true; data-close-on-click:true">
-                 <ul className="vertical menu tableOptions">
-                   <li className="menuHeader">{this.props.macAdd}</li>
-                   <li><a onClick={() => this.handleClick(this.props.serverData, 'OPEN_CANVAS_ACTION')} data-toggle="offCanvas">More details &raquo;</a></li>
-                   <li><a onClick={() => this.handleClick(this.props.serverData, 'EDIT_ACTION')}>Edit server</a></li>
-                   <li><a onClick={() => this.handleClick(this.props.serverData, 'DELETE_ACTION')}>Delete server</a></li>
-                 </ul>
-               </div>
+               <div className={cls} data-toggle="offCanvas" onClick={() => this.handleClick(this.props.serverData)}>{id}</div>
            </li>
+
        );
     }
 }

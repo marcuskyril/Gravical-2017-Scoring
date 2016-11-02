@@ -1,7 +1,9 @@
 var React = require('react');
 var updateWatchList = require('updateWatchList');
 var unpinMac = "";
-var {connect} = require('react-redux');
+import * as Redux from 'react-redux';
+import * as actions from 'actions';
+import {connect} from 'react-redux';
 var store = require('configureStore').configure();
 
 class UnpinSensor extends React.Component {
@@ -15,7 +17,7 @@ class UnpinSensor extends React.Component {
 
   onUnpinSensor() {
 
-    var {dispatch} = this.props;
+    var {dispatch, userId} = this.props;
     var macAdd = this.props.pin_mac.pin_mac;
     var that = this;
 
@@ -35,9 +37,10 @@ class UnpinSensor extends React.Component {
             myCustomEvent.initEvent("customEvent", true, true);
             document.dispatchEvent(myCustomEvent);
 
-            var testLog = `Pinned ${macAdd} to the watch list`;
+            var testLog = `Unpinned ${macAdd} from the watch list`;
+            dispatch(actions.startAddToLog(userId, testLog));
 
-            dispatch(actions.startAddToLog(testLog));
+            console.log("response", response);
 
             that.setState({message: response.success});
         }

@@ -131,6 +131,8 @@ class Dashboard extends React.Component {
 
     render() {
 
+        var {userDisplayName} = this.state;
+
         return (
 
             <div className="dashboard margin-top-md">
@@ -161,10 +163,10 @@ class Dashboard extends React.Component {
                                     Add Sensor / Server
                                 </button>
                                 <AddSensor type={this.state.type}/>
-                                <UnpinSensor/>
-                                <Terminal/>
-                                <PinSensor/>
-                                <EditSNMPSpeedTest/>
+                                <UnpinSensor userId={userDisplayName}/>
+                                <Terminal userId={userDisplayName}/>
+                                <PinSensor userId={userDisplayName}/>
+                                <EditSNMPSpeedTest userId={userDisplayName}/>
                             </div>
                             <div className="callout callout-dark">
                                 <SensorHealthOverview filter={this.state.filterParam} data={this.state.sensorHealthOverviewV2} serverData={this.state.serverOverview}/>
