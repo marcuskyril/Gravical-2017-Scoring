@@ -133,7 +133,7 @@ class HistoricalChart extends React.Component {
             message
         } = this.state;
 
-        var desc = `You are viewing historical data for ${buildingName} between ${startDate}
+        var desc = `You are viewing historical data for ${macAdd} between ${startDate}
                         & ${endDate} at an interval of ${interval} minutes.`;
 
         var that = this;
@@ -259,15 +259,14 @@ class SimpleAreaChart extends React.Component {
     render() {
         var width = $('.row').width() * 0.95;
 
-        console.log("CPU charts", this.props.data);
         return (
-            <AreaChart syncId='chart' width={width} height={400} data={this.props.data} margin={{
+            <AreaChart syncId='chart' width={width} height={250} data={this.props.data} margin={{
                 top: 10,
                 right: 30,
                 left: 0,
                 bottom: 0
             }}>
-                <XAxis dataKey="timestamp"/>
+                <XAxis dataKey="timestamp" tickCount={7}/>
                 <YAxis/>
                 <CartesianGrid strokeDasharray="3 3"/>
                 <Tooltip/>
@@ -282,13 +281,13 @@ const SimpleLineChart = React.createClass({
         var width = $('.row').width() * 0.95;
 
         return (
-            <LineChart syncId='chart' width={width} height={400} data={this.props.data} margin={{
+            <LineChart syncId='chart' width={width} height={250} data={this.props.data} margin={{
                 top: 5,
                 right: 30,
                 left: 20,
                 bottom: 5
             }}>
-                <XAxis dataKey="name"/>
+                <XAxis dataKey="name" tickCount={7}/>
                 <YAxis/>
                 <CartesianGrid strokeDasharray="3 3"/>
                 <Tooltip/>

@@ -135,10 +135,6 @@ class BuildingHeader extends React.Component {
         var {snmpSpeedTest, dispatch} = this.props;
         var {sensor, current_interval} = snmpSpeedTest;
 
-        console.log("current interval", current_interval);
-
-        // store macAdd + current interval here
-
         dispatch(actions.storeActiveSensor(sensor, current_interval));
         $('#edit-snmp-speedtest-modal').foundation('open');
     }
@@ -153,6 +149,9 @@ class BuildingHeader extends React.Component {
 
         var id = "routerDropdown"+sensor;
 
+        var upload = `${snmpSpeedTest.upload_speed} Mbit/s`;
+        var download = `${snmpSpeedTest.download_speed} Mbit/s`;
+
         return (
             <thead>
                 <tr>
@@ -166,15 +165,13 @@ class BuildingHeader extends React.Component {
                     }}>
                         <span style={{
                             fontWeight: '500'
-                        }}>Upload</span>: {snmpSpeedTest.upload_speed}
-                        Mbit/s |
+                        }}>Upload</span>: {upload} |
                         <span style={{
                             fontWeight: '500'
-                        }}> Download</span>: {snmpSpeedTest.download_speed}
-                        Mbit/s
+                        }}> Download</span>: {download}
 
                         <button type="button" className="pane" onClick={() => this.handleClick(sensor)} style={{marginLeft:'0.5rem'}}>
-                            <FontAwesome className="pane" name='caret-square-o-down' size='lg'/>
+                            <FontAwesome className="pane" name='info-circle' size='lg'/>
                         </button>
 
                         <div id={id} className="routerDropdown" style={{display: 'none', position: 'absolute', backgroundColor: '#fff', right: 0, padding: '0.5rem 0.5rem 0 0.5rem', marginRight: '2rem', boxShadow: '3px 3px 3px #888888', borderRadius: '3px'}}>
@@ -312,7 +309,6 @@ class SensorHealthOverview extends React.Component {
     render() {
 
         var overviewData = this.props.data;
-        console.log("overviewData", overviewData);
         var {dispatch} = this.props;
         var serverData = {};
 

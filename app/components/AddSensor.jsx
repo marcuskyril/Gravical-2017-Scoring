@@ -4,14 +4,79 @@ import * as Redux from 'react-redux';
 import * as actions from 'actions';
 var {connect} = require('react-redux');
 
+const DEFAULT_VAL = {
+    danger: {
+        diskUsage: 0.9,
+        cpuUsage: 60,
+        ramUsage: 0.6,
+        downtimePercentage: 0.6,
+        temperature: 65,
+    },
+
+    warning: {
+        diskUsage: 0.6,
+        cpuUsage: 40,
+        ramUsage: 0.4,
+        downtimePercentage: 0.4,
+        temperature: 60,
+    }
+};
+
 class AddSensor extends React.Component {
 
     constructor(props) {
         super(props);
 
         this.state = {
-            message: ''
+            message: '',
+            danger: {
+                diskUsage: 0.9,
+                cpuUsage: 60,
+                ramUsage: 0.6,
+                downtimePercentage: 0.6,
+                temperature: 65,
+            },
+            warning: {
+                diskUsage: 0.6,
+                cpuUsage: 40,
+                ramUsage: 0.4,
+                downtimePercentage: 0.4,
+                temperature: 60,
+            }
         }
+
+        this.handleChange = this.handleChange.bind(this);
+    }
+
+    handleChange(event) {
+        this.setState({
+            [event.target.name]: event.target.value
+        });
+    }
+
+    componentDidMount() {
+
+        var that = this;
+
+        $('#add-sensor-modal').on('closed.zf.reveal', function() {
+            that.setState({
+                message: '',
+                danger: {
+                    diskUsage: 0.9,
+                    cpuUsage: 60,
+                    ramUsage: 0.6,
+                    downtimePercentage: 0.6,
+                    temperature: 65,
+                },
+                warning: {
+                    diskUsage: 0.6,
+                    cpuUsage: 40,
+                    ramUsage: 0.4,
+                    downtimePercentage: 0.4,
+                    temperature: 60,
+                }
+            });
+        });
     }
 
     updateRegion() {
@@ -65,7 +130,6 @@ class AddSensor extends React.Component {
                 dispatch(actions.startAddToLog(userId, actionDesc));
 
             }
-            //console.log("message", that.state.message);
 
             that.refs.macAddress.value = '';
             that.refs.port.value = '';
@@ -81,9 +145,6 @@ class AddSensor extends React.Component {
         var message = this.state.message;
         var that = this;
 
-        $('#add-sensor-modal').on('closed.zf.reveal', function() {
-            that.setState({message: ''});
-        });
 
         return (
             <div id="add-sensor-modal" className="reveal large" data-reveal="">
@@ -144,38 +205,54 @@ class AddSensor extends React.Component {
                             <div className="page-title">Customize Thresholds</div>
 
                             <div className="row">
+                                CPU Usage
                                 <div className="medium-6 columns">
                                     <label>Warning
-                                        <input type="text" placeholder="test"/>
+                                        <input type="number" placeholder="0" defaultValue={this.state.warning['cpuUsage']}/>
                                     </label>
                                 </div>
                                 <div className="medium-6 columns">
                                     <label>Danger
-                                        <input type="text" placeholder="test"/>
+                                        <input type="number" placeholder="0" defaultValue={this.state.danger['cpuUsage']}/>
                                     </label>
                                 </div>
                              </div>
                             <div className="row">
+                                RAM Usage
                                 <div className="medium-6 columns">
                                     <label>Warning
-                                        <input type="text" placeholder="test"/>
+                                        <input type="number" placeholder="0" defaultValue={this.state.warning['ramUsage']}/>
                                     </label>
                                 </div>
                                 <div className="medium-6 columns">
                                     <label>Danger
-                                        <input type="text" placeholder="test"/>
+                                        <input type="number" placeholder="0" defaultValue={this.state.danger['ramUsage']}/>
                                     </label>
                                 </div>
                              </div>
                             <div className="row">
+                                Downtime Percentage
                                 <div className="medium-6 columns">
                                     <label>Warning
-                                        <input type="text" placeholder="test"/>
+                                        <input type="number" placeholder="0" defaultValue={this.state.warning['downtimePercentage']}/>
                                     </label>
                                 </div>
                                 <div className="medium-6 columns">
                                     <label>Danger
-                                        <input type="text" placeholder="test"/>
+                                        <input type="number" placeholder="0" defaultValue={this.state.danger['downtimePercentage']}/>
+                                    </label>
+                                </div>
+                             </div>
+                            <div className="row">
+                                Temperature
+                                <div className="medium-6 columns">
+                                    <label>Warning
+                                        <input type="number" placeholder="0" defaultValue={this.state.warning['temperature']}/>
+                                    </label>
+                                </div>
+                                <div className="medium-6 columns">
+                                    <label>Danger
+                                        <input type="number" placeholder="0" defaultValue={this.state.danger['temperature']}/>
                                     </label>
                                 </div>
                              </div>

@@ -41,6 +41,8 @@ class EditSNMPSpeedTest extends React.Component {
         var inputInterval = this.refs.inputInterval.value;
         var that = this;
 
+        var {dispatch, userId} = this.props;
+
         editSNMPSpeedTestAPI.editSNMPSpeedTest(inputMac, inputUsername, inputPassword, inputInterval).then(function(response) {
 
             if (response.error) {
@@ -62,12 +64,15 @@ class EditSNMPSpeedTest extends React.Component {
                     macAdd: inputMac,
                     interval: inputInterval
                 });
+
+                var actionDesc = `Edited SNMP settings (${inputMac})`;
+                dispatch(actions.startAddToLog(userId, actionDesc));
             }
 
-            that.refs.macAddress.value = '';
+            // that.refs.macAddress.value = '';
             that.refs.inputUsername.value = '';
             that.refs.inputPassword.value = '';
-            that.refs.inputInterval.value = '';
+            // that.refs.inputInterval.value = '';
         });
     }
 
