@@ -56,6 +56,10 @@ class HistoricalChart extends React.Component {
 
     componentDidMount() {
 
+        $('#offCanvas').foundation('close', function(){
+            console.log("Closed canvas");
+        });
+
         this.setState({isLoading: true});
         window.scrollTo(0, 0);
         var {startDate, endDate, interval} = this.state;

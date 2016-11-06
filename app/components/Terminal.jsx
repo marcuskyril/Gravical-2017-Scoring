@@ -40,7 +40,7 @@ class Terminal extends React.Component {
         function renderIFrame(port) {
 
             if(port.length > 0) {
-                IFRAME_URL =`${IFRAMEURL_MAC}/${port}`;
+                IFRAME_URL =`${IFRAMEURL_MAC}${port}`;
             } else {
                 IFRAME_URL = IFRAMEURL;
             }
