@@ -4,6 +4,7 @@ var DeleteSensor = require('DeleteSensor');
 var PinSensor = require('PinSensor');
 var EditSensor = require('EditSensor');
 var RebootSensor = require('RebootSensor');
+var PauseSensor = require('PauseSensor');
 var Terminal = require('Terminal');
 import * as Redux from 'react-redux';
 import * as actions from 'actions';
@@ -180,6 +181,8 @@ class SensorDetails extends React.Component {
 
         console.log("isLoading", isLoading);
 
+        var dataColStatus = status === "down" ? "Data last collected at " : "Up since "
+
         $('#uptime').removeClass('table-row-highlight');
         $('#temp').removeClass('table-row-highlight');
         $('#cpu').removeClass('table-row-highlight');
@@ -222,7 +225,7 @@ class SensorDetails extends React.Component {
                     </span>{latency} ms
                     <div className="page-title" style={{fontWeight:'bold', textTransform: 'uppercase', color: colorMap[status]}}>{status}</div>
 
-                    <div style={{fontWeight:'100',marginBottom:'1.5rem'}}>Data last collected at {lastReboot}</div>
+                    <div style={{fontWeight:'100',marginBottom:'1.5rem'}}>{dataColStatus} {lastReboot}</div>
 
                     <Stats stats={stats}/>
                     <Top5Processes processes={top5}/>
@@ -230,6 +233,7 @@ class SensorDetails extends React.Component {
                     <ButtonList dispatch={dispatch} macAdd={macAdd} userId={userId} building={building} location={location} status={status}/>
                 </div>
                 <DeleteSensor {...this.state}/>
+                <PauseSensor {...this.state}/>
                 <PinSensor macAdd={macAdd}/>
                 <EditSensor {...this.state}/>
                 <RebootSensor macAdd={macAdd}/>
@@ -263,6 +267,16 @@ class Stats extends React.Component {
         return (
             <div>
                 <table className="sensor-details-table" style={{width:'90%',margin:'0rem auto 2rem auto',fontWeight:'100'}}>
+                    <thead>
+                        <tr>
+                            <th>
+                                Metric
+                            </th>
+                            <th>
+                                %
+                            </th>
+                        </tr>
+                    </thead>
                     <tbody>
                         {rows}
                     </tbody>
@@ -298,6 +312,19 @@ class Top5Processes extends React.Component {
             <div>
                 <div className="page-title">Top 5 Processes</div>
                 <table className="sensor-details-table" style={{fontWeight:'100',marginBottom:'2rem'}}>
+                    <thead>
+                        <tr>
+                            <th>
+                                SN
+                            </th>
+                            <th>
+                                Process Number
+                            </th>
+                            <th>
+                                %
+                            </th>
+                        </tr>
+                    </thead>
                     <tbody>
                         {rows}
                     </tbody>
@@ -324,6 +351,9 @@ class ButtonList extends React.Component {
 
                 $('#terminal').foundation('open');
                 break;
+            case 'pause':
+                $('#pause-sensor-modal').foundation('open');
+                break;
             case 'reboot':
                 $('#reboot-sensor-modal').foundation('open');
                 break;
@@ -339,10 +369,15 @@ class ButtonList extends React.Component {
             );
         }
 
+        var pauseMsg = status === "paused" ? "Unpause" : "Pause"
         var historicalLink = `/historical/${this.props.macAdd}`;
 
         return (
             <div>
+                <a className="button proceed expanded" onClick={this.handleClick.bind(this, 'pause')}>
+                    {pauseMsg} Sensor
+                </a>
+
                 <a className="button proceed expanded" onClick={this.handleClick.bind(this, 'terminal')}>
                     Launch Terminal
                 </a>
@@ -386,7 +421,6 @@ class TopBar extends React.Component {
     render() {
 
         var {dispatch, userId, macAdd, location, building} = this.props;
-        console.log("macAdd", macAdd);
 
         return (
             <div className="top-bar margin-bottom-small">

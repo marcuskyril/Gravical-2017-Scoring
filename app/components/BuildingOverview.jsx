@@ -9,7 +9,7 @@ class Building extends React.Component {
 
     render() {
 
-        var totalSensors = this.props.ok + this.props.warning + this.props.danger + this.props.down + this.props.noData;
+        var totalSensors = this.props.ok + this.props.warning + this.props.danger + this.props.down + this.props.noData +this.props.paused;
 
         var data = [{
           name: this.props.buildingName,
@@ -17,7 +17,8 @@ class Building extends React.Component {
           warning: (this.props.warning/totalSensors),
           danger: (this.props.danger/totalSensors),
           down: (this.props.down/totalSensors),
-          noData: (this.props.noData/totalSensors)
+          noData: (this.props.noData/totalSensors),
+          paused: (this.props.paused/totalSensors)
         }];
 
         return (
@@ -35,6 +36,8 @@ class Building extends React.Component {
                             <span style={{'color':'#990000'}}>{this.props.down}</span>
                             &nbsp;|&nbsp;
                             <span style={{'color':'#737373'}}>{this.props.noData}</span>
+                            &nbsp;|&nbsp;
+                            <span style={{'color':'#1a1b1b'}}>{this.props.paused}</span>
                         </div>
                     </div>
                 </div>
@@ -69,6 +72,9 @@ class Building extends React.Component {
                                    <tr style={{'color':'#737373'}}>
                                        <td>no data</td><td>{this.props.noData}</td>
                                    </tr>
+                                   <tr style={{'color':'#1a1b1b'}}>
+                                       <td>no data</td><td>{this.props.paused}</td>
+                                   </tr>
                                  </tbody>
                                </table>
                            </div>
@@ -78,6 +84,7 @@ class Building extends React.Component {
                        <Bar dataKey="danger" stackId="a" fill="#cc7a00" isAnimationActive={false}/>
                        <Bar dataKey="down" stackId="a" fill="#990000" isAnimationActive={false}/>
                        <Bar dataKey="noData" stackId="a" fill="#737373" isAnimationActive={false}/>
+                       <Bar dataKey="paused" stackId="a" fill="#1a1b1b" isAnimationActive={false}/>
                       </BarChart>
 
                      </ResponsiveContainer>
@@ -130,13 +137,16 @@ class BuildingList extends React.Component {
             if (buildings.hasOwnProperty(property)) {
                 var buildingName = property;
 
+                console.log("property", buildings["property"]);
+
                 var temp = {
                   buildingName: buildingName,
                   danger: buildings[property]["danger"]["count"],
                   warning: buildings[property]["warning"]["count"],
                   ok: buildings[property]["ok"]["count"],
                   down: buildings[property]["down"]["count"],
-                  noData: buildings[property]["no data"]["count"]
+                  noData: buildings[property]["no data"]["count"],
+                  paused: buildings[property]["paused"]["count"]
                 }
 
                 allBuildings.push(temp);
@@ -150,7 +160,7 @@ class BuildingList extends React.Component {
           if((buildingName.toLowerCase()).indexOf((this.props.filterText.toLowerCase())) === -1) {
             return <div></div>
           }
-          rows.push(<Building key={buildingName} buildingName={buildingName} ok={building.ok} warning={building.warning} danger={building.danger} down={building.down} noData={building.noData}/>);
+          rows.push(<Building key={buildingName} buildingName={buildingName} ok={building.ok} warning={building.warning} danger={building.danger} down={building.down} noData={building.noData} paused={building.paused}/>);
         }.bind(this));
 
         return (
@@ -183,7 +193,7 @@ class BuildingOverview extends React.Component {
     }
 
     render() {
-        // console.log("BuildingOverview says hi", this.props.data);
+        console.log("BuildingOverview says hi", this.props.data);
         return (
             <div>
                 <div className="callout-dark-header">

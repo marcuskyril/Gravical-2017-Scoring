@@ -530,8 +530,9 @@ table.sensor-details-table tbody {
     text-align: left;
 }
 
-table.sensor-details-table td:nth-child(2) {
+table.sensor-details-table td:nth-child(2), table.sensor-details-table th:nth-child(2) {
     word-break: break-all;
+    text-align: center;
 }
 
 .statusText {

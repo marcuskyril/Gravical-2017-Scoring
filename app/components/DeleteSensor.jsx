@@ -55,7 +55,7 @@ class DeleteSensor extends React.Component {
 
                 myCustomEvent.initEvent("customEvent", true, true);
                 document.dispatchEvent(myCustomEvent);
-                var actionDesc = `Deleted ${macAdd} from ${location}`;
+                var actionDesc = `Deleted ${macAdd} from ${building} ${location}`;
 
                 dispatch(actions.startAddToLog(userId, actionDesc));
             }

@@ -10,7 +10,8 @@ var colorMap = {
     "warning": "sensorBlockSquare yellow sensorList",
     "danger": "sensorBlockSquare orange sensorList",
     "down": "sensorBlockSquare red sensorList",
-    "no data": "sensorBlockSquare grey sensorList"
+    "no data": "sensorBlockSquare grey sensorList",
+    "paused": "sensorBlockSquare black sensorList"
 }
 
 class SensorList extends React.Component {
@@ -22,8 +23,6 @@ class SensorList extends React.Component {
     handleClick(sensorData, action) {
         var {dispatch} = this.props;
         var macAdd = sensorData['macAdd'];
-
-        // console.log("To REDUX: ", macAdd);
 
         var tobascoSauce = document.createEvent("Event");
 
@@ -39,6 +38,8 @@ class SensorList extends React.Component {
     }
 
     render() {
+
+        console.log("this.props.sensorData", this.props.sensorData);
 
         var cls = colorMap[this.props.sensorData['status']];
         var id = this.props.sensorData['sensorId'];

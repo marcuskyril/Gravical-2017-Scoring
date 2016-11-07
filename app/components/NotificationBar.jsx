@@ -34,6 +34,7 @@ class NotificationBar extends React.Component {
         var msgArr = {
             'addSensor': `Un momento por favor, adding ${data.macAdd} to ${data.building} ${data.location}`,
             'editSensor': `Un momento por favor, editing ${data.macAdd} at ${data.building} ${data.location}`,
+            'pauseSensor': `Un momento por favor, ${data.pauseStatus} ${data.macAdd} at ${data.building} ${data.location}`,
             'pinSensor': `Un momento por favor, adding ${data.macAdd} to the Watch List`,
             'unpinSensor': `Un momento por favor, removing ${data.macAdd} from the Watch List`,
             'deleteSensor': `Un momento por favor, deleting ${data.macAdd}`,
@@ -47,7 +48,7 @@ class NotificationBar extends React.Component {
                 key: data.macAdd,
                 action: 'Dismiss',
                 barStyle: {
-                    backgroundColor: "#006600",
+                    backgroundColor: "#6abedb",
                     color: '#fff'
                 },
                 dismissAfter: 7000,
