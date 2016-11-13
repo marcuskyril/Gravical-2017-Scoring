@@ -69,7 +69,7 @@ class PauseSensor extends React.Component {
         var {message, macAdd, status} = this.state;
         var that = this;
 
-        var pauseStatus = status === "paused" ? "unpause" : "pause";
+        var pauseStatus = status === "paused" ? "Unpause" : "Pause";
 
         // resets message to empty string on close
         $('#pause-sensor-modal').on('closed.zf.reveal', function() {
@@ -81,7 +81,7 @@ class PauseSensor extends React.Component {
                 <form>
                     <div className="row">
                         <div className="large-12 columns">
-                            <div className="page-title">Pause Sensor</div>
+                            <div className="page-title">{pauseStatus} Sensor</div>
 
                             <div className="header" style={{
                                 color: '#990000'

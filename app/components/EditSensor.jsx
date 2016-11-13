@@ -10,7 +10,13 @@ class EditSensor extends React.Component {
         super(props);
 
         this.state = {
-            message: ''
+            message: '',
+            macAdd: '',
+            port: '',
+            region: '',
+            building: '',
+            level: '',
+            areaID: ''
         }
 
         this.handleChange = this.handleChange.bind(this);

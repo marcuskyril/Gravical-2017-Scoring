@@ -42,7 +42,7 @@ body {
 }
 
 .row {
-    max-width: 100rem;
+    max-width: 80rem;
 }
 
 .loading-overlay {
@@ -82,12 +82,12 @@ hr {
     max-width: 100%;
 }
 
-@media only screen and (max-width: 480px) {
-    .allSensors,
-    .buildingCharts {
-        display: none;
-    }
-}
+// @media only screen and (max-width: 480px) {
+//     .allSensors,
+//     .buildingCharts {
+//         display: none;
+//     }
+// }
 
 .divider {
     border-color: #bdbdbd;
