@@ -39,8 +39,6 @@ class SensorList extends React.Component {
 
     render() {
 
-        console.log("this.props.sensorData", this.props.sensorData);
-
         var cls = colorMap[this.props.sensorData['status']];
         var id = this.props.sensorData['sensorId'];
 

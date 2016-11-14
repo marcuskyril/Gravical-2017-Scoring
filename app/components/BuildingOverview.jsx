@@ -73,7 +73,7 @@ class Building extends React.Component {
                                        <td>no data</td><td>{this.props.noData}</td>
                                    </tr>
                                    <tr style={{'color':'#1a1b1b'}}>
-                                       <td>no data</td><td>{this.props.paused}</td>
+                                       <td>paused</td><td>{this.props.paused}</td>
                                    </tr>
                                  </tbody>
                                </table>
@@ -136,9 +136,6 @@ class BuildingList extends React.Component {
         for (var property in buildings) {
             if (buildings.hasOwnProperty(property)) {
                 var buildingName = property;
-
-                console.log("property", buildings["property"]);
-
                 var temp = {
                   buildingName: buildingName,
                   danger: buildings[property]["danger"]["count"],
@@ -193,7 +190,6 @@ class BuildingOverview extends React.Component {
     }
 
     render() {
-        console.log("BuildingOverview says hi", this.props.data);
         return (
             <div>
                 <div className="callout-dark-header">

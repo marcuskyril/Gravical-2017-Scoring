@@ -225,7 +225,7 @@ class SensorDetails extends React.Component {
                     </span>{latency} ms
                     <div className="page-title" style={{fontWeight:'bold', textTransform: 'uppercase', color: colorMap[status]}}>{status}</div>
 
-                    <div style={{fontWeight:'100',marginBottom:'1.5rem'}}>{dataColStatus} {lastReboot}</div>
+                    <div style={{fontWeight:'100',marginBottom:'1.5rem'}}>{dataColStatus} <br></br> {lastReboot}</div>
 
                     <Stats stats={stats}/>
                     <Top5Processes processes={top5}/>

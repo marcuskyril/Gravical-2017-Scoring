@@ -69,10 +69,8 @@ class EditSNMPSpeedTest extends React.Component {
                 dispatch(actions.startAddToLog(userId, actionDesc));
             }
 
-            // that.refs.macAddress.value = '';
             that.refs.inputUsername.value = '';
             that.refs.inputPassword.value = '';
-            // that.refs.inputInterval.value = '';
         });
     }
 

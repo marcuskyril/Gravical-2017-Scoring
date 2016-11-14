@@ -290,8 +290,7 @@ table.sensor-details-table {
     color: red;
     margin-bottom: 1rem;
     text-transform: uppercase;
-    font-size: 0.8em;
-    font-weight: bold;
+    font-size: 1em;
 }
 
 .notificationHeader {
@@ -533,14 +532,6 @@ table.sensor-details-table tbody {
 table.sensor-details-table td:nth-child(2), table.sensor-details-table th:nth-child(2) {
     word-break: break-all;
     text-align: center;
-}
-
-.statusText {
-    color: red;
-    margin-bottom: 1rem;
-    text-transform: uppercase;
-    font-size: 0.5em;
-    font-weight: bold;
 }
 
 .table-container {

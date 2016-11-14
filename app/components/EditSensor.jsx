@@ -16,7 +16,8 @@ class EditSensor extends React.Component {
             region: '',
             building: '',
             level: '',
-            areaID: ''
+            areaID: '',
+            hasReceivedProps: false
         }
 
         this.handleChange = this.handleChange.bind(this);
@@ -29,17 +30,32 @@ class EditSensor extends React.Component {
         });
     }
 
+    componentDidMount() {
+
+        var that = this;
+
+        $('#edit-sensor-modal').on('closed.zf.reveal', function() {
+            that.setState({hasReceivedProps: false});
+        });
+    }
+
     componentWillReceiveProps(props) {
 
-        if(props.macAdd) {
-            this.setState({
-                macAdd: props.macAdd,
-                port: props.port,
-                region: props.region.toLowerCase(),
-                building: props.building,
-                level: props.level,
-                areaID: props.areaID
-            });
+        var {hasReceivedProps} = this.state;
+
+        if(!hasReceivedProps) {
+
+            if(props.macAdd) {
+                this.setState({
+                    macAdd: props.macAdd,
+                    port: props.port,
+                    region: props.region.toLowerCase(),
+                    building: props.building,
+                    level: props.level,
+                    areaID: props.areaID,
+                    hasReceivedProps: true
+                });
+            }
         }
     }
 

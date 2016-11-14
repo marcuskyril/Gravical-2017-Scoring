@@ -2,6 +2,7 @@ var React = require('react');
 var Recharts = require('recharts');
 var FontAwesome = require('react-fontawesome');
 var retrieveHistoricalDataAPI = require('retrieveHistoricalDataAPI');
+
 const {
     XAxis,
     Cell,
@@ -75,7 +76,7 @@ class HistoricalChart extends React.Component {
         if (Date.parse(endDate) < Date.parse(startDate)) {
             this.setState({message: 'End date is before start date. Please try again.'});
         } else {
-            this.setState({isLoading: true});
+            this.setState({isLoading: true, message: '-'});
             console.log("holllerrrrrr", startDate, endDate, interval);
             this.retrieveData(startDate, endDate, interval);
         }
