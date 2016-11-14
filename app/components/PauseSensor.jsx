@@ -41,6 +41,8 @@ class PauseSensor extends React.Component {
 
         manageSensorAPI.pauseSensor(macAdd, !isPaused).then(function(response) {
 
+            console.log("status", response[0].success);
+
             if (response.error) {
                 that.setState({message: response.error});
             } else {

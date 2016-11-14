@@ -57,7 +57,7 @@ module.exports = {
             },
             url: PAUSE_SENSOR_URL,
             data: {
-                "MAC": macAddress,
+                mac_addresses: macAddress,
                 pause_status: isPaused
             },
             success: function(response) {

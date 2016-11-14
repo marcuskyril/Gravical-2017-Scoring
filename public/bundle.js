@@ -75975,7 +75975,8 @@
 	    "warning": "#ffcc00",
 	    "danger": "#cc7a00",
 	    "down": "#990000",
-	    "no data": "#737373"
+	    "no data": "#737373",
+	    "paused": "#1a1b1b"
 	};
 
 	var SensorDetails = function (_React$Component) {
@@ -76146,9 +76147,6 @@
 
 	            var location = building + ' ' + location;
 	            var amIAliveColor = amIAlive ? "green" : colorMap['down'];
-
-	            console.log("isLoading", isLoading);
-
 	            var dataColStatus = status === "down" ? "Data last collected at " : "Up since ";
 
 	            $('#uptime').removeClass('table-row-highlight');
@@ -77713,6 +77711,8 @@
 
 	            manageSensorAPI.pauseSensor(macAdd, !isPaused).then(function (response) {
 
+	                console.log("status", response[0].success);
+
 	                if (response.error) {
 	                    that.setState({ message: response.error });
 	                } else {
@@ -77935,7 +77935,7 @@
 	            },
 	            url: PAUSE_SENSOR_URL,
 	            data: {
-	                "MAC": macAddress,
+	                mac_addresses: macAddress,
 	                pause_status: isPaused
 	            },
 	            success: function success(response) {
