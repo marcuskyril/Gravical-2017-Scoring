@@ -77714,9 +77714,9 @@
 	                console.log("status", response[0].success);
 
 	                if (response.error) {
-	                    that.setState({ message: response.error });
+	                    that.setState({ message: response[0].error });
 	                } else {
-	                    that.setState({ message: response.success });
+	                    that.setState({ message: response[0].success });
 
 	                    var myCustomEvent = document.createEvent("Event");
 
