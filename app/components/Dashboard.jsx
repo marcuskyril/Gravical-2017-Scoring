@@ -35,6 +35,7 @@ class Dashboard extends React.Component {
             sensorHealthOverviewV2: [],
             currentTime: '-',
             userDisplayName: '',
+            userEmail: '',
             notificationData: {},
             filterParam: props.params.buildingName === undefined ? '' : props.params.buildingName
         }
@@ -46,11 +47,13 @@ class Dashboard extends React.Component {
         var that = this;
         var timestamp = '';
         var userDisplayName = '';
+        var userEmail = '';
 
         firebase.auth().onAuthStateChanged(function(user) {
             if (user) {
                 userDisplayName = user.displayName;
-                that.setState({userDisplayName: user.displayName});
+                userEmail = user.email;
+                that.setState({userDisplayName: userDisplayName, userEmail: userEmail});
             }
         }, function(error) {
             console.warn(error);
@@ -131,7 +134,7 @@ class Dashboard extends React.Component {
 
     render() {
 
-        var {userDisplayName} = this.state;
+        var {userDisplayName, userEmail} = this.state;
 
         return (
 
@@ -163,10 +166,10 @@ class Dashboard extends React.Component {
                                     Add Sensor / Server
                                 </button>
                                 <AddSensor type={this.state.type}/>
-                                <UnpinSensor userId={userDisplayName}/>
-                                <Terminal userId={userDisplayName}/>
-                                <PinSensor userId={userDisplayName}/>
-                                <EditSNMPSpeedTest userId={userDisplayName}/>
+                                <UnpinSensor userId={userDisplayName} userEmail={userEmail}/>
+                                <Terminal userId={userDisplayName} userEmail={userEmail}/>
+                                <PinSensor userId={userDisplayName} userEmail={userEmail}/>
+                                <EditSNMPSpeedTest userId={userDisplayName} userEmail={userEmail}/>
                             </div>
                             <div className="callout callout-dark">
                                 <SensorHealthOverview filter={this.state.filterParam} data={this.state.sensorHealthOverviewV2} serverData={this.state.serverOverview}/>

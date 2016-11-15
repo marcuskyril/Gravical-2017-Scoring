@@ -258,6 +258,26 @@ label {
     font-size: 1.2rem;
 }
 
+.settings-page-title {
+    color: $dark-grey;
+    font-family: 'Roboto', sans-serif;
+    font-weight: 700;
+    font-size: 1.4rem;
+}
+
+.settings-subheader {
+    font-weight: 200;
+    white-space: nowrap;
+}
+
+.settings-subheader-container {
+    padding-top: 1rem;
+}
+
+.settings-wrapper {
+    margin-left: 1.8rem
+}
+
 input[type=search] {
     box-shadow: none;
 }
@@ -435,12 +455,16 @@ table.sensor-details-table {
 
 .panel-grey {
     background-color: #e4e4e4;
-    padding-top: 1rem;
+    // padding-top: 1rem;
 }
 
 #emailPanel,
 #namePanel,
-#passwordPanel {
+#passwordPanel,
+#dailyReportTimePanel,
+#flappingDownsPanel,
+#considerationPeriodPanel,
+#emailRecipientPanel {
     display: none;
     padding: 1rem;
     background: #e4e4e4;
@@ -532,6 +556,10 @@ table.sensor-details-table tbody {
 table.sensor-details-table td:nth-child(2), table.sensor-details-table th:nth-child(2) {
     word-break: break-all;
     text-align: center;
+}
+
+table.actionLog tr>td:nth-child(2) {
+    font-weight: bold;
 }
 
 .table-container {

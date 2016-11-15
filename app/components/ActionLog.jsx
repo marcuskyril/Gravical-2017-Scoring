@@ -80,7 +80,7 @@ class ActionLog extends React.Component{
                                   showFilter={true}
                                   resultsPerPage={25}
                                   initialSort="timestamp"
-                                  tableClassName="actionlog"
+                                  tableClassName="actionLog"
                                   columns={["userId", "action", "timestamp"]}
                                   columnMetadata={tableMetaData}/>
                     </div>

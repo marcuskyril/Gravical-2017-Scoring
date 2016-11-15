@@ -128,7 +128,6 @@ class AddSensor extends React.Component {
 
                 var actionDesc = `Added ${inputMac} to ${inputBuilding} ${inputLocationLevel}${inputLocationID}`;
                 dispatch(actions.startAddToLog(userId, actionDesc));
-
             }
 
             that.refs.macAddress.value = '';

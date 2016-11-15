@@ -73,11 +73,17 @@ class HistoricalChart extends React.Component {
         var endDate = this.refs.endDate.value;
         var interval = parseInt(this.refs.interval.value);
 
+        var diff = (Date.parse(endDate) - Date.parse(startDate)) / 1000 / 3600 / 24;
+
         if (Date.parse(endDate) < Date.parse(startDate)) {
             this.setState({message: 'End date is before start date. Please try again.'});
+        } else if(endDate.length == 0 || startDate.length == 0) {
+            this.setState({message: 'Please ensure that the date fields are filled.'});
+        } else if(diff > 21) {
+            this.setState({message: 'Date window selected exceeds 21 days.'});
         } else {
-            this.setState({isLoading: true, message: '-'});
-            console.log("holllerrrrrr", startDate, endDate, interval);
+            this.setState({isLoading: true, message: ''});
+            // console.log("holllerrrrrr", startDate, endDate, interval);
             this.retrieveData(startDate, endDate, interval);
         }
     }
@@ -297,10 +303,10 @@ const SimpleLineChart = React.createClass({
                 <CartesianGrid strokeDasharray="3 3"/>
                 <Tooltip/>
                 <Legend/>
-                <Line connectNulls={true} dot={false} type="monotone" dataKey="network_up" stroke="#006600" activeDot={{
+                <Line connectNulls={true} dot={false} type="monotone" dataKey="network_up" stroke="#6DBDD6" activeDot={{
                     r: 2
                 }}/>
-                <Line connectNulls={true} dot={false} type="monotone" dataKey="network_down" stroke="#990000" activeDot={{
+            <Line connectNulls={true} dot={false} type="monotone" dataKey="network_down" stroke="#1a1b1b" activeDot={{
                     r: 2
                 }}/>
             </LineChart>

@@ -19,6 +19,7 @@ class SensorBlockComponent extends React.Component {
           "danger" : "sensorBlock orange",
           "down" : "sensorBlock red",
           "-" : "sensorBlock grey",
+          "paused" : "sensorBlock black"
         }
 
         return (
@@ -130,7 +131,15 @@ class WatchList extends React.Component {
 
         if($('#unpin-sensor-modal').css('display') === 'none') {
             $('#offCanvas').foundation('open', event);
-            document.getElementById("sensorDetailsIFrame").src = "./offCrepe.html?offCanMac=" + macAddress;
+
+            var tobascoSauce = document.createEvent("Event");
+
+            tobascoSauce.data = {
+                macAdd: macAddress
+            };
+
+            tobascoSauce.initEvent("tobascoSauce", true, true);
+            document.dispatchEvent(tobascoSauce);
         }
     }
 

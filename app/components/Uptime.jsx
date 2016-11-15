@@ -42,7 +42,6 @@ class Uptime extends React.Component {
 
   constructor(props) {
     super(props);
-    //console.log("work pls", props.params.buildingName);
 
     var d = new Date();
     d.setDate(d.getDate() - 6);
@@ -80,12 +79,20 @@ class Uptime extends React.Component {
     var endDate = this.refs.endDate.value;
     var interval = parseInt(this.refs.interval.value);
 
+    var diff = (Date.parse(endDate) - Date.parse(startDate)) / 1000 / 3600 / 24;
+    console.log("diff", diff);
+
     if(Date.parse(endDate) < Date.parse(startDate)) {
         this.setState({message: 'End date is before start date. Please try again.'});
+    } else if(endDate.length == 0 || startDate.length == 0) {
+        this.setState({message: 'Please ensure that the date fields are filled.'});
+    } else if(diff > 21) {
+        this.setState({message: 'Date window selected exceeds 21 days.'});
     } else {
         this.setState({
           data: "",
-          isLoading: true
+          isLoading: true,
+          message: ''
         });
 
         this.retrieveData(startDate, endDate, interval);
@@ -133,9 +140,9 @@ class Uptime extends React.Component {
       } else {
         return (
           <div>
-            <div className="margin-bottom-small" style={{display: 'flex'}}>
-                <div className="page-title">{buildingName}</div>
-                <button className="margin-left-small" onClick={that.minimizeAll}>
+            <div className="margin-bottom-small">
+                <div className="page-title">Uptime Charts: {buildingName}</div><br/>
+                <button onClick={that.minimizeAll}>
                     <FontAwesome name='expand' style={{
                         marginRight: '0.5rem'
                     }}/>

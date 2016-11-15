@@ -86,6 +86,7 @@ module.exports = {
       updateWatchList: 'app/api/updateWatchlistAPI.jsx',
       retrieveSensorDetails: 'app/api/retrieveSensorDetails.jsx',
       retrieveHistoricalDataAPI: 'app/api/retrieveHistoricalDataAPI.jsx',
+      settingsAPI: 'app/api/settingsAPI.jsx',
 
       applicationStyles: 'app/styles/app.scss',
       bigCalendarStyles: 'app/styles/big-calendar.scss',

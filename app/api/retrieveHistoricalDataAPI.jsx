@@ -6,8 +6,8 @@ module.exports = {
 
     retrieveHistoricalDataAlt: function(building, startDate, endDate, interval) {
 
-        console.log("startDate API", startDate);
-        console.log("endDate API", endDate);
+        // console.log("startDate API", startDate);
+        // console.log("endDate API", endDate);
 
         var data = {
             building: building,
@@ -24,7 +24,7 @@ module.exports = {
             url: RETRIEVE_HISTORICAL_DATA_ALT_URL,
             data: data,
             success: function(response) {
-                console.log("Sombrero", response);
+                // console.log("Sombrero", response);
             }
         });
     },
@@ -46,7 +46,7 @@ module.exports = {
             url: RETRIEVE_UPTIME_URL,
             data: data,
             success: function(response) {
-                console.log("Que pasar?", response);
+                // console.log("Que pasar?", response);
             }
         });
     },
@@ -72,7 +72,7 @@ module.exports = {
             url: RETRIEVE_HISTORICAL_DATA_URL,
             data: data,
             success: function(response) {
-                console.log("Que pasar?", response);
+                // console.log("Que pasar?", response);
             }
         });
     }
