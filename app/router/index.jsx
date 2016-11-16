@@ -3,7 +3,6 @@ import {Route, Router, IndexRoute, hashHistory} from 'react-router';
 var Main = require('Main');
 var Dashboard = require('Dashboard');
 import AccountSettings from 'AccountSettings';
-import DowntimeScheduler from 'DowntimeScheduler';
 import Uptime from 'Uptime';
 import HistoricalChart from 'HistoricalChart';
 import NotificationLog from 'NotificationLog';
@@ -32,7 +31,6 @@ export default(
     <Router history={hashHistory}>
       <Route path="/dashboard(/:buildingName)" component={Main} >
           <Route path="/accountSettings" component={AccountSettings} onEnter={requireLogin}/>
-          <Route path="/downtimeScheduler" component={DowntimeScheduler} onEnter={requireLogin}/>
           <Route path="/notificationLog" component={NotificationLog} onEnter={requireLogin}/>
           <Route path="/uptime(/:buildingName)" component={Uptime} onEnter={requireLogin}/>
           <Route path="/historical(/:macAddress)" component={HistoricalChart} onEnter={requireLogin}/>

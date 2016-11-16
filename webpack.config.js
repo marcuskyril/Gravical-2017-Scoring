@@ -46,7 +46,6 @@ module.exports = {
       Abnormal: 'app/components/Abnormal.jsx',
       AccountSettings: 'app/components/AccountSettings.jsx',
       ActionLog: 'app/components/ActionLog.jsx',
-      DowntimeScheduler: 'app/components/DowntimeScheduler.jsx',
       DowntimeManager: 'app/components/DowntimeManager.jsx',
       AddSensor: 'app/components/AddSensor.jsx',
       app: 'app',

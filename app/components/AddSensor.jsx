@@ -113,9 +113,7 @@ class AddSensor extends React.Component {
         var inputWarningDTPercentage = this.refs.warningDTPercentage.value;
         var inputWarningTemp = this.refs.warningTemp.value;
 
-        var userId = this.props.userId;
-
-        var {dispatch} = this.props;
+        var {dispatch, userId, userEmail} = this.props;
         var that = this;
 
         //===========================
@@ -143,7 +141,7 @@ class AddSensor extends React.Component {
                 document.dispatchEvent(myCustomEvent);
 
                 var actionDesc = `Added ${inputMac} to ${inputBuilding} ${inputLocationLevel}${inputLocationID}`;
-                dispatch(actions.startAddToLog(userId, actionDesc));
+                dispatch(actions.startAddToLog(userEmail, actionDesc));
 
                 that.refs.macAddress.value = '';
                 that.refs.port.value = '';
@@ -343,7 +341,6 @@ class AddSensor extends React.Component {
 class AddSensorMessage extends React.Component {
     render() {
         var message = this.props.message;
-        // console.log("message from parent: ", message);
 
         return (
             <div className="statusText">{message}</div>

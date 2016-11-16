@@ -23,11 +23,8 @@ class PinSensor extends React.Component {
     }
 
     onPinSensor() {
-        var {dispatch} = this.props;
+        var {dispatch, userId, userEmail} = this.props;
         var {macAdd} = this.state;
-        var userId = this.props.userId;
-
-        console.log("MacAdd", macAdd);
 
         var that = this;
 
@@ -50,7 +47,7 @@ class PinSensor extends React.Component {
 
                 // var actionDesc = `Added ${macAdd} to ${inputBuilding} ${inputLocationLevel}${inputLocationID}`;
                 var actionDesc = `Pinned ${macAdd} to the watch list`;
-                dispatch(actions.startAddToLog(userId, actionDesc));
+                dispatch(actions.startAddToLog(userEmail, actionDesc));
             }
         });
     }

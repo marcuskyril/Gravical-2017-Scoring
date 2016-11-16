@@ -82,11 +82,25 @@ class Dashboard extends React.Component {
             // refresh browser when connection is unavailable
             console.warn('WebSocket connection closed: all data unavailable');
 
-            // if(this.props && this.props.location.pathname === '/dashboard') {
-            //     alert("Connection closed, refreshing browser");
-            //     window.location.href = '/';
-            // }
+            if(this.state !== undefined) {
+                this.state.connection.subscribe('', function(topic, data) {
 
+                    console.warn('Reinitiating connection');
+
+                    timestamp = new Date().toLocaleString();
+                    dispatch(actions.storeSyncData(timestamp, userDisplayName));
+
+                    that.setState({
+                        connection: connection,
+                        overall: data.overall,
+                        sensorHealthOverviewV2: data.overview,
+                        bfg: data.BFG,
+                        currentTime: timestamp,
+                        notifications: data.notifications,
+                        serverOverview: data.serverOverview
+                    });
+                });
+            }
         }, {'skipSubprotocolCheck': true});
 
         // close dropdowns
@@ -166,7 +180,7 @@ class Dashboard extends React.Component {
                                     }}/>
                                     Add Sensor / Server
                                 </button>
-                                <AddSensor type={this.state.type}/>
+                                <AddSensor userId={userDisplayName} userEmail={userEmail} type={this.state.type}/>
                                 <DowntimeManager userId={userDisplayName} userEmail={userEmail}/>
                                 <UnpinSensor userId={userDisplayName} userEmail={userEmail}/>
                                 <Terminal userId={userDisplayName} userEmail={userEmail}/>

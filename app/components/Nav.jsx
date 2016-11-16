@@ -18,7 +18,6 @@ class Nav extends React.Component {
     }
 
     launchDowntimeManager() {
-        document.getElementById('terminalIFrame').src = HOST;
         $('#downtime-manager-modal').foundation('open');
     }
 

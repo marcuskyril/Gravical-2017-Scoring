@@ -67,8 +67,6 @@ class SensorDetails extends React.Component {
 
                     var response = JSON.parse(msg.data);
 
-                    console.log("response", response);
-
                     that.setState({
                         isLoading: false,
                         macAdd: macAdd,
@@ -359,7 +357,7 @@ class ButtonList extends React.Component {
     }
 
     render() {
-        var {status} = this.props;
+        var {status, building} = this.props;
 
         if(status === '-') {
             return (
@@ -368,7 +366,7 @@ class ButtonList extends React.Component {
         }
 
         var pauseMsg = status === "paused" ? "Unpause" : "Pause"
-        var historicalLink = `/historical/${this.props.macAdd}`;
+        var historicalLink = `/historical/${this.props.building}&${this.props.macAdd}`;
 
         return (
             <div>

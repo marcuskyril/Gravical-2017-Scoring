@@ -69,8 +69,7 @@ class EditSensor extends React.Component {
         var inputLocationID = this.refs.sensorLocationID.value;
         var inputBuilding = this.refs.building.value;
         var inputPort = this.refs.port.value;
-        var userId = this.props.userId;
-        var {dispatch} = this.props;
+        var {dispatch, userId, userEmail} = this.props;
 
         var that = this;
 
@@ -94,7 +93,7 @@ class EditSensor extends React.Component {
                 document.dispatchEvent(myCustomEvent);
 
                 var actionDesc = `Edited ${inputMac} from ${inputBuilding} ${inputLocationLevel}${inputLocationID}`;
-                dispatch(actions.startAddToLog(userId, actionDesc));
+                dispatch(actions.startAddToLog(userEmail, actionDesc));
             }
 
             that.refs.macAddress.value = '';

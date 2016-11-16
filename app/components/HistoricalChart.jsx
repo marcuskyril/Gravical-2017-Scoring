@@ -17,7 +17,8 @@ const {
     CartesianGrid,
     Tooltip,
     Brush,
-    ResponsiveContainer
+    ResponsiveContainer,
+    ReferenceLine
 } = Recharts;
 
 var colorMap = {
@@ -39,8 +40,11 @@ class HistoricalChart extends React.Component {
         var startDate = d.toISOString().substring(0, 10);
         var endDate = new Date().toISOString().substring(0, 10);
 
+        var arr = props.params.macAddress.split("&");
+
         this.state = {
-            macAdd: props.params.macAddress,
+            macAdd: arr[1],
+            buildingName: arr[0],
             data: {
                 cpu: null,
                 ram: null,
@@ -95,6 +99,8 @@ class HistoricalChart extends React.Component {
         var that = this;
 
         $.when(retrieveHistoricalDataAPI.retrieveHistoricalChart(macAdd, startDate, endDate, interval, "cpu"), retrieveHistoricalDataAPI.retrieveHistoricalChart(macAdd, startDate, endDate, interval, "ram"), retrieveHistoricalDataAPI.retrieveHistoricalChart(macAdd, startDate, endDate, interval, "storage"), retrieveHistoricalDataAPI.retrieveHistoricalChart(macAdd, startDate, endDate, interval, "network")).then(function(cpuData, ramData, storageData, networkData) {
+
+            console.log("cpuData", cpuData);
 
             that.setState({
                 data: {
@@ -163,7 +169,7 @@ class HistoricalChart extends React.Component {
                             <div className="margin-bottom-small" style={{
                                 display: 'flex'
                             }}>
-                                <div className="page-title">{macAdd}</div>
+                                <div className="page-title">{buildingName}:{macAdd}</div>
                                 <button className="margin-left-small" onClick={that.minimizeAll}>
                                     <FontAwesome name='expand' style={{
                                         marginRight: '0.5rem'
@@ -281,6 +287,7 @@ class SimpleAreaChart extends React.Component {
                 <YAxis/>
                 <CartesianGrid strokeDasharray="3 3"/>
                 <Tooltip/>
+                <ReferenceLine y={1} label="Max" stroke="red" strokeDasharray="3 3" />
                 <Area connectNulls={true} type='monotone' dataKey='value' stroke='#006600' fill='#009900'/>
             </AreaChart>
         );

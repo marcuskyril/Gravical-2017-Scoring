@@ -80,8 +80,7 @@ class DowntimeManager extends React.Component {
 
     onEditSettings(shouldPause) {
 
-        var userId = this.props.userId;
-        var {dispatch} = this.props;
+        var {userId, dispatch, userEmail} = this.props;
         var {selectedSensors, selectedBuilding} = this.state;
 
         var macAdds = [];
@@ -141,7 +140,7 @@ class DowntimeManager extends React.Component {
                 document.dispatchEvent(myCustomEvent);
 
                 var actionDesc = `${pauseTxt} ${macAdds_str} from ${selectedBuilding} at the following locations: ${locations_str}`;
-                dispatch(actions.startAddToLog(userId, actionDesc));
+                dispatch(actions.startAddToLog(userEmail, actionDesc));
             }
         });
     }

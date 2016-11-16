@@ -1,4 +1,5 @@
 import firebase, {firebaseRef} from 'app/firebase/';
+import moment from 'moment';
 var axios = require('axios');
 
 export var storeSyncData = (currentTime, userId) => {
@@ -29,7 +30,7 @@ export var startAddToLog = (userId, action) => {
         var logItem = {
             userId,
             action,
-            timestamp: new Date().toLocaleString()
+            timestamp: moment().format('YYYY-MM-DD')
         };
 
         var logRef = firebaseRef.child('log').push(logItem);
