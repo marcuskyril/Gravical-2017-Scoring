@@ -1,5 +1,5 @@
-const DOWNTIME_URL = "http://opsdev.sence.io/backend/get-sensors-in-building.php";
-const BUILDING_ENUMS = "http://opsdev.sence.io/backend/get-buildings.php";
+const DOWNTIME_URL = "http://opsdev.sence.io/backend/restful-apis/get-sensors-in-building.php";
+const BUILDING_ENUMS = "http://opsdev.sence.io/backend/restful-apis/get-buildings.php";
 
 module.exports = {
 

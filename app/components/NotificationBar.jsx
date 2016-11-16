@@ -32,14 +32,15 @@ class NotificationBar extends React.Component {
         //   const newCount = count + 1;
 
         var msgArr = {
-            'addSensor': `Un momento por favor, adding ${data.macAdd} to ${data.building} ${data.location}`,
-            'editSensor': `Un momento por favor, editing ${data.macAdd} at ${data.building} ${data.location}`,
-            'pauseSensor': `Un momento por favor, ${data.pauseStatus} ${data.macAdd} at ${data.building} ${data.location}`,
-            'pinSensor': `Un momento por favor, adding ${data.macAdd} to the Watch List`,
-            'unpinSensor': `Un momento por favor, removing ${data.macAdd} from the Watch List`,
-            'deleteSensor': `Un momento por favor, deleting ${data.macAdd}`,
-            'rebootSensor': `Un momento por favor, rebooting ${data.macAdd}`,
-            'editSNMPSpeedTest': `Un momento por favor, editing SNMP Speed Test ${data.macAdd}`
+            'addSensor': `Uno momento por favor, adding ${data.macAdd} to ${data.building} ${data.location}`,
+            'editSensor': `Uno momento por favor, editing ${data.macAdd} at ${data.building} ${data.location}`,
+            'pauseSensor': `Uno momento por favor, ${data.pauseStatus} ${data.macAdd} at ${data.building} ${data.location}`,
+            'pinSensor': `Uno momento por favor, adding ${data.macAdd} to the Watch List`,
+            'unpinSensor': `Uno momento por favor, removing ${data.macAdd} from the Watch List`,
+            'deleteSensor': `Uno momento por favor, deleting ${data.macAdd}`,
+            'rebootSensor': `Uno momento por favor, rebooting ${data.macAdd}`,
+            'editSNMPSpeedTest': `Uno momento por favor, editing SNMP Speed Test ${data.macAdd}`,
+            'downtimeManager': `Uno momento por favor, (un)pausing the following sensors: ${data.location}`
         }
 
         return this.setState({

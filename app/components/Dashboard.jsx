@@ -13,6 +13,7 @@ var DeleteSensor = require('DeleteSensor');
 var UnpinSensor = require('UnpinSensor');
 var RebootSensor = require('RebootSensor');
 var EditSNMPSpeedTest = require('EditSNMPSpeedTest');
+var DowntimeManager = require('DowntimeManager');
 var PinSensor = require('PinSensor');
 var Terminal = require('Terminal');
 import * as Redux from 'react-redux';
@@ -166,6 +167,7 @@ class Dashboard extends React.Component {
                                     Add Sensor / Server
                                 </button>
                                 <AddSensor type={this.state.type}/>
+                                <DowntimeManager userId={userDisplayName} userEmail={userEmail}/>
                                 <UnpinSensor userId={userDisplayName} userEmail={userEmail}/>
                                 <Terminal userId={userDisplayName} userEmail={userEmail}/>
                                 <PinSensor userId={userDisplayName} userEmail={userEmail}/>

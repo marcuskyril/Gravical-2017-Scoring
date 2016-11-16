@@ -1,7 +1,6 @@
 var React = require('react');
 var Griddle = require('griddle-react');
 var retrieveSensorDetails = require('retrieveSensorDetails');
-var updateWatchList = require('updateWatchList');
 var ReactDOM = require('react-dom');
 import * as Redux from 'react-redux';
 import * as actions from 'actions';

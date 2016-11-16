@@ -1,5 +1,5 @@
 var React = require('react');
-var rebootSensorAPI = require('rebootSensorAPI');
+var manageSensorAPI = require('manageSensorAPI');
 import * as Redux from 'react-redux';
 import * as actions from 'actions';
 var {connect} = require('react-redux');
@@ -34,7 +34,7 @@ class RebootSensor extends React.Component {
 
     var that = this;
 
-    rebootSensorAPI.rebootSensor(macAdd, username, password).then(function(response){
+    manageSensorAPI.rebootSensor(macAdd, username, password).then(function(response){
 
       if(response.error) {
         that.setState({

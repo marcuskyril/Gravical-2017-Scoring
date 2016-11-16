@@ -1,5 +1,5 @@
 var React = require('react');
-var deleteSensorAPI = require('deleteSensorAPI');
+var manageSensorAPI = require('manageSensorAPI');
 import * as Redux from 'react-redux';
 import * as actions from 'actions';
 var {connect} = require('react-redux');
@@ -35,9 +35,7 @@ class DeleteSensor extends React.Component {
         var {dispatch, userId} = this.props;
         var that = this;
 
-        // console.log("To be deleted: ", macAdd);
-
-        deleteSensorAPI.deleteSensor(macAdd).then(function(response) {
+        manageSensorAPI.deleteSensor(macAdd).then(function(response) {
 
             if (response.error) {
                 that.setState({message: response.error});

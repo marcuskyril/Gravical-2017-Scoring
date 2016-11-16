@@ -1,6 +1,5 @@
 var React = require('react');
-var updateWatchList = require('updateWatchList');
-var unpinMac = "";
+var manageSensorAPI = require('manageSensorAPI');
 import * as Redux from 'react-redux';
 import * as actions from 'actions';
 import {connect} from 'react-redux';
@@ -21,7 +20,7 @@ class UnpinSensor extends React.Component {
     var macAdd = this.props.pin_mac.pin_mac;
     var that = this;
 
-    updateWatchList.updateWatchList(macAdd, false).then(function (response) {
+    manageSensorAPI.updateWatchList(macAdd, false).then(function (response) {
 
         if (response.error) {
             that.setState({message: response.error});

@@ -1,5 +1,5 @@
 var React = require('react');
-var editSensorAPI = require('editSensorAPI');
+var manageSensorAPI = require('manageSensorAPI');
 import * as Redux from 'react-redux';
 import * as actions from 'actions';
 var {connect} = require('react-redux');
@@ -35,7 +35,7 @@ class EditSensor extends React.Component {
         var that = this;
 
         $('#edit-sensor-modal').on('closed.zf.reveal', function() {
-            that.setState({hasReceivedProps: false});
+            that.setState({hasReceivedProps: false, message: ''});
         });
     }
 
@@ -74,7 +74,7 @@ class EditSensor extends React.Component {
 
         var that = this;
 
-        editSensorAPI.editSensor(inputMac, inputRegion, inputLocationLevel, inputLocationID, inputBuilding, inputPort).then(function(response) {
+        manageSensorAPI.editSensor(inputMac, inputRegion, inputLocationLevel, inputLocationID, inputBuilding, inputPort).then(function(response) {
 
             if (response.error) {
                 that.setState({message: response.error});
@@ -111,10 +111,6 @@ class EditSensor extends React.Component {
         var message = this.state.message;
         var {message, macAdd, building, level, areaID, port, region} = this.state;
         var that = this;
-
-        $('#edit-sensor-modal').on('closed.zf.reveal', function() {
-            that.setState({message: ''});
-        });
 
         return (
             <div id="edit-sensor-modal" className="reveal medium" data-reveal="">

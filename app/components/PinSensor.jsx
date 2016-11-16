@@ -1,5 +1,5 @@
 var React = require('react');
-var updateWatchList = require('updateWatchList');
+var manageSensorAPI = require('manageSensorAPI');
 import * as Redux from 'react-redux';
 import * as actions from 'actions';
 import {connect} from 'react-redux';
@@ -31,7 +31,7 @@ class PinSensor extends React.Component {
 
         var that = this;
 
-        updateWatchList.updateWatchList(macAdd, true).then(function(response) {
+        manageSensorAPI.updateWatchList(macAdd, true).then(function(response) {
 
             if (response.error) {
                 that.setState({message: response.error});

@@ -1,6 +1,6 @@
 var axios = require('axios');
 
-const NOTIFICATIONS_LOG_URL = 'http://119.81.104.46/backend/get_notifications_log.php';
+const NOTIFICATIONS_LOG_URL = 'http://119.81.104.46/backend/restful-apis/get_notifications_log.php';
 
 module.exports = {
 

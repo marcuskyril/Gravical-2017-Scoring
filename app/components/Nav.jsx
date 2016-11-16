@@ -17,10 +17,14 @@ class Nav extends React.Component {
         $('#terminal').foundation('open');
     }
 
+    launchDowntimeManager() {
+        document.getElementById('terminalIFrame').src = HOST;
+        $('#downtime-manager-modal').foundation('open');
+    }
+
     onLogout() {
         console.log("attempting logout");
-        // var {dispatch} = this.props;
-        // dispatch(actions.startLogout());
+
         firebase.auth().signOut().then(() => {
             console.log('Logged out!');
         });
@@ -72,10 +76,8 @@ class Nav extends React.Component {
                                     }}>Account Settings</Link>
                                 </li>
                                 <li>
-                                    <Link to="/downtimeScheduler" activeClassName="active" activeStyle={{
-                                        color: '#222`'
-                                    }}>Downtime Scheduler</Link>
-                                </li>
+                                    <a onClick={this.launchDowntimeManager}>Downtime Manager</a>
+                            </li>
                                 <li>
                                     <a onClick={this.onLogout}>Log Out</a>
                                 </li>

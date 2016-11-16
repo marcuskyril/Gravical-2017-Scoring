@@ -1,5 +1,5 @@
-const CURRENT_SETTINGS_URL = "http://opsdev.sence.io/backend/get_universal_settings.php";
-const MODIFY_SETTINGS_URL = "http://opsdev.sence.io/backend/change_universal_settings.php";
+const CURRENT_SETTINGS_URL = "http://opsdev.sence.io/backend/restful-apis/get_universal_settings.php";
+const MODIFY_SETTINGS_URL = "http://opsdev.sence.io/backend/restful-apis/change_universal_settings.php";
 
 module.exports = {
 

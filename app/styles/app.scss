@@ -310,7 +310,7 @@ table.sensor-details-table {
     color: red;
     margin-bottom: 1rem;
     text-transform: uppercase;
-    font-size: 1em;
+    font-size: 0.85em;
 }
 
 .notificationHeader {
@@ -579,4 +579,20 @@ table.actionLog tr>td:nth-child(2) {
 
 #top-bar-pin:hover, #top-bar-delete:hover, #top-bar-edit:hover {
     color: $header-color;
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+    /* display: none; <- Crashes Chrome on hover */
+    -webkit-appearance: none;
+    margin: 0; /* <— Apparently some margin are still there even though it's hidden */
+}
+
+.tabs {
+  border: none;
+}
+
+.addEditSensor {
+  //border-left: 2px solid #e4e4e4;
+  border: none;
 }

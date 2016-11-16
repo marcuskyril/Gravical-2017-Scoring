@@ -1,4 +1,4 @@
-const REBOOT_SENSOR_URL = "http://119.81.104.46/backend/initialize_reboot_sequence.php";
+const REBOOT_SENSOR_URL = "http://119.81.104.46/backend/restful-apis/initialize_reboot_sequence.php";
 
 var colorMap = {
   "ok" : "#006600",
@@ -281,7 +281,7 @@ function quit() {
 
 function deleteSensor(macAddress) {
 
-    const DELETE_SENSOR_URL = "http://119.81.104.46/backend/delete-sensor.php";
+    const DELETE_SENSOR_URL = "http://119.81.104.46/backend/restful-apis/delete-sensor.php";
 
     var data = {
         "MAC": macAddress
@@ -314,7 +314,7 @@ $(document).on('closed.zf.reveal', function() {
 });
 
 function pinToWatchList(macAddress, pin) {
-    const PIN_TO_WATCHLIST_URL = "http://119.81.104.46/backend/sensor-watchlist-pin.php";
+    const PIN_TO_WATCHLIST_URL = "http://119.81.104.46/backend/restful-apis/sensor-watchlist-pin.php";
 
     var data = {
         "MAC": macAddress,
