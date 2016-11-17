@@ -58,7 +58,7 @@ class ActionLog extends React.Component{
 
         for (var id in logs) {
 
-            console.log("userId", logs[id]['userId']);
+            // console.log("userId", logs[id]['userId']);
 
             var row = {
                 userId: logs[id]['userId'],
@@ -93,7 +93,7 @@ class ActionLog extends React.Component{
 
 function mapStateToProps(state, ownProps) {
 
-    console.log("state", state);
+    // console.log("state", state);
 
     return {
         sensorData: state.activeSensor,

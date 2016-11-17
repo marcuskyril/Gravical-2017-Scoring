@@ -366,7 +366,8 @@ class ButtonList extends React.Component {
         }
 
         var pauseMsg = status === "paused" ? "Unpause" : "Pause"
-        var historicalLink = `/historical/${this.props.building}&${this.props.macAdd}`;
+        var historicalLink = `/historical/${this.props.macAdd}`;
+        // var historicalLink = `/historical/${this.props.building}+${this.props.macAdd}`;
 
         return (
             <div>

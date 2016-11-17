@@ -40,11 +40,11 @@ class HistoricalChart extends React.Component {
         var startDate = d.toISOString().substring(0, 10);
         var endDate = new Date().toISOString().substring(0, 10);
 
-        var arr = props.params.macAddress.split("&");
-
+        // var arr = props.params.macAddress.split("+");
+        
         this.state = {
-            macAdd: arr[1],
-            buildingName: arr[0],
+            macAdd: props.params.macAddress,
+            buildingName: 'arr[0]',
             data: {
                 cpu: null,
                 ram: null,

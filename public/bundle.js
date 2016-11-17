@@ -115,6 +115,10 @@
 
 	var _router2 = _interopRequireDefault(_router);
 
+	var _moment = __webpack_require__(855);
+
+	var _moment2 = _interopRequireDefault(_moment);
+
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	var React = __webpack_require__(14);
@@ -134,7 +138,7 @@
 
 	_firebase2.default.auth().onAuthStateChanged(function (user) {
 	  if (user) {
-	    console.log("Successfully logged in");
+	    console.log(user.email + ' has successfully logged in at: ' + (0, _moment2.default)().format('YYYY-MM-DD, h:mm:ss a'));
 	    store.dispatch(actions.login(user.uid));
 	    hashHistory.push('/dashboard');
 	  } else {
@@ -63345,9 +63349,9 @@
 
 	/* WEBPACK VAR INJECTION */(function($) {'use strict';
 
-	var RETRIEVE_UPTIME_URL = 'http://119.81.104.46/backend/restful-apis/get_uptime_chart.php';
-	var RETRIEVE_HISTORICAL_DATA_URL = 'http://119.81.104.46/backend/restful-apis/get_historical_chart.php';
-	var RETRIEVE_HISTORICAL_DATA_ALT_URL = 'http://119.81.104.46/backend/restful-apis/get_uptime_chart_alt.php';
+	var RETRIEVE_UPTIME_URL = 'http://opsdev.sence.io/backend/restful-apis/get_uptime_chart.php';
+	var RETRIEVE_HISTORICAL_DATA_URL = 'http://opsdev.sence.io/backend/restful-apis/get_historical_chart.php';
+	var RETRIEVE_HISTORICAL_DATA_ALT_URL = 'http://opsdev.sence.io/backend/restful-apis/get_uptime_chart_alt.php';
 
 	module.exports = {
 
@@ -63371,7 +63375,7 @@
 	            url: RETRIEVE_HISTORICAL_DATA_ALT_URL,
 	            data: data,
 	            success: function success(response) {
-	                // console.log("Sombrero", response);
+	                console.log("Sombrero", response);
 	            }
 	        });
 	    },
@@ -63393,7 +63397,7 @@
 	            url: RETRIEVE_UPTIME_URL,
 	            data: data,
 	            success: function success(response) {
-	                // console.log("Que pasar?", response);
+	                console.log("Que pasar?", response);
 	            }
 	        });
 	    },
@@ -63419,7 +63423,7 @@
 	            url: RETRIEVE_HISTORICAL_DATA_URL,
 	            data: data,
 	            success: function success(response) {
-	                // console.log("Que pasar?", response);
+	                console.log("Que pasar?", response);
 	            }
 	        });
 	    }
@@ -63484,11 +63488,11 @@
 	        var startDate = d.toISOString().substring(0, 10);
 	        var endDate = new Date().toISOString().substring(0, 10);
 
-	        var arr = props.params.macAddress.split("&");
+	        // var arr = props.params.macAddress.split("+");
 
 	        _this.state = {
-	            macAdd: arr[1],
-	            buildingName: arr[0],
+	            macAdd: props.params.macAddress,
+	            buildingName: 'arr[0]',
 	            data: {
 	                cpu: null,
 	                ram: null,
@@ -73276,7 +73280,7 @@
 
 	            for (var id in logs) {
 
-	                console.log("userId", logs[id]['userId']);
+	                // console.log("userId", logs[id]['userId']);
 
 	                var row = {
 	                    userId: logs[id]['userId'],
@@ -73325,7 +73329,7 @@
 
 	function mapStateToProps(state, ownProps) {
 
-	    console.log("state", state);
+	    // console.log("state", state);
 
 	    return {
 	        sensorData: state.activeSensor,
@@ -73946,7 +73950,8 @@
 	            }
 
 	            var pauseMsg = status === "paused" ? "Unpause" : "Pause";
-	            var historicalLink = '/historical/' + this.props.building + '&' + this.props.macAdd;
+	            var historicalLink = '/historical/' + this.props.macAdd;
+	            // var historicalLink = `/historical/${this.props.building}+${this.props.macAdd}`;
 
 	            return React.createElement(
 	                'div',

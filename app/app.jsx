@@ -4,12 +4,13 @@ var {Provider} = require('react-redux');
 var {hashHistory, browserHistory} = require('react-router');
 import firebase from 'app/firebase/';
 import router from 'app/router';
+import moment from 'moment';
 var actions = require('actions');
 var store = require('configureStore').configure();
 
 firebase.auth().onAuthStateChanged((user) => {
   if (user) {
-    console.log("Successfully logged in");
+    console.log(`${user.email} has successfully logged in at: ${moment().format('YYYY-MM-DD, h:mm:ss a')}`);
     store.dispatch(actions.login(user.uid));
     hashHistory.push('/dashboard');
   } else {
