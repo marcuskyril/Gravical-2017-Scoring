@@ -63357,9 +63357,6 @@
 
 	    retrieveHistoricalDataAlt: function retrieveHistoricalDataAlt(building, startDate, endDate, interval) {
 
-	        // console.log("startDate API", startDate);
-	        // console.log("endDate API", endDate);
-
 	        var data = {
 	            building: building,
 	            start_date: startDate,
@@ -63382,6 +63379,11 @@
 
 	    retrieveHistoricalData: function retrieveHistoricalData(buildingName, startDate, endDate, interval) {
 
+	        console.log("buildingName", buildingName);
+	        console.log("startDate", startDate);
+	        console.log("endDate", endDate);
+	        console.log("interval", interval);
+
 	        var data = {
 	            building: buildingName,
 	            'start_date': startDate,
@@ -63391,8 +63393,8 @@
 
 	        return $.ajax({
 	            type: "POST",
-	            beforeSend: function beforeSend(request) {
-	                request.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+	            headers: {
+	                "Content-Type": "application/x-www-form-urlencoded"
 	            },
 	            url: RETRIEVE_UPTIME_URL,
 	            data: data,
@@ -63404,8 +63406,8 @@
 
 	    retrieveHistoricalChart: function retrieveHistoricalChart(mac, startDate, endDate, interval, metric) {
 
-	        // console.log("macAdd", macAdd);
-	        // console.log("metric", metric);
+	        console.log("macAdd", macAdd);
+	        console.log("metric", metric);
 
 	        var data = {
 	            mac: mac,
@@ -73542,6 +73544,8 @@
 
 	                        var response = JSON.parse(msg.data);
 
+	                        console.log("response", response);
+
 	                        that.setState({
 	                            isLoading: false,
 	                            macAdd: macAdd,
@@ -73550,7 +73554,8 @@
 	                            region: response["geo_region"],
 	                            level: response["sensor_location_level"],
 	                            areaID: response["sensor_location_id"],
-	                            location: '' + response["sensor_location_level"] + response["sensor_location_id"]
+	                            location: '' + response["sensor_location_level"] + response["sensor_location_id"],
+	                            thresholds: response["thresholds"]
 	                        });
 
 	                        if (response.error !== "no data") {
@@ -73575,7 +73580,7 @@
 	                                diagnosis: response["diagnosis"],
 	                                stats: {
 	                                    uptime: response["uptime_percentage"] + '%',
-	                                    temperature: response["temperature"] + ' C',
+	                                    temperature: response["temperature"] + 'C',
 	                                    cpu: response["cpu"] + '%',
 	                                    storage: response["storage"] + '%',
 	                                    ram: response["ram"] + '%',
@@ -73638,6 +73643,9 @@
 	    }, {
 	        key: 'render',
 	        value: function render() {
+
+	            console.log("sensordetails state", this.state);
+
 	            var _state = this.state;
 	            var macAdd = _state.macAdd;
 	            var building = _state.building;
@@ -73651,6 +73659,7 @@
 	            var diagnosis = _state.diagnosis;
 	            var stats = _state.stats;
 	            var top5 = _state.top5;
+	            var thresholds = _state.thresholds;
 	            var _props = this.props;
 	            var userId = _props.userId;
 	            var dispatch = _props.dispatch;
@@ -73796,7 +73805,7 @@
 	                            React.createElement(
 	                                'th',
 	                                null,
-	                                '%'
+	                                'Value'
 	                            )
 	                        )
 	                    ),
@@ -73940,9 +73949,7 @@
 	    }, {
 	        key: 'render',
 	        value: function render() {
-	            var _props3 = this.props;
-	            var status = _props3.status;
-	            var building = _props3.building;
+	            var status = this.props.status;
 
 
 	            if (status === '-') {
@@ -73951,7 +73958,6 @@
 
 	            var pauseMsg = status === "paused" ? "Unpause" : "Pause";
 	            var historicalLink = '/historical/' + this.props.macAdd;
-	            // var historicalLink = `/historical/${this.props.building}+${this.props.macAdd}`;
 
 	            return React.createElement(
 	                'div',
@@ -74014,12 +74020,12 @@
 	    }, {
 	        key: 'render',
 	        value: function render() {
-	            var _props4 = this.props;
-	            var dispatch = _props4.dispatch;
-	            var userId = _props4.userId;
-	            var macAdd = _props4.macAdd;
-	            var location = _props4.location;
-	            var building = _props4.building;
+	            var _props3 = this.props;
+	            var dispatch = _props3.dispatch;
+	            var userId = _props3.userId;
+	            var macAdd = _props3.macAdd;
+	            var location = _props3.location;
+	            var building = _props3.building;
 
 
 	            return React.createElement(
@@ -74373,6 +74379,17 @@
 	    },
 
 	    editSensor: function editSensor(inputMac, inputRegion, inputLocationLevel, inputLocationID, inputBuilding, inputPort) {
+	        var inputDangerDisk = arguments.length <= 6 || arguments[6] === undefined ? '' : arguments[6];
+	        var inputDangerCPU = arguments.length <= 7 || arguments[7] === undefined ? '' : arguments[7];
+	        var inputDangerRAM = arguments.length <= 8 || arguments[8] === undefined ? '' : arguments[8];
+	        var inputDangerDTPercentage = arguments.length <= 9 || arguments[9] === undefined ? '' : arguments[9];
+	        var inputDangerTemp = arguments.length <= 10 || arguments[10] === undefined ? '' : arguments[10];
+	        var inputWarningDisk = arguments.length <= 11 || arguments[11] === undefined ? '' : arguments[11];
+	        var inputWarningCPU = arguments.length <= 12 || arguments[12] === undefined ? '' : arguments[12];
+	        var inputWarningRAM = arguments.length <= 13 || arguments[13] === undefined ? '' : arguments[13];
+	        var inputWarningDTPercentage = arguments.length <= 14 || arguments[14] === undefined ? '' : arguments[14];
+	        var inputWarningTemp = arguments.length <= 15 || arguments[15] === undefined ? '' : arguments[15];
+
 
 	        var data = {
 	            MAC: inputMac,
@@ -74382,6 +74399,38 @@
 	            "building": inputBuilding,
 	            "port": inputPort
 	        };
+
+	        if (inputDangerDisk != '') {
+	            data["dangerDisk"] = inputDangerDisk;
+	        }
+	        if (inputDangerCPU != '') {
+	            data["dangerCPU"] = inputDangerCPU;
+	        }
+	        if (inputDangerRAM != '') {
+	            data["dangerRAM"] = inputDangerRAM;
+	        }
+	        if (inputDangerDTPercentage != '') {
+	            data["dangerDTPercentage"] = inputDangerDTPercentage;
+	        }
+	        if (inputDangerTemp != '') {
+	            data["dangerTemp"] = inputDangerTemp;
+	        }
+
+	        if (inputWarningDisk != '') {
+	            data["warningDisk"] = inputWarningDisk;
+	        }
+	        if (inputWarningCPU != '') {
+	            data["warningCPU"] = inputWarningCPU;
+	        }
+	        if (inputWarningRAM != '') {
+	            data["warningRAM"] = inputWarningRAM;
+	        }
+	        if (inputWarningDTPercentage != '') {
+	            data["warningDTPercentage"] = inputWarningDTPercentage;
+	        }
+	        if (inputWarningTemp != '') {
+	            data["warningTemp"] = inputWarningTemp;
+	        }
 
 	        console.log("edit data", data);
 
@@ -74394,9 +74443,6 @@
 	            data: data,
 	            success: function success(response) {
 	                console.log("Que pasar?", response);
-	                // if(response.status != 200) {
-	                //   throw new Error(response.error);
-	                // }
 	            }
 	        });
 	    },
@@ -74701,6 +74747,25 @@
 
 	var connect = _require.connect;
 
+
+	var DEFAULT_VAL = {
+	    danger: {
+	        diskUsage: 0.9,
+	        cpuUsage: 60,
+	        ramUsage: 0.6,
+	        downtimePercentage: 0.6,
+	        temperature: 65
+	    },
+
+	    warning: {
+	        diskUsage: 0.6,
+	        cpuUsage: 40,
+	        ramUsage: 0.4,
+	        downtimePercentage: 0.4,
+	        temperature: 60
+	    }
+	};
+
 	var EditSensor = function (_React$Component) {
 	    _inherits(EditSensor, _React$Component);
 
@@ -74717,6 +74782,16 @@
 	            building: '',
 	            level: '',
 	            areaID: '',
+	            warningCpuUsage: '',
+	            dangerCpuUsage: '',
+	            warningRamUsage: '',
+	            dangerRamUsage: '',
+	            warningDowntimePercentage: '',
+	            dangerDowntimePercentage: '',
+	            warningRiskUsage: '',
+	            dangerRiskUsage: '',
+	            warningTemperature: '',
+	            dangerTemperature: '',
 	            hasReceivedProps: false
 	        };
 
@@ -74727,7 +74802,8 @@
 	    _createClass(EditSensor, [{
 	        key: 'handleChange',
 	        value: function handleChange(event) {
-
+	            // console.log("event name", event.target.name);
+	            // console.log("event value", event.target.value);
 	            this.setState(_defineProperty({}, event.target.name, event.target.value));
 	        }
 	    }, {
@@ -74737,7 +74813,10 @@
 	            var that = this;
 
 	            $('#edit-sensor-modal').on('closed.zf.reveal', function () {
-	                that.setState({ hasReceivedProps: false, message: '' });
+	                that.setState({
+	                    hasReceivedProps: false,
+	                    message: ''
+	                });
 	            });
 	        }
 	    }, {
@@ -74758,13 +74837,39 @@
 	                        areaID: props.areaID,
 	                        hasReceivedProps: true
 	                    });
+
+	                    if (props.thresholds) {
+	                        this.setState({
+	                            warningCpuUsage: props.thresholds.warning.cpu_usage,
+	                            dangerCpuUsage: props.thresholds.danger.cpu_usage,
+	                            warningRamUsage: props.thresholds.warning.ram_usage,
+	                            dangerRamUsage: props.thresholds.danger.ram_usage,
+	                            warningDowntimePercentage: props.thresholds.warning.downtime_percentage,
+	                            dangerDowntimePercentage: props.thresholds.danger.downtime_percentage,
+	                            warningRiskUsage: props.thresholds.warning.disk_usage,
+	                            dangerRiskUsage: props.thresholds.danger.disk_usage,
+	                            warningTemperature: props.thresholds.warning.temperature,
+	                            dangerTemperature: props.thresholds.danger.temperature
+	                        });
+	                    }
 	                }
+	            }
+	        }
+	    }, {
+	        key: 'updateRegion',
+	        value: function updateRegion() {
+
+	            var that = this;
+
+	            if ($('#isServer').prop('checked')) {
+	                that.refs.region.value = 'virtual';
+	            } else {
+	                that.refs.region.value = '';
 	            }
 	        }
 	    }, {
 	        key: 'onEditSensor',
 	        value: function onEditSensor(e) {
-
 	            e.preventDefault();
 
 	            var inputMac = this.refs.macAddress.value;
@@ -74773,15 +74878,25 @@
 	            var inputLocationID = this.refs.sensorLocationID.value;
 	            var inputBuilding = this.refs.building.value;
 	            var inputPort = this.refs.port.value;
-	            var _props = this.props;
-	            var dispatch = _props.dispatch;
-	            var userId = _props.userId;
-	            var userEmail = _props.userEmail;
+	            // var isServer = this.refs.isServer.value;
+	            var inputDangerDisk = this.refs.dangerDisk.value;
+	            var inputDangerCPU = this.refs.dangerCPU.value;
+	            var inputDangerRAM = this.refs.dangerRAM.value;
+	            var inputDangerDTPercentage = this.refs.dangerDTPercentage.value;
+	            var inputDangerTemp = this.refs.dangerTemp.value;
+	            var inputWarningDisk = this.refs.warningDisk.value;
+	            var inputWarningCPU = this.refs.warningCPU.value;
+	            var inputWarningRAM = this.refs.warningRAM.value;
+	            var inputWarningDTPercentage = this.refs.warningDTPercentage.value;
+	            var inputWarningTemp = this.refs.warningTemp.value;
 
+	            var userId = this.props.userId;
+
+	            var dispatch = this.props.dispatch;
 
 	            var that = this;
 
-	            manageSensorAPI.editSensor(inputMac, inputRegion, inputLocationLevel, inputLocationID, inputBuilding, inputPort).then(function (response) {
+	            manageSensorAPI.editSensor(inputMac, inputRegion, inputLocationLevel, inputLocationID, inputBuilding, inputPort, inputDangerDisk, inputDangerCPU, inputDangerRAM, inputDangerDTPercentage, inputDangerTemp, inputWarningDisk, inputWarningCPU, inputWarningRAM, inputWarningDTPercentage, inputWarningTemp).then(function (response) {
 
 	                if (response.error) {
 	                    that.setState({ message: response.error });
@@ -74801,21 +74916,16 @@
 	                    document.dispatchEvent(myCustomEvent);
 
 	                    var actionDesc = 'Edited ' + inputMac + ' from ' + inputBuilding + ' ' + inputLocationLevel + inputLocationID;
-	                    dispatch(actions.startAddToLog(userEmail, actionDesc));
+	                    dispatch(actions.startAddToLog(userId, actionDesc));
 	                }
-
-	                that.refs.macAddress.value = '';
-	                that.refs.port.value = '';
-	                that.refs.region.value = '';
-	                that.refs.sensorLocationLevel.value = '';
-	                that.refs.sensorLocationID.value = '';
-	                that.refs.building.value = '';
-	                that.refs.port.value = '';
 	            });
 	        }
 	    }, {
 	        key: 'render',
 	        value: function render() {
+
+	            // console.log("incoming!", this.state);
+
 	            var message = this.state.message;
 	            var _state = this.state;
 	            var message = _state.message;
@@ -74825,119 +74935,393 @@
 	            var areaID = _state.areaID;
 	            var port = _state.port;
 	            var region = _state.region;
+	            var warningCpuUsage = _state.warningCpuUsage;
+	            var dangerCpuUsage = _state.dangerCpuUsage;
+	            var warningRamUsage = _state.warningRamUsage;
+	            var dangerRamUsage = _state.dangerRamUsage;
+	            var warningDowntimePercentage = _state.warningDowntimePercentage;
+	            var dangerDowntimePercentage = _state.dangerDowntimePercentage;
+	            var warningRiskUsage = _state.warningRiskUsage;
+	            var dangerRiskUsage = _state.dangerRiskUsage;
+	            var warningTemperature = _state.warningTemperature;
+	            var dangerTemperature = _state.dangerTemperature;
 
 	            var that = this;
 
+	            warningCpuUsage = warningCpuUsage !== '' ? warningCpuUsage : DEFAULT_VAL.warning['cpuUsage'];
+	            dangerCpuUsage = dangerCpuUsage !== '' ? dangerCpuUsage : DEFAULT_VAL.danger['cpuUsage'];
+	            warningRamUsage = warningRamUsage !== '' ? warningRamUsage : DEFAULT_VAL.warning['ramUsage'];
+	            dangerRamUsage = dangerRamUsage !== '' ? dangerRamUsage : DEFAULT_VAL.danger['ramUsage'];
+	            warningDowntimePercentage = warningDowntimePercentage !== '' ? warningDowntimePercentage : DEFAULT_VAL.warning['downtimePercentage'];
+	            dangerDowntimePercentage = dangerDowntimePercentage !== '' ? dangerDowntimePercentage : DEFAULT_VAL.danger['downtimePercentage'];
+	            warningRiskUsage = warningRiskUsage !== '' ? warningRiskUsage : DEFAULT_VAL.warning['diskUsage'];
+	            dangerRiskUsage = dangerRiskUsage !== '' ? dangerRiskUsage : DEFAULT_VAL.danger['diskUsage'];
+	            warningTemperature = warningTemperature !== '' ? warningTemperature : DEFAULT_VAL.warning['temperature'];
+	            dangerTemperature = dangerTemperature !== '' ? dangerTemperature : DEFAULT_VAL.danger['temperature'];
+
+	            // console.log("macAdd: ", macAdd);
+	            // console.log("building: ", building);
+	            // console.log("level: ", level);
+	            // console.log("areaID: ", areaID);
+	            // console.log("port: ", port);
+	            // console.log("region: ", region);
+
 	            return React.createElement(
 	                'div',
-	                { id: 'edit-sensor-modal', className: 'reveal medium', 'data-reveal': '' },
+	                { id: 'edit-sensor-modal', className: 'reveal small', 'data-reveal': '' },
+	                React.createElement(
+	                    'div',
+	                    { className: 'page-title', style: { paddingBottom: '0.8rem' } },
+	                    'Edit Sensor/Server'
+	                ),
 	                React.createElement(
 	                    'form',
-	                    null,
+	                    { onSubmit: this.onEditSensor.bind(this) },
 	                    React.createElement(
 	                        'div',
-	                        { className: 'row' },
+	                        { className: 'row collapse' },
 	                        React.createElement(
 	                            'div',
-	                            { className: 'page-title', style: {
-	                                    paddingLeft: '0.9375rem'
-	                                } },
-	                            'Edit Sensor'
-	                        ),
-	                        React.createElement(
-	                            'div',
-	                            { className: 'large-6 columns' },
+	                            { className: 'medium-3 columns' },
 	                            React.createElement(
-	                                'label',
-	                                null,
-	                                'Mac Address',
-	                                React.createElement('input', { type: 'text', name: 'macAdd', id: 'inputMac', ref: 'macAddress', placeholder: 'Mac Address', value: macAdd, onChange: this.handleChange, disabled: true })
-	                            ),
-	                            React.createElement(
-	                                'label',
-	                                null,
-	                                'Port',
-	                                React.createElement('input', { type: 'text', name: 'port', id: 'inputPort', ref: 'port', placeholder: 'Port', value: port, onChange: this.handleChange })
+	                                'ul',
+	                                { className: 'tabs vertical', id: 'vert-tabs', 'data-tabs': true },
+	                                React.createElement(
+	                                    'li',
+	                                    { className: 'tabs-title is-active' },
+	                                    React.createElement(
+	                                        'a',
+	                                        { href: '#addPanelGerenal', style: { color: 'black', fontSize: '1rem', fontWeight: '100' }, 'aria-selected': 'true' },
+	                                        'General'
+	                                    )
+	                                ),
+	                                React.createElement(
+	                                    'li',
+	                                    { className: 'tabs-title' },
+	                                    React.createElement(
+	                                        'a',
+	                                        { href: '#editPanelTreshold', style: { color: 'black', fontSize: '1rem', fontWeight: '100' } },
+	                                        'Thresholds'
+	                                    )
+	                                )
 	                            )
 	                        ),
 	                        React.createElement(
 	                            'div',
-	                            { className: 'large-6 columns', style: {
-	                                    'borderLeft': 'solid 1px #e4e4e4'
-	                                } },
+	                            { className: 'medium-9 columns', style: { minHeight: '22rem' } },
 	                            React.createElement(
-	                                'label',
-	                                null,
-	                                'Region',
+	                                'div',
+	                                { className: 'tabs-content vertical', 'data-tabs-content': 'vert-tabs', style: { border: 'none' } },
 	                                React.createElement(
-	                                    'select',
-	                                    { ref: 'region', name: 'region', id: 'inputRegion', value: region, onChange: this.handleChange },
-	                                    React.createElement('option', { value: '' }),
+	                                    'div',
+	                                    { className: 'tabs-panel is-active', id: 'addPanelGerenal', style: { padding: 0 } },
 	                                    React.createElement(
-	                                        'option',
-	                                        { value: 'north' },
-	                                        'North'
-	                                    ),
+	                                        'table',
+	                                        { className: 'addEditSensor' },
+	                                        React.createElement(
+	                                            'tbody',
+	                                            null,
+	                                            React.createElement(
+	                                                'tr',
+	                                                { style: { verticalAlign: 'top' } },
+	                                                React.createElement(
+	                                                    'td',
+	                                                    { style: { padding: '0.5rem 1.0rem 0 1.5rem' } },
+	                                                    React.createElement(
+	                                                        'label',
+	                                                        null,
+	                                                        'Mac Address',
+	                                                        React.createElement('input', { type: 'text', name: 'macAdd', ref: 'macAddress', placeholder: 'Mac Address', value: macAdd, onChange: this.handleChange, disabled: true })
+	                                                    ),
+	                                                    React.createElement(
+	                                                        'fieldset',
+	                                                        null,
+	                                                        React.createElement('input', { id: 'isServer', ref: 'isServer', type: 'checkbox', onClick: this.updateRegion.bind(this) }),
+	                                                        React.createElement(
+	                                                            'label',
+	                                                            null,
+	                                                            'Server?'
+	                                                        ),
+	                                                        React.createElement(
+	                                                            'div',
+	                                                            { id: 'port' },
+	                                                            React.createElement(
+	                                                                'label',
+	                                                                null,
+	                                                                'Port',
+	                                                                React.createElement('input', { type: 'number', name: 'port', id: 'inputPort', ref: 'port', value: port, onChange: this.handleChange, placeholder: 'Port' })
+	                                                            )
+	                                                        )
+	                                                    )
+	                                                ),
+	                                                React.createElement(
+	                                                    'td',
+	                                                    { style: { padding: '0.5rem 1.5rem 0 1.0rem' } },
+	                                                    React.createElement(
+	                                                        'label',
+	                                                        null,
+	                                                        'Region',
+	                                                        React.createElement(
+	                                                            'select',
+	                                                            { name: 'region', ref: 'region', value: region, onChange: this.handleChange, required: true },
+	                                                            React.createElement('option', { value: '' }),
+	                                                            React.createElement(
+	                                                                'option',
+	                                                                { value: 'north' },
+	                                                                'North'
+	                                                            ),
+	                                                            React.createElement(
+	                                                                'option',
+	                                                                { value: 'south' },
+	                                                                'South'
+	                                                            ),
+	                                                            React.createElement(
+	                                                                'option',
+	                                                                { value: 'east' },
+	                                                                'East'
+	                                                            ),
+	                                                            React.createElement(
+	                                                                'option',
+	                                                                { value: 'west' },
+	                                                                'West'
+	                                                            ),
+	                                                            React.createElement(
+	                                                                'option',
+	                                                                { value: 'central' },
+	                                                                'Central'
+	                                                            ),
+	                                                            React.createElement(
+	                                                                'option',
+	                                                                { value: 'virtual' },
+	                                                                'Virtual'
+	                                                            )
+	                                                        )
+	                                                    ),
+	                                                    React.createElement(
+	                                                        'label',
+	                                                        null,
+	                                                        'Building / Cluster',
+	                                                        React.createElement('input', { type: 'text', name: 'building', ref: 'building', placeholder: 'Building / Cluster Level', value: building, onChange: this.handleChange, required: true })
+	                                                    ),
+	                                                    React.createElement(
+	                                                        'label',
+	                                                        null,
+	                                                        'Building level / Group',
+	                                                        React.createElement('input', { type: 'text', name: 'level', ref: 'sensorLocationLevel', placeholder: 'Building / Group Level', value: level, onChange: this.handleChange, required: true })
+	                                                    ),
+	                                                    React.createElement(
+	                                                        'label',
+	                                                        null,
+	                                                        'Area / Server ID',
+	                                                        React.createElement('input', { type: 'text', name: 'areaID', ref: 'sensorLocationID', placeholder: 'Area / Server ID', value: areaID, onChange: this.handleChange, required: true })
+	                                                    )
+	                                                )
+	                                            )
+	                                        )
+	                                    )
+	                                ),
+	                                React.createElement(
+	                                    'div',
+	                                    { className: 'tabs-panel', id: 'editPanelTreshold', style: { padding: 0 } },
 	                                    React.createElement(
-	                                        'option',
-	                                        { value: 'south' },
-	                                        'South'
-	                                    ),
-	                                    React.createElement(
-	                                        'option',
-	                                        { value: 'east' },
-	                                        'East'
-	                                    ),
-	                                    React.createElement(
-	                                        'option',
-	                                        { value: 'west' },
-	                                        'West'
-	                                    ),
-	                                    React.createElement(
-	                                        'option',
-	                                        { value: 'central' },
-	                                        'Central'
-	                                    ),
-	                                    React.createElement(
-	                                        'option',
-	                                        { value: 'virtual' },
-	                                        'Virtual'
+	                                        'table',
+	                                        { className: 'addEditSensor' },
+	                                        React.createElement(
+	                                            'tbody',
+	                                            { style: { float: "left" } },
+	                                            React.createElement(
+	                                                'tr',
+	                                                null,
+	                                                React.createElement('td', null),
+	                                                React.createElement(
+	                                                    'td',
+	                                                    { style: { padding: '0.2rem', width: '23rem' } },
+	                                                    React.createElement(
+	                                                        'div',
+	                                                        { style: { margin: 'auto' } },
+	                                                        React.createElement(
+	                                                            'label',
+	                                                            { style: { float: 'left', width: '50%', textAlign: 'center', fontWeight: '100' } },
+	                                                            'Warning'
+	                                                        ),
+	                                                        React.createElement(
+	                                                            'label',
+	                                                            { style: { float: 'right', width: '50%', textAlign: 'center', fontWeight: '100' } },
+	                                                            'Danger'
+	                                                        )
+	                                                    )
+	                                                )
+	                                            ),
+	                                            React.createElement(
+	                                                'tr',
+	                                                { style: { backgroundColor: 'white' } },
+	                                                React.createElement(
+	                                                    'td',
+	                                                    { style: { textAlign: 'right' } },
+	                                                    React.createElement(
+	                                                        'label',
+	                                                        { style: { fontSize: '1rem' } },
+	                                                        'CPU Usage (%)'
+	                                                    )
+	                                                ),
+	                                                React.createElement(
+	                                                    'td',
+	                                                    null,
+	                                                    React.createElement(
+	                                                        'div',
+	                                                        { style: { margin: 'auto' } },
+	                                                        React.createElement(
+	                                                            'label',
+	                                                            { style: { float: 'left', width: '50%' } },
+	                                                            React.createElement('input', { type: 'number', min: '0', max: '100', step: '0.01', name: 'warningCpuUsage', ref: 'warningCPU', placeholder: '0', value: warningCpuUsage, onChange: this.handleChange, required: true, style: { margin: '0', textAlign: 'center', borderColor: '#ffcc00' } })
+	                                                        ),
+	                                                        React.createElement(
+	                                                            'label',
+	                                                            { style: { float: 'right', width: '50%' } },
+	                                                            React.createElement('input', { type: 'number', min: '0', max: '100', step: '0.01', name: 'dangerCpuUsage', ref: 'dangerCPU', placeholder: '0', value: dangerCpuUsage, onChange: this.handleChange, required: true, style: { margin: '0', textAlign: 'center', borderColor: '#cc7a00' } })
+	                                                        )
+	                                                    )
+	                                                )
+	                                            ),
+	                                            React.createElement(
+	                                                'tr',
+	                                                null,
+	                                                React.createElement(
+	                                                    'td',
+	                                                    { style: { textAlign: 'right' } },
+	                                                    React.createElement(
+	                                                        'label',
+	                                                        { style: { fontSize: '1rem' } },
+	                                                        'RAM Usage (%)'
+	                                                    )
+	                                                ),
+	                                                React.createElement(
+	                                                    'td',
+	                                                    null,
+	                                                    React.createElement(
+	                                                        'div',
+	                                                        { style: { margin: 'auto' } },
+	                                                        React.createElement(
+	                                                            'label',
+	                                                            { style: { float: 'left', width: '50%' } },
+	                                                            React.createElement('input', { type: 'number', min: '0', max: '1', step: '0.01', name: 'warningRamUsage', ref: 'warningRAM', placeholder: '0', value: warningRamUsage, onChange: this.handleChange, required: true, style: { margin: '0', textAlign: 'center', borderColor: '#ffcc00' } })
+	                                                        ),
+	                                                        React.createElement(
+	                                                            'label',
+	                                                            { style: { float: 'right', width: '50%' } },
+	                                                            React.createElement('input', { type: 'number', min: '0', max: '1', step: '0.01', name: 'dangerRamUsage', ref: 'dangerRAM', placeholder: '0', value: dangerRamUsage, onChange: this.handleChange, required: true, style: { margin: '0', textAlign: 'center', borderColor: '#cc7a00' } })
+	                                                        )
+	                                                    )
+	                                                )
+	                                            ),
+	                                            React.createElement(
+	                                                'tr',
+	                                                { style: { backgroundColor: 'white' } },
+	                                                React.createElement(
+	                                                    'td',
+	                                                    { style: { textAlign: 'right' } },
+	                                                    React.createElement(
+	                                                        'label',
+	                                                        { style: { fontSize: '1rem' } },
+	                                                        'Downtime Percentage (%)'
+	                                                    )
+	                                                ),
+	                                                React.createElement(
+	                                                    'td',
+	                                                    null,
+	                                                    React.createElement(
+	                                                        'div',
+	                                                        { style: { margin: 'auto' } },
+	                                                        React.createElement(
+	                                                            'label',
+	                                                            { style: { float: 'left', width: '50%' } },
+	                                                            React.createElement('input', { type: 'number', min: '0', max: '1', step: '0.01', name: 'warningDowntimePercentage', ref: 'warningDTPercentage', placeholder: 'warningDowntimePercentage', value: warningDowntimePercentage, onChange: this.handleChange, required: true, style: { margin: '0', textAlign: 'center', borderColor: '#ffcc00' } })
+	                                                        ),
+	                                                        React.createElement(
+	                                                            'label',
+	                                                            { style: { float: 'right', width: '50%' } },
+	                                                            React.createElement('input', { type: 'number', min: '0', max: '1', step: '0.01', name: 'dangerDowntimePercentage', ref: 'dangerDTPercentage', placeholder: 'dangerDowntimePercentage', value: dangerDowntimePercentage, onChange: this.handleChange, required: true, style: { margin: '0', textAlign: 'center', borderColor: '#cc7a00' } })
+	                                                        )
+	                                                    )
+	                                                )
+	                                            ),
+	                                            React.createElement(
+	                                                'tr',
+	                                                { style: { backgroundColor: 'white' } },
+	                                                React.createElement(
+	                                                    'td',
+	                                                    { style: { textAlign: 'right' } },
+	                                                    React.createElement(
+	                                                        'label',
+	                                                        { style: { fontSize: '1rem' } },
+	                                                        'Storage Usage (%)'
+	                                                    )
+	                                                ),
+	                                                React.createElement(
+	                                                    'td',
+	                                                    null,
+	                                                    React.createElement(
+	                                                        'div',
+	                                                        { style: { margin: 'auto' } },
+	                                                        React.createElement(
+	                                                            'label',
+	                                                            { style: { float: 'left', width: '50%' } },
+	                                                            React.createElement('input', { type: 'number', min: '0', max: '1', step: '0.01', name: 'warningRiskUsage', ref: 'warningDisk', placeholder: 'warningRiskUsage', value: warningRiskUsage, onChange: this.handleChange, required: true, style: { margin: '0', textAlign: 'center', borderColor: '#ffcc00' } })
+	                                                        ),
+	                                                        React.createElement(
+	                                                            'label',
+	                                                            { style: { float: 'right', width: '50%' } },
+	                                                            React.createElement('input', { type: 'number', min: '0', max: '1', step: '0.01', name: 'dangerRiskUsage', ref: 'dangerDisk', placeholder: 'dangerRiskUsage', value: dangerRiskUsage, onChange: this.handleChange, required: true, style: { margin: '0', textAlign: 'center', borderColor: '#cc7a00' } })
+	                                                        )
+	                                                    )
+	                                                )
+	                                            ),
+	                                            React.createElement(
+	                                                'tr',
+	                                                { style: { backgroundColor: 'white' } },
+	                                                React.createElement(
+	                                                    'td',
+	                                                    { style: { textAlign: 'right' } },
+	                                                    React.createElement(
+	                                                        'label',
+	                                                        { style: { fontSize: '1rem' } },
+	                                                        'Temperature (°C)'
+	                                                    )
+	                                                ),
+	                                                React.createElement(
+	                                                    'td',
+	                                                    null,
+	                                                    React.createElement(
+	                                                        'div',
+	                                                        { style: { margin: 'auto' } },
+	                                                        React.createElement(
+	                                                            'label',
+	                                                            { style: { float: 'left', width: '50%' } },
+	                                                            React.createElement('input', { type: 'number', min: '0', max: '150', step: '0.01', name: 'warningTemperature', ref: 'warningTemp', placeholder: 'warningTemperature', value: warningTemperature, onChange: this.handleChange, required: true, style: { margin: '0', textAlign: 'center', borderColor: '#ffcc00' } })
+	                                                        ),
+	                                                        React.createElement(
+	                                                            'label',
+	                                                            { style: { float: 'right', width: '50%' } },
+	                                                            React.createElement('input', { type: 'number', min: '0', max: '150', step: '0.01', name: 'dangerTemperature', ref: 'dangerTemp', placeholder: 'dangerTemperature', value: dangerTemperature, onChange: this.handleChange, required: true, style: { margin: '0', textAlign: 'center', borderColor: '#cc7a00' } })
+	                                                        )
+	                                                    )
+	                                                )
+	                                            )
+	                                        )
 	                                    )
 	                                )
-	                            ),
-	                            React.createElement(
-	                                'label',
-	                                null,
-	                                'Sensor Location level',
-	                                React.createElement('input', { type: 'text', name: 'level', id: 'inputLocationLevel', ref: 'sensorLocationLevel', placeholder: 'Sensor Location Level', value: level, onChange: this.handleChange })
-	                            ),
-	                            React.createElement(
-	                                'label',
-	                                null,
-	                                'Sensor Location ID',
-	                                React.createElement('input', { type: 'text', name: 'areaID', id: 'inputSensorLocationID', ref: 'sensorLocationID', placeholder: 'Sensor Location ID', value: areaID, onChange: this.handleChange })
-	                            ),
-	                            React.createElement(
-	                                'label',
-	                                null,
-	                                'Building',
-	                                React.createElement('input', { type: 'text', name: 'building', id: 'inputBuildingName', ref: 'building', placeholder: 'Building', value: building, onChange: this.handleChange })
 	                            )
 	                        )
 	                    ),
 	                    React.createElement(
 	                        'div',
-	                        { className: 'row' },
+	                        null,
 	                        React.createElement(
 	                            'div',
 	                            { id: 'sensorMessage' },
 	                            React.createElement(EditSensorMessage, { message: message })
 	                        ),
-	                        React.createElement(
-	                            'a',
-	                            { className: 'button proceed expanded', onClick: this.onEditSensor.bind(this) },
-	                            'Edit Sensor'
-	                        ),
+	                        React.createElement('input', { type: 'submit', value: 'Edit', className: 'button proceed expanded' }),
 	                        React.createElement(
 	                            'a',
 	                            { className: 'button cancel expanded close-reveal-modal', 'data-close': '', 'aria-label': 'Close' },
@@ -76566,44 +76950,14 @@
 	        key: 'render',
 	        value: function render() {
 
-	            var uptimeLink = '/uptime/' + this.props.buildingName;
-
 	            return React.createElement(
 	                'div',
 	                { className: 'column row' },
 	                React.createElement(
-	                    'div',
-	                    { className: 'header' },
-	                    this.props.buildingName,
-	                    React.createElement(
-	                        'div',
-	                        { style: {
-	                                float: 'right'
-	                            } },
-	                        React.createElement(
-	                            'span',
-	                            { style: { fontWeight: '300' } },
-	                            'Total Count: ',
-	                            this.props.sensorCount
-	                        ),
-	                        React.createElement(
-	                            'span',
-	                            null,
-	                            React.createElement(
-	                                IndexLink,
-	                                { activeClassName: 'active', to: uptimeLink },
-	                                React.createElement(FontAwesome, { name: 'bar-chart', style: {
-	                                        marginLeft: '5px'
-	                                    } })
-	                            )
-	                        )
-	                    )
-	                ),
-	                React.createElement(
 	                    'table',
 	                    { className: 'sensorHealthTable' },
-	                    React.createElement(BuildingHeader, { dispatch: this.props.dispatch, snmpSpeedTest: this.props.speedTest }),
-	                    React.createElement(LevelList, { areaArray: this.props.areaNames, levelArray: this.props.levelNames, sensors: this.props.sensors })
+	                    React.createElement(BuildingHeader, { dispatch: this.props.dispatch, buildingName: this.props.buildingName, snmpSpeedTest: this.props.speedTest }),
+	                    React.createElement(LevelList, { totalCount: this.props.sensorCount, areaArray: this.props.areaNames, levelArray: this.props.levelNames, sensors: this.props.sensors })
 	                )
 	            );
 	        }
@@ -76762,8 +77116,8 @@
 
 	            var memory = (memory_used / 1000).toFixed(2) + " / " + (memory_total / 1000).toFixed(2) + "MB";
 	            var storage = (storage_used / 1000).toFixed(2) + " / " + (storage_total / 1000).toFixed(2) + "MB";
-	            var temp = (processor_temp - 273.15).toFixed(2) + " C";
-
+	            var temp = (processor_temp - 273.15).toFixed(2) + "C";
+	            var uptimeLink = '/uptime/' + this.props.buildingName;
 	            var id = "routerDropdown" + sensor;
 
 	            var upload = snmpSpeedTest.upload_speed + ' Mbit/s';
@@ -76775,9 +77129,14 @@
 	                React.createElement(
 	                    'tr',
 	                    null,
-	                    React.createElement('td', { style: {
-	                            width: "8rem"
-	                        } }),
+	                    React.createElement(
+	                        'td',
+	                        { style: {
+	                                width: "8rem",
+	                                textAlign: "center"
+	                            } },
+	                        this.props.buildingName
+	                    ),
 	                    React.createElement(
 	                        'td',
 	                        { style: {
@@ -76805,11 +77164,18 @@
 	                        ': ',
 	                        download,
 	                        React.createElement(
-	                            'button',
+	                            'a',
 	                            { type: 'button', className: 'pane', onClick: function onClick() {
 	                                    return _this5.handleClick(sensor);
 	                                }, style: { marginLeft: '0.5rem' } },
-	                            React.createElement(FontAwesome, { className: 'pane', name: 'info-circle', size: 'lg' })
+	                            React.createElement(FontAwesome, { className: 'pane', name: 'cog', size: 'lg' })
+	                        ),
+	                        React.createElement(
+	                            IndexLink,
+	                            { activeClassName: 'active', to: uptimeLink },
+	                            React.createElement(FontAwesome, { name: 'bar-chart', style: {
+	                                    marginLeft: '5px'
+	                                } })
 	                        ),
 	                        React.createElement(
 	                            'div',
@@ -76994,7 +77360,18 @@
 	            return React.createElement(
 	                'tbody',
 	                null,
-	                tableRows
+	                tableRows,
+	                React.createElement(
+	                    'tr',
+	                    null,
+	                    React.createElement('td', null),
+	                    React.createElement(
+	                        'td',
+	                        { style: { float: 'right', fontSize: '0.8rem' } },
+	                        'Total Count: ',
+	                        this.props.totalCount
+	                    )
+	                )
 	            );
 	        }
 	    }]);
@@ -77146,12 +77523,7 @@
 	            return React.createElement(
 	                "div",
 	                null,
-	                React.createElement(
-	                    "div",
-	                    { className: "header" },
-	                    this.props.serverName
-	                ),
-	                React.createElement(ServerGroupList, { data: this.props.serverData })
+	                React.createElement(ServerGroupList, { serverName: this.props.serverName, data: this.props.serverData })
 	            );
 	        }
 	    }]);
@@ -77193,7 +77565,7 @@
 	                        React.createElement(
 	                            "th",
 	                            { style: { textAlign: 'center', width: '20%' } },
-	                            "Groups"
+	                            this.props.serverName
 	                        ),
 	                        React.createElement("th", null)
 	                    )
@@ -84290,17 +84662,11 @@
 	            var inputWarningDTPercentage = this.refs.warningDTPercentage.value;
 	            var inputWarningTemp = this.refs.warningTemp.value;
 
-	            var _props = this.props;
-	            var dispatch = _props.dispatch;
-	            var userId = _props.userId;
-	            var userEmail = _props.userEmail;
+	            var userId = this.props.userId;
+
+	            var dispatch = this.props.dispatch;
 
 	            var that = this;
-
-	            //===========================
-
-
-	            //===========================
 
 	            manageSensorAPI.addSensor(inputMac, inputRegion, inputLocationLevel, inputLocationID, inputBuilding, inputPort, inputDangerDisk, inputDangerCPU, inputDangerRAM, inputDangerDTPercentage, inputDangerTemp, inputWarningDisk, inputWarningCPU, inputWarningRAM, inputWarningDTPercentage, inputWarningTemp).then(function (response) {
 
@@ -84322,7 +84688,7 @@
 	                    document.dispatchEvent(myCustomEvent);
 
 	                    var actionDesc = 'Added ' + inputMac + ' to ' + inputBuilding + ' ' + inputLocationLevel + inputLocationID;
-	                    dispatch(actions.startAddToLog(userEmail, actionDesc));
+	                    dispatch(actions.startAddToLog(userId, actionDesc));
 
 	                    that.refs.macAddress.value = '';
 	                    that.refs.port.value = '';
@@ -84375,7 +84741,7 @@
 	                                    { className: 'tabs-title is-active' },
 	                                    React.createElement(
 	                                        'a',
-	                                        { href: '#panel1v', style: { color: 'black', fontSize: '1rem', fontWeight: '100' }, 'aria-selected': 'true' },
+	                                        { href: '#addPanelGeneral', style: { color: 'black', fontSize: '1rem', fontWeight: '100' }, 'aria-selected': 'true' },
 	                                        'General'
 	                                    )
 	                                ),
@@ -84384,7 +84750,7 @@
 	                                    { className: 'tabs-title' },
 	                                    React.createElement(
 	                                        'a',
-	                                        { href: '#panel2v', style: { color: 'black', fontSize: '1rem', fontWeight: '100' } },
+	                                        { href: '#addPanelThreshold', style: { color: 'black', fontSize: '1rem', fontWeight: '100' } },
 	                                        'Thresholds'
 	                                    )
 	                                )
@@ -84398,7 +84764,7 @@
 	                                { className: 'tabs-content vertical', 'data-tabs-content': 'vert-tabs', style: { border: 'none' } },
 	                                React.createElement(
 	                                    'div',
-	                                    { className: 'tabs-panel is-active', id: 'panel1v', style: { padding: 0 } },
+	                                    { className: 'tabs-panel is-active', id: 'addPanelGeneral', style: { padding: 0 } },
 	                                    React.createElement(
 	                                        'table',
 	                                        { className: 'addEditSensor' },
@@ -84506,13 +84872,13 @@
 	                                ),
 	                                React.createElement(
 	                                    'div',
-	                                    { className: 'tabs-panel', id: 'panel2v', style: { padding: 0 } },
+	                                    { className: 'tabs-panel', id: 'addPanelThreshold', style: { padding: 0 } },
 	                                    React.createElement(
 	                                        'table',
-	                                        null,
+	                                        { className: 'addEditSensor' },
 	                                        React.createElement(
 	                                            'tbody',
-	                                            null,
+	                                            { style: { float: "left" } },
 	                                            React.createElement(
 	                                                'tr',
 	                                                null,
@@ -84545,7 +84911,7 @@
 	                                                    React.createElement(
 	                                                        'label',
 	                                                        { style: { fontSize: '1rem' } },
-	                                                        'CPU Usage'
+	                                                        'CPU Usage (%)'
 	                                                    )
 	                                                ),
 	                                                React.createElement(
@@ -84557,12 +84923,12 @@
 	                                                        React.createElement(
 	                                                            'label',
 	                                                            { style: { float: 'left', width: '50%' } },
-	                                                            React.createElement('input', { type: 'number', min: '0', max: '100', step: '0.01', ref: 'warningCPU', placeholder: '0', defaultValue: this.state.warning['cpuUsage'], required: true, style: { margin: '0', textAlign: 'center', borderRadius: '7px 0 0 7px', borderColor: '#ffcc00' } })
+	                                                            React.createElement('input', { type: 'number', min: '0', max: '100', step: '0.01', ref: 'warningCPU', placeholder: '0', defaultValue: this.state.warning['cpuUsage'], required: true, style: { margin: '0', textAlign: 'center', borderColor: '#ffcc00' } })
 	                                                        ),
 	                                                        React.createElement(
 	                                                            'label',
 	                                                            { style: { float: 'right', width: '50%' } },
-	                                                            React.createElement('input', { type: 'number', min: '0', max: '100', step: '0.01', ref: 'dangerCPU', placeholder: '0', defaultValue: this.state.danger['cpuUsage'], required: true, style: { margin: '0', textAlign: 'center', borderRadius: '0 7px 7px 0', borderColor: '#cc7a00' } })
+	                                                            React.createElement('input', { type: 'number', min: '0', max: '100', step: '0.01', ref: 'dangerCPU', placeholder: '0', defaultValue: this.state.danger['cpuUsage'], required: true, style: { margin: '0', textAlign: 'center', borderColor: '#cc7a00' } })
 	                                                        )
 	                                                    )
 	                                                )
@@ -84576,7 +84942,7 @@
 	                                                    React.createElement(
 	                                                        'label',
 	                                                        { style: { fontSize: '1rem' } },
-	                                                        'RAM Usage'
+	                                                        'RAM Usage (%)'
 	                                                    )
 	                                                ),
 	                                                React.createElement(
@@ -84588,12 +84954,12 @@
 	                                                        React.createElement(
 	                                                            'label',
 	                                                            { style: { float: 'left', width: '50%' } },
-	                                                            React.createElement('input', { type: 'number', min: '0', max: '1', step: '0.01', ref: 'warningRAM', placeholder: '0', defaultValue: this.state.warning['ramUsage'], required: true, style: { margin: '0', textAlign: 'center', borderRadius: '7px 0 0 7px', borderColor: '#ffcc00' } })
+	                                                            React.createElement('input', { type: 'number', min: '0', max: '1', step: '0.01', ref: 'warningRAM', placeholder: '0', defaultValue: this.state.warning['ramUsage'], required: true, style: { margin: '0', textAlign: 'center', borderColor: '#ffcc00' } })
 	                                                        ),
 	                                                        React.createElement(
 	                                                            'label',
 	                                                            { style: { float: 'right', width: '50%' } },
-	                                                            React.createElement('input', { type: 'number', min: '0', max: '1', step: '0.01', ref: 'dangerRAM', placeholder: '0', defaultValue: this.state.danger['ramUsage'], required: true, style: { margin: '0', textAlign: 'center', borderRadius: '0 7px 7px 0', borderColor: '#cc7a00' } })
+	                                                            React.createElement('input', { type: 'number', min: '0', max: '1', step: '0.01', ref: 'dangerRAM', placeholder: '0', defaultValue: this.state.danger['ramUsage'], required: true, style: { margin: '0', textAlign: 'center', borderColor: '#cc7a00' } })
 	                                                        )
 	                                                    )
 	                                                )
@@ -84607,7 +84973,7 @@
 	                                                    React.createElement(
 	                                                        'label',
 	                                                        { style: { fontSize: '1rem' } },
-	                                                        'Downtime Percentage'
+	                                                        'Downtime Percentage (%)'
 	                                                    )
 	                                                ),
 	                                                React.createElement(
@@ -84619,12 +84985,12 @@
 	                                                        React.createElement(
 	                                                            'label',
 	                                                            { style: { float: 'left', width: '50%' } },
-	                                                            React.createElement('input', { type: 'number', min: '0', max: '1', step: '0.01', ref: 'warningDTPercentage', placeholder: '0', defaultValue: this.state.warning['downtimePercentage'], required: true, style: { margin: '0', textAlign: 'center', borderRadius: '7px 0 0 7px', borderColor: '#ffcc00' } })
+	                                                            React.createElement('input', { type: 'number', min: '0', max: '1', step: '0.01', ref: 'warningDTPercentage', placeholder: '0', defaultValue: this.state.warning['downtimePercentage'], required: true, style: { margin: '0', textAlign: 'center', borderColor: '#ffcc00' } })
 	                                                        ),
 	                                                        React.createElement(
 	                                                            'label',
 	                                                            { style: { float: 'right', width: '50%' } },
-	                                                            React.createElement('input', { type: 'number', min: '0', max: '1', step: '0.01', ref: 'dangerDTPercentage', placeholder: '0', defaultValue: this.state.danger['downtimePercentage'], required: true, style: { margin: '0', textAlign: 'center', borderRadius: '0 7px 7px 0', borderColor: '#cc7a00' } })
+	                                                            React.createElement('input', { type: 'number', min: '0', max: '1', step: '0.01', ref: 'dangerDTPercentage', placeholder: '0', defaultValue: this.state.danger['downtimePercentage'], required: true, style: { margin: '0', textAlign: 'center', borderColor: '#cc7a00' } })
 	                                                        )
 	                                                    )
 	                                                )
@@ -84638,7 +85004,7 @@
 	                                                    React.createElement(
 	                                                        'label',
 	                                                        { style: { fontSize: '1rem' } },
-	                                                        'Storage Usage'
+	                                                        'Storage Usage (%)'
 	                                                    )
 	                                                ),
 	                                                React.createElement(
@@ -84650,12 +85016,12 @@
 	                                                        React.createElement(
 	                                                            'label',
 	                                                            { style: { float: 'left', width: '50%' } },
-	                                                            React.createElement('input', { type: 'number', min: '0', max: '1', step: '0.01', ref: 'warningDisk', placeholder: '0', defaultValue: this.state.warning['diskUsage'], required: true, style: { margin: '0', textAlign: 'center', borderRadius: '7px 0 0 7px', borderColor: '#ffcc00' } })
+	                                                            React.createElement('input', { type: 'number', min: '0', max: '1', step: '0.01', ref: 'warningDisk', placeholder: '0', defaultValue: this.state.warning['diskUsage'], required: true, style: { margin: '0', textAlign: 'center', borderColor: '#ffcc00' } })
 	                                                        ),
 	                                                        React.createElement(
 	                                                            'label',
 	                                                            { style: { float: 'right', width: '50%' } },
-	                                                            React.createElement('input', { type: 'number', min: '0', max: '1', step: '0.01', ref: 'dangerDisk', placeholder: '0', defaultValue: this.state.danger['diskUsage'], required: true, style: { margin: '0', textAlign: 'center', borderRadius: '0 7px 7px 0', borderColor: '#cc7a00' } })
+	                                                            React.createElement('input', { type: 'number', min: '0', max: '1', step: '0.01', ref: 'dangerDisk', placeholder: '0', defaultValue: this.state.danger['diskUsage'], required: true, style: { margin: '0', textAlign: 'center', borderColor: '#cc7a00' } })
 	                                                        )
 	                                                    )
 	                                                )
@@ -84669,7 +85035,7 @@
 	                                                    React.createElement(
 	                                                        'label',
 	                                                        { style: { fontSize: '1rem' } },
-	                                                        'Temperature'
+	                                                        'Temperature (°C)'
 	                                                    )
 	                                                ),
 	                                                React.createElement(
@@ -84681,12 +85047,12 @@
 	                                                        React.createElement(
 	                                                            'label',
 	                                                            { style: { float: 'left', width: '50%' } },
-	                                                            React.createElement('input', { type: 'number', min: '0', max: '150', step: '0.01', ref: 'warningTemp', placeholder: '0', defaultValue: this.state.warning['temperature'], required: true, style: { margin: '0', textAlign: 'center', borderRadius: '7px 0 0 7px', borderColor: '#ffcc00' } })
+	                                                            React.createElement('input', { type: 'number', min: '0', max: '150', step: '0.01', ref: 'warningTemp', placeholder: '0', defaultValue: this.state.warning['temperature'], required: true, style: { margin: '0', textAlign: 'center', borderColor: '#ffcc00' } })
 	                                                        ),
 	                                                        React.createElement(
 	                                                            'label',
 	                                                            { style: { float: 'right', width: '50%' } },
-	                                                            React.createElement('input', { type: 'number', min: '0', max: '150', step: '0.01', ref: 'dangerTemp', placeholder: '0', defaultValue: this.state.danger['temperature'], required: true, style: { margin: '0', textAlign: 'center', borderRadius: '0 7px 7px 0', borderColor: '#cc7a00' } })
+	                                                            React.createElement('input', { type: 'number', min: '0', max: '150', step: '0.01', ref: 'dangerTemp', placeholder: '0', defaultValue: this.state.danger['temperature'], required: true, style: { margin: '0', textAlign: 'center', borderColor: '#cc7a00' } })
 	                                                        )
 	                                                    )
 	                                                )
@@ -84733,6 +85099,7 @@
 	        key: 'render',
 	        value: function render() {
 	            var message = this.props.message;
+	            // console.log("message from parent: ", message);
 
 	            return React.createElement(
 	                'div',
@@ -88255,7 +88622,7 @@
 	exports.push([module.id, "@import url(https://fonts.googleapis.com/css?family=Lato:400,900i);", ""]);
 
 	// module
-	exports.push([module.id, "@charset \"UTF-8\";\nbody,\nhtml {\n  background: #f2f2f2;\n  height: 100%;\n  font-family: 'Roboto', sans-serif;\n  color: #1a1b1b; }\n\nbody {\n  -webkit-animation-delay: 0.1s;\n  -webkit-animation-name: fontfix;\n  -webkit-animation-duration: 0.1s;\n  -webkit-animation-iteration-count: 1;\n  -webkit-animation-timing-function: linear; }\n\n@-webkit-keyframes fontfix {\n  from {\n    opacity: 1; }\n  to {\n    opacity: 1; } }\n\n.row {\n  max-width: 80rem; }\n\n.loading-overlay {\n  background-color: rgba(10, 10, 10, 0.45) !important;\n  position: fixed;\n  top: 0;\n  bottom: 0;\n  left: 0;\n  right: 0; }\n\ndiv#offCanvas {\n  width: 350px;\n  height: 100%;\n  background: #e8e8e8; }\n\n.is-open-right {\n  transform: translateX(-350px); }\n\n.off-canvas.position-right {\n  right: -350px; }\n\n.off-canvas-content {\n  background: #f2f2f2; }\n\na {\n  color: #6abedb; }\n\nhr {\n  border-color: #bdbdbd;\n  margin-top: 0.5rem;\n  max-width: 100%; }\n\n.divider {\n  border-color: #bdbdbd;\n  margin-bottom: 10px; }\n\n.reveal {\n  top: 100px !important; }\n\ntable thead {\n  background: #d3d3d3;\n  color: #1a1b1b;\n  border: 1px solid #e4e4e4; }\n\ntable tbody {\n  color: #1a1b1b;\n  border: 1px solid #e4e4e4; }\n\n.margin-top-large {\n  margin-top: 4rem; }\n\n.margin-bottom-large {\n  margin-bottom: 4rem; }\n\n.margin-right-small {\n  margin-right: 2rem; }\n\n.margin-left-small {\n  margin-left: 2rem; }\n\n.margin-left-tiny {\n  margin-left: 0.5rem; }\n\n.margin-right-tiny {\n  margin-right: 0.5rem; }\n\n.margin-top-md {\n  margin-top: 2rem; }\n\n.margin-top-small {\n  margin-top: 1rem; }\n\n.margin-bottom-md {\n  margin-bottom: 2rem; }\n\n.margin-bottom-small {\n  margin-bottom: 1rem; }\n\n.textAlignCenter {\n  text-align: center; }\n\nul.header-list {\n  display: inline-block;\n  list-style: none;\n  margin-bottom: 0; }\n\n.sticky {\n  z-index: 10000;\n  left: 0 !important; }\n\n.callout {\n  background-color: #fff; }\n\n.callout-dark {\n  padding: 1.5rem;\n  background-color: #fff;\n  border: 2px solid #bdbdbd;\n  border-top: none;\n  margin-top: 0;\n  border-bottom-right-radius: 4px;\n  border-bottom-left-radius: 4px; }\n\n.scroll {\n  max-height: 100vh;\n  overflow-y: scroll; }\n\n.callout-dark-header {\n  padding: 0.5rem;\n  background-color: #fff;\n  border: 2px solid #bdbdbd;\n  border-bottom: 1px solid #bdbdbd;\n  border-top-left-radius: 4px;\n  border-top-right-radius: 4px;\n  margin-bottom: 0; }\n\n.callout-top-header {\n  padding: 1rem;\n  background-color: #f2f2f2;\n  border: 2px solid #bdbdbd;\n  border-radius: 4px; }\n\n.callout-minimize {\n  margin-bottom: 1rem;\n  border-radius: 4px 4px;\n  padding: 0.5rem; }\n\n.icon-btn-text-small {\n  font-family: 'Roboto', sans-serif;\n  text-transform: Captitalize;\n  top: 15px;\n  right: 15px;\n  position: absolute;\n  color: #323232;\n  font-size: 1.1rem; }\n\n.test {\n  font-family: 'Pathway Gothic One', sans-serif;\n  text-transform: uppercase;\n  color: #fff;\n  font-size: 1rem;\n  background: #6abedb; }\n\nlabel {\n  text-transform: capitalize;\n  color: #232f32; }\n\n.header {\n  color: #323232;\n  margin-bottom: 0;\n  text-transform: capitalize;\n  font-weight: 500;\n  font-family: 'Roboto', sans-serif; }\n\n.sub-header {\n  color: #232f32;\n  font-size: 1.3rem;\n  font-family: 'Pathway Gothic One', sans-serif; }\n  .sub-header a {\n    text-transform: capitalize; }\n\n#watchList {\n  display: none; }\n\n.page-title {\n  color: #323232;\n  font-family: 'Roboto', sans-serif;\n  font-weight: 500;\n  font-size: 1.2rem; }\n\n.settings-page-title {\n  color: #323232;\n  font-family: 'Roboto', sans-serif;\n  font-weight: 700;\n  font-size: 1.4rem; }\n\n.settings-subheader {\n  font-weight: 200;\n  white-space: nowrap; }\n\n.settings-subheader-container {\n  padding-top: 1rem; }\n\n.settings-wrapper {\n  margin-left: 1.8rem; }\n\ninput[type=search] {\n  box-shadow: none; }\n\n.top-bar-upper {\n  color: #333;\n  font-size: 0.5rem; }\n\n.app-header {\n  font-size: 1.3rem; }\n\ntable.overview-custom tbody,\ntable.overview-custom th,\ntable.overview-custom thead,\ntable.overview-custom tr {\n  text-align: center; }\n\ntable.sensor-details-table tbody {\n  text-align: left; }\n\n.statusText {\n  color: red;\n  margin-bottom: 1rem;\n  text-transform: uppercase;\n  font-size: 0.85em; }\n\n.notificationHeader {\n  color: #fff;\n  text-transform: uppercase;\n  font-size: 0.5em;\n  font-weight: bold; }\n\n.sensorBlock {\n  height: 30px;\n  border-radius: 30px;\n  width: auto;\n  color: #fff;\n  text-align: center;\n  font-family: 'Pathway Gothic One', sans-serif;\n  text-transform: uppercase; }\n\n.sensorBlockSquare {\n  height: 30px;\n  width: 30px;\n  border-radius: 4px;\n  cursor: pointer;\n  text-align: center;\n  line-height: 28px;\n  color: white;\n  font-weight: bold; }\n\n.sensorBlockSquare:hover {\n  opacity: 0.5; }\n\n.sensorList {\n  display: inline-block;\n  margin-right: 1px; }\n\n#uptime-form select {\n  margin-right: 2rem; }\n\n.recharts-tooltip-wrapper {\n  z-index: 1000;\n  box-shadow: 1px 1px 4px #323232;\n  background-color: #fff; }\n\n#glance-tooltip > table tr:nth-of-type(even) {\n  background-color: transparent !important; }\n\n.button-custom {\n  height: 30px;\n  width: auto !important;\n  margin: 0;\n  color: #fff !important;\n  text-align: center;\n  font-family: 'Pathway Gothic One', sans-serif;\n  text-transform: uppercase; }\n\n.proceed {\n  background: #6abedb; }\n\n.cancel {\n  background: #990000; }\n\n.cancel:hover {\n  background: #7a0000; }\n\n.remove {\n  border: 1px solid #990000;\n  background-color: #fff;\n  color: #990000;\n  cursor: pointer; }\n\n.remove:hover {\n  background-color: #990000;\n  color: #fff !important; }\n\n.pin {\n  border: 1px solid #008000;\n  background-color: #fff;\n  color: #008000;\n  cursor: pointer; }\n\n.pin:hover {\n  background-color: #006600;\n  color: #fff !important; }\n\n.disabled {\n  pointer-events: none;\n  background: #e8e8e8;\n  border: none;\n  color: white;\n  cursor: default; }\n\n.disabled:hover {\n  pointer-events: none;\n  background: #e8e8e8;\n  border: none;\n  color: white;\n  cursor: default; }\n\n.tableOptions > li > a {\n  color: #323232;\n  font-weight: normal;\n  font-size: 1rem;\n  padding: 0.5rem 0.7rem; }\n\n.menuHeader:hover,\n.tableOptions .menuHeader {\n  background-color: #232f32 !important;\n  color: #fff;\n  padding: 0.3rem 0.7rem;\n  text-transform: uppercase; }\n\n.tableOptions > li {\n  border-bottom: 1px solid #f2f2f2; }\n\n.tableOptions > li:hover {\n  background-color: #f2f2f2; }\n\n.dropdown-pane {\n  padding: 0; }\n\n.panel-grey {\n  background-color: #e4e4e4; }\n\n#emailPanel,\n#namePanel,\n#passwordPanel,\n#dailyReportTimePanel,\n#flappingDownsPanel,\n#considerationPeriodPanel,\n#emailRecipientPanel {\n  display: none;\n  padding: 1rem;\n  background: #e4e4e4; }\n\ninput[type=checkbox]:checked ~ #port {\n  display: none; }\n\n#port {\n  display: block; }\n\n.inactive-link {\n  display: none; }\n\n.button-cancel {\n  border-color: #990000 !important;\n  color: #990000 !important; }\n\n.green {\n  background-color: #008000; }\n\n.orange {\n  background-color: #cc7a00; }\n\n.red {\n  background-color: #990000; }\n\n.black {\n  background-color: #1a1b1b; }\n\n.yellow {\n  background-color: #ffcc00; }\n\n.grey {\n  background-color: #737373; }\n\n.loader {\n  height: 4px;\n  width: 100%;\n  position: relative;\n  overflow: hidden;\n  background-color: #ddd; }\n\n.loader:before {\n  display: block;\n  position: absolute;\n  content: \"\";\n  left: -200px;\n  width: 200px;\n  height: 4px;\n  background-color: #2980b9;\n  animation: loading 2s linear infinite; }\n\n.no-border {\n  border: none;\n  width: inherit;\n  background-color: transparent; }\n\n@keyframes loading {\n  from {\n    left: -200px;\n    width: 30%; }\n  50% {\n    width: 30%; }\n  70% {\n    width: 70%; }\n  80% {\n    left: 50%; }\n  95% {\n    left: 120%; }\n  to {\n    left: 100%; } }\n\ntable.sensor-details-table td:nth-child(1) {\n  text-transform: Capitalize; }\n\ntable.sensor-details-table tbody {\n  text-align: left; }\n\ntable.sensor-details-table td:nth-child(2), table.sensor-details-table th:nth-child(2) {\n  word-break: break-all;\n  text-align: center; }\n\ntable.actionLog tr > td:nth-child(2) {\n  font-weight: bold; }\n\n.table-container {\n  text-align: center; }\n\n.table-row-highlight {\n  font-weight: bold;\n  border: solid 1px #990000;\n  background-color: rgba(153, 0, 0, 0.4) !important; }\n\n.button-disabled {\n  pointer-events: none;\n  color: #000 !important; }\n\n#top-bar-pin:hover, #top-bar-delete:hover, #top-bar-edit:hover {\n  color: #6abedb; }\n\ninput::-webkit-outer-spin-button,\ninput::-webkit-inner-spin-button {\n  /* display: none; <- Crashes Chrome on hover */\n  -webkit-appearance: none;\n  margin: 0;\n  /* <— Apparently some margin are still there even though it's hidden */ }\n\n.tabs {\n  border: none; }\n\n.addEditSensor {\n  border: none; }\n", ""]);
+	exports.push([module.id, "@charset \"UTF-8\";\nbody,\nhtml {\n  background: #f2f2f2;\n  height: 100%;\n  font-family: 'Roboto', sans-serif;\n  color: #1a1b1b; }\n\nbody {\n  -webkit-animation-delay: 0.1s;\n  -webkit-animation-name: fontfix;\n  -webkit-animation-duration: 0.1s;\n  -webkit-animation-iteration-count: 1;\n  -webkit-animation-timing-function: linear; }\n\n@-webkit-keyframes fontfix {\n  from {\n    opacity: 1; }\n  to {\n    opacity: 1; } }\n\n.row {\n  max-width: 80rem; }\n\n.loading-overlay {\n  background-color: rgba(10, 10, 10, 0.45) !important;\n  position: fixed;\n  top: 0;\n  bottom: 0;\n  left: 0;\n  right: 0; }\n\ndiv#offCanvas {\n  width: 350px;\n  height: 100%;\n  background: #e8e8e8; }\n\n.is-open-right {\n  transform: translateX(-350px); }\n\n.off-canvas.position-right {\n  right: -350px; }\n\n.off-canvas-content {\n  background: #f2f2f2; }\n\na {\n  color: #1a1b1b; }\n  a a:hover {\n    color: #6abedb; }\n\nhr {\n  border-color: #bdbdbd;\n  margin-top: 0.5rem;\n  max-width: 100%; }\n\n.divider {\n  border-color: #bdbdbd;\n  margin-bottom: 10px; }\n\n.reveal {\n  top: 100px !important; }\n\ntable thead {\n  background: #d3d3d3;\n  color: #1a1b1b;\n  border: 1px solid #e4e4e4; }\n\ntable tbody {\n  color: #1a1b1b;\n  border: 1px solid #e4e4e4; }\n\n.margin-top-large {\n  margin-top: 4rem; }\n\n.margin-bottom-large {\n  margin-bottom: 4rem; }\n\n.margin-right-small {\n  margin-right: 2rem; }\n\n.margin-left-small {\n  margin-left: 2rem; }\n\n.margin-left-tiny {\n  margin-left: 0.5rem; }\n\n.margin-right-tiny {\n  margin-right: 0.5rem; }\n\n.margin-top-md {\n  margin-top: 2rem; }\n\n.margin-top-small {\n  margin-top: 1rem; }\n\n.margin-bottom-md {\n  margin-bottom: 2rem; }\n\n.margin-bottom-small {\n  margin-bottom: 1rem; }\n\n.textAlignCenter {\n  text-align: center; }\n\nul.header-list {\n  display: inline-block;\n  list-style: none;\n  margin-bottom: 0; }\n\n.sticky {\n  z-index: 10000;\n  left: 0 !important; }\n\n.callout {\n  background-color: #fff; }\n\n.callout-dark {\n  padding: 1.5rem;\n  background-color: #fff;\n  border: 2px solid #bdbdbd;\n  border-top: none;\n  margin-top: 0;\n  border-bottom-right-radius: 4px;\n  border-bottom-left-radius: 4px; }\n\n.scroll {\n  max-height: 100vh;\n  overflow-y: scroll; }\n\n.callout-dark-header {\n  padding: 0.5rem;\n  background-color: #fff;\n  border: 2px solid #bdbdbd;\n  border-bottom: 1px solid #bdbdbd;\n  border-top-left-radius: 4px;\n  border-top-right-radius: 4px;\n  margin-bottom: 0; }\n\n.callout-top-header {\n  padding: 1rem;\n  background-color: #f2f2f2;\n  border: 2px solid #bdbdbd;\n  border-radius: 4px; }\n\n.callout-minimize {\n  margin-bottom: 1rem;\n  border-radius: 4px 4px;\n  padding: 0.5rem; }\n\n.icon-btn-text-small {\n  font-family: 'Roboto', sans-serif;\n  text-transform: Captitalize;\n  top: 15px;\n  right: 15px;\n  position: absolute;\n  color: #323232;\n  font-size: 1.1rem; }\n\n.test {\n  font-family: 'Pathway Gothic One', sans-serif;\n  text-transform: uppercase;\n  color: #fff;\n  font-size: 1rem;\n  background: #6abedb; }\n\nlabel {\n  text-transform: capitalize;\n  color: #232f32; }\n\n.header {\n  color: #323232;\n  margin-bottom: 0;\n  text-transform: capitalize;\n  font-weight: 500;\n  font-family: 'Roboto', sans-serif; }\n\n.sub-header {\n  color: #232f32;\n  font-size: 1.3rem;\n  font-family: 'Pathway Gothic One', sans-serif; }\n  .sub-header a {\n    text-transform: capitalize; }\n\n#watchList {\n  display: none; }\n\n.page-title {\n  color: #323232;\n  font-family: 'Roboto', sans-serif;\n  font-weight: 500;\n  font-size: 1.2rem; }\n\n.settings-page-title {\n  color: #323232;\n  font-family: 'Roboto', sans-serif;\n  font-weight: 700;\n  font-size: 1.4rem; }\n\n.settings-subheader {\n  font-weight: 200;\n  white-space: nowrap; }\n\n.settings-subheader-container {\n  padding-top: 1rem; }\n\n.settings-wrapper {\n  margin-left: 1.8rem; }\n\ninput[type=search] {\n  box-shadow: none; }\n\n.top-bar-upper {\n  color: #333;\n  font-size: 0.5rem; }\n\n.app-header {\n  font-size: 1.3rem; }\n\ntable.overview-custom tbody,\ntable.overview-custom th,\ntable.overview-custom thead,\ntable.overview-custom tr {\n  text-align: center; }\n\ntable.sensor-details-table tbody {\n  text-align: left; }\n\n.statusText {\n  color: red;\n  margin-bottom: 1rem;\n  text-transform: uppercase;\n  font-size: 0.85em; }\n\n.notificationHeader {\n  color: #fff;\n  text-transform: uppercase;\n  font-size: 0.5em;\n  font-weight: bold; }\n\n.sensorBlock {\n  height: 30px;\n  border-radius: 30px;\n  width: auto;\n  color: #fff;\n  text-align: center;\n  font-family: 'Pathway Gothic One', sans-serif;\n  text-transform: uppercase; }\n\n.sensorBlockSquare {\n  height: 30px;\n  width: 30px;\n  border-radius: 4px;\n  cursor: pointer;\n  text-align: center;\n  line-height: 28px;\n  color: white;\n  font-weight: bold; }\n\n.sensorBlockSquare:hover {\n  opacity: 0.5; }\n\n.sensorList {\n  display: inline-block;\n  margin-right: 1px; }\n\n#uptime-form select {\n  margin-right: 2rem; }\n\n.recharts-tooltip-wrapper {\n  z-index: 1000;\n  box-shadow: 1px 1px 4px #323232;\n  background-color: #fff; }\n\n#glance-tooltip > table tr:nth-of-type(even) {\n  background-color: transparent !important; }\n\n.button-custom {\n  height: 30px;\n  width: auto !important;\n  margin: 0;\n  color: #fff !important;\n  text-align: center;\n  font-family: 'Pathway Gothic One', sans-serif;\n  text-transform: uppercase; }\n\n.proceed {\n  background: #6abedb; }\n\n.cancel {\n  background: #990000; }\n\n.cancel:hover {\n  background: #7a0000; }\n\n.remove {\n  border: 1px solid #990000;\n  background-color: #fff;\n  color: #990000;\n  cursor: pointer; }\n\n.remove:hover {\n  background-color: #990000;\n  color: #fff !important; }\n\n.pin {\n  border: 1px solid #008000;\n  background-color: #fff;\n  color: #008000;\n  cursor: pointer; }\n\n.pin:hover {\n  background-color: #006600;\n  color: #fff !important; }\n\n.disabled {\n  pointer-events: none;\n  background: #e8e8e8;\n  border: none;\n  color: white;\n  cursor: default; }\n\n.disabled:hover {\n  pointer-events: none;\n  background: #e8e8e8;\n  border: none;\n  color: white;\n  cursor: default; }\n\n.tableOptions > li > a {\n  color: #323232;\n  font-weight: normal;\n  font-size: 1rem;\n  padding: 0.5rem 0.7rem; }\n\n.menuHeader:hover,\n.tableOptions .menuHeader {\n  background-color: #232f32 !important;\n  color: #fff;\n  padding: 0.3rem 0.7rem;\n  text-transform: uppercase; }\n\n.tableOptions > li {\n  border-bottom: 1px solid #f2f2f2; }\n\n.tableOptions > li:hover {\n  background-color: #f2f2f2; }\n\n.dropdown-pane {\n  padding: 0; }\n\n.panel-grey {\n  background-color: #e4e4e4; }\n\n#emailPanel,\n#namePanel,\n#passwordPanel,\n#dailyReportTimePanel,\n#flappingDownsPanel,\n#considerationPeriodPanel,\n#emailRecipientPanel {\n  display: none;\n  padding: 1rem;\n  background: #e4e4e4; }\n\ninput[type=checkbox]:checked ~ #port {\n  display: none; }\n\n#port {\n  display: block; }\n\n.inactive-link {\n  display: none; }\n\n.button-cancel {\n  border-color: #990000 !important;\n  color: #990000 !important; }\n\n.green {\n  background-color: #008000; }\n\n.orange {\n  background-color: #cc7a00; }\n\n.red {\n  background-color: #990000; }\n\n.black {\n  background-color: #1a1b1b; }\n\n.yellow {\n  background-color: #ffcc00; }\n\n.grey {\n  background-color: #737373; }\n\n.loader {\n  height: 4px;\n  width: 100%;\n  position: relative;\n  overflow: hidden;\n  background-color: #ddd; }\n\n.loader:before {\n  display: block;\n  position: absolute;\n  content: \"\";\n  left: -200px;\n  width: 200px;\n  height: 4px;\n  background-color: #2980b9;\n  animation: loading 2s linear infinite; }\n\n.no-border {\n  border: none;\n  width: inherit;\n  background-color: transparent; }\n\n@keyframes loading {\n  from {\n    left: -200px;\n    width: 30%; }\n  50% {\n    width: 30%; }\n  70% {\n    width: 70%; }\n  80% {\n    left: 50%; }\n  95% {\n    left: 120%; }\n  to {\n    left: 100%; } }\n\ntable.sensor-details-table td:nth-child(1) {\n  text-transform: Capitalize; }\n\ntable.sensorHealthTable tbody tr:nth-last-child(1) {\n  background-color: #f1f1f1;\n  border-top: 0.5px solid #d3d3d3; }\n\ntable.sensor-details-table tbody {\n  text-align: left; }\n\ntable.sensor-details-table td:nth-child(2), table.sensor-details-table th:nth-child(2) {\n  word-break: break-all;\n  text-align: center; }\n\ntable.actionLog tr > td:nth-child(2) {\n  font-weight: bold; }\n\n.table-container {\n  text-align: center; }\n\n.table-row-highlight {\n  font-weight: bold;\n  border: solid 1px #990000;\n  background-color: rgba(153, 0, 0, 0.4) !important; }\n\n.button-disabled {\n  pointer-events: none;\n  color: #000 !important; }\n\n#top-bar-pin:hover, #top-bar-delete:hover, #top-bar-edit:hover {\n  color: #6abedb; }\n\ninput::-webkit-outer-spin-button,\ninput::-webkit-inner-spin-button {\n  /* display: none; <- Crashes Chrome on hover */\n  -webkit-appearance: none;\n  margin: 0;\n  /* <— Apparently some margin are still there even though it's hidden */ }\n\n.tabs {\n  border: none; }\n\n.addEditSensor > tbody {\n  border: none; }\n", ""]);
 
 	// exports
 
@@ -88297,7 +88664,7 @@
 	exports.push([module.id, "@import url(https://fonts.googleapis.com/css?family=Lato:400,900i);", ""]);
 
 	// module
-	exports.push([module.id, "@charset \"UTF-8\";\nbody,\nhtml {\n  background: #f2f2f2;\n  height: 100%;\n  font-family: 'Roboto', sans-serif;\n  color: #1a1b1b; }\n\nbody {\n  -webkit-animation-delay: 0.1s;\n  -webkit-animation-name: fontfix;\n  -webkit-animation-duration: 0.1s;\n  -webkit-animation-iteration-count: 1;\n  -webkit-animation-timing-function: linear; }\n\n@-webkit-keyframes fontfix {\n  from {\n    opacity: 1; }\n  to {\n    opacity: 1; } }\n\n.row {\n  max-width: 80rem; }\n\n.loading-overlay {\n  background-color: rgba(10, 10, 10, 0.45) !important;\n  position: fixed;\n  top: 0;\n  bottom: 0;\n  left: 0;\n  right: 0; }\n\ndiv#offCanvas {\n  width: 350px;\n  height: 100%;\n  background: #e8e8e8; }\n\n.is-open-right {\n  transform: translateX(-350px); }\n\n.off-canvas.position-right {\n  right: -350px; }\n\n.off-canvas-content {\n  background: #f2f2f2; }\n\na {\n  color: #6abedb; }\n\nhr {\n  border-color: #bdbdbd;\n  margin-top: 0.5rem;\n  max-width: 100%; }\n\n.divider {\n  border-color: #bdbdbd;\n  margin-bottom: 10px; }\n\n.reveal {\n  top: 100px !important; }\n\ntable thead {\n  background: #d3d3d3;\n  color: #1a1b1b;\n  border: 1px solid #e4e4e4; }\n\ntable tbody {\n  color: #1a1b1b;\n  border: 1px solid #e4e4e4; }\n\n.margin-top-large {\n  margin-top: 4rem; }\n\n.margin-bottom-large {\n  margin-bottom: 4rem; }\n\n.margin-right-small {\n  margin-right: 2rem; }\n\n.margin-left-small {\n  margin-left: 2rem; }\n\n.margin-left-tiny {\n  margin-left: 0.5rem; }\n\n.margin-right-tiny {\n  margin-right: 0.5rem; }\n\n.margin-top-md {\n  margin-top: 2rem; }\n\n.margin-top-small {\n  margin-top: 1rem; }\n\n.margin-bottom-md {\n  margin-bottom: 2rem; }\n\n.margin-bottom-small {\n  margin-bottom: 1rem; }\n\n.textAlignCenter {\n  text-align: center; }\n\nul.header-list {\n  display: inline-block;\n  list-style: none;\n  margin-bottom: 0; }\n\n.sticky {\n  z-index: 10000;\n  left: 0 !important; }\n\n.callout {\n  background-color: #fff; }\n\n.callout-dark {\n  padding: 1.5rem;\n  background-color: #fff;\n  border: 2px solid #bdbdbd;\n  border-top: none;\n  margin-top: 0;\n  border-bottom-right-radius: 4px;\n  border-bottom-left-radius: 4px; }\n\n.scroll {\n  max-height: 100vh;\n  overflow-y: scroll; }\n\n.callout-dark-header {\n  padding: 0.5rem;\n  background-color: #fff;\n  border: 2px solid #bdbdbd;\n  border-bottom: 1px solid #bdbdbd;\n  border-top-left-radius: 4px;\n  border-top-right-radius: 4px;\n  margin-bottom: 0; }\n\n.callout-top-header {\n  padding: 1rem;\n  background-color: #f2f2f2;\n  border: 2px solid #bdbdbd;\n  border-radius: 4px; }\n\n.callout-minimize {\n  margin-bottom: 1rem;\n  border-radius: 4px 4px;\n  padding: 0.5rem; }\n\n.icon-btn-text-small {\n  font-family: 'Roboto', sans-serif;\n  text-transform: Captitalize;\n  top: 15px;\n  right: 15px;\n  position: absolute;\n  color: #323232;\n  font-size: 1.1rem; }\n\n.test {\n  font-family: 'Pathway Gothic One', sans-serif;\n  text-transform: uppercase;\n  color: #fff;\n  font-size: 1rem;\n  background: #6abedb; }\n\nlabel {\n  text-transform: capitalize;\n  color: #232f32; }\n\n.header {\n  color: #323232;\n  margin-bottom: 0;\n  text-transform: capitalize;\n  font-weight: 500;\n  font-family: 'Roboto', sans-serif; }\n\n.sub-header {\n  color: #232f32;\n  font-size: 1.3rem;\n  font-family: 'Pathway Gothic One', sans-serif; }\n  .sub-header a {\n    text-transform: capitalize; }\n\n#watchList {\n  display: none; }\n\n.page-title {\n  color: #323232;\n  font-family: 'Roboto', sans-serif;\n  font-weight: 500;\n  font-size: 1.2rem; }\n\n.settings-page-title {\n  color: #323232;\n  font-family: 'Roboto', sans-serif;\n  font-weight: 700;\n  font-size: 1.4rem; }\n\n.settings-subheader {\n  font-weight: 200;\n  white-space: nowrap; }\n\n.settings-subheader-container {\n  padding-top: 1rem; }\n\n.settings-wrapper {\n  margin-left: 1.8rem; }\n\ninput[type=search] {\n  box-shadow: none; }\n\n.top-bar-upper {\n  color: #333;\n  font-size: 0.5rem; }\n\n.app-header {\n  font-size: 1.3rem; }\n\ntable.overview-custom tbody,\ntable.overview-custom th,\ntable.overview-custom thead,\ntable.overview-custom tr {\n  text-align: center; }\n\ntable.sensor-details-table tbody {\n  text-align: left; }\n\n.statusText {\n  color: red;\n  margin-bottom: 1rem;\n  text-transform: uppercase;\n  font-size: 0.85em; }\n\n.notificationHeader {\n  color: #fff;\n  text-transform: uppercase;\n  font-size: 0.5em;\n  font-weight: bold; }\n\n.sensorBlock {\n  height: 30px;\n  border-radius: 30px;\n  width: auto;\n  color: #fff;\n  text-align: center;\n  font-family: 'Pathway Gothic One', sans-serif;\n  text-transform: uppercase; }\n\n.sensorBlockSquare {\n  height: 30px;\n  width: 30px;\n  border-radius: 4px;\n  cursor: pointer;\n  text-align: center;\n  line-height: 28px;\n  color: white;\n  font-weight: bold; }\n\n.sensorBlockSquare:hover {\n  opacity: 0.5; }\n\n.sensorList {\n  display: inline-block;\n  margin-right: 1px; }\n\n#uptime-form select {\n  margin-right: 2rem; }\n\n.recharts-tooltip-wrapper {\n  z-index: 1000;\n  box-shadow: 1px 1px 4px #323232;\n  background-color: #fff; }\n\n#glance-tooltip > table tr:nth-of-type(even) {\n  background-color: transparent !important; }\n\n.button-custom {\n  height: 30px;\n  width: auto !important;\n  margin: 0;\n  color: #fff !important;\n  text-align: center;\n  font-family: 'Pathway Gothic One', sans-serif;\n  text-transform: uppercase; }\n\n.proceed {\n  background: #6abedb; }\n\n.cancel {\n  background: #990000; }\n\n.cancel:hover {\n  background: #7a0000; }\n\n.remove {\n  border: 1px solid #990000;\n  background-color: #fff;\n  color: #990000;\n  cursor: pointer; }\n\n.remove:hover {\n  background-color: #990000;\n  color: #fff !important; }\n\n.pin {\n  border: 1px solid #008000;\n  background-color: #fff;\n  color: #008000;\n  cursor: pointer; }\n\n.pin:hover {\n  background-color: #006600;\n  color: #fff !important; }\n\n.disabled {\n  pointer-events: none;\n  background: #e8e8e8;\n  border: none;\n  color: white;\n  cursor: default; }\n\n.disabled:hover {\n  pointer-events: none;\n  background: #e8e8e8;\n  border: none;\n  color: white;\n  cursor: default; }\n\n.tableOptions > li > a {\n  color: #323232;\n  font-weight: normal;\n  font-size: 1rem;\n  padding: 0.5rem 0.7rem; }\n\n.menuHeader:hover,\n.tableOptions .menuHeader {\n  background-color: #232f32 !important;\n  color: #fff;\n  padding: 0.3rem 0.7rem;\n  text-transform: uppercase; }\n\n.tableOptions > li {\n  border-bottom: 1px solid #f2f2f2; }\n\n.tableOptions > li:hover {\n  background-color: #f2f2f2; }\n\n.dropdown-pane {\n  padding: 0; }\n\n.panel-grey {\n  background-color: #e4e4e4; }\n\n#emailPanel,\n#namePanel,\n#passwordPanel,\n#dailyReportTimePanel,\n#flappingDownsPanel,\n#considerationPeriodPanel,\n#emailRecipientPanel {\n  display: none;\n  padding: 1rem;\n  background: #e4e4e4; }\n\ninput[type=checkbox]:checked ~ #port {\n  display: none; }\n\n#port {\n  display: block; }\n\n.inactive-link {\n  display: none; }\n\n.button-cancel {\n  border-color: #990000 !important;\n  color: #990000 !important; }\n\n.green {\n  background-color: #008000; }\n\n.orange {\n  background-color: #cc7a00; }\n\n.red {\n  background-color: #990000; }\n\n.black {\n  background-color: #1a1b1b; }\n\n.yellow {\n  background-color: #ffcc00; }\n\n.grey {\n  background-color: #737373; }\n\n.loader {\n  height: 4px;\n  width: 100%;\n  position: relative;\n  overflow: hidden;\n  background-color: #ddd; }\n\n.loader:before {\n  display: block;\n  position: absolute;\n  content: \"\";\n  left: -200px;\n  width: 200px;\n  height: 4px;\n  background-color: #2980b9;\n  animation: loading 2s linear infinite; }\n\n.no-border {\n  border: none;\n  width: inherit;\n  background-color: transparent; }\n\n@keyframes loading {\n  from {\n    left: -200px;\n    width: 30%; }\n  50% {\n    width: 30%; }\n  70% {\n    width: 70%; }\n  80% {\n    left: 50%; }\n  95% {\n    left: 120%; }\n  to {\n    left: 100%; } }\n\ntable.sensor-details-table td:nth-child(1) {\n  text-transform: Capitalize; }\n\ntable.sensor-details-table tbody {\n  text-align: left; }\n\ntable.sensor-details-table td:nth-child(2), table.sensor-details-table th:nth-child(2) {\n  word-break: break-all;\n  text-align: center; }\n\ntable.actionLog tr > td:nth-child(2) {\n  font-weight: bold; }\n\n.table-container {\n  text-align: center; }\n\n.table-row-highlight {\n  font-weight: bold;\n  border: solid 1px #990000;\n  background-color: rgba(153, 0, 0, 0.4) !important; }\n\n.button-disabled {\n  pointer-events: none;\n  color: #000 !important; }\n\n#top-bar-pin:hover, #top-bar-delete:hover, #top-bar-edit:hover {\n  color: #6abedb; }\n\ninput::-webkit-outer-spin-button,\ninput::-webkit-inner-spin-button {\n  /* display: none; <- Crashes Chrome on hover */\n  -webkit-appearance: none;\n  margin: 0;\n  /* <— Apparently some margin are still there even though it's hidden */ }\n\n.tabs {\n  border: none; }\n\n.addEditSensor {\n  border: none; }\n\n.top-bar-left {\n  margin-top: 1.5rem; }\n\n.top-bar-right {\n  margin-top: 1.5rem;\n  text-align: right; }\n\n.top-bar {\n  padding: 0rem 2rem 0rem 2rem;\n  background: #232f32;\n  height: 4rem;\n  box-shadow: 0.5px 0.5px 5px #373837; }\n\n.top-bar ul {\n  background: #232f32;\n  /* temporary fix */\n  position: absolute;\n  top: 15px;\n  right: 15px; }\n\n.top-bar.lower {\n  padding-top: 0px; }\n\n.top-bar-title {\n  font-size: 1.5rem;\n  font-family: 'Lato', sans-serif;\n  font-weight: bold;\n  position: absolute;\n  top: 15px;\n  left: 15px;\n  color: #fff; }\n\n.menu > li > a {\n  color: #fafafa;\n  font-weight: bold;\n  font-size: 0.9rem;\n  text-transform: capitalize; }\n\n.is-dropdown-submenu {\n  border: 1px solid #373737; }\n", ""]);
+	exports.push([module.id, "@charset \"UTF-8\";\nbody,\nhtml {\n  background: #f2f2f2;\n  height: 100%;\n  font-family: 'Roboto', sans-serif;\n  color: #1a1b1b; }\n\nbody {\n  -webkit-animation-delay: 0.1s;\n  -webkit-animation-name: fontfix;\n  -webkit-animation-duration: 0.1s;\n  -webkit-animation-iteration-count: 1;\n  -webkit-animation-timing-function: linear; }\n\n@-webkit-keyframes fontfix {\n  from {\n    opacity: 1; }\n  to {\n    opacity: 1; } }\n\n.row {\n  max-width: 80rem; }\n\n.loading-overlay {\n  background-color: rgba(10, 10, 10, 0.45) !important;\n  position: fixed;\n  top: 0;\n  bottom: 0;\n  left: 0;\n  right: 0; }\n\ndiv#offCanvas {\n  width: 350px;\n  height: 100%;\n  background: #e8e8e8; }\n\n.is-open-right {\n  transform: translateX(-350px); }\n\n.off-canvas.position-right {\n  right: -350px; }\n\n.off-canvas-content {\n  background: #f2f2f2; }\n\na {\n  color: #1a1b1b; }\n  a a:hover {\n    color: #6abedb; }\n\nhr {\n  border-color: #bdbdbd;\n  margin-top: 0.5rem;\n  max-width: 100%; }\n\n.divider {\n  border-color: #bdbdbd;\n  margin-bottom: 10px; }\n\n.reveal {\n  top: 100px !important; }\n\ntable thead {\n  background: #d3d3d3;\n  color: #1a1b1b;\n  border: 1px solid #e4e4e4; }\n\ntable tbody {\n  color: #1a1b1b;\n  border: 1px solid #e4e4e4; }\n\n.margin-top-large {\n  margin-top: 4rem; }\n\n.margin-bottom-large {\n  margin-bottom: 4rem; }\n\n.margin-right-small {\n  margin-right: 2rem; }\n\n.margin-left-small {\n  margin-left: 2rem; }\n\n.margin-left-tiny {\n  margin-left: 0.5rem; }\n\n.margin-right-tiny {\n  margin-right: 0.5rem; }\n\n.margin-top-md {\n  margin-top: 2rem; }\n\n.margin-top-small {\n  margin-top: 1rem; }\n\n.margin-bottom-md {\n  margin-bottom: 2rem; }\n\n.margin-bottom-small {\n  margin-bottom: 1rem; }\n\n.textAlignCenter {\n  text-align: center; }\n\nul.header-list {\n  display: inline-block;\n  list-style: none;\n  margin-bottom: 0; }\n\n.sticky {\n  z-index: 10000;\n  left: 0 !important; }\n\n.callout {\n  background-color: #fff; }\n\n.callout-dark {\n  padding: 1.5rem;\n  background-color: #fff;\n  border: 2px solid #bdbdbd;\n  border-top: none;\n  margin-top: 0;\n  border-bottom-right-radius: 4px;\n  border-bottom-left-radius: 4px; }\n\n.scroll {\n  max-height: 100vh;\n  overflow-y: scroll; }\n\n.callout-dark-header {\n  padding: 0.5rem;\n  background-color: #fff;\n  border: 2px solid #bdbdbd;\n  border-bottom: 1px solid #bdbdbd;\n  border-top-left-radius: 4px;\n  border-top-right-radius: 4px;\n  margin-bottom: 0; }\n\n.callout-top-header {\n  padding: 1rem;\n  background-color: #f2f2f2;\n  border: 2px solid #bdbdbd;\n  border-radius: 4px; }\n\n.callout-minimize {\n  margin-bottom: 1rem;\n  border-radius: 4px 4px;\n  padding: 0.5rem; }\n\n.icon-btn-text-small {\n  font-family: 'Roboto', sans-serif;\n  text-transform: Captitalize;\n  top: 15px;\n  right: 15px;\n  position: absolute;\n  color: #323232;\n  font-size: 1.1rem; }\n\n.test {\n  font-family: 'Pathway Gothic One', sans-serif;\n  text-transform: uppercase;\n  color: #fff;\n  font-size: 1rem;\n  background: #6abedb; }\n\nlabel {\n  text-transform: capitalize;\n  color: #232f32; }\n\n.header {\n  color: #323232;\n  margin-bottom: 0;\n  text-transform: capitalize;\n  font-weight: 500;\n  font-family: 'Roboto', sans-serif; }\n\n.sub-header {\n  color: #232f32;\n  font-size: 1.3rem;\n  font-family: 'Pathway Gothic One', sans-serif; }\n  .sub-header a {\n    text-transform: capitalize; }\n\n#watchList {\n  display: none; }\n\n.page-title {\n  color: #323232;\n  font-family: 'Roboto', sans-serif;\n  font-weight: 500;\n  font-size: 1.2rem; }\n\n.settings-page-title {\n  color: #323232;\n  font-family: 'Roboto', sans-serif;\n  font-weight: 700;\n  font-size: 1.4rem; }\n\n.settings-subheader {\n  font-weight: 200;\n  white-space: nowrap; }\n\n.settings-subheader-container {\n  padding-top: 1rem; }\n\n.settings-wrapper {\n  margin-left: 1.8rem; }\n\ninput[type=search] {\n  box-shadow: none; }\n\n.top-bar-upper {\n  color: #333;\n  font-size: 0.5rem; }\n\n.app-header {\n  font-size: 1.3rem; }\n\ntable.overview-custom tbody,\ntable.overview-custom th,\ntable.overview-custom thead,\ntable.overview-custom tr {\n  text-align: center; }\n\ntable.sensor-details-table tbody {\n  text-align: left; }\n\n.statusText {\n  color: red;\n  margin-bottom: 1rem;\n  text-transform: uppercase;\n  font-size: 0.85em; }\n\n.notificationHeader {\n  color: #fff;\n  text-transform: uppercase;\n  font-size: 0.5em;\n  font-weight: bold; }\n\n.sensorBlock {\n  height: 30px;\n  border-radius: 30px;\n  width: auto;\n  color: #fff;\n  text-align: center;\n  font-family: 'Pathway Gothic One', sans-serif;\n  text-transform: uppercase; }\n\n.sensorBlockSquare {\n  height: 30px;\n  width: 30px;\n  border-radius: 4px;\n  cursor: pointer;\n  text-align: center;\n  line-height: 28px;\n  color: white;\n  font-weight: bold; }\n\n.sensorBlockSquare:hover {\n  opacity: 0.5; }\n\n.sensorList {\n  display: inline-block;\n  margin-right: 1px; }\n\n#uptime-form select {\n  margin-right: 2rem; }\n\n.recharts-tooltip-wrapper {\n  z-index: 1000;\n  box-shadow: 1px 1px 4px #323232;\n  background-color: #fff; }\n\n#glance-tooltip > table tr:nth-of-type(even) {\n  background-color: transparent !important; }\n\n.button-custom {\n  height: 30px;\n  width: auto !important;\n  margin: 0;\n  color: #fff !important;\n  text-align: center;\n  font-family: 'Pathway Gothic One', sans-serif;\n  text-transform: uppercase; }\n\n.proceed {\n  background: #6abedb; }\n\n.cancel {\n  background: #990000; }\n\n.cancel:hover {\n  background: #7a0000; }\n\n.remove {\n  border: 1px solid #990000;\n  background-color: #fff;\n  color: #990000;\n  cursor: pointer; }\n\n.remove:hover {\n  background-color: #990000;\n  color: #fff !important; }\n\n.pin {\n  border: 1px solid #008000;\n  background-color: #fff;\n  color: #008000;\n  cursor: pointer; }\n\n.pin:hover {\n  background-color: #006600;\n  color: #fff !important; }\n\n.disabled {\n  pointer-events: none;\n  background: #e8e8e8;\n  border: none;\n  color: white;\n  cursor: default; }\n\n.disabled:hover {\n  pointer-events: none;\n  background: #e8e8e8;\n  border: none;\n  color: white;\n  cursor: default; }\n\n.tableOptions > li > a {\n  color: #323232;\n  font-weight: normal;\n  font-size: 1rem;\n  padding: 0.5rem 0.7rem; }\n\n.menuHeader:hover,\n.tableOptions .menuHeader {\n  background-color: #232f32 !important;\n  color: #fff;\n  padding: 0.3rem 0.7rem;\n  text-transform: uppercase; }\n\n.tableOptions > li {\n  border-bottom: 1px solid #f2f2f2; }\n\n.tableOptions > li:hover {\n  background-color: #f2f2f2; }\n\n.dropdown-pane {\n  padding: 0; }\n\n.panel-grey {\n  background-color: #e4e4e4; }\n\n#emailPanel,\n#namePanel,\n#passwordPanel,\n#dailyReportTimePanel,\n#flappingDownsPanel,\n#considerationPeriodPanel,\n#emailRecipientPanel {\n  display: none;\n  padding: 1rem;\n  background: #e4e4e4; }\n\ninput[type=checkbox]:checked ~ #port {\n  display: none; }\n\n#port {\n  display: block; }\n\n.inactive-link {\n  display: none; }\n\n.button-cancel {\n  border-color: #990000 !important;\n  color: #990000 !important; }\n\n.green {\n  background-color: #008000; }\n\n.orange {\n  background-color: #cc7a00; }\n\n.red {\n  background-color: #990000; }\n\n.black {\n  background-color: #1a1b1b; }\n\n.yellow {\n  background-color: #ffcc00; }\n\n.grey {\n  background-color: #737373; }\n\n.loader {\n  height: 4px;\n  width: 100%;\n  position: relative;\n  overflow: hidden;\n  background-color: #ddd; }\n\n.loader:before {\n  display: block;\n  position: absolute;\n  content: \"\";\n  left: -200px;\n  width: 200px;\n  height: 4px;\n  background-color: #2980b9;\n  animation: loading 2s linear infinite; }\n\n.no-border {\n  border: none;\n  width: inherit;\n  background-color: transparent; }\n\n@keyframes loading {\n  from {\n    left: -200px;\n    width: 30%; }\n  50% {\n    width: 30%; }\n  70% {\n    width: 70%; }\n  80% {\n    left: 50%; }\n  95% {\n    left: 120%; }\n  to {\n    left: 100%; } }\n\ntable.sensor-details-table td:nth-child(1) {\n  text-transform: Capitalize; }\n\ntable.sensorHealthTable tbody tr:nth-last-child(1) {\n  background-color: #f1f1f1;\n  border-top: 0.5px solid #d3d3d3; }\n\ntable.sensor-details-table tbody {\n  text-align: left; }\n\ntable.sensor-details-table td:nth-child(2), table.sensor-details-table th:nth-child(2) {\n  word-break: break-all;\n  text-align: center; }\n\ntable.actionLog tr > td:nth-child(2) {\n  font-weight: bold; }\n\n.table-container {\n  text-align: center; }\n\n.table-row-highlight {\n  font-weight: bold;\n  border: solid 1px #990000;\n  background-color: rgba(153, 0, 0, 0.4) !important; }\n\n.button-disabled {\n  pointer-events: none;\n  color: #000 !important; }\n\n#top-bar-pin:hover, #top-bar-delete:hover, #top-bar-edit:hover {\n  color: #6abedb; }\n\ninput::-webkit-outer-spin-button,\ninput::-webkit-inner-spin-button {\n  /* display: none; <- Crashes Chrome on hover */\n  -webkit-appearance: none;\n  margin: 0;\n  /* <— Apparently some margin are still there even though it's hidden */ }\n\n.tabs {\n  border: none; }\n\n.addEditSensor > tbody {\n  border: none; }\n\n.top-bar-left {\n  margin-top: 1.5rem; }\n\n.top-bar-right {\n  margin-top: 1.5rem;\n  text-align: right; }\n\n.top-bar {\n  padding: 0rem 2rem 0rem 2rem;\n  background: #232f32;\n  height: 4rem;\n  box-shadow: 0.5px 0.5px 5px #373837; }\n\n.top-bar ul {\n  background: #232f32;\n  /* temporary fix */\n  position: absolute;\n  top: 15px;\n  right: 15px; }\n\n.top-bar.lower {\n  padding-top: 0px; }\n\n.top-bar-title {\n  font-size: 1.5rem;\n  font-family: 'Lato', sans-serif;\n  font-weight: bold;\n  position: absolute;\n  top: 15px;\n  left: 15px;\n  color: #fff; }\n\n.menu > li > a {\n  color: #fafafa;\n  font-weight: bold;\n  font-size: 0.9rem;\n  text-transform: capitalize; }\n\n.is-dropdown-submenu {\n  border: 1px solid #373737; }\n", ""]);
 
 	// exports
 
@@ -88379,7 +88746,7 @@
 	exports.push([module.id, "@import url(https://fonts.googleapis.com/css?family=Lato:400,900i);", ""]);
 
 	// module
-	exports.push([module.id, "@charset \"UTF-8\";\nbody,\nhtml {\n  background: #f2f2f2;\n  height: 100%;\n  font-family: 'Roboto', sans-serif;\n  color: #1a1b1b; }\n\nbody {\n  -webkit-animation-delay: 0.1s;\n  -webkit-animation-name: fontfix;\n  -webkit-animation-duration: 0.1s;\n  -webkit-animation-iteration-count: 1;\n  -webkit-animation-timing-function: linear; }\n\n@-webkit-keyframes fontfix {\n  from {\n    opacity: 1; }\n  to {\n    opacity: 1; } }\n\n.row {\n  max-width: 80rem; }\n\n.loading-overlay {\n  background-color: rgba(10, 10, 10, 0.45) !important;\n  position: fixed;\n  top: 0;\n  bottom: 0;\n  left: 0;\n  right: 0; }\n\ndiv#offCanvas {\n  width: 350px;\n  height: 100%;\n  background: #e8e8e8; }\n\n.is-open-right {\n  transform: translateX(-350px); }\n\n.off-canvas.position-right {\n  right: -350px; }\n\n.off-canvas-content {\n  background: #f2f2f2; }\n\na {\n  color: #6abedb; }\n\nhr {\n  border-color: #bdbdbd;\n  margin-top: 0.5rem;\n  max-width: 100%; }\n\n.divider {\n  border-color: #bdbdbd;\n  margin-bottom: 10px; }\n\n.reveal {\n  top: 100px !important; }\n\ntable thead {\n  background: #d3d3d3;\n  color: #1a1b1b;\n  border: 1px solid #e4e4e4; }\n\ntable tbody {\n  color: #1a1b1b;\n  border: 1px solid #e4e4e4; }\n\n.margin-top-large {\n  margin-top: 4rem; }\n\n.margin-bottom-large {\n  margin-bottom: 4rem; }\n\n.margin-right-small {\n  margin-right: 2rem; }\n\n.margin-left-small {\n  margin-left: 2rem; }\n\n.margin-left-tiny {\n  margin-left: 0.5rem; }\n\n.margin-right-tiny {\n  margin-right: 0.5rem; }\n\n.margin-top-md {\n  margin-top: 2rem; }\n\n.margin-top-small {\n  margin-top: 1rem; }\n\n.margin-bottom-md {\n  margin-bottom: 2rem; }\n\n.margin-bottom-small {\n  margin-bottom: 1rem; }\n\n.textAlignCenter {\n  text-align: center; }\n\nul.header-list {\n  display: inline-block;\n  list-style: none;\n  margin-bottom: 0; }\n\n.sticky {\n  z-index: 10000;\n  left: 0 !important; }\n\n.callout {\n  background-color: #fff; }\n\n.callout-dark {\n  padding: 1.5rem;\n  background-color: #fff;\n  border: 2px solid #bdbdbd;\n  border-top: none;\n  margin-top: 0;\n  border-bottom-right-radius: 4px;\n  border-bottom-left-radius: 4px; }\n\n.scroll {\n  max-height: 100vh;\n  overflow-y: scroll; }\n\n.callout-dark-header {\n  padding: 0.5rem;\n  background-color: #fff;\n  border: 2px solid #bdbdbd;\n  border-bottom: 1px solid #bdbdbd;\n  border-top-left-radius: 4px;\n  border-top-right-radius: 4px;\n  margin-bottom: 0; }\n\n.callout-top-header {\n  padding: 1rem;\n  background-color: #f2f2f2;\n  border: 2px solid #bdbdbd;\n  border-radius: 4px; }\n\n.callout-minimize {\n  margin-bottom: 1rem;\n  border-radius: 4px 4px;\n  padding: 0.5rem; }\n\n.icon-btn-text-small {\n  font-family: 'Roboto', sans-serif;\n  text-transform: Captitalize;\n  top: 15px;\n  right: 15px;\n  position: absolute;\n  color: #323232;\n  font-size: 1.1rem; }\n\n.test {\n  font-family: 'Pathway Gothic One', sans-serif;\n  text-transform: uppercase;\n  color: #fff;\n  font-size: 1rem;\n  background: #6abedb; }\n\nlabel {\n  text-transform: capitalize;\n  color: #232f32; }\n\n.header {\n  color: #323232;\n  margin-bottom: 0;\n  text-transform: capitalize;\n  font-weight: 500;\n  font-family: 'Roboto', sans-serif; }\n\n.sub-header {\n  color: #232f32;\n  font-size: 1.3rem;\n  font-family: 'Pathway Gothic One', sans-serif; }\n  .sub-header a {\n    text-transform: capitalize; }\n\n#watchList {\n  display: none; }\n\n.page-title {\n  color: #323232;\n  font-family: 'Roboto', sans-serif;\n  font-weight: 500;\n  font-size: 1.2rem; }\n\n.settings-page-title {\n  color: #323232;\n  font-family: 'Roboto', sans-serif;\n  font-weight: 700;\n  font-size: 1.4rem; }\n\n.settings-subheader {\n  font-weight: 200;\n  white-space: nowrap; }\n\n.settings-subheader-container {\n  padding-top: 1rem; }\n\n.settings-wrapper {\n  margin-left: 1.8rem; }\n\ninput[type=search] {\n  box-shadow: none; }\n\n.top-bar-upper {\n  color: #333;\n  font-size: 0.5rem; }\n\n.app-header {\n  font-size: 1.3rem; }\n\ntable.overview-custom tbody,\ntable.overview-custom th,\ntable.overview-custom thead,\ntable.overview-custom tr {\n  text-align: center; }\n\ntable.sensor-details-table tbody {\n  text-align: left; }\n\n.statusText {\n  color: red;\n  margin-bottom: 1rem;\n  text-transform: uppercase;\n  font-size: 0.85em; }\n\n.notificationHeader {\n  color: #fff;\n  text-transform: uppercase;\n  font-size: 0.5em;\n  font-weight: bold; }\n\n.sensorBlock {\n  height: 30px;\n  border-radius: 30px;\n  width: auto;\n  color: #fff;\n  text-align: center;\n  font-family: 'Pathway Gothic One', sans-serif;\n  text-transform: uppercase; }\n\n.sensorBlockSquare {\n  height: 30px;\n  width: 30px;\n  border-radius: 4px;\n  cursor: pointer;\n  text-align: center;\n  line-height: 28px;\n  color: white;\n  font-weight: bold; }\n\n.sensorBlockSquare:hover {\n  opacity: 0.5; }\n\n.sensorList {\n  display: inline-block;\n  margin-right: 1px; }\n\n#uptime-form select {\n  margin-right: 2rem; }\n\n.recharts-tooltip-wrapper {\n  z-index: 1000;\n  box-shadow: 1px 1px 4px #323232;\n  background-color: #fff; }\n\n#glance-tooltip > table tr:nth-of-type(even) {\n  background-color: transparent !important; }\n\n.button-custom {\n  height: 30px;\n  width: auto !important;\n  margin: 0;\n  color: #fff !important;\n  text-align: center;\n  font-family: 'Pathway Gothic One', sans-serif;\n  text-transform: uppercase; }\n\n.proceed {\n  background: #6abedb; }\n\n.cancel {\n  background: #990000; }\n\n.cancel:hover {\n  background: #7a0000; }\n\n.remove {\n  border: 1px solid #990000;\n  background-color: #fff;\n  color: #990000;\n  cursor: pointer; }\n\n.remove:hover {\n  background-color: #990000;\n  color: #fff !important; }\n\n.pin {\n  border: 1px solid #008000;\n  background-color: #fff;\n  color: #008000;\n  cursor: pointer; }\n\n.pin:hover {\n  background-color: #006600;\n  color: #fff !important; }\n\n.disabled {\n  pointer-events: none;\n  background: #e8e8e8;\n  border: none;\n  color: white;\n  cursor: default; }\n\n.disabled:hover {\n  pointer-events: none;\n  background: #e8e8e8;\n  border: none;\n  color: white;\n  cursor: default; }\n\n.tableOptions > li > a {\n  color: #323232;\n  font-weight: normal;\n  font-size: 1rem;\n  padding: 0.5rem 0.7rem; }\n\n.menuHeader:hover,\n.tableOptions .menuHeader {\n  background-color: #232f32 !important;\n  color: #fff;\n  padding: 0.3rem 0.7rem;\n  text-transform: uppercase; }\n\n.tableOptions > li {\n  border-bottom: 1px solid #f2f2f2; }\n\n.tableOptions > li:hover {\n  background-color: #f2f2f2; }\n\n.dropdown-pane {\n  padding: 0; }\n\n.panel-grey {\n  background-color: #e4e4e4; }\n\n#emailPanel,\n#namePanel,\n#passwordPanel,\n#dailyReportTimePanel,\n#flappingDownsPanel,\n#considerationPeriodPanel,\n#emailRecipientPanel {\n  display: none;\n  padding: 1rem;\n  background: #e4e4e4; }\n\ninput[type=checkbox]:checked ~ #port {\n  display: none; }\n\n#port {\n  display: block; }\n\n.inactive-link {\n  display: none; }\n\n.button-cancel {\n  border-color: #990000 !important;\n  color: #990000 !important; }\n\n.green {\n  background-color: #008000; }\n\n.orange {\n  background-color: #cc7a00; }\n\n.red {\n  background-color: #990000; }\n\n.black {\n  background-color: #1a1b1b; }\n\n.yellow {\n  background-color: #ffcc00; }\n\n.grey {\n  background-color: #737373; }\n\n.loader {\n  height: 4px;\n  width: 100%;\n  position: relative;\n  overflow: hidden;\n  background-color: #ddd; }\n\n.loader:before {\n  display: block;\n  position: absolute;\n  content: \"\";\n  left: -200px;\n  width: 200px;\n  height: 4px;\n  background-color: #2980b9;\n  animation: loading 2s linear infinite; }\n\n.no-border {\n  border: none;\n  width: inherit;\n  background-color: transparent; }\n\n@keyframes loading {\n  from {\n    left: -200px;\n    width: 30%; }\n  50% {\n    width: 30%; }\n  70% {\n    width: 70%; }\n  80% {\n    left: 50%; }\n  95% {\n    left: 120%; }\n  to {\n    left: 100%; } }\n\ntable.sensor-details-table td:nth-child(1) {\n  text-transform: Capitalize; }\n\ntable.sensor-details-table tbody {\n  text-align: left; }\n\ntable.sensor-details-table td:nth-child(2), table.sensor-details-table th:nth-child(2) {\n  word-break: break-all;\n  text-align: center; }\n\ntable.actionLog tr > td:nth-child(2) {\n  font-weight: bold; }\n\n.table-container {\n  text-align: center; }\n\n.table-row-highlight {\n  font-weight: bold;\n  border: solid 1px #990000;\n  background-color: rgba(153, 0, 0, 0.4) !important; }\n\n.button-disabled {\n  pointer-events: none;\n  color: #000 !important; }\n\n#top-bar-pin:hover, #top-bar-delete:hover, #top-bar-edit:hover {\n  color: #6abedb; }\n\ninput::-webkit-outer-spin-button,\ninput::-webkit-inner-spin-button {\n  /* display: none; <- Crashes Chrome on hover */\n  -webkit-appearance: none;\n  margin: 0;\n  /* <— Apparently some margin are still there even though it's hidden */ }\n\n.tabs {\n  border: none; }\n\n.addEditSensor {\n  border: none; }\n\n.griddle-container {\n  border: none !important; }\n\n.griddle .top-section {\n  clear: both;\n  display: table;\n  width: 100%; }\n\n.griddle .griddle-filter {\n  float: left;\n  width: 50%;\n  text-align: left;\n  color: #222;\n  min-height: 1px; }\n\n.griddle-body {\n  font-size: 1em;\n  overflow-x: scroll; }\n\n.griddle .griddle-settings-toggle {\n  float: left;\n  width: 50%;\n  text-align: right;\n  color: #f8f8f8; }\n\n.griddle .griddle-settings {\n  background-color: #FFF;\n  border: 1px solid #DDD;\n  color: #222;\n  padding: 10px;\n  margin-bottom: 10px; }\n\n.griddle .griddle-settings .settings {\n  color: #f8f8f8; }\n\n.griddle .griddle-settings .griddle-columns {\n  clear: both;\n  display: table;\n  width: 100%;\n  border-bottom: 1px solid #EDEDED;\n  margin-bottom: 10px; }\n\n.griddle .griddle-settings .griddle-column-selection {\n  float: left;\n  width: 20%; }\n\n.griddle table {\n  width: 100%;\n  table-layout: auto !important; }\n\n.griddle th {\n  background-color: #EDEDEF;\n  border: 0px;\n  border-bottom: 1px solid #DDD;\n  color: #222;\n  padding: 5px; }\n\n.griddle td {\n  padding: 5px;\n  background-color: #FFF;\n  border-top-color: #DDD;\n  color: #222; }\n\n.griddle .footer-container {\n  padding: 0px;\n  background-color: #EDEDED;\n  border: 0px;\n  color: #222; }\n\n.griddle button {\n  font-weight: bold;\n  color: #232f32; }\n\n.griddle .griddle-previous, .griddle .griddle-page, .griddle .griddle-next {\n  float: left;\n  width: 33%;\n  min-height: 1px;\n  margin-top: 5px; }\n\n.griddle .griddle-page {\n  text-align: center; }\n\n.griddle .griddle-next {\n  text-align: right; }\n", ""]);
+	exports.push([module.id, "@charset \"UTF-8\";\nbody,\nhtml {\n  background: #f2f2f2;\n  height: 100%;\n  font-family: 'Roboto', sans-serif;\n  color: #1a1b1b; }\n\nbody {\n  -webkit-animation-delay: 0.1s;\n  -webkit-animation-name: fontfix;\n  -webkit-animation-duration: 0.1s;\n  -webkit-animation-iteration-count: 1;\n  -webkit-animation-timing-function: linear; }\n\n@-webkit-keyframes fontfix {\n  from {\n    opacity: 1; }\n  to {\n    opacity: 1; } }\n\n.row {\n  max-width: 80rem; }\n\n.loading-overlay {\n  background-color: rgba(10, 10, 10, 0.45) !important;\n  position: fixed;\n  top: 0;\n  bottom: 0;\n  left: 0;\n  right: 0; }\n\ndiv#offCanvas {\n  width: 350px;\n  height: 100%;\n  background: #e8e8e8; }\n\n.is-open-right {\n  transform: translateX(-350px); }\n\n.off-canvas.position-right {\n  right: -350px; }\n\n.off-canvas-content {\n  background: #f2f2f2; }\n\na {\n  color: #1a1b1b; }\n  a a:hover {\n    color: #6abedb; }\n\nhr {\n  border-color: #bdbdbd;\n  margin-top: 0.5rem;\n  max-width: 100%; }\n\n.divider {\n  border-color: #bdbdbd;\n  margin-bottom: 10px; }\n\n.reveal {\n  top: 100px !important; }\n\ntable thead {\n  background: #d3d3d3;\n  color: #1a1b1b;\n  border: 1px solid #e4e4e4; }\n\ntable tbody {\n  color: #1a1b1b;\n  border: 1px solid #e4e4e4; }\n\n.margin-top-large {\n  margin-top: 4rem; }\n\n.margin-bottom-large {\n  margin-bottom: 4rem; }\n\n.margin-right-small {\n  margin-right: 2rem; }\n\n.margin-left-small {\n  margin-left: 2rem; }\n\n.margin-left-tiny {\n  margin-left: 0.5rem; }\n\n.margin-right-tiny {\n  margin-right: 0.5rem; }\n\n.margin-top-md {\n  margin-top: 2rem; }\n\n.margin-top-small {\n  margin-top: 1rem; }\n\n.margin-bottom-md {\n  margin-bottom: 2rem; }\n\n.margin-bottom-small {\n  margin-bottom: 1rem; }\n\n.textAlignCenter {\n  text-align: center; }\n\nul.header-list {\n  display: inline-block;\n  list-style: none;\n  margin-bottom: 0; }\n\n.sticky {\n  z-index: 10000;\n  left: 0 !important; }\n\n.callout {\n  background-color: #fff; }\n\n.callout-dark {\n  padding: 1.5rem;\n  background-color: #fff;\n  border: 2px solid #bdbdbd;\n  border-top: none;\n  margin-top: 0;\n  border-bottom-right-radius: 4px;\n  border-bottom-left-radius: 4px; }\n\n.scroll {\n  max-height: 100vh;\n  overflow-y: scroll; }\n\n.callout-dark-header {\n  padding: 0.5rem;\n  background-color: #fff;\n  border: 2px solid #bdbdbd;\n  border-bottom: 1px solid #bdbdbd;\n  border-top-left-radius: 4px;\n  border-top-right-radius: 4px;\n  margin-bottom: 0; }\n\n.callout-top-header {\n  padding: 1rem;\n  background-color: #f2f2f2;\n  border: 2px solid #bdbdbd;\n  border-radius: 4px; }\n\n.callout-minimize {\n  margin-bottom: 1rem;\n  border-radius: 4px 4px;\n  padding: 0.5rem; }\n\n.icon-btn-text-small {\n  font-family: 'Roboto', sans-serif;\n  text-transform: Captitalize;\n  top: 15px;\n  right: 15px;\n  position: absolute;\n  color: #323232;\n  font-size: 1.1rem; }\n\n.test {\n  font-family: 'Pathway Gothic One', sans-serif;\n  text-transform: uppercase;\n  color: #fff;\n  font-size: 1rem;\n  background: #6abedb; }\n\nlabel {\n  text-transform: capitalize;\n  color: #232f32; }\n\n.header {\n  color: #323232;\n  margin-bottom: 0;\n  text-transform: capitalize;\n  font-weight: 500;\n  font-family: 'Roboto', sans-serif; }\n\n.sub-header {\n  color: #232f32;\n  font-size: 1.3rem;\n  font-family: 'Pathway Gothic One', sans-serif; }\n  .sub-header a {\n    text-transform: capitalize; }\n\n#watchList {\n  display: none; }\n\n.page-title {\n  color: #323232;\n  font-family: 'Roboto', sans-serif;\n  font-weight: 500;\n  font-size: 1.2rem; }\n\n.settings-page-title {\n  color: #323232;\n  font-family: 'Roboto', sans-serif;\n  font-weight: 700;\n  font-size: 1.4rem; }\n\n.settings-subheader {\n  font-weight: 200;\n  white-space: nowrap; }\n\n.settings-subheader-container {\n  padding-top: 1rem; }\n\n.settings-wrapper {\n  margin-left: 1.8rem; }\n\ninput[type=search] {\n  box-shadow: none; }\n\n.top-bar-upper {\n  color: #333;\n  font-size: 0.5rem; }\n\n.app-header {\n  font-size: 1.3rem; }\n\ntable.overview-custom tbody,\ntable.overview-custom th,\ntable.overview-custom thead,\ntable.overview-custom tr {\n  text-align: center; }\n\ntable.sensor-details-table tbody {\n  text-align: left; }\n\n.statusText {\n  color: red;\n  margin-bottom: 1rem;\n  text-transform: uppercase;\n  font-size: 0.85em; }\n\n.notificationHeader {\n  color: #fff;\n  text-transform: uppercase;\n  font-size: 0.5em;\n  font-weight: bold; }\n\n.sensorBlock {\n  height: 30px;\n  border-radius: 30px;\n  width: auto;\n  color: #fff;\n  text-align: center;\n  font-family: 'Pathway Gothic One', sans-serif;\n  text-transform: uppercase; }\n\n.sensorBlockSquare {\n  height: 30px;\n  width: 30px;\n  border-radius: 4px;\n  cursor: pointer;\n  text-align: center;\n  line-height: 28px;\n  color: white;\n  font-weight: bold; }\n\n.sensorBlockSquare:hover {\n  opacity: 0.5; }\n\n.sensorList {\n  display: inline-block;\n  margin-right: 1px; }\n\n#uptime-form select {\n  margin-right: 2rem; }\n\n.recharts-tooltip-wrapper {\n  z-index: 1000;\n  box-shadow: 1px 1px 4px #323232;\n  background-color: #fff; }\n\n#glance-tooltip > table tr:nth-of-type(even) {\n  background-color: transparent !important; }\n\n.button-custom {\n  height: 30px;\n  width: auto !important;\n  margin: 0;\n  color: #fff !important;\n  text-align: center;\n  font-family: 'Pathway Gothic One', sans-serif;\n  text-transform: uppercase; }\n\n.proceed {\n  background: #6abedb; }\n\n.cancel {\n  background: #990000; }\n\n.cancel:hover {\n  background: #7a0000; }\n\n.remove {\n  border: 1px solid #990000;\n  background-color: #fff;\n  color: #990000;\n  cursor: pointer; }\n\n.remove:hover {\n  background-color: #990000;\n  color: #fff !important; }\n\n.pin {\n  border: 1px solid #008000;\n  background-color: #fff;\n  color: #008000;\n  cursor: pointer; }\n\n.pin:hover {\n  background-color: #006600;\n  color: #fff !important; }\n\n.disabled {\n  pointer-events: none;\n  background: #e8e8e8;\n  border: none;\n  color: white;\n  cursor: default; }\n\n.disabled:hover {\n  pointer-events: none;\n  background: #e8e8e8;\n  border: none;\n  color: white;\n  cursor: default; }\n\n.tableOptions > li > a {\n  color: #323232;\n  font-weight: normal;\n  font-size: 1rem;\n  padding: 0.5rem 0.7rem; }\n\n.menuHeader:hover,\n.tableOptions .menuHeader {\n  background-color: #232f32 !important;\n  color: #fff;\n  padding: 0.3rem 0.7rem;\n  text-transform: uppercase; }\n\n.tableOptions > li {\n  border-bottom: 1px solid #f2f2f2; }\n\n.tableOptions > li:hover {\n  background-color: #f2f2f2; }\n\n.dropdown-pane {\n  padding: 0; }\n\n.panel-grey {\n  background-color: #e4e4e4; }\n\n#emailPanel,\n#namePanel,\n#passwordPanel,\n#dailyReportTimePanel,\n#flappingDownsPanel,\n#considerationPeriodPanel,\n#emailRecipientPanel {\n  display: none;\n  padding: 1rem;\n  background: #e4e4e4; }\n\ninput[type=checkbox]:checked ~ #port {\n  display: none; }\n\n#port {\n  display: block; }\n\n.inactive-link {\n  display: none; }\n\n.button-cancel {\n  border-color: #990000 !important;\n  color: #990000 !important; }\n\n.green {\n  background-color: #008000; }\n\n.orange {\n  background-color: #cc7a00; }\n\n.red {\n  background-color: #990000; }\n\n.black {\n  background-color: #1a1b1b; }\n\n.yellow {\n  background-color: #ffcc00; }\n\n.grey {\n  background-color: #737373; }\n\n.loader {\n  height: 4px;\n  width: 100%;\n  position: relative;\n  overflow: hidden;\n  background-color: #ddd; }\n\n.loader:before {\n  display: block;\n  position: absolute;\n  content: \"\";\n  left: -200px;\n  width: 200px;\n  height: 4px;\n  background-color: #2980b9;\n  animation: loading 2s linear infinite; }\n\n.no-border {\n  border: none;\n  width: inherit;\n  background-color: transparent; }\n\n@keyframes loading {\n  from {\n    left: -200px;\n    width: 30%; }\n  50% {\n    width: 30%; }\n  70% {\n    width: 70%; }\n  80% {\n    left: 50%; }\n  95% {\n    left: 120%; }\n  to {\n    left: 100%; } }\n\ntable.sensor-details-table td:nth-child(1) {\n  text-transform: Capitalize; }\n\ntable.sensorHealthTable tbody tr:nth-last-child(1) {\n  background-color: #f1f1f1;\n  border-top: 0.5px solid #d3d3d3; }\n\ntable.sensor-details-table tbody {\n  text-align: left; }\n\ntable.sensor-details-table td:nth-child(2), table.sensor-details-table th:nth-child(2) {\n  word-break: break-all;\n  text-align: center; }\n\ntable.actionLog tr > td:nth-child(2) {\n  font-weight: bold; }\n\n.table-container {\n  text-align: center; }\n\n.table-row-highlight {\n  font-weight: bold;\n  border: solid 1px #990000;\n  background-color: rgba(153, 0, 0, 0.4) !important; }\n\n.button-disabled {\n  pointer-events: none;\n  color: #000 !important; }\n\n#top-bar-pin:hover, #top-bar-delete:hover, #top-bar-edit:hover {\n  color: #6abedb; }\n\ninput::-webkit-outer-spin-button,\ninput::-webkit-inner-spin-button {\n  /* display: none; <- Crashes Chrome on hover */\n  -webkit-appearance: none;\n  margin: 0;\n  /* <— Apparently some margin are still there even though it's hidden */ }\n\n.tabs {\n  border: none; }\n\n.addEditSensor > tbody {\n  border: none; }\n\n.griddle-container {\n  border: none !important; }\n\n.griddle .top-section {\n  clear: both;\n  display: table;\n  width: 100%; }\n\n.griddle .griddle-filter {\n  float: left;\n  width: 50%;\n  text-align: left;\n  color: #222;\n  min-height: 1px; }\n\n.griddle-body {\n  font-size: 1em;\n  overflow-x: scroll; }\n\n.griddle .griddle-settings-toggle {\n  float: left;\n  width: 50%;\n  text-align: right;\n  color: #f8f8f8; }\n\n.griddle .griddle-settings {\n  background-color: #FFF;\n  border: 1px solid #DDD;\n  color: #222;\n  padding: 10px;\n  margin-bottom: 10px; }\n\n.griddle .griddle-settings .settings {\n  color: #f8f8f8; }\n\n.griddle .griddle-settings .griddle-columns {\n  clear: both;\n  display: table;\n  width: 100%;\n  border-bottom: 1px solid #EDEDED;\n  margin-bottom: 10px; }\n\n.griddle .griddle-settings .griddle-column-selection {\n  float: left;\n  width: 20%; }\n\n.griddle table {\n  width: 100%;\n  table-layout: auto !important; }\n\n.griddle th {\n  background-color: #EDEDEF;\n  border: 0px;\n  border-bottom: 1px solid #DDD;\n  color: #222;\n  padding: 5px; }\n\n.griddle td {\n  padding: 5px;\n  background-color: #FFF;\n  border-top-color: #DDD;\n  color: #222; }\n\n.griddle .footer-container {\n  padding: 0px;\n  background-color: #EDEDED;\n  border: 0px;\n  color: #222; }\n\n.griddle button {\n  font-weight: bold;\n  color: #232f32; }\n\n.griddle .griddle-previous, .griddle .griddle-page, .griddle .griddle-next {\n  float: left;\n  width: 33%;\n  min-height: 1px;\n  margin-top: 5px; }\n\n.griddle .griddle-page {\n  text-align: center; }\n\n.griddle .griddle-next {\n  text-align: right; }\n", ""]);
 
 	// exports
 

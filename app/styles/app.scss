@@ -73,7 +73,11 @@ div#offCanvas {
 }
 
 a {
-    color: $header-color;
+    color: $black;
+
+    a:hover {
+      color: $header-color;
+    }
 }
 
 hr {
@@ -81,13 +85,6 @@ hr {
     margin-top: 0.5rem;
     max-width: 100%;
 }
-
-// @media only screen and (max-width: 480px) {
-//     .allSensors,
-//     .buildingCharts {
-//         display: none;
-//     }
-// }
 
 .divider {
     border-color: #bdbdbd;
@@ -549,6 +546,11 @@ table.sensor-details-table td:nth-child(1) {
     text-transform: Capitalize;
 }
 
+table.sensorHealthTable tbody tr:nth-last-child(1) {
+  background-color: #f1f1f1;
+  border-top: 0.5px solid #d3d3d3;
+}
+
 table.sensor-details-table tbody {
     text-align: left;
 }
@@ -592,7 +594,7 @@ input::-webkit-inner-spin-button {
   border: none;
 }
 
-.addEditSensor {
+.addEditSensor > tbody{
   //border-left: 2px solid #e4e4e4;
   border: none;
 }

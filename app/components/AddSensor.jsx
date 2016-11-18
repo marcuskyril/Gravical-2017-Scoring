@@ -113,13 +113,10 @@ class AddSensor extends React.Component {
         var inputWarningDTPercentage = this.refs.warningDTPercentage.value;
         var inputWarningTemp = this.refs.warningTemp.value;
 
-        var {dispatch, userId, userEmail} = this.props;
+        var userId = this.props.userId;
+
+        var {dispatch} = this.props;
         var that = this;
-
-        //===========================
-
-
-        //===========================
 
         manageSensorAPI.addSensor(inputMac, inputRegion, inputLocationLevel, inputLocationID, inputBuilding, inputPort, inputDangerDisk, inputDangerCPU, inputDangerRAM, inputDangerDTPercentage, inputDangerTemp, inputWarningDisk, inputWarningCPU, inputWarningRAM, inputWarningDTPercentage, inputWarningTemp).then(function(response) {
 
@@ -141,7 +138,7 @@ class AddSensor extends React.Component {
                 document.dispatchEvent(myCustomEvent);
 
                 var actionDesc = `Added ${inputMac} to ${inputBuilding} ${inputLocationLevel}${inputLocationID}`;
-                dispatch(actions.startAddToLog(userEmail, actionDesc));
+                dispatch(actions.startAddToLog(userId, actionDesc));
 
                 that.refs.macAddress.value = '';
                 that.refs.port.value = '';
@@ -177,16 +174,16 @@ class AddSensor extends React.Component {
                         <div className="medium-3 columns">
                             <ul className="tabs vertical" id="vert-tabs" data-tabs>
                                 <li className="tabs-title is-active">
-                                    <a href="#panel1v"  style={{color: 'black', fontSize: '1rem', fontWeight: '100'}}aria-selected="true">General</a>
+                                    <a href="#addPanelGeneral"  style={{color: 'black', fontSize: '1rem', fontWeight: '100'}}aria-selected="true">General</a>
                                 </li>
                                 <li className="tabs-title">
-                                    <a href="#panel2v" style={{color: 'black', fontSize: '1rem', fontWeight: '100'}}>Thresholds</a>
+                                    <a href="#addPanelThreshold" style={{color: 'black', fontSize: '1rem', fontWeight: '100'}}>Thresholds</a>
                                 </li>
                             </ul>
                         </div>
                         <div className="medium-9 columns" style={{minHeight: '22rem'}}>
                             <div className="tabs-content vertical" data-tabs-content="vert-tabs" style={{border: 'none'}}>
-                                <div className="tabs-panel is-active" id="panel1v" style={{padding: 0}}>
+                                <div className="tabs-panel is-active" id="addPanelGeneral" style={{padding: 0}}>
                                     <table className="addEditSensor">
                                         <tbody>
                                             <tr style={{verticalAlign: 'top'}}>
@@ -236,10 +233,10 @@ class AddSensor extends React.Component {
                                     </table>
 
                                 </div>
-                                <div className="tabs-panel" id="panel2v" style={{padding: 0}}>
+                                <div className="tabs-panel" id="addPanelThreshold" style={{padding: 0}}>
 
-                                    <table>
-                                        <tbody>
+                                    <table className="addEditSensor">
+                                        <tbody style={{float: "left"}}>
                                             <tr>
                                                 <td></td>
                                                 <td style={{padding: '0.2rem', width: '23rem'}}>
@@ -254,66 +251,66 @@ class AddSensor extends React.Component {
                                                 </td>
                                             </tr>
                                             <tr style={{backgroundColor: 'white'}}>
-                                                <td style={{textAlign: 'right'}}><label style={{fontSize: '1rem'}}>CPU Usage</label></td>
+                                                <td style={{textAlign: 'right'}}><label style={{fontSize: '1rem'}}>CPU Usage (%)</label></td>
                                                 <td>
                                                     <div style={{margin: 'auto'}}>
                                                         <label style={{float: 'left', width: '50%'}}>
-                                                            <input type="number" min="0" max="100" step="0.01" ref="warningCPU" placeholder="0" defaultValue={this.state.warning['cpuUsage']} required style={{margin: '0', textAlign: 'center', borderRadius: '7px 0 0 7px', borderColor: '#ffcc00'}}/>
+                                                            <input type="number" min="0" max="100" step="0.01" ref="warningCPU" placeholder="0" defaultValue={this.state.warning['cpuUsage']} required style={{margin: '0', textAlign: 'center',  borderColor: '#ffcc00'}}/>
                                                         </label>
                                                         <label style={{float: 'right', width: '50%'}}>
-                                                            <input type="number" min="0" max="100" step="0.01" ref="dangerCPU" placeholder="0" defaultValue={this.state.danger['cpuUsage']} required style={{margin: '0', textAlign: 'center', borderRadius: '0 7px 7px 0', borderColor: '#cc7a00'}}/>
+                                                            <input type="number" min="0" max="100" step="0.01" ref="dangerCPU" placeholder="0" defaultValue={this.state.danger['cpuUsage']} required style={{margin: '0', textAlign: 'center',  borderColor: '#cc7a00'}}/>
                                                         </label>
                                                     </div>
                                                 </td>
                                             </tr>
                                             <tr>
-                                                <td style={{textAlign: 'right'}}><label style={{fontSize: '1rem'}}>RAM Usage</label></td>
+                                                <td style={{textAlign: 'right'}}><label style={{fontSize: '1rem'}}>RAM Usage (%)</label></td>
                                                 <td>
                                                     <div style={{margin: 'auto'}}>
                                                         <label style={{float: 'left', width: '50%'}}>
-                                                            <input type="number" min="0" max="1" step="0.01" ref="warningRAM" placeholder="0" defaultValue={this.state.warning['ramUsage']} required style={{margin: '0', textAlign: 'center', borderRadius: '7px 0 0 7px', borderColor: '#ffcc00'}}/>
+                                                            <input type="number" min="0" max="1" step="0.01" ref="warningRAM" placeholder="0" defaultValue={this.state.warning['ramUsage']} required style={{margin: '0', textAlign: 'center',  borderColor: '#ffcc00'}}/>
                                                         </label>
                                                         <label style={{float: 'right', width: '50%'}}>
-                                                            <input type="number" min="0" max="1" step="0.01" ref="dangerRAM" placeholder="0" defaultValue={this.state.danger['ramUsage']} required style={{margin: '0', textAlign: 'center', borderRadius: '0 7px 7px 0', borderColor: '#cc7a00'}}/>
+                                                            <input type="number" min="0" max="1" step="0.01" ref="dangerRAM" placeholder="0" defaultValue={this.state.danger['ramUsage']} required style={{margin: '0', textAlign: 'center',  borderColor: '#cc7a00'}}/>
                                                         </label>
                                                     </div>
                                                 </td>
                                             </tr>
                                             <tr style={{backgroundColor: 'white'}}>
-                                                <td style={{textAlign: 'right'}}><label style={{fontSize: '1rem'}}>Downtime Percentage</label></td>
+                                                <td style={{textAlign: 'right'}}><label style={{fontSize: '1rem'}}>Downtime Percentage (%)</label></td>
                                                 <td>
                                                     <div style={{margin: 'auto'}}>
                                                         <label style={{float: 'left', width: '50%'}}>
-                                                            <input type="number" min="0" max="1" step="0.01" ref="warningDTPercentage" placeholder="0" defaultValue={this.state.warning['downtimePercentage']} required style={{margin: '0', textAlign: 'center', borderRadius: '7px 0 0 7px', borderColor: '#ffcc00'}}/>
+                                                            <input type="number" min="0" max="1" step="0.01" ref="warningDTPercentage" placeholder="0" defaultValue={this.state.warning['downtimePercentage']} required style={{margin: '0', textAlign: 'center',  borderColor: '#ffcc00'}}/>
                                                         </label>
                                                         <label style={{float: 'right', width: '50%'}}>
-                                                            <input type="number" min="0" max="1" step="0.01" ref="dangerDTPercentage" placeholder="0" defaultValue={this.state.danger['downtimePercentage']} required style={{margin: '0', textAlign: 'center', borderRadius: '0 7px 7px 0', borderColor: '#cc7a00'}}/>
+                                                            <input type="number" min="0" max="1" step="0.01" ref="dangerDTPercentage" placeholder="0" defaultValue={this.state.danger['downtimePercentage']} required style={{margin: '0', textAlign: 'center',  borderColor: '#cc7a00'}}/>
                                                         </label>
                                                     </div>
                                                 </td>
                                             </tr>
                                             <tr style={{backgroundColor: 'white'}}>
-                                                <td style={{textAlign: 'right'}}><label style={{fontSize: '1rem'}}>Storage Usage</label></td>
+                                                <td style={{textAlign: 'right'}}><label style={{fontSize: '1rem'}}>Storage Usage (%)</label></td>
                                                 <td>
                                                     <div style={{margin: 'auto'}}>
                                                         <label style={{float: 'left', width: '50%'}}>
-                                                            <input type="number" min="0" max="1" step="0.01" ref="warningDisk" placeholder="0" defaultValue={this.state.warning['diskUsage']} required style={{margin: '0', textAlign: 'center', borderRadius: '7px 0 0 7px', borderColor: '#ffcc00'}}/>
+                                                            <input type="number" min="0" max="1" step="0.01" ref="warningDisk" placeholder="0" defaultValue={this.state.warning['diskUsage']} required style={{margin: '0', textAlign: 'center',  borderColor: '#ffcc00'}}/>
                                                         </label>
                                                         <label style={{float: 'right', width: '50%'}}>
-                                                            <input type="number" min="0" max="1" step="0.01" ref="dangerDisk" placeholder="0" defaultValue={this.state.danger['diskUsage']} required style={{margin: '0', textAlign: 'center', borderRadius: '0 7px 7px 0', borderColor: '#cc7a00'}}/>
+                                                            <input type="number" min="0" max="1" step="0.01" ref="dangerDisk" placeholder="0" defaultValue={this.state.danger['diskUsage']} required style={{margin: '0', textAlign: 'center',  borderColor: '#cc7a00'}}/>
                                                         </label>
                                                     </div>
                                                 </td>
                                             </tr>
                                             <tr style={{backgroundColor: 'white'}}>
-                                                <td style={{textAlign: 'right'}}><label style={{fontSize: '1rem'}}>Temperature</label></td>
+                                                <td style={{textAlign: 'right'}}><label style={{fontSize: '1rem'}}>Temperature (&deg;C)</label></td>
                                                 <td>
                                                     <div style={{margin: 'auto'}}>
                                                         <label style={{float: 'left', width: '50%'}}>
-                                                            <input type="number" min="0" max="150" step="0.01" ref="warningTemp" placeholder="0" defaultValue={this.state.warning['temperature']} required style={{margin: '0', textAlign: 'center', borderRadius: '7px 0 0 7px', borderColor: '#ffcc00'}}/>
+                                                            <input type="number" min="0" max="150" step="0.01" ref="warningTemp" placeholder="0" defaultValue={this.state.warning['temperature']} required style={{margin: '0', textAlign: 'center',  borderColor: '#ffcc00'}}/>
                                                         </label>
                                                         <label style={{float: 'right', width: '50%'}}>
-                                                            <input type="number" min="0" max="150" step="0.01" ref="dangerTemp" placeholder="0" defaultValue={this.state.danger['temperature']} required style={{margin: '0', textAlign: 'center', borderRadius: '0 7px 7px 0', borderColor: '#cc7a00'}}/>
+                                                            <input type="number" min="0" max="150" step="0.01" ref="dangerTemp" placeholder="0" defaultValue={this.state.danger['temperature']} required style={{margin: '0', textAlign: 'center',  borderColor: '#cc7a00'}}/>
                                                         </label>
                                                     </div>
                                                 </td>
@@ -341,6 +338,7 @@ class AddSensor extends React.Component {
 class AddSensorMessage extends React.Component {
     render() {
         var message = this.props.message;
+        // console.log("message from parent: ", message);
 
         return (
             <div className="statusText">{message}</div>

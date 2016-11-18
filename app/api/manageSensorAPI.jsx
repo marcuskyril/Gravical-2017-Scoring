@@ -51,7 +51,11 @@ module.exports = {
         });
     },
 
-    editSensor: function(inputMac, inputRegion, inputLocationLevel, inputLocationID, inputBuilding, inputPort) {
+    editSensor: function(inputMac, inputRegion, inputLocationLevel, inputLocationID, inputBuilding, inputPort,
+        inputDangerDisk='', inputDangerCPU='', inputDangerRAM='', inputDangerDTPercentage='',
+        inputDangerTemp='', inputWarningDisk='', inputWarningCPU='', inputWarningRAM='',
+        inputWarningDTPercentage='', inputWarningTemp=''
+    ) {
 
         var data = {
           MAC: inputMac,
@@ -61,6 +65,18 @@ module.exports = {
           "building": inputBuilding,
           "port": inputPort
         }
+
+        if (inputDangerDisk != '') { data["dangerDisk"] = inputDangerDisk; }
+        if (inputDangerCPU != '') { data["dangerCPU"] = inputDangerCPU; }
+        if (inputDangerRAM != '') { data["dangerRAM"] = inputDangerRAM; }
+        if (inputDangerDTPercentage != '') { data["dangerDTPercentage"] = inputDangerDTPercentage; }
+        if (inputDangerTemp != '') { data["dangerTemp"] = inputDangerTemp; }
+
+        if (inputWarningDisk != '') { data["warningDisk"] = inputWarningDisk; }
+        if (inputWarningCPU != '') { data["warningCPU"] = inputWarningCPU; }
+        if (inputWarningRAM != '') { data["warningRAM"] = inputWarningRAM; }
+        if (inputWarningDTPercentage != '') { data["warningDTPercentage"] = inputWarningDTPercentage; }
+        if (inputWarningTemp != '') { data["warningTemp"] = inputWarningTemp; }
 
         console.log("edit data", data);
 
@@ -73,9 +89,6 @@ module.exports = {
             data: data,
             success: function(response) {
                 console.log("Que pasar?", response);
-                // if(response.status != 200) {
-                //   throw new Error(response.error);
-                // }
             }
         });
     },

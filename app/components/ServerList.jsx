@@ -35,8 +35,7 @@ class Server extends React.Component {
 
         return (
             <div>
-                <div className="header">{this.props.serverName}</div>
-                <ServerGroupList data={this.props.serverData}/>
+                <ServerGroupList serverName={this.props.serverName} data={this.props.serverData}/>
             </div>
         );
     }
@@ -58,7 +57,7 @@ class ServerGroupList extends React.Component {
           <table>
             <thead>
               <tr>
-                <th style={{textAlign: 'center', width: '20%'}}>Groups</th>
+                <th style={{textAlign: 'center', width: '20%'}}>{this.props.serverName}</th>
                 <th></th>
               </tr>
             </thead>

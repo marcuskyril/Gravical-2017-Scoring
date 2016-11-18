@@ -6,9 +6,6 @@ module.exports = {
 
     retrieveHistoricalDataAlt: function(building, startDate, endDate, interval) {
 
-        // console.log("startDate API", startDate);
-        // console.log("endDate API", endDate);
-
         var data = {
             building: building,
             start_date: startDate,
@@ -31,6 +28,11 @@ module.exports = {
 
     retrieveHistoricalData: function(buildingName, startDate, endDate, interval) {
 
+        console.log("buildingName", buildingName);
+        console.log("startDate", startDate);
+        console.log("endDate", endDate);
+        console.log("interval", interval);
+
         var data = {
           building: buildingName,
           'start_date': startDate,
@@ -40,8 +42,8 @@ module.exports = {
 
         return $.ajax({
             type: "POST",
-            beforeSend: function(request) {
-                request.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+            headers: {
+                "Content-Type": "application/x-www-form-urlencoded"
             },
             url: RETRIEVE_UPTIME_URL,
             data: data,
@@ -53,8 +55,8 @@ module.exports = {
 
     retrieveHistoricalChart: function(mac, startDate, endDate, interval, metric) {
 
-        // console.log("macAdd", macAdd);
-        // console.log("metric", metric);
+        console.log("macAdd", macAdd);
+        console.log("metric", metric);
 
         var data = {
           mac: mac,

@@ -67,6 +67,8 @@ class SensorDetails extends React.Component {
 
                     var response = JSON.parse(msg.data);
 
+                    console.log("response", response);
+
                     that.setState({
                         isLoading: false,
                         macAdd: macAdd,
@@ -75,7 +77,8 @@ class SensorDetails extends React.Component {
                         region: response["geo_region"],
                         level: response["sensor_location_level"],
                         areaID: response["sensor_location_id"],
-                        location: `${response["sensor_location_level"]}${response["sensor_location_id"]}`
+                        location: `${response["sensor_location_level"]}${response["sensor_location_id"]}`,
+                        thresholds: response["thresholds"]
                     });
 
                     if (response.error !== "no data") {
@@ -100,7 +103,7 @@ class SensorDetails extends React.Component {
                             diagnosis: response["diagnosis"],
                             stats: {
                                 uptime: `${response["uptime_percentage"]}%`,
-                                temperature: `${response["temperature"]} C`,
+                                temperature: `${response["temperature"]}C`,
                                 cpu: `${response["cpu"]}%`,
                                 storage: `${response["storage"]}%`,
                                 ram: `${response["ram"]}%`,
@@ -173,7 +176,9 @@ class SensorDetails extends React.Component {
 
     render() {
 
-        var {macAdd, building, latency, amIAlive, isLoading, port, status, location, lastReboot, diagnosis, stats, top5} = this.state;
+        console.log("sensordetails state", this.state);
+
+        var {macAdd, building, latency, amIAlive, isLoading, port, status, location, lastReboot, diagnosis, stats, top5, thresholds} = this.state;
         var {userId, dispatch} = this.props;
         var location = `${building} ${location}`
         var amIAliveColor = amIAlive ? "green" : colorMap['down'];
@@ -269,7 +274,7 @@ class Stats extends React.Component {
                                 Metric
                             </th>
                             <th>
-                                %
+                                Value
                             </th>
                         </tr>
                     </thead>
@@ -357,7 +362,7 @@ class ButtonList extends React.Component {
     }
 
     render() {
-        var {status, building} = this.props;
+        var {status} = this.props;
 
         if(status === '-') {
             return (
@@ -367,7 +372,6 @@ class ButtonList extends React.Component {
 
         var pauseMsg = status === "paused" ? "Unpause" : "Pause"
         var historicalLink = `/historical/${this.props.macAdd}`;
-        // var historicalLink = `/historical/${this.props.building}+${this.props.macAdd}`;
 
         return (
             <div>

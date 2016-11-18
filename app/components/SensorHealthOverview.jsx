@@ -14,31 +14,11 @@ var dataList = [];
 class Building extends React.Component {
     render() {
 
-        var uptimeLink = `/uptime/${this.props.buildingName}`;
-
         return (
             <div className="column row">
-
-                <div className="header">
-                    {this.props.buildingName}
-                    <div style={{
-                        float: 'right'
-                    }}>
-                        <span style={{fontWeight: '300'}}>
-                            Total Count: {this.props.sensorCount}
-                        </span>
-                        <span>
-                            <IndexLink activeClassName='active' to={uptimeLink}>
-                                <FontAwesome name='bar-chart' style={{
-                                    marginLeft: '5px'
-                                }}/>
-                            </IndexLink>
-                        </span>
-                    </div>
-                </div>
                 <table className="sensorHealthTable">
-                    <BuildingHeader dispatch={this.props.dispatch} snmpSpeedTest={this.props.speedTest}/>
-                    <LevelList areaArray={this.props.areaNames} levelArray={this.props.levelNames} sensors={this.props.sensors}/>
+                    <BuildingHeader dispatch={this.props.dispatch} buildingName={this.props.buildingName} snmpSpeedTest={this.props.speedTest}/>
+                    <LevelList totalCount={this.props.sensorCount} areaArray={this.props.areaNames} levelArray={this.props.levelNames} sensors={this.props.sensors}/>
                 </table>
             </div>
         );
@@ -145,8 +125,8 @@ class BuildingHeader extends React.Component {
         var {cpu_freq, cpu_load, current_interval, download_speed, memory_total, memory_used, model, processor_temp, sensor, storage_total, storage_used, system_name, time, upload_speed, uptime} = snmpSpeedTest;
         var memory = (memory_used/1000).toFixed(2)+" / "+(memory_total/1000).toFixed(2)+"MB";
         var storage = (storage_used/1000).toFixed(2)+" / "+(storage_total/1000).toFixed(2)+"MB";
-        var temp = (processor_temp-273.15).toFixed(2)+" C";
-
+        var temp = (processor_temp-273.15).toFixed(2)+"C";
+        var uptimeLink = `/uptime/${this.props.buildingName}`;
         var id = "routerDropdown"+sensor;
 
         var upload = `${snmpSpeedTest.upload_speed} Mbit/s`;
@@ -155,9 +135,11 @@ class BuildingHeader extends React.Component {
         return (
             <thead>
                 <tr>
+
                     <td style={{
-                        width: "8rem"
-                    }}></td>
+                        width: "8rem",
+                        textAlign: "center"
+                    }}>{this.props.buildingName}</td>
                     <td style={{
                         "textAlign": "right",
                         "fontSize": "0.8rem",
@@ -170,9 +152,14 @@ class BuildingHeader extends React.Component {
                             fontWeight: '500'
                         }}> Download</span>: {download}
 
-                        <button type="button" className="pane" onClick={() => this.handleClick(sensor)} style={{marginLeft:'0.5rem'}}>
-                            <FontAwesome className="pane" name='info-circle' size='lg'/>
-                        </button>
+                        <a type="button" className="pane" onClick={() => this.handleClick(sensor)} style={{marginLeft:'0.5rem'}}>
+                            <FontAwesome className="pane" name='cog' size='lg'/>
+                        </a>
+                        <IndexLink activeClassName='active' to={uptimeLink}>
+                            <FontAwesome name='bar-chart' style={{
+                                marginLeft: '5px'
+                            }}/>
+                        </IndexLink>
 
                         <div id={id} className="routerDropdown" style={{display: 'none', position: 'absolute', backgroundColor: '#fff', right: 0, padding: '0.5rem 0.5rem 0 0.5rem', marginRight: '2rem', boxShadow: '3px 3px 3px #888888', borderRadius: '3px'}}>
                             <a onClick={() => this.launchSpeedTestEdit()}>
@@ -282,6 +269,13 @@ class LevelList extends React.Component {
         return (
             <tbody>
                 {tableRows}
+
+                <tr>
+                    <td></td>
+                    <td style={{float: 'right', fontSize: '0.8rem'}}>
+                            Total Count: {this.props.totalCount}
+                    </td>
+                </tr>
             </tbody>
         );
     }
