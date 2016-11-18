@@ -113,9 +113,7 @@ class AddSensor extends React.Component {
         var inputWarningDTPercentage = this.refs.warningDTPercentage.value;
         var inputWarningTemp = this.refs.warningTemp.value;
 
-        var userId = this.props.userId;
-
-        var {dispatch} = this.props;
+        var {dispatch, userEmail} = this.props;
         var that = this;
 
         manageSensorAPI.addSensor(inputMac, inputRegion, inputLocationLevel, inputLocationID, inputBuilding, inputPort, inputDangerDisk, inputDangerCPU, inputDangerRAM, inputDangerDTPercentage, inputDangerTemp, inputWarningDisk, inputWarningCPU, inputWarningRAM, inputWarningDTPercentage, inputWarningTemp).then(function(response) {
@@ -138,7 +136,7 @@ class AddSensor extends React.Component {
                 document.dispatchEvent(myCustomEvent);
 
                 var actionDesc = `Added ${inputMac} to ${inputBuilding} ${inputLocationLevel}${inputLocationID}`;
-                dispatch(actions.startAddToLog(userId, actionDesc));
+                dispatch(actions.startAddToLog(userEmail, actionDesc));
 
                 that.refs.macAddress.value = '';
                 that.refs.port.value = '';
@@ -347,7 +345,7 @@ class AddSensorMessage extends React.Component {
 }
 
 function mapStateToProps(state, ownProps) {
-    return {sensorData: state.activeSensor, userId: state.syncData.userId}
+    return {sensorData: state.activeSensor}
 }
 
 module.exports = connect(mapStateToProps)(AddSensor);

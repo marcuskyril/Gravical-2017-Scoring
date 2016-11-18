@@ -54,6 +54,7 @@ class Dashboard extends React.Component {
             if (user) {
                 userDisplayName = user.displayName;
                 userEmail = user.email;
+
                 that.setState({userDisplayName: userDisplayName, userEmail: userEmail});
             }
         }, function(error) {
@@ -64,7 +65,7 @@ class Dashboard extends React.Component {
             connection.subscribe('', function(topic, data) {
 
                 timestamp = new Date().toLocaleString();
-                dispatch(actions.storeSyncData(timestamp, userDisplayName));
+                dispatch(actions.storeSyncData(timestamp, userDisplayName, userEmail));
 
                 that.setState({
                     connection: connection,
@@ -86,9 +87,8 @@ class Dashboard extends React.Component {
                 this.state.connection.subscribe('', function(topic, data) {
 
                     console.warn('Reinitiating connection');
-
                     timestamp = new Date().toLocaleString();
-                    dispatch(actions.storeSyncData(timestamp, userDisplayName));
+                    // dispatch(actions.storeSyncData(timestamp, userDisplayName, userEmail));
 
                     that.setState({
                         connection: connection,
@@ -174,7 +174,8 @@ class Dashboard extends React.Component {
                         <div>
                             <div className="callout callout-dark-header">
                                 <div className="page-title">Health Overview</div>
-                                <button onClick={this.launchAddSensor} className="icon-btn-text-small">
+
+                                <button onClick={this.launchAddSensor} className="icon-btn-text-small" style={{fontSize: '0.9rem'}}>
                                     <FontAwesome name='plus-circle' style={{
                                         marginRight: '0.5rem'
                                     }}/>

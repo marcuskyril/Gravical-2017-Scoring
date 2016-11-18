@@ -10739,10 +10739,6 @@
 	        key: 'render',
 	        value: function render() {
 
-	            // TO DO
-	            // update on click event
-	            // update error message on failure
-
 	            return React.createElement(
 	                'div',
 	                { id: 'confirmation-modal', className: 'reveal tiny text-center', 'data-reveal': '' },
@@ -10803,7 +10799,10 @@
 	        _this2.state = {
 	            userDisplayName: '-',
 	            email: '-',
-	            emailVerified: '-'
+	            emailVerified: '-',
+	            reportTiming: '-',
+	            emailRecipient: '-',
+	            flappingThreshold: '-'
 	        };
 	        return _this2;
 	    }
@@ -11063,7 +11062,13 @@
 	                    console.log("response", response);
 	                    that.setState({
 	                        message: response.message
+
 	                    });
+
+	                    that.refs.reportTiming.value = '';
+	                    that.refs.emailRecipient.value = '';
+	                    that.refs.flappingThreshold.value = '';
+
 	                    $('#namePanel').slideUp("slow");
 	                    $('#passwordPanel').slideUp("slow");
 	                    $('#emailPanel').slideUp("slow");
@@ -11084,7 +11089,7 @@
 	                if (response.error) {
 	                    console.log("Error", response.error);
 	                } else {
-	                    // console.log("response", response);
+	                    console.log("response", response);
 	                    that.setState({
 	                        currentSettings: response
 	                    });
@@ -11113,13 +11118,6 @@
 	            if (messageState) {
 	                message = messageState;
 	            }
-
-	            // console.log("currentSettings: ", currentSettings);
-	            //
-	            // console.log("daily report time", currentSettings.daily_notification_time);
-
-	            // TO DO
-	            // set padding for forms
 
 	            return React.createElement(
 	                'div',
@@ -11388,11 +11386,16 @@
 	                                    null,
 	                                    React.createElement(
 	                                        'div',
+	                                        { style: { fontSize: '0.9rem' } },
+	                                        'Tell us when you\'d like to receive your daily notification email! (Format: HH-MM)'
+	                                    ),
+	                                    React.createElement(
+	                                        'div',
 	                                        { className: 'row' },
 	                                        React.createElement(
 	                                            'div',
-	                                            { className: 'medium-6 columns' },
-	                                            React.createElement('input', { type: 'text', ref: 'reportTiming', placeholder: 'Daily Report Time' })
+	                                            { className: 'medium-3 columns' },
+	                                            React.createElement('input', { type: 'text', ref: 'reportTiming', placeholder: 'HH-MM' })
 	                                        ),
 	                                        React.createElement(
 	                                            'button',
@@ -13341,8 +13344,8 @@
 
 	var axios = __webpack_require__(140);
 
-	var storeSyncData = exports.storeSyncData = function storeSyncData(currentTime, userId) {
-	    return { type: 'STORE_SYNC_DATA', currentTime: currentTime, userId: userId };
+	var storeSyncData = exports.storeSyncData = function storeSyncData(currentTime, userId, userEmail) {
+	    return { type: 'STORE_SYNC_DATA', currentTime: currentTime, userId: userId, userEmail: userEmail };
 	};
 
 	var startSensorDataFetch = exports.startSensorDataFetch = function startSensorDataFetch() {
@@ -13363,11 +13366,11 @@
 
 	// add to log test
 
-	var startAddToLog = exports.startAddToLog = function startAddToLog(userId, action) {
+	var startAddToLog = exports.startAddToLog = function startAddToLog(userEmail, action) {
 
 	    return function (dispatch, getState) {
 	        var logItem = {
-	            userId: userId,
+	            userEmail: userEmail,
 	            action: action,
 	            timestamp: (0, _moment2.default)().format('YYYY-MM-DD')
 	        };
@@ -13383,7 +13386,6 @@
 	};
 
 	var addToLog = exports.addToLog = function addToLog(action) {
-	    console.log("action: ", action);
 
 	    return { type: 'ADD_TO_LOG', action: action };
 	};
@@ -13398,6 +13400,7 @@
 	            var parsedLogs = [];
 
 	            Object.keys(logs).forEach(function (logId) {
+
 	                parsedLogs.push(_extends({
 	                    id: logId
 	                }, logs[logId]));
@@ -13409,15 +13412,12 @@
 	};
 
 	var retrieveLogs = exports.retrieveLogs = function retrieveLogs(logs) {
-	    console.log("logs", logs);
-
 	    return { type: 'RETRIEVE_LOGS', logs: logs };
 	};
 
 	// end add to log test
 
 	var storeActiveSensor = exports.storeActiveSensor = function storeActiveSensor(macAdd, currentInterval) {
-	    console.log("activeSensor", macAdd, currentInterval);
 	    return { type: 'STORE_ACTIVE_SENSOR', macAdd: macAdd, currentInterval: currentInterval };
 	};
 
@@ -14974,13 +14974,13 @@
 	                'label',
 	                { className: 'margin-right-tiny' },
 	                'Start Date',
-	                React.createElement('input', { type: 'date', name: 'startDate', ref: 'startDate' })
+	                React.createElement('input', { type: 'date', name: 'startDate', defaultValue: startDate, ref: 'startDate' })
 	              ),
 	              React.createElement(
 	                'label',
 	                { className: 'margin-right-tiny' },
 	                'End Date',
-	                React.createElement('input', { type: 'date', name: 'endDate', ref: 'endDate' })
+	                React.createElement('input', { type: 'date', name: 'endDate', defaultValue: endDate, ref: 'endDate' })
 	              ),
 	              React.createElement(
 	                'label',
@@ -14988,7 +14988,7 @@
 	                ' Interval',
 	                React.createElement(
 	                  'select',
-	                  { ref: 'interval' },
+	                  { defaultValue: '' + interval, ref: 'interval' },
 	                  React.createElement(
 	                    'option',
 	                    { value: '30' },
@@ -63404,13 +63404,13 @@
 	        });
 	    },
 
-	    retrieveHistoricalChart: function retrieveHistoricalChart(mac, startDate, endDate, interval, metric) {
+	    retrieveHistoricalChart: function retrieveHistoricalChart(macAdd, startDate, endDate, interval, metric) {
 
 	        console.log("macAdd", macAdd);
 	        console.log("metric", metric);
 
 	        var data = {
-	            mac: mac,
+	            mac: macAdd,
 	            'start_date': startDate,
 	            'end_date': endDate,
 	            interval: interval,
@@ -63425,7 +63425,7 @@
 	            url: RETRIEVE_HISTORICAL_DATA_URL,
 	            data: data,
 	            success: function success(response) {
-	                console.log("Que pasar?", response);
+	                // console.log("Que pasar?", response);
 	            }
 	        });
 	    }
@@ -63490,11 +63490,11 @@
 	        var startDate = d.toISOString().substring(0, 10);
 	        var endDate = new Date().toISOString().substring(0, 10);
 
-	        // var arr = props.params.macAddress.split("+");
+	        var arr = props.params.macAddress.split("&");
 
 	        _this.state = {
-	            macAdd: props.params.macAddress,
-	            buildingName: 'arr[0]',
+	            macAdd: arr[1],
+	            buildingName: arr[0],
 	            data: {
 	                cpu: null,
 	                ram: null,
@@ -63558,9 +63558,6 @@
 	            var that = this;
 
 	            $.when(retrieveHistoricalDataAPI.retrieveHistoricalChart(macAdd, startDate, endDate, interval, "cpu"), retrieveHistoricalDataAPI.retrieveHistoricalChart(macAdd, startDate, endDate, interval, "ram"), retrieveHistoricalDataAPI.retrieveHistoricalChart(macAdd, startDate, endDate, interval, "storage"), retrieveHistoricalDataAPI.retrieveHistoricalChart(macAdd, startDate, endDate, interval, "network")).then(function (cpuData, ramData, storageData, networkData) {
-
-	                console.log("cpuData", cpuData);
-
 	                that.setState({
 	                    data: {
 	                        cpu: cpuData[0],
@@ -63634,9 +63631,11 @@
 	                                React.createElement(
 	                                    'div',
 	                                    { className: 'page-title' },
+	                                    'Historical Charts (',
 	                                    buildingName,
-	                                    ':',
-	                                    macAdd
+	                                    ': ',
+	                                    macAdd,
+	                                    ')'
 	                                ),
 	                                React.createElement(
 	                                    'button',
@@ -63649,20 +63648,18 @@
 	                            ),
 	                            React.createElement(
 	                                'form',
-	                                { id: 'uptime-form', style: {
-	                                        display: 'flex'
-	                                    } },
+	                                { id: 'uptime-form', style: { display: 'flex' } },
 	                                React.createElement(
 	                                    'label',
 	                                    { className: 'margin-right-tiny' },
 	                                    'Start Date',
-	                                    React.createElement('input', { type: 'date', name: 'startDate', ref: 'startDate' })
+	                                    React.createElement('input', { type: 'date', name: 'startDate', defaultValue: startDate, ref: 'startDate' })
 	                                ),
 	                                React.createElement(
 	                                    'label',
 	                                    { className: 'margin-right-tiny' },
 	                                    'End Date',
-	                                    React.createElement('input', { type: 'date', name: 'endDate', ref: 'endDate' })
+	                                    React.createElement('input', { type: 'date', name: 'endDate', defaultValue: endDate, ref: 'endDate' })
 	                                ),
 	                                React.createElement(
 	                                    'label',
@@ -63670,7 +63667,7 @@
 	                                    'Interval',
 	                                    React.createElement(
 	                                        'select',
-	                                        { ref: 'interval' },
+	                                        { defaultValue: '' + interval, ref: 'interval' },
 	                                        React.createElement(
 	                                            'option',
 	                                            { value: '30' },
@@ -63685,11 +63682,7 @@
 	                                ),
 	                                React.createElement(
 	                                    'a',
-	                                    { className: 'button proceed expanded', style: {
-	                                            height: '40px',
-	                                            width: '100px',
-	                                            alignSelf: 'flex-end'
-	                                        }, onClick: function onClick(e) {
+	                                    { className: 'button proceed expanded', style: { height: '40px', width: '100px', alignSelf: 'flex-end' }, onClick: function onClick(e) {
 	                                            return that.onSubmit();
 	                                        } },
 	                                    'Go'
@@ -63818,8 +63811,42 @@
 
 	// <SimpleLineChart dataUp={data['network_up'] dataDown={data['network_down']}}/>
 
-	var SimpleAreaChart = function (_React$Component2) {
-	    _inherits(SimpleAreaChart, _React$Component2);
+	var CustomizedAxisTick = function (_React$Component2) {
+	    _inherits(CustomizedAxisTick, _React$Component2);
+
+	    function CustomizedAxisTick() {
+	        _classCallCheck(this, CustomizedAxisTick);
+
+	        return _possibleConstructorReturn(this, Object.getPrototypeOf(CustomizedAxisTick).apply(this, arguments));
+	    }
+
+	    _createClass(CustomizedAxisTick, [{
+	        key: 'render',
+	        value: function render() {
+	            var _props = this.props;
+	            var x = _props.x;
+	            var y = _props.y;
+	            var stroke = _props.stroke;
+	            var payload = _props.payload;
+
+
+	            return React.createElement(
+	                'g',
+	                { transform: 'translate(' + x + ',' + y + ')' },
+	                React.createElement(
+	                    'text',
+	                    { x: 0, y: 15, dy: 16, textAnchor: 'middle', width: 30, fill: '#666', transform: 'rotate(-15)' },
+	                    payload.value
+	                )
+	            );
+	        }
+	    }]);
+
+	    return CustomizedAxisTick;
+	}(React.Component);
+
+	var SimpleAreaChart = function (_React$Component3) {
+	    _inherits(SimpleAreaChart, _React$Component3);
 
 	    function SimpleAreaChart() {
 	        _classCallCheck(this, SimpleAreaChart);
@@ -63830,22 +63857,32 @@
 	    _createClass(SimpleAreaChart, [{
 	        key: 'render',
 	        value: function render() {
-	            var width = $('.row').width() * 0.95;
+	            var width = $('.row').width() * 0.90;
 
 	            return React.createElement(
 	                AreaChart,
 	                { syncId: 'chart', width: width, height: 250, data: this.props.data, margin: {
-	                        top: 10,
-	                        right: 30,
-	                        left: 0,
-	                        bottom: 0
+	                        top: 20,
+	                        right: 40,
+	                        left: 20,
+	                        bottom: 40
 	                    } },
-	                React.createElement(XAxis, { dataKey: 'timestamp', tickCount: 7 }),
+	                React.createElement(
+	                    'defs',
+	                    null,
+	                    React.createElement(
+	                        'linearGradient',
+	                        { id: 'gradient', x1: '0', y1: '0', x2: '0', y2: '1' },
+	                        React.createElement('stop', { offset: '5%', stopColor: '#009900', stopOpacity: 0.8 }),
+	                        React.createElement('stop', { offset: '95%', stopColor: '#009900', stopOpacity: 0 })
+	                    )
+	                ),
+	                React.createElement(XAxis, { dataKey: 'timestamp', tick: React.createElement(CustomizedAxisTick, null), padding: { right: 0 } }),
 	                React.createElement(YAxis, null),
 	                React.createElement(CartesianGrid, { strokeDasharray: '3 3' }),
 	                React.createElement(Tooltip, null),
 	                React.createElement(ReferenceLine, { y: 1, label: 'Max', stroke: 'red', strokeDasharray: '3 3' }),
-	                React.createElement(Area, { connectNulls: true, type: 'monotone', dataKey: 'value', stroke: '#006600', fill: '#009900' })
+	                React.createElement(Area, { type: 'monotone', connectNulls: true, dataKey: 'value', stroke: '#009900', fill: 'url(#gradient)' })
 	            );
 	        }
 	    }]);
@@ -63856,7 +63893,7 @@
 	var SimpleLineChart = React.createClass({
 	    displayName: 'SimpleLineChart',
 	    render: function render() {
-	        var width = $('.row').width() * 0.95;
+	        var width = $('.row').width() * 0.90;
 
 	        return React.createElement(
 	            LineChart,
@@ -63881,8 +63918,8 @@
 	    }
 	});
 
-	var UptimeMessage = function (_React$Component3) {
-	    _inherits(UptimeMessage, _React$Component3);
+	var UptimeMessage = function (_React$Component4) {
+	    _inherits(UptimeMessage, _React$Component4);
 
 	    function UptimeMessage() {
 	        _classCallCheck(this, UptimeMessage);
@@ -63909,8 +63946,8 @@
 
 	module.exports = HistoricalChart;
 
-	var CustomTooltip = function (_React$Component4) {
-	    _inherits(CustomTooltip, _React$Component4);
+	var CustomTooltip = function (_React$Component5) {
+	    _inherits(CustomTooltip, _React$Component5);
 
 	    function CustomTooltip() {
 	        _classCallCheck(this, CustomTooltip);
@@ -63948,10 +63985,10 @@
 
 
 	            if (active) {
-	                var _props = this.props;
-	                var payload = _props.payload;
-	                var external = _props.external;
-	                var label = _props.label;
+	                var _props2 = this.props;
+	                var payload = _props2.payload;
+	                var external = _props2.external;
+	                var label = _props2.label;
 
 
 	                return React.createElement(
@@ -72964,18 +73001,16 @@
 	                                        { to: '/accountSettings', activeClassName: 'active', activeStyle: {
 	                                                color: '#222`'
 	                                            } },
-	                                        'Update Profile'
+	                                        'Account Settings'
 	                                    )
 	                                ),
 	                                _react2.default.createElement(
 	                                    'li',
 	                                    null,
 	                                    _react2.default.createElement(
-	                                        Link,
-	                                        { to: '/notificationLog', activeClassName: 'active', activeStyle: {
-	                                                color: '#222`'
-	                                            } },
-	                                        'Notification Log'
+	                                        'a',
+	                                        { onClick: this.launchDowntimeManager },
+	                                        'Downtime Manager'
 	                                    )
 	                                ),
 	                                _react2.default.createElement(
@@ -72994,24 +73029,15 @@
 	                                    null,
 	                                    _react2.default.createElement(
 	                                        Link,
-	                                        { to: '/accountSettings', activeClassName: 'active', activeStyle: {
+	                                        { to: '/notificationLog', activeClassName: 'active', activeStyle: {
 	                                                color: '#222`'
 	                                            } },
-	                                        'Account Settings'
+	                                        'Notification Log'
 	                                    )
 	                                ),
 	                                _react2.default.createElement(
 	                                    'li',
-	                                    null,
-	                                    _react2.default.createElement(
-	                                        'a',
-	                                        { onClick: this.launchDowntimeManager },
-	                                        'Downtime Manager'
-	                                    )
-	                                ),
-	                                _react2.default.createElement(
-	                                    'li',
-	                                    null,
+	                                    { style: { borderTop: "0.5px solid #f8f8f8" } },
 	                                    _react2.default.createElement(
 	                                        'a',
 	                                        { onClick: this.onLogout },
@@ -73222,11 +73248,11 @@
 	var Griddle = __webpack_require__(586);
 
 	var tableMetaData = [{
-	    "columnName": "userId",
+	    "columnName": "userEmail",
 	    "order": 1,
 	    "locked": false,
 	    "visible": true,
-	    "displayName": "User ID"
+	    "displayName": "User Email"
 	}, {
 	    "columnName": "action",
 	    "order": 2,
@@ -73248,8 +73274,6 @@
 	        _classCallCheck(this, ActionLog);
 
 	        var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(ActionLog).call(this, props));
-
-	        console.log("ActionLog props", props);
 
 	        _this.state = {
 	            logs: []
@@ -73282,10 +73306,8 @@
 
 	            for (var id in logs) {
 
-	                // console.log("userId", logs[id]['userId']);
-
 	                var row = {
-	                    userId: logs[id]['userId'],
+	                    userId: logs[id]['userEmail'],
 	                    action: logs[id]['action'],
 	                    timestamp: logs[id]['timestamp']
 	                };
@@ -73316,7 +73338,7 @@
 	                            resultsPerPage: 25,
 	                            initialSort: 'timestamp',
 	                            tableClassName: 'actionLog',
-	                            columns: ["userId", "action", "timestamp"],
+	                            columns: ["userEmail", "action", "timestamp"],
 	                            columnMetadata: tableMetaData })
 	                    )
 	                )
@@ -73335,7 +73357,7 @@
 
 	    return {
 	        sensorData: state.activeSensor,
-	        userId: state.syncData.userId,
+	        userEmail: state.syncData.userEmail,
 	        logs: state.auditLog.logs
 	    };
 	}
@@ -73443,6 +73465,8 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function($) {'use strict';
+
+	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
@@ -73644,7 +73668,7 @@
 	        key: 'render',
 	        value: function render() {
 
-	            console.log("sensordetails state", this.state);
+	            // console.log("sensordetails state", this.state);
 
 	            var _state = this.state;
 	            var macAdd = _state.macAdd;
@@ -73662,6 +73686,7 @@
 	            var thresholds = _state.thresholds;
 	            var _props = this.props;
 	            var userId = _props.userId;
+	            var userEmail = _props.userEmail;
 	            var dispatch = _props.dispatch;
 
 	            var location = building + ' ' + location;
@@ -73698,7 +73723,7 @@
 	            return React.createElement(
 	                'div',
 	                null,
-	                React.createElement(TopBar, { dispatch: dispatch, macAdd: macAdd, userId: userId, building: building, location: location }),
+	                React.createElement(TopBar, { dispatch: dispatch, macAdd: macAdd, userId: userId, userEmail: userEmail, building: building, location: location }),
 	                React.createElement(
 	                    'div',
 	                    { className: 'textAlignCenter', style: { padding: '0.5rem 1.5rem' } },
@@ -73727,12 +73752,12 @@
 	                    ),
 	                    React.createElement(Stats, { stats: stats }),
 	                    React.createElement(Top5Processes, { processes: top5 }),
-	                    React.createElement(ButtonList, { dispatch: dispatch, macAdd: macAdd, userId: userId, building: building, location: location, status: status })
+	                    React.createElement(ButtonList, { dispatch: dispatch, macAdd: macAdd, userEmail: userEmail, building: building, location: location, status: status })
 	                ),
-	                React.createElement(DeleteSensor, this.state),
-	                React.createElement(PauseSensor, this.state),
+	                React.createElement(DeleteSensor, _extends({}, this.props, this.state)),
+	                React.createElement(PauseSensor, _extends({}, this.props, this.state)),
 	                React.createElement(PinSensor, { macAdd: macAdd }),
-	                React.createElement(EditSensor, this.state),
+	                React.createElement(EditSensor, _extends({}, this.props, this.state)),
 	                React.createElement(RebootSensor, { macAdd: macAdd }),
 	                React.createElement(Terminal, { macAdd: macAdd, port: port })
 	            );
@@ -73928,13 +73953,13 @@
 	            var macAdd = _props2.macAdd;
 	            var building = _props2.building;
 	            var location = _props2.location;
-	            var userId = _props2.userId;
+	            var userEmail = _props2.userEmail;
 
 
 	            switch (type) {
 	                case 'terminal':
 	                    var actionDesc = 'Launched terminal for ' + macAdd + ' (' + location + ')';
-	                    dispatch(actions.startAddToLog(userId, actionDesc));
+	                    dispatch(actions.startAddToLog(userEmail, actionDesc));
 
 	                    $('#terminal').foundation('open');
 	                    break;
@@ -73949,7 +73974,10 @@
 	    }, {
 	        key: 'render',
 	        value: function render() {
-	            var status = this.props.status;
+	            var _props3 = this.props;
+	            var status = _props3.status;
+	            var macAdd = _props3.macAdd;
+	            var building = _props3.building;
 
 
 	            if (status === '-') {
@@ -73957,7 +73985,7 @@
 	            }
 
 	            var pauseMsg = status === "paused" ? "Unpause" : "Pause";
-	            var historicalLink = '/historical/' + this.props.macAdd;
+	            var historicalLink = '/historical/' + building + '&' + macAdd;
 
 	            return React.createElement(
 	                'div',
@@ -74020,12 +74048,12 @@
 	    }, {
 	        key: 'render',
 	        value: function render() {
-	            var _props3 = this.props;
-	            var dispatch = _props3.dispatch;
-	            var userId = _props3.userId;
-	            var macAdd = _props3.macAdd;
-	            var location = _props3.location;
-	            var building = _props3.building;
+	            var _props4 = this.props;
+	            var dispatch = _props4.dispatch;
+	            var userId = _props4.userId;
+	            var macAdd = _props4.macAdd;
+	            var location = _props4.location;
+	            var building = _props4.building;
 
 
 	            return React.createElement(
@@ -74084,7 +74112,7 @@
 	}(React.Component);
 
 	function mapStateToProps(state, ownProps) {
-	    return { sensorData: state.activeSensor, userId: state.syncData.userId };
+	    return { sensorData: state.activeSensor, userId: state.syncData.userId, userEmail: state.syncData.userEmail };
 	}
 
 	module.exports = connect(mapStateToProps)(SensorDetails);
@@ -74162,7 +74190,7 @@
 	            var building = _state.building;
 	            var _props = this.props;
 	            var dispatch = _props.dispatch;
-	            var userId = _props.userId;
+	            var userEmail = _props.userEmail;
 
 	            var that = this;
 
@@ -74186,7 +74214,7 @@
 	                    document.dispatchEvent(myCustomEvent);
 	                    var actionDesc = 'Deleted ' + macAdd + ' from ' + building + ' ' + location;
 
-	                    dispatch(actions.startAddToLog(userId, actionDesc));
+	                    dispatch(actions.startAddToLog(userEmail, actionDesc));
 	                }
 	            });
 	        }
@@ -74708,7 +74736,7 @@
 	}(React.Component);
 
 	function mapStateToProps(state, ownProps) {
-	    return { pin_mac: state.pin_mac, userId: state.syncData.userId };
+	    return { pin_mac: state.pin_mac, userId: state.syncData.userId, userEmail: state.syncData.userEmail };
 	}
 
 	module.exports = (0, _reactRedux.connect)(mapStateToProps)(PinSensor);
@@ -74890,9 +74918,12 @@
 	            var inputWarningDTPercentage = this.refs.warningDTPercentage.value;
 	            var inputWarningTemp = this.refs.warningTemp.value;
 
-	            var userId = this.props.userId;
+	            var _props = this.props;
+	            var userEmail = _props.userEmail;
+	            var dispatch = _props.dispatch;
 
-	            var dispatch = this.props.dispatch;
+
+	            console.log("userEmail edit", userEmail);
 
 	            var that = this;
 
@@ -74916,7 +74947,7 @@
 	                    document.dispatchEvent(myCustomEvent);
 
 	                    var actionDesc = 'Edited ' + inputMac + ' from ' + inputBuilding + ' ' + inputLocationLevel + inputLocationID;
-	                    dispatch(actions.startAddToLog(userId, actionDesc));
+	                    dispatch(actions.startAddToLog(userEmail, actionDesc));
 	                }
 	            });
 	        }
@@ -75432,8 +75463,9 @@
 
 	      var username = this.refs.username.value;
 	      var password = this.refs.password.value;
-	      var userId = this.props.userId;
-	      var dispatch = this.props.dispatch;
+	      var _props = this.props;
+	      var dispatch = _props.dispatch;
+	      var userEmail = _props.userEmail;
 	      var macAdd = this.state.macAdd;
 
 
@@ -75461,7 +75493,7 @@
 	          document.dispatchEvent(myCustomEvent);
 
 	          var actionDesc = 'Rebooted ' + macAdd;
-	          dispatch(actions.startAddToLog(userId, actionDesc));
+	          dispatch(actions.startAddToLog(userEmail, actionDesc));
 	        }
 
 	        that.refs.username.value = '';
@@ -75570,7 +75602,7 @@
 	}(React.Component);
 
 	function mapStateToProps(state, ownProps) {
-	  return { sensorData: state.activeSensor, userId: state.syncData.userId };
+	  return { sensorData: state.activeSensor, userId: state.syncData.userId, userEmail: state.syncData.userEmail };
 	}
 
 	module.exports = connect(mapStateToProps)(RebootSensor);
@@ -75650,7 +75682,7 @@
 	            var status = _state.status;
 	            var _props = this.props;
 	            var dispatch = _props.dispatch;
-	            var userId = _props.userId;
+	            var userEmail = _props.userEmail;
 
 	            var that = this;
 
@@ -75680,7 +75712,7 @@
 	                    document.dispatchEvent(myCustomEvent);
 	                    var actionDesc = pauseMsg + ' ' + macAdd + ' from ' + building + ' ' + location;
 
-	                    dispatch(actions.startAddToLog(userId, actionDesc));
+	                    dispatch(actions.startAddToLog(userEmail, actionDesc));
 	                }
 	            });
 	        }
@@ -76446,6 +76478,7 @@
 	                if (user) {
 	                    userDisplayName = user.displayName;
 	                    userEmail = user.email;
+
 	                    that.setState({ userDisplayName: userDisplayName, userEmail: userEmail });
 	                }
 	            }, function (error) {
@@ -76456,7 +76489,7 @@
 	                connection.subscribe('', function (topic, data) {
 
 	                    timestamp = new Date().toLocaleString();
-	                    dispatch(actions.storeSyncData(timestamp, userDisplayName));
+	                    dispatch(actions.storeSyncData(timestamp, userDisplayName, userEmail));
 
 	                    that.setState({
 	                        connection: connection,
@@ -76477,9 +76510,8 @@
 	                    this.state.connection.subscribe('', function (topic, data) {
 
 	                        console.warn('Reinitiating connection');
-
 	                        timestamp = new Date().toLocaleString();
-	                        dispatch(actions.storeSyncData(timestamp, userDisplayName));
+	                        // dispatch(actions.storeSyncData(timestamp, userDisplayName, userEmail));
 
 	                        that.setState({
 	                            connection: connection,
@@ -76601,7 +76633,7 @@
 	                                ),
 	                                React.createElement(
 	                                    'button',
-	                                    { onClick: this.launchAddSensor, className: 'icon-btn-text-small' },
+	                                    { onClick: this.launchAddSensor, className: 'icon-btn-text-small', style: { fontSize: '0.9rem' } },
 	                                    React.createElement(FontAwesome, { name: 'plus-circle', style: {
 	                                            marginRight: '0.5rem'
 	                                        } }),
@@ -77128,7 +77160,7 @@
 	                    null,
 	                    React.createElement(
 	                        'td',
-	                        { style: {
+	                        { className: 'header', style: {
 	                                width: "8rem",
 	                                textAlign: "center"
 	                            } },
@@ -77560,7 +77592,7 @@
 
 	            return React.createElement(
 	                "table",
-	                null,
+	                { className: "sensorHealthTable" },
 	                React.createElement(
 	                    "thead",
 	                    null,
@@ -77569,7 +77601,7 @@
 	                        null,
 	                        React.createElement(
 	                            "th",
-	                            { style: { textAlign: 'center', width: '20%' } },
+	                            { className: "header", style: { textAlign: 'center', width: '20%' } },
 	                            this.props.serverName
 	                        ),
 	                        React.createElement("th", null)
@@ -77889,7 +77921,7 @@
 	};
 
 	var syncDataReducer = exports.syncDataReducer = function syncDataReducer() {
-	  var state = arguments.length <= 0 || arguments[0] === undefined ? { currentTime: '-', userId: '-' } : arguments[0];
+	  var state = arguments.length <= 0 || arguments[0] === undefined ? { currentTime: '-', userId: '-', userEmail: '-' } : arguments[0];
 	  var action = arguments[1];
 
 	  switch (action.type) {
@@ -77897,7 +77929,8 @@
 
 	      return {
 	        currentTime: action.currentTime,
-	        userId: action.userId
+	        userId: action.userId,
+	        userEmail: action.userEmail
 	      };
 	    default:
 	      return state;
@@ -84667,9 +84700,9 @@
 	            var inputWarningDTPercentage = this.refs.warningDTPercentage.value;
 	            var inputWarningTemp = this.refs.warningTemp.value;
 
-	            var userId = this.props.userId;
-
-	            var dispatch = this.props.dispatch;
+	            var _props = this.props;
+	            var dispatch = _props.dispatch;
+	            var userEmail = _props.userEmail;
 
 	            var that = this;
 
@@ -84693,7 +84726,7 @@
 	                    document.dispatchEvent(myCustomEvent);
 
 	                    var actionDesc = 'Added ' + inputMac + ' to ' + inputBuilding + ' ' + inputLocationLevel + inputLocationID;
-	                    dispatch(actions.startAddToLog(userId, actionDesc));
+	                    dispatch(actions.startAddToLog(userEmail, actionDesc));
 
 	                    that.refs.macAddress.value = '';
 	                    that.refs.port.value = '';
@@ -85118,7 +85151,7 @@
 	}(React.Component);
 
 	function mapStateToProps(state, ownProps) {
-	    return { sensorData: state.activeSensor, userId: state.syncData.userId };
+	    return { sensorData: state.activeSensor };
 	}
 
 	module.exports = connect(mapStateToProps)(AddSensor);
@@ -85373,6 +85406,7 @@
 	            var _props = this.props;
 	            var dispatch = _props.dispatch;
 	            var userId = _props.userId;
+	            var userEmail = _props.userEmail;
 
 
 	            editSNMPSpeedTestAPI.editSNMPSpeedTest(inputMac, inputUsername, inputPassword, inputInterval).then(function (response) {
@@ -85398,7 +85432,7 @@
 	                    });
 
 	                    var actionDesc = 'Edited SNMP settings (' + inputMac + ')';
-	                    dispatch(actions.startAddToLog(userId, actionDesc));
+	                    dispatch(actions.startAddToLog(userEmail, actionDesc));
 	                }
 
 	                that.refs.inputUsername.value = '';
@@ -85544,7 +85578,6 @@
 	    return {
 	        sensorData: state.activeSensor.sensorData,
 	        currentInterval: state.activeSensor.currentInterval
-
 	    };
 	}
 
@@ -88627,7 +88660,7 @@
 	exports.push([module.id, "@import url(https://fonts.googleapis.com/css?family=Lato:400,900i);", ""]);
 
 	// module
-	exports.push([module.id, "@charset \"UTF-8\";\nbody,\nhtml {\n  background: #f2f2f2;\n  height: 100%;\n  font-family: 'Roboto', sans-serif;\n  color: #1a1b1b; }\n\nbody {\n  -webkit-animation-delay: 0.1s;\n  -webkit-animation-name: fontfix;\n  -webkit-animation-duration: 0.1s;\n  -webkit-animation-iteration-count: 1;\n  -webkit-animation-timing-function: linear; }\n\n@-webkit-keyframes fontfix {\n  from {\n    opacity: 1; }\n  to {\n    opacity: 1; } }\n\n.row {\n  max-width: 80rem; }\n\n.loading-overlay {\n  background-color: rgba(10, 10, 10, 0.45) !important;\n  position: fixed;\n  top: 0;\n  bottom: 0;\n  left: 0;\n  right: 0; }\n\ndiv#offCanvas {\n  width: 350px;\n  height: 100%;\n  background: #e8e8e8; }\n\n.is-open-right {\n  transform: translateX(-350px); }\n\n.off-canvas.position-right {\n  right: -350px; }\n\n.off-canvas-content {\n  background: #f2f2f2; }\n\na {\n  color: #1a1b1b; }\n  a a:hover {\n    color: #6abedb; }\n\nhr {\n  border-color: #bdbdbd;\n  margin-top: 0.5rem;\n  max-width: 100%; }\n\n.divider {\n  border-color: #bdbdbd;\n  margin-bottom: 10px; }\n\n.reveal {\n  top: 100px !important; }\n\ntable thead {\n  background: #d3d3d3;\n  color: #1a1b1b;\n  border: 1px solid #e4e4e4; }\n\ntable tbody {\n  color: #1a1b1b;\n  border: 1px solid #e4e4e4; }\n\n.margin-top-large {\n  margin-top: 4rem; }\n\n.margin-bottom-large {\n  margin-bottom: 4rem; }\n\n.margin-right-small {\n  margin-right: 2rem; }\n\n.margin-left-small {\n  margin-left: 2rem; }\n\n.margin-left-tiny {\n  margin-left: 0.5rem; }\n\n.margin-right-tiny {\n  margin-right: 0.5rem; }\n\n.margin-top-md {\n  margin-top: 2rem; }\n\n.margin-top-small {\n  margin-top: 1rem; }\n\n.margin-bottom-md {\n  margin-bottom: 2rem; }\n\n.margin-bottom-small {\n  margin-bottom: 1rem; }\n\n.textAlignCenter {\n  text-align: center; }\n\nul.header-list {\n  display: inline-block;\n  list-style: none;\n  margin-bottom: 0; }\n\n.sticky {\n  z-index: 10000;\n  left: 0 !important; }\n\n.callout {\n  background-color: #fff; }\n\n.callout-dark {\n  padding: 1.5rem;\n  background-color: #fff;\n  border: 2px solid #bdbdbd;\n  border-top: none;\n  margin-top: 0;\n  border-bottom-right-radius: 4px;\n  border-bottom-left-radius: 4px; }\n\n.scroll {\n  max-height: 100vh;\n  overflow-y: scroll; }\n\n.callout-dark-header {\n  padding: 0.5rem;\n  background-color: #fff;\n  border: 2px solid #bdbdbd;\n  border-bottom: 1px solid #bdbdbd;\n  border-top-left-radius: 4px;\n  border-top-right-radius: 4px;\n  margin-bottom: 0; }\n\n.callout-top-header {\n  padding: 1rem;\n  background-color: #f2f2f2;\n  border: 2px solid #bdbdbd;\n  border-radius: 4px; }\n\n.callout-minimize {\n  margin-bottom: 1rem;\n  border-radius: 4px 4px;\n  padding: 0.5rem; }\n\n.icon-btn-text-small {\n  font-family: 'Roboto', sans-serif;\n  text-transform: Captitalize;\n  top: 15px;\n  right: 15px;\n  position: absolute;\n  color: #323232;\n  font-size: 1.1rem; }\n\n.test {\n  font-family: 'Pathway Gothic One', sans-serif;\n  text-transform: uppercase;\n  color: #fff;\n  font-size: 1rem;\n  background: #6abedb; }\n\nlabel {\n  text-transform: capitalize;\n  color: #232f32; }\n\n.header {\n  color: #323232;\n  margin-bottom: 0;\n  text-transform: capitalize;\n  font-weight: 500;\n  font-family: 'Roboto', sans-serif; }\n\n.sub-header {\n  color: #232f32;\n  font-size: 1.3rem;\n  font-family: 'Pathway Gothic One', sans-serif; }\n  .sub-header a {\n    text-transform: capitalize; }\n\n#watchList {\n  display: none; }\n\n.page-title {\n  color: #323232;\n  font-family: 'Roboto', sans-serif;\n  font-weight: 500;\n  font-size: 1.2rem; }\n\n.settings-page-title {\n  color: #323232;\n  font-family: 'Roboto', sans-serif;\n  font-weight: 700;\n  font-size: 1.4rem; }\n\n.settings-subheader {\n  font-weight: 200;\n  white-space: nowrap; }\n\n.settings-subheader-container {\n  padding-top: 1rem; }\n\n.settings-wrapper {\n  margin-left: 1.8rem; }\n\ninput[type=search] {\n  box-shadow: none; }\n\n.top-bar-upper {\n  color: #333;\n  font-size: 0.5rem; }\n\n.app-header {\n  font-size: 1.3rem; }\n\ntable.overview-custom tbody,\ntable.overview-custom th,\ntable.overview-custom thead,\ntable.overview-custom tr {\n  text-align: center; }\n\ntable.sensor-details-table tbody {\n  text-align: left; }\n\n.statusText {\n  color: red;\n  margin-bottom: 1rem;\n  text-transform: uppercase;\n  font-size: 0.85em; }\n\n.notificationHeader {\n  color: #fff;\n  text-transform: uppercase;\n  font-size: 0.5em;\n  font-weight: bold; }\n\n.sensorBlock {\n  height: 30px;\n  border-radius: 30px;\n  width: auto;\n  color: #fff;\n  text-align: center;\n  font-family: 'Pathway Gothic One', sans-serif;\n  text-transform: uppercase; }\n\n.sensorBlockSquare {\n  height: 30px;\n  width: 30px;\n  border-radius: 4px;\n  cursor: pointer;\n  text-align: center;\n  line-height: 28px;\n  color: white;\n  font-weight: bold; }\n\n.sensorBlockSquare:hover {\n  opacity: 0.5; }\n\n.sensorList {\n  display: inline-block;\n  margin-right: 1px; }\n\n#uptime-form select {\n  margin-right: 2rem; }\n\n.recharts-tooltip-wrapper {\n  z-index: 1000;\n  box-shadow: 1px 1px 4px #323232;\n  background-color: #fff; }\n\n#glance-tooltip > table tr:nth-of-type(even) {\n  background-color: transparent !important; }\n\n.button-custom {\n  height: 30px;\n  width: auto !important;\n  margin: 0;\n  color: #fff !important;\n  text-align: center;\n  font-family: 'Pathway Gothic One', sans-serif;\n  text-transform: uppercase; }\n\n.proceed {\n  background: #6abedb; }\n\n.cancel {\n  background: #990000; }\n\n.cancel:hover {\n  background: #7a0000; }\n\n.remove {\n  border: 1px solid #990000;\n  background-color: #fff;\n  color: #990000;\n  cursor: pointer; }\n\n.remove:hover {\n  background-color: #990000;\n  color: #fff !important; }\n\n.pin {\n  border: 1px solid #008000;\n  background-color: #fff;\n  color: #008000;\n  cursor: pointer; }\n\n.pin:hover {\n  background-color: #006600;\n  color: #fff !important; }\n\n.disabled {\n  pointer-events: none;\n  background: #e8e8e8;\n  border: none;\n  color: white;\n  cursor: default; }\n\n.disabled:hover {\n  pointer-events: none;\n  background: #e8e8e8;\n  border: none;\n  color: white;\n  cursor: default; }\n\n.tableOptions > li > a {\n  color: #323232;\n  font-weight: normal;\n  font-size: 1rem;\n  padding: 0.5rem 0.7rem; }\n\n.menuHeader:hover,\n.tableOptions .menuHeader {\n  background-color: #232f32 !important;\n  color: #fff;\n  padding: 0.3rem 0.7rem;\n  text-transform: uppercase; }\n\n.tableOptions > li {\n  border-bottom: 1px solid #f2f2f2; }\n\n.tableOptions > li:hover {\n  background-color: #f2f2f2; }\n\n.dropdown-pane {\n  padding: 0; }\n\n.panel-grey {\n  background-color: #e4e4e4; }\n\n#emailPanel,\n#namePanel,\n#passwordPanel,\n#dailyReportTimePanel,\n#flappingDownsPanel,\n#considerationPeriodPanel,\n#emailRecipientPanel {\n  display: none;\n  padding: 1rem;\n  background: #e4e4e4; }\n\ninput[type=checkbox]:checked ~ #port {\n  display: none; }\n\n#port {\n  display: block; }\n\n.inactive-link {\n  display: none; }\n\n.button-cancel {\n  border-color: #990000 !important;\n  color: #990000 !important; }\n\n.green {\n  background-color: #008000; }\n\n.orange {\n  background-color: #cc7a00; }\n\n.red {\n  background-color: #990000; }\n\n.black {\n  background-color: #1a1b1b; }\n\n.yellow {\n  background-color: #ffcc00; }\n\n.grey {\n  background-color: #737373; }\n\n.loader {\n  height: 4px;\n  width: 100%;\n  position: relative;\n  overflow: hidden;\n  background-color: #ddd; }\n\n.loader:before {\n  display: block;\n  position: absolute;\n  content: \"\";\n  left: -200px;\n  width: 200px;\n  height: 4px;\n  background-color: #2980b9;\n  animation: loading 2s linear infinite; }\n\n.no-border {\n  border: none;\n  width: inherit;\n  background-color: transparent; }\n\n@keyframes loading {\n  from {\n    left: -200px;\n    width: 30%; }\n  50% {\n    width: 30%; }\n  70% {\n    width: 70%; }\n  80% {\n    left: 50%; }\n  95% {\n    left: 120%; }\n  to {\n    left: 100%; } }\n\ntable.sensor-details-table td:nth-child(1) {\n  text-transform: Capitalize; }\n\ntable.sensorHealthTable tbody tr:nth-last-child(1) {\n  background-color: #f1f1f1;\n  border-top: 0.5px solid #d3d3d3; }\n\ntable.sensor-details-table tbody {\n  text-align: left; }\n\ntable.sensor-details-table td:nth-child(2), table.sensor-details-table th:nth-child(2) {\n  word-break: break-all;\n  text-align: center; }\n\ntable.actionLog tr > td:nth-child(2) {\n  font-weight: bold; }\n\n.table-container {\n  text-align: center; }\n\n.table-row-highlight {\n  font-weight: bold;\n  border: solid 1px #990000;\n  background-color: rgba(153, 0, 0, 0.4) !important; }\n\n.button-disabled {\n  pointer-events: none;\n  color: #000 !important; }\n\n#top-bar-pin:hover, #top-bar-delete:hover, #top-bar-edit:hover {\n  color: #6abedb; }\n\ninput::-webkit-outer-spin-button,\ninput::-webkit-inner-spin-button {\n  /* display: none; <- Crashes Chrome on hover */\n  -webkit-appearance: none;\n  margin: 0;\n  /* <— Apparently some margin are still there even though it's hidden */ }\n\n.tabs {\n  border: none; }\n\n.addEditSensor > tbody {\n  border: none; }\n\nspan._800 {\n  font-weight: 800; }\n", ""]);
+	exports.push([module.id, "@charset \"UTF-8\";\nbody,\nhtml {\n  background: #f2f2f2;\n  height: 100%;\n  font-family: 'Roboto', sans-serif;\n  color: #1a1b1b; }\n\nbody {\n  -webkit-animation-delay: 0.1s;\n  -webkit-animation-name: fontfix;\n  -webkit-animation-duration: 0.1s;\n  -webkit-animation-iteration-count: 1;\n  -webkit-animation-timing-function: linear; }\n\n@-webkit-keyframes fontfix {\n  from {\n    opacity: 1; }\n  to {\n    opacity: 1; } }\n\n.row {\n  max-width: 80rem; }\n\n.loading-overlay {\n  background-color: rgba(10, 10, 10, 0.45) !important;\n  position: fixed;\n  top: 0;\n  bottom: 0;\n  left: 0;\n  right: 0; }\n\ndiv#offCanvas {\n  width: 350px;\n  height: 100%;\n  background: #e8e8e8; }\n\n.is-open-right {\n  transform: translateX(-350px); }\n\n.off-canvas.position-right {\n  right: -350px; }\n\n.off-canvas-content {\n  background: #f2f2f2; }\n\na {\n  color: #1a1b1b; }\n  a a:hover {\n    color: #6abedb; }\n\nhr {\n  border-color: #bdbdbd;\n  margin-top: 0.5rem;\n  max-width: 100%; }\n\n.divider {\n  border-color: #bdbdbd;\n  margin-bottom: 10px; }\n\n.reveal {\n  top: 100px !important; }\n\ntable thead {\n  background: #d3d3d3;\n  color: #1a1b1b;\n  border: 1px solid #e4e4e4; }\n\ntable tbody {\n  color: #1a1b1b;\n  border: 1px solid #e4e4e4; }\n\n.margin-top-large {\n  margin-top: 4rem; }\n\n.margin-bottom-large {\n  margin-bottom: 4rem; }\n\n.margin-right-small {\n  margin-right: 2rem; }\n\n.margin-left-small {\n  margin-left: 2rem; }\n\n.margin-left-tiny {\n  margin-left: 0.5rem; }\n\n.margin-right-tiny {\n  margin-right: 0.5rem; }\n\n.margin-top-md {\n  margin-top: 2rem; }\n\n.margin-top-small {\n  margin-top: 1rem; }\n\n.margin-bottom-md {\n  margin-bottom: 2rem; }\n\n.margin-bottom-small {\n  margin-bottom: 1rem; }\n\n.textAlignCenter {\n  text-align: center; }\n\nul.header-list {\n  display: inline-block;\n  list-style: none;\n  margin-bottom: 0; }\n\n.sticky {\n  z-index: 10000;\n  left: 0 !important; }\n\n.callout {\n  background-color: #fff; }\n\n.callout-dark {\n  padding: 1.5rem;\n  background-color: #fff;\n  border: 2px solid #bdbdbd;\n  border-top: none;\n  margin-top: 0;\n  border-bottom-right-radius: 4px;\n  border-bottom-left-radius: 4px; }\n\n.scroll {\n  max-height: 100vh;\n  overflow-y: scroll; }\n\n.callout-dark-header {\n  padding: 0.5rem;\n  background-color: #fff;\n  border: 2px solid #bdbdbd;\n  border-bottom: 1px solid #bdbdbd;\n  border-top-left-radius: 4px;\n  border-top-right-radius: 4px;\n  margin-bottom: 0; }\n\n.callout-top-header {\n  padding: 1rem;\n  background-color: #f2f2f2;\n  border: 2px solid #bdbdbd;\n  border-radius: 4px; }\n\n.callout-minimize {\n  margin-bottom: 1rem;\n  border-radius: 4px 4px;\n  padding: 0.5rem; }\n\n.icon-btn-text-small {\n  font-family: 'Roboto', sans-serif;\n  text-transform: Captitalize;\n  top: 15px;\n  right: 15px;\n  position: absolute;\n  color: #323232;\n  font-size: 1.1rem; }\n\n.test {\n  font-family: 'Pathway Gothic One', sans-serif;\n  text-transform: uppercase;\n  color: #fff;\n  font-size: 1rem;\n  background: #6abedb; }\n\nlabel {\n  text-transform: capitalize;\n  color: #232f32; }\n\n.page-title {\n  color: #323232;\n  font-family: 'Roboto', sans-serif;\n  font-weight: 500;\n  font-size: 1.2rem; }\n\n.header {\n  color: #323232;\n  margin-bottom: 0;\n  text-transform: capitalize;\n  font-weight: 500;\n  font-family: 'Roboto', sans-serif; }\n\n.sub-header {\n  color: #232f32;\n  font-size: 1.3rem;\n  font-family: 'Pathway Gothic One', sans-serif; }\n  .sub-header a {\n    text-transform: capitalize; }\n\n#watchList {\n  display: none; }\n\n.settings-page-title {\n  color: #323232;\n  font-family: 'Roboto', sans-serif;\n  font-weight: 700;\n  font-size: 1.4rem; }\n\n.settings-subheader {\n  font-weight: 200;\n  white-space: nowrap; }\n\n.settings-subheader-container {\n  padding-top: 1rem; }\n\n.settings-wrapper {\n  margin-left: 1.8rem; }\n\ninput[type=search] {\n  box-shadow: none; }\n\n.top-bar-upper {\n  color: #333;\n  font-size: 0.5rem; }\n\n.app-header {\n  font-size: 1.3rem; }\n\ntable.overview-custom tbody,\ntable.overview-custom th,\ntable.overview-custom thead,\ntable.overview-custom tr {\n  text-align: center; }\n\ntable.sensor-details-table tbody {\n  text-align: left; }\n\n.statusText {\n  color: red;\n  margin-bottom: 1rem;\n  text-transform: uppercase;\n  font-size: 0.85em; }\n\n.notificationHeader {\n  color: #fff;\n  text-transform: uppercase;\n  font-size: 0.5em;\n  font-weight: bold; }\n\n.sensorBlock {\n  height: 30px;\n  border-radius: 30px;\n  width: auto;\n  color: #fff;\n  text-align: center;\n  font-family: 'Pathway Gothic One', sans-serif;\n  text-transform: uppercase; }\n\n.sensorBlockSquare {\n  height: 30px;\n  width: 30px;\n  border-radius: 4px;\n  cursor: pointer;\n  text-align: center;\n  line-height: 28px;\n  color: white;\n  font-weight: bold; }\n\n.sensorBlockSquare:hover {\n  opacity: 0.5; }\n\n.sensorList {\n  display: inline-block;\n  margin-right: 1px; }\n\n#uptime-form select {\n  margin-right: 2rem; }\n\n.recharts-tooltip-wrapper {\n  z-index: 1000;\n  box-shadow: 1px 1px 4px #323232;\n  background-color: #fff; }\n\n#glance-tooltip > table tr:nth-of-type(even) {\n  background-color: transparent !important; }\n\n.button-custom {\n  height: 30px;\n  width: auto !important;\n  margin: 0;\n  color: #fff !important;\n  text-align: center;\n  font-family: 'Pathway Gothic One', sans-serif;\n  text-transform: uppercase; }\n\n.proceed {\n  background: #6abedb; }\n\n.cancel {\n  background: #990000; }\n\n.cancel:hover {\n  background: #7a0000; }\n\n.remove {\n  border: 1px solid #990000;\n  background-color: #fff;\n  color: #990000;\n  cursor: pointer; }\n\n.remove:hover {\n  background-color: #990000;\n  color: #fff !important; }\n\n.pin {\n  border: 1px solid #008000;\n  background-color: #fff;\n  color: #008000;\n  cursor: pointer; }\n\n.pin:hover {\n  background-color: #006600;\n  color: #fff !important; }\n\n.disabled {\n  pointer-events: none;\n  background: #e8e8e8;\n  border: none;\n  color: white;\n  cursor: default; }\n\n.disabled:hover {\n  pointer-events: none;\n  background: #e8e8e8;\n  border: none;\n  color: white;\n  cursor: default; }\n\n.tableOptions > li > a {\n  color: #323232;\n  font-weight: normal;\n  font-size: 1rem;\n  padding: 0.5rem 0.7rem; }\n\n.menuHeader:hover,\n.tableOptions .menuHeader {\n  background-color: #232f32 !important;\n  color: #fff;\n  padding: 0.3rem 0.7rem;\n  text-transform: uppercase; }\n\n.tableOptions > li {\n  border-bottom: 1px solid #f2f2f2; }\n\n.tableOptions > li:hover {\n  background-color: #f2f2f2; }\n\n.dropdown-pane {\n  padding: 0; }\n\n.panel-grey {\n  background-color: #e4e4e4; }\n\n#emailPanel,\n#namePanel,\n#passwordPanel,\n#dailyReportTimePanel,\n#flappingDownsPanel,\n#considerationPeriodPanel,\n#emailRecipientPanel {\n  display: none;\n  padding: 1rem;\n  background: #e4e4e4; }\n\ninput[type=checkbox]:checked ~ #port {\n  display: none; }\n\n#port {\n  display: block; }\n\n.inactive-link {\n  display: none; }\n\n.button-cancel {\n  border-color: #990000 !important;\n  color: #990000 !important; }\n\n.green {\n  background-color: #008000; }\n\n.orange {\n  background-color: #cc7a00; }\n\n.red {\n  background-color: #990000; }\n\n.black {\n  background-color: #1a1b1b; }\n\n.yellow {\n  background-color: #ffcc00; }\n\n.grey {\n  background-color: #737373; }\n\n.loader {\n  height: 4px;\n  width: 100%;\n  position: relative;\n  overflow: hidden;\n  background-color: #ddd; }\n\n.loader:before {\n  display: block;\n  position: absolute;\n  content: \"\";\n  left: -200px;\n  width: 200px;\n  height: 4px;\n  background-color: #2980b9;\n  animation: loading 2s linear infinite; }\n\n.no-border {\n  border: none;\n  width: inherit;\n  background-color: transparent; }\n\n@keyframes loading {\n  from {\n    left: -200px;\n    width: 30%; }\n  50% {\n    width: 30%; }\n  70% {\n    width: 70%; }\n  80% {\n    left: 50%; }\n  95% {\n    left: 120%; }\n  to {\n    left: 100%; } }\n\ntable.sensor-details-table td:nth-child(1) {\n  text-transform: Capitalize; }\n\ntable.sensorHealthTable tbody tr:nth-last-child(1) {\n  background-color: #fafafa;\n  border-top: 0.25px solid #e4e4e4; }\n\ntable.sensorHealthTable tbody th:nth-child(1) {\n  font-weight: normal; }\n\ntable.sensor-details-table tbody {\n  text-align: left; }\n\ntable.sensor-details-table td:nth-child(2), table.sensor-details-table th:nth-child(2) {\n  word-break: break-all;\n  text-align: center; }\n\ntable.actionLog tr > td:nth-child(2) {\n  font-weight: bold; }\n\n.table-container {\n  text-align: center; }\n\n.table-row-highlight {\n  font-weight: bold;\n  border: solid 1px #990000;\n  background-color: rgba(153, 0, 0, 0.4) !important; }\n\n.button-disabled {\n  pointer-events: none;\n  color: #000 !important; }\n\n#top-bar-pin:hover, #top-bar-delete:hover, #top-bar-edit:hover {\n  color: #6abedb; }\n\ninput::-webkit-outer-spin-button,\ninput::-webkit-inner-spin-button {\n  /* display: none; <- Crashes Chrome on hover */\n  -webkit-appearance: none;\n  margin: 0;\n  /* <— Apparently some margin are still there even though it's hidden */ }\n\n.tabs {\n  border: none; }\n\n.addEditSensor > tbody {\n  border: none; }\n\nspan._800 {\n  font-weight: 800; }\n", ""]);
 
 	// exports
 
@@ -88669,7 +88702,7 @@
 	exports.push([module.id, "@import url(https://fonts.googleapis.com/css?family=Lato:400,900i);", ""]);
 
 	// module
-	exports.push([module.id, "@charset \"UTF-8\";\nbody,\nhtml {\n  background: #f2f2f2;\n  height: 100%;\n  font-family: 'Roboto', sans-serif;\n  color: #1a1b1b; }\n\nbody {\n  -webkit-animation-delay: 0.1s;\n  -webkit-animation-name: fontfix;\n  -webkit-animation-duration: 0.1s;\n  -webkit-animation-iteration-count: 1;\n  -webkit-animation-timing-function: linear; }\n\n@-webkit-keyframes fontfix {\n  from {\n    opacity: 1; }\n  to {\n    opacity: 1; } }\n\n.row {\n  max-width: 80rem; }\n\n.loading-overlay {\n  background-color: rgba(10, 10, 10, 0.45) !important;\n  position: fixed;\n  top: 0;\n  bottom: 0;\n  left: 0;\n  right: 0; }\n\ndiv#offCanvas {\n  width: 350px;\n  height: 100%;\n  background: #e8e8e8; }\n\n.is-open-right {\n  transform: translateX(-350px); }\n\n.off-canvas.position-right {\n  right: -350px; }\n\n.off-canvas-content {\n  background: #f2f2f2; }\n\na {\n  color: #1a1b1b; }\n  a a:hover {\n    color: #6abedb; }\n\nhr {\n  border-color: #bdbdbd;\n  margin-top: 0.5rem;\n  max-width: 100%; }\n\n.divider {\n  border-color: #bdbdbd;\n  margin-bottom: 10px; }\n\n.reveal {\n  top: 100px !important; }\n\ntable thead {\n  background: #d3d3d3;\n  color: #1a1b1b;\n  border: 1px solid #e4e4e4; }\n\ntable tbody {\n  color: #1a1b1b;\n  border: 1px solid #e4e4e4; }\n\n.margin-top-large {\n  margin-top: 4rem; }\n\n.margin-bottom-large {\n  margin-bottom: 4rem; }\n\n.margin-right-small {\n  margin-right: 2rem; }\n\n.margin-left-small {\n  margin-left: 2rem; }\n\n.margin-left-tiny {\n  margin-left: 0.5rem; }\n\n.margin-right-tiny {\n  margin-right: 0.5rem; }\n\n.margin-top-md {\n  margin-top: 2rem; }\n\n.margin-top-small {\n  margin-top: 1rem; }\n\n.margin-bottom-md {\n  margin-bottom: 2rem; }\n\n.margin-bottom-small {\n  margin-bottom: 1rem; }\n\n.textAlignCenter {\n  text-align: center; }\n\nul.header-list {\n  display: inline-block;\n  list-style: none;\n  margin-bottom: 0; }\n\n.sticky {\n  z-index: 10000;\n  left: 0 !important; }\n\n.callout {\n  background-color: #fff; }\n\n.callout-dark {\n  padding: 1.5rem;\n  background-color: #fff;\n  border: 2px solid #bdbdbd;\n  border-top: none;\n  margin-top: 0;\n  border-bottom-right-radius: 4px;\n  border-bottom-left-radius: 4px; }\n\n.scroll {\n  max-height: 100vh;\n  overflow-y: scroll; }\n\n.callout-dark-header {\n  padding: 0.5rem;\n  background-color: #fff;\n  border: 2px solid #bdbdbd;\n  border-bottom: 1px solid #bdbdbd;\n  border-top-left-radius: 4px;\n  border-top-right-radius: 4px;\n  margin-bottom: 0; }\n\n.callout-top-header {\n  padding: 1rem;\n  background-color: #f2f2f2;\n  border: 2px solid #bdbdbd;\n  border-radius: 4px; }\n\n.callout-minimize {\n  margin-bottom: 1rem;\n  border-radius: 4px 4px;\n  padding: 0.5rem; }\n\n.icon-btn-text-small {\n  font-family: 'Roboto', sans-serif;\n  text-transform: Captitalize;\n  top: 15px;\n  right: 15px;\n  position: absolute;\n  color: #323232;\n  font-size: 1.1rem; }\n\n.test {\n  font-family: 'Pathway Gothic One', sans-serif;\n  text-transform: uppercase;\n  color: #fff;\n  font-size: 1rem;\n  background: #6abedb; }\n\nlabel {\n  text-transform: capitalize;\n  color: #232f32; }\n\n.header {\n  color: #323232;\n  margin-bottom: 0;\n  text-transform: capitalize;\n  font-weight: 500;\n  font-family: 'Roboto', sans-serif; }\n\n.sub-header {\n  color: #232f32;\n  font-size: 1.3rem;\n  font-family: 'Pathway Gothic One', sans-serif; }\n  .sub-header a {\n    text-transform: capitalize; }\n\n#watchList {\n  display: none; }\n\n.page-title {\n  color: #323232;\n  font-family: 'Roboto', sans-serif;\n  font-weight: 500;\n  font-size: 1.2rem; }\n\n.settings-page-title {\n  color: #323232;\n  font-family: 'Roboto', sans-serif;\n  font-weight: 700;\n  font-size: 1.4rem; }\n\n.settings-subheader {\n  font-weight: 200;\n  white-space: nowrap; }\n\n.settings-subheader-container {\n  padding-top: 1rem; }\n\n.settings-wrapper {\n  margin-left: 1.8rem; }\n\ninput[type=search] {\n  box-shadow: none; }\n\n.top-bar-upper {\n  color: #333;\n  font-size: 0.5rem; }\n\n.app-header {\n  font-size: 1.3rem; }\n\ntable.overview-custom tbody,\ntable.overview-custom th,\ntable.overview-custom thead,\ntable.overview-custom tr {\n  text-align: center; }\n\ntable.sensor-details-table tbody {\n  text-align: left; }\n\n.statusText {\n  color: red;\n  margin-bottom: 1rem;\n  text-transform: uppercase;\n  font-size: 0.85em; }\n\n.notificationHeader {\n  color: #fff;\n  text-transform: uppercase;\n  font-size: 0.5em;\n  font-weight: bold; }\n\n.sensorBlock {\n  height: 30px;\n  border-radius: 30px;\n  width: auto;\n  color: #fff;\n  text-align: center;\n  font-family: 'Pathway Gothic One', sans-serif;\n  text-transform: uppercase; }\n\n.sensorBlockSquare {\n  height: 30px;\n  width: 30px;\n  border-radius: 4px;\n  cursor: pointer;\n  text-align: center;\n  line-height: 28px;\n  color: white;\n  font-weight: bold; }\n\n.sensorBlockSquare:hover {\n  opacity: 0.5; }\n\n.sensorList {\n  display: inline-block;\n  margin-right: 1px; }\n\n#uptime-form select {\n  margin-right: 2rem; }\n\n.recharts-tooltip-wrapper {\n  z-index: 1000;\n  box-shadow: 1px 1px 4px #323232;\n  background-color: #fff; }\n\n#glance-tooltip > table tr:nth-of-type(even) {\n  background-color: transparent !important; }\n\n.button-custom {\n  height: 30px;\n  width: auto !important;\n  margin: 0;\n  color: #fff !important;\n  text-align: center;\n  font-family: 'Pathway Gothic One', sans-serif;\n  text-transform: uppercase; }\n\n.proceed {\n  background: #6abedb; }\n\n.cancel {\n  background: #990000; }\n\n.cancel:hover {\n  background: #7a0000; }\n\n.remove {\n  border: 1px solid #990000;\n  background-color: #fff;\n  color: #990000;\n  cursor: pointer; }\n\n.remove:hover {\n  background-color: #990000;\n  color: #fff !important; }\n\n.pin {\n  border: 1px solid #008000;\n  background-color: #fff;\n  color: #008000;\n  cursor: pointer; }\n\n.pin:hover {\n  background-color: #006600;\n  color: #fff !important; }\n\n.disabled {\n  pointer-events: none;\n  background: #e8e8e8;\n  border: none;\n  color: white;\n  cursor: default; }\n\n.disabled:hover {\n  pointer-events: none;\n  background: #e8e8e8;\n  border: none;\n  color: white;\n  cursor: default; }\n\n.tableOptions > li > a {\n  color: #323232;\n  font-weight: normal;\n  font-size: 1rem;\n  padding: 0.5rem 0.7rem; }\n\n.menuHeader:hover,\n.tableOptions .menuHeader {\n  background-color: #232f32 !important;\n  color: #fff;\n  padding: 0.3rem 0.7rem;\n  text-transform: uppercase; }\n\n.tableOptions > li {\n  border-bottom: 1px solid #f2f2f2; }\n\n.tableOptions > li:hover {\n  background-color: #f2f2f2; }\n\n.dropdown-pane {\n  padding: 0; }\n\n.panel-grey {\n  background-color: #e4e4e4; }\n\n#emailPanel,\n#namePanel,\n#passwordPanel,\n#dailyReportTimePanel,\n#flappingDownsPanel,\n#considerationPeriodPanel,\n#emailRecipientPanel {\n  display: none;\n  padding: 1rem;\n  background: #e4e4e4; }\n\ninput[type=checkbox]:checked ~ #port {\n  display: none; }\n\n#port {\n  display: block; }\n\n.inactive-link {\n  display: none; }\n\n.button-cancel {\n  border-color: #990000 !important;\n  color: #990000 !important; }\n\n.green {\n  background-color: #008000; }\n\n.orange {\n  background-color: #cc7a00; }\n\n.red {\n  background-color: #990000; }\n\n.black {\n  background-color: #1a1b1b; }\n\n.yellow {\n  background-color: #ffcc00; }\n\n.grey {\n  background-color: #737373; }\n\n.loader {\n  height: 4px;\n  width: 100%;\n  position: relative;\n  overflow: hidden;\n  background-color: #ddd; }\n\n.loader:before {\n  display: block;\n  position: absolute;\n  content: \"\";\n  left: -200px;\n  width: 200px;\n  height: 4px;\n  background-color: #2980b9;\n  animation: loading 2s linear infinite; }\n\n.no-border {\n  border: none;\n  width: inherit;\n  background-color: transparent; }\n\n@keyframes loading {\n  from {\n    left: -200px;\n    width: 30%; }\n  50% {\n    width: 30%; }\n  70% {\n    width: 70%; }\n  80% {\n    left: 50%; }\n  95% {\n    left: 120%; }\n  to {\n    left: 100%; } }\n\ntable.sensor-details-table td:nth-child(1) {\n  text-transform: Capitalize; }\n\ntable.sensorHealthTable tbody tr:nth-last-child(1) {\n  background-color: #f1f1f1;\n  border-top: 0.5px solid #d3d3d3; }\n\ntable.sensor-details-table tbody {\n  text-align: left; }\n\ntable.sensor-details-table td:nth-child(2), table.sensor-details-table th:nth-child(2) {\n  word-break: break-all;\n  text-align: center; }\n\ntable.actionLog tr > td:nth-child(2) {\n  font-weight: bold; }\n\n.table-container {\n  text-align: center; }\n\n.table-row-highlight {\n  font-weight: bold;\n  border: solid 1px #990000;\n  background-color: rgba(153, 0, 0, 0.4) !important; }\n\n.button-disabled {\n  pointer-events: none;\n  color: #000 !important; }\n\n#top-bar-pin:hover, #top-bar-delete:hover, #top-bar-edit:hover {\n  color: #6abedb; }\n\ninput::-webkit-outer-spin-button,\ninput::-webkit-inner-spin-button {\n  /* display: none; <- Crashes Chrome on hover */\n  -webkit-appearance: none;\n  margin: 0;\n  /* <— Apparently some margin are still there even though it's hidden */ }\n\n.tabs {\n  border: none; }\n\n.addEditSensor > tbody {\n  border: none; }\n\nspan._800 {\n  font-weight: 800; }\n\n.top-bar-left {\n  margin-top: 1.5rem; }\n\n.top-bar-right {\n  margin-top: 1.5rem;\n  text-align: right; }\n\n.top-bar {\n  padding: 0rem 2rem 0rem 2rem;\n  background: #232f32;\n  height: 4rem;\n  box-shadow: 0.5px 0.5px 5px #373837; }\n\n.top-bar ul {\n  background: #232f32;\n  /* temporary fix */\n  position: absolute;\n  top: 15px;\n  right: 15px; }\n\n.top-bar.lower {\n  padding-top: 0px; }\n\n.top-bar-title {\n  font-size: 1.5rem;\n  font-family: 'Lato', sans-serif;\n  font-weight: bold;\n  position: absolute;\n  top: 15px;\n  left: 15px;\n  color: #fff; }\n\n.menu > li > a {\n  color: #fafafa;\n  font-weight: bold;\n  font-size: 0.9rem;\n  text-transform: capitalize; }\n\n.is-dropdown-submenu {\n  border: 1px solid #373737; }\n", ""]);
+	exports.push([module.id, "@charset \"UTF-8\";\nbody,\nhtml {\n  background: #f2f2f2;\n  height: 100%;\n  font-family: 'Roboto', sans-serif;\n  color: #1a1b1b; }\n\nbody {\n  -webkit-animation-delay: 0.1s;\n  -webkit-animation-name: fontfix;\n  -webkit-animation-duration: 0.1s;\n  -webkit-animation-iteration-count: 1;\n  -webkit-animation-timing-function: linear; }\n\n@-webkit-keyframes fontfix {\n  from {\n    opacity: 1; }\n  to {\n    opacity: 1; } }\n\n.row {\n  max-width: 80rem; }\n\n.loading-overlay {\n  background-color: rgba(10, 10, 10, 0.45) !important;\n  position: fixed;\n  top: 0;\n  bottom: 0;\n  left: 0;\n  right: 0; }\n\ndiv#offCanvas {\n  width: 350px;\n  height: 100%;\n  background: #e8e8e8; }\n\n.is-open-right {\n  transform: translateX(-350px); }\n\n.off-canvas.position-right {\n  right: -350px; }\n\n.off-canvas-content {\n  background: #f2f2f2; }\n\na {\n  color: #1a1b1b; }\n  a a:hover {\n    color: #6abedb; }\n\nhr {\n  border-color: #bdbdbd;\n  margin-top: 0.5rem;\n  max-width: 100%; }\n\n.divider {\n  border-color: #bdbdbd;\n  margin-bottom: 10px; }\n\n.reveal {\n  top: 100px !important; }\n\ntable thead {\n  background: #d3d3d3;\n  color: #1a1b1b;\n  border: 1px solid #e4e4e4; }\n\ntable tbody {\n  color: #1a1b1b;\n  border: 1px solid #e4e4e4; }\n\n.margin-top-large {\n  margin-top: 4rem; }\n\n.margin-bottom-large {\n  margin-bottom: 4rem; }\n\n.margin-right-small {\n  margin-right: 2rem; }\n\n.margin-left-small {\n  margin-left: 2rem; }\n\n.margin-left-tiny {\n  margin-left: 0.5rem; }\n\n.margin-right-tiny {\n  margin-right: 0.5rem; }\n\n.margin-top-md {\n  margin-top: 2rem; }\n\n.margin-top-small {\n  margin-top: 1rem; }\n\n.margin-bottom-md {\n  margin-bottom: 2rem; }\n\n.margin-bottom-small {\n  margin-bottom: 1rem; }\n\n.textAlignCenter {\n  text-align: center; }\n\nul.header-list {\n  display: inline-block;\n  list-style: none;\n  margin-bottom: 0; }\n\n.sticky {\n  z-index: 10000;\n  left: 0 !important; }\n\n.callout {\n  background-color: #fff; }\n\n.callout-dark {\n  padding: 1.5rem;\n  background-color: #fff;\n  border: 2px solid #bdbdbd;\n  border-top: none;\n  margin-top: 0;\n  border-bottom-right-radius: 4px;\n  border-bottom-left-radius: 4px; }\n\n.scroll {\n  max-height: 100vh;\n  overflow-y: scroll; }\n\n.callout-dark-header {\n  padding: 0.5rem;\n  background-color: #fff;\n  border: 2px solid #bdbdbd;\n  border-bottom: 1px solid #bdbdbd;\n  border-top-left-radius: 4px;\n  border-top-right-radius: 4px;\n  margin-bottom: 0; }\n\n.callout-top-header {\n  padding: 1rem;\n  background-color: #f2f2f2;\n  border: 2px solid #bdbdbd;\n  border-radius: 4px; }\n\n.callout-minimize {\n  margin-bottom: 1rem;\n  border-radius: 4px 4px;\n  padding: 0.5rem; }\n\n.icon-btn-text-small {\n  font-family: 'Roboto', sans-serif;\n  text-transform: Captitalize;\n  top: 15px;\n  right: 15px;\n  position: absolute;\n  color: #323232;\n  font-size: 1.1rem; }\n\n.test {\n  font-family: 'Pathway Gothic One', sans-serif;\n  text-transform: uppercase;\n  color: #fff;\n  font-size: 1rem;\n  background: #6abedb; }\n\nlabel {\n  text-transform: capitalize;\n  color: #232f32; }\n\n.page-title {\n  color: #323232;\n  font-family: 'Roboto', sans-serif;\n  font-weight: 500;\n  font-size: 1.2rem; }\n\n.header {\n  color: #323232;\n  margin-bottom: 0;\n  text-transform: capitalize;\n  font-weight: 500;\n  font-family: 'Roboto', sans-serif; }\n\n.sub-header {\n  color: #232f32;\n  font-size: 1.3rem;\n  font-family: 'Pathway Gothic One', sans-serif; }\n  .sub-header a {\n    text-transform: capitalize; }\n\n#watchList {\n  display: none; }\n\n.settings-page-title {\n  color: #323232;\n  font-family: 'Roboto', sans-serif;\n  font-weight: 700;\n  font-size: 1.4rem; }\n\n.settings-subheader {\n  font-weight: 200;\n  white-space: nowrap; }\n\n.settings-subheader-container {\n  padding-top: 1rem; }\n\n.settings-wrapper {\n  margin-left: 1.8rem; }\n\ninput[type=search] {\n  box-shadow: none; }\n\n.top-bar-upper {\n  color: #333;\n  font-size: 0.5rem; }\n\n.app-header {\n  font-size: 1.3rem; }\n\ntable.overview-custom tbody,\ntable.overview-custom th,\ntable.overview-custom thead,\ntable.overview-custom tr {\n  text-align: center; }\n\ntable.sensor-details-table tbody {\n  text-align: left; }\n\n.statusText {\n  color: red;\n  margin-bottom: 1rem;\n  text-transform: uppercase;\n  font-size: 0.85em; }\n\n.notificationHeader {\n  color: #fff;\n  text-transform: uppercase;\n  font-size: 0.5em;\n  font-weight: bold; }\n\n.sensorBlock {\n  height: 30px;\n  border-radius: 30px;\n  width: auto;\n  color: #fff;\n  text-align: center;\n  font-family: 'Pathway Gothic One', sans-serif;\n  text-transform: uppercase; }\n\n.sensorBlockSquare {\n  height: 30px;\n  width: 30px;\n  border-radius: 4px;\n  cursor: pointer;\n  text-align: center;\n  line-height: 28px;\n  color: white;\n  font-weight: bold; }\n\n.sensorBlockSquare:hover {\n  opacity: 0.5; }\n\n.sensorList {\n  display: inline-block;\n  margin-right: 1px; }\n\n#uptime-form select {\n  margin-right: 2rem; }\n\n.recharts-tooltip-wrapper {\n  z-index: 1000;\n  box-shadow: 1px 1px 4px #323232;\n  background-color: #fff; }\n\n#glance-tooltip > table tr:nth-of-type(even) {\n  background-color: transparent !important; }\n\n.button-custom {\n  height: 30px;\n  width: auto !important;\n  margin: 0;\n  color: #fff !important;\n  text-align: center;\n  font-family: 'Pathway Gothic One', sans-serif;\n  text-transform: uppercase; }\n\n.proceed {\n  background: #6abedb; }\n\n.cancel {\n  background: #990000; }\n\n.cancel:hover {\n  background: #7a0000; }\n\n.remove {\n  border: 1px solid #990000;\n  background-color: #fff;\n  color: #990000;\n  cursor: pointer; }\n\n.remove:hover {\n  background-color: #990000;\n  color: #fff !important; }\n\n.pin {\n  border: 1px solid #008000;\n  background-color: #fff;\n  color: #008000;\n  cursor: pointer; }\n\n.pin:hover {\n  background-color: #006600;\n  color: #fff !important; }\n\n.disabled {\n  pointer-events: none;\n  background: #e8e8e8;\n  border: none;\n  color: white;\n  cursor: default; }\n\n.disabled:hover {\n  pointer-events: none;\n  background: #e8e8e8;\n  border: none;\n  color: white;\n  cursor: default; }\n\n.tableOptions > li > a {\n  color: #323232;\n  font-weight: normal;\n  font-size: 1rem;\n  padding: 0.5rem 0.7rem; }\n\n.menuHeader:hover,\n.tableOptions .menuHeader {\n  background-color: #232f32 !important;\n  color: #fff;\n  padding: 0.3rem 0.7rem;\n  text-transform: uppercase; }\n\n.tableOptions > li {\n  border-bottom: 1px solid #f2f2f2; }\n\n.tableOptions > li:hover {\n  background-color: #f2f2f2; }\n\n.dropdown-pane {\n  padding: 0; }\n\n.panel-grey {\n  background-color: #e4e4e4; }\n\n#emailPanel,\n#namePanel,\n#passwordPanel,\n#dailyReportTimePanel,\n#flappingDownsPanel,\n#considerationPeriodPanel,\n#emailRecipientPanel {\n  display: none;\n  padding: 1rem;\n  background: #e4e4e4; }\n\ninput[type=checkbox]:checked ~ #port {\n  display: none; }\n\n#port {\n  display: block; }\n\n.inactive-link {\n  display: none; }\n\n.button-cancel {\n  border-color: #990000 !important;\n  color: #990000 !important; }\n\n.green {\n  background-color: #008000; }\n\n.orange {\n  background-color: #cc7a00; }\n\n.red {\n  background-color: #990000; }\n\n.black {\n  background-color: #1a1b1b; }\n\n.yellow {\n  background-color: #ffcc00; }\n\n.grey {\n  background-color: #737373; }\n\n.loader {\n  height: 4px;\n  width: 100%;\n  position: relative;\n  overflow: hidden;\n  background-color: #ddd; }\n\n.loader:before {\n  display: block;\n  position: absolute;\n  content: \"\";\n  left: -200px;\n  width: 200px;\n  height: 4px;\n  background-color: #2980b9;\n  animation: loading 2s linear infinite; }\n\n.no-border {\n  border: none;\n  width: inherit;\n  background-color: transparent; }\n\n@keyframes loading {\n  from {\n    left: -200px;\n    width: 30%; }\n  50% {\n    width: 30%; }\n  70% {\n    width: 70%; }\n  80% {\n    left: 50%; }\n  95% {\n    left: 120%; }\n  to {\n    left: 100%; } }\n\ntable.sensor-details-table td:nth-child(1) {\n  text-transform: Capitalize; }\n\ntable.sensorHealthTable tbody tr:nth-last-child(1) {\n  background-color: #fafafa;\n  border-top: 0.25px solid #e4e4e4; }\n\ntable.sensorHealthTable tbody th:nth-child(1) {\n  font-weight: normal; }\n\ntable.sensor-details-table tbody {\n  text-align: left; }\n\ntable.sensor-details-table td:nth-child(2), table.sensor-details-table th:nth-child(2) {\n  word-break: break-all;\n  text-align: center; }\n\ntable.actionLog tr > td:nth-child(2) {\n  font-weight: bold; }\n\n.table-container {\n  text-align: center; }\n\n.table-row-highlight {\n  font-weight: bold;\n  border: solid 1px #990000;\n  background-color: rgba(153, 0, 0, 0.4) !important; }\n\n.button-disabled {\n  pointer-events: none;\n  color: #000 !important; }\n\n#top-bar-pin:hover, #top-bar-delete:hover, #top-bar-edit:hover {\n  color: #6abedb; }\n\ninput::-webkit-outer-spin-button,\ninput::-webkit-inner-spin-button {\n  /* display: none; <- Crashes Chrome on hover */\n  -webkit-appearance: none;\n  margin: 0;\n  /* <— Apparently some margin are still there even though it's hidden */ }\n\n.tabs {\n  border: none; }\n\n.addEditSensor > tbody {\n  border: none; }\n\nspan._800 {\n  font-weight: 800; }\n\n.top-bar-left {\n  margin-top: 1.5rem; }\n\n.top-bar-right {\n  margin-top: 1.5rem;\n  text-align: right; }\n\n.top-bar {\n  padding: 0rem 2rem 0rem 2rem;\n  background: #232f32;\n  height: 4rem;\n  box-shadow: 0.5px 0.5px 5px #373837; }\n\n.top-bar ul {\n  background: #232f32;\n  /* temporary fix */\n  position: absolute;\n  top: 15px;\n  right: 15px; }\n\n.top-bar.lower {\n  padding-top: 0px; }\n\n.top-bar-title {\n  font-size: 1.5rem;\n  font-family: 'Lato', sans-serif;\n  font-weight: bold;\n  position: absolute;\n  top: 15px;\n  left: 15px;\n  color: #fff; }\n\n.menu > li > a {\n  color: #fafafa;\n  font-weight: bold;\n  font-size: 0.9rem;\n  text-transform: capitalize; }\n\n.is-dropdown-submenu {\n  border: 1px solid #373737; }\n", ""]);
 
 	// exports
 
@@ -88751,7 +88784,7 @@
 	exports.push([module.id, "@import url(https://fonts.googleapis.com/css?family=Lato:400,900i);", ""]);
 
 	// module
-	exports.push([module.id, "@charset \"UTF-8\";\nbody,\nhtml {\n  background: #f2f2f2;\n  height: 100%;\n  font-family: 'Roboto', sans-serif;\n  color: #1a1b1b; }\n\nbody {\n  -webkit-animation-delay: 0.1s;\n  -webkit-animation-name: fontfix;\n  -webkit-animation-duration: 0.1s;\n  -webkit-animation-iteration-count: 1;\n  -webkit-animation-timing-function: linear; }\n\n@-webkit-keyframes fontfix {\n  from {\n    opacity: 1; }\n  to {\n    opacity: 1; } }\n\n.row {\n  max-width: 80rem; }\n\n.loading-overlay {\n  background-color: rgba(10, 10, 10, 0.45) !important;\n  position: fixed;\n  top: 0;\n  bottom: 0;\n  left: 0;\n  right: 0; }\n\ndiv#offCanvas {\n  width: 350px;\n  height: 100%;\n  background: #e8e8e8; }\n\n.is-open-right {\n  transform: translateX(-350px); }\n\n.off-canvas.position-right {\n  right: -350px; }\n\n.off-canvas-content {\n  background: #f2f2f2; }\n\na {\n  color: #1a1b1b; }\n  a a:hover {\n    color: #6abedb; }\n\nhr {\n  border-color: #bdbdbd;\n  margin-top: 0.5rem;\n  max-width: 100%; }\n\n.divider {\n  border-color: #bdbdbd;\n  margin-bottom: 10px; }\n\n.reveal {\n  top: 100px !important; }\n\ntable thead {\n  background: #d3d3d3;\n  color: #1a1b1b;\n  border: 1px solid #e4e4e4; }\n\ntable tbody {\n  color: #1a1b1b;\n  border: 1px solid #e4e4e4; }\n\n.margin-top-large {\n  margin-top: 4rem; }\n\n.margin-bottom-large {\n  margin-bottom: 4rem; }\n\n.margin-right-small {\n  margin-right: 2rem; }\n\n.margin-left-small {\n  margin-left: 2rem; }\n\n.margin-left-tiny {\n  margin-left: 0.5rem; }\n\n.margin-right-tiny {\n  margin-right: 0.5rem; }\n\n.margin-top-md {\n  margin-top: 2rem; }\n\n.margin-top-small {\n  margin-top: 1rem; }\n\n.margin-bottom-md {\n  margin-bottom: 2rem; }\n\n.margin-bottom-small {\n  margin-bottom: 1rem; }\n\n.textAlignCenter {\n  text-align: center; }\n\nul.header-list {\n  display: inline-block;\n  list-style: none;\n  margin-bottom: 0; }\n\n.sticky {\n  z-index: 10000;\n  left: 0 !important; }\n\n.callout {\n  background-color: #fff; }\n\n.callout-dark {\n  padding: 1.5rem;\n  background-color: #fff;\n  border: 2px solid #bdbdbd;\n  border-top: none;\n  margin-top: 0;\n  border-bottom-right-radius: 4px;\n  border-bottom-left-radius: 4px; }\n\n.scroll {\n  max-height: 100vh;\n  overflow-y: scroll; }\n\n.callout-dark-header {\n  padding: 0.5rem;\n  background-color: #fff;\n  border: 2px solid #bdbdbd;\n  border-bottom: 1px solid #bdbdbd;\n  border-top-left-radius: 4px;\n  border-top-right-radius: 4px;\n  margin-bottom: 0; }\n\n.callout-top-header {\n  padding: 1rem;\n  background-color: #f2f2f2;\n  border: 2px solid #bdbdbd;\n  border-radius: 4px; }\n\n.callout-minimize {\n  margin-bottom: 1rem;\n  border-radius: 4px 4px;\n  padding: 0.5rem; }\n\n.icon-btn-text-small {\n  font-family: 'Roboto', sans-serif;\n  text-transform: Captitalize;\n  top: 15px;\n  right: 15px;\n  position: absolute;\n  color: #323232;\n  font-size: 1.1rem; }\n\n.test {\n  font-family: 'Pathway Gothic One', sans-serif;\n  text-transform: uppercase;\n  color: #fff;\n  font-size: 1rem;\n  background: #6abedb; }\n\nlabel {\n  text-transform: capitalize;\n  color: #232f32; }\n\n.header {\n  color: #323232;\n  margin-bottom: 0;\n  text-transform: capitalize;\n  font-weight: 500;\n  font-family: 'Roboto', sans-serif; }\n\n.sub-header {\n  color: #232f32;\n  font-size: 1.3rem;\n  font-family: 'Pathway Gothic One', sans-serif; }\n  .sub-header a {\n    text-transform: capitalize; }\n\n#watchList {\n  display: none; }\n\n.page-title {\n  color: #323232;\n  font-family: 'Roboto', sans-serif;\n  font-weight: 500;\n  font-size: 1.2rem; }\n\n.settings-page-title {\n  color: #323232;\n  font-family: 'Roboto', sans-serif;\n  font-weight: 700;\n  font-size: 1.4rem; }\n\n.settings-subheader {\n  font-weight: 200;\n  white-space: nowrap; }\n\n.settings-subheader-container {\n  padding-top: 1rem; }\n\n.settings-wrapper {\n  margin-left: 1.8rem; }\n\ninput[type=search] {\n  box-shadow: none; }\n\n.top-bar-upper {\n  color: #333;\n  font-size: 0.5rem; }\n\n.app-header {\n  font-size: 1.3rem; }\n\ntable.overview-custom tbody,\ntable.overview-custom th,\ntable.overview-custom thead,\ntable.overview-custom tr {\n  text-align: center; }\n\ntable.sensor-details-table tbody {\n  text-align: left; }\n\n.statusText {\n  color: red;\n  margin-bottom: 1rem;\n  text-transform: uppercase;\n  font-size: 0.85em; }\n\n.notificationHeader {\n  color: #fff;\n  text-transform: uppercase;\n  font-size: 0.5em;\n  font-weight: bold; }\n\n.sensorBlock {\n  height: 30px;\n  border-radius: 30px;\n  width: auto;\n  color: #fff;\n  text-align: center;\n  font-family: 'Pathway Gothic One', sans-serif;\n  text-transform: uppercase; }\n\n.sensorBlockSquare {\n  height: 30px;\n  width: 30px;\n  border-radius: 4px;\n  cursor: pointer;\n  text-align: center;\n  line-height: 28px;\n  color: white;\n  font-weight: bold; }\n\n.sensorBlockSquare:hover {\n  opacity: 0.5; }\n\n.sensorList {\n  display: inline-block;\n  margin-right: 1px; }\n\n#uptime-form select {\n  margin-right: 2rem; }\n\n.recharts-tooltip-wrapper {\n  z-index: 1000;\n  box-shadow: 1px 1px 4px #323232;\n  background-color: #fff; }\n\n#glance-tooltip > table tr:nth-of-type(even) {\n  background-color: transparent !important; }\n\n.button-custom {\n  height: 30px;\n  width: auto !important;\n  margin: 0;\n  color: #fff !important;\n  text-align: center;\n  font-family: 'Pathway Gothic One', sans-serif;\n  text-transform: uppercase; }\n\n.proceed {\n  background: #6abedb; }\n\n.cancel {\n  background: #990000; }\n\n.cancel:hover {\n  background: #7a0000; }\n\n.remove {\n  border: 1px solid #990000;\n  background-color: #fff;\n  color: #990000;\n  cursor: pointer; }\n\n.remove:hover {\n  background-color: #990000;\n  color: #fff !important; }\n\n.pin {\n  border: 1px solid #008000;\n  background-color: #fff;\n  color: #008000;\n  cursor: pointer; }\n\n.pin:hover {\n  background-color: #006600;\n  color: #fff !important; }\n\n.disabled {\n  pointer-events: none;\n  background: #e8e8e8;\n  border: none;\n  color: white;\n  cursor: default; }\n\n.disabled:hover {\n  pointer-events: none;\n  background: #e8e8e8;\n  border: none;\n  color: white;\n  cursor: default; }\n\n.tableOptions > li > a {\n  color: #323232;\n  font-weight: normal;\n  font-size: 1rem;\n  padding: 0.5rem 0.7rem; }\n\n.menuHeader:hover,\n.tableOptions .menuHeader {\n  background-color: #232f32 !important;\n  color: #fff;\n  padding: 0.3rem 0.7rem;\n  text-transform: uppercase; }\n\n.tableOptions > li {\n  border-bottom: 1px solid #f2f2f2; }\n\n.tableOptions > li:hover {\n  background-color: #f2f2f2; }\n\n.dropdown-pane {\n  padding: 0; }\n\n.panel-grey {\n  background-color: #e4e4e4; }\n\n#emailPanel,\n#namePanel,\n#passwordPanel,\n#dailyReportTimePanel,\n#flappingDownsPanel,\n#considerationPeriodPanel,\n#emailRecipientPanel {\n  display: none;\n  padding: 1rem;\n  background: #e4e4e4; }\n\ninput[type=checkbox]:checked ~ #port {\n  display: none; }\n\n#port {\n  display: block; }\n\n.inactive-link {\n  display: none; }\n\n.button-cancel {\n  border-color: #990000 !important;\n  color: #990000 !important; }\n\n.green {\n  background-color: #008000; }\n\n.orange {\n  background-color: #cc7a00; }\n\n.red {\n  background-color: #990000; }\n\n.black {\n  background-color: #1a1b1b; }\n\n.yellow {\n  background-color: #ffcc00; }\n\n.grey {\n  background-color: #737373; }\n\n.loader {\n  height: 4px;\n  width: 100%;\n  position: relative;\n  overflow: hidden;\n  background-color: #ddd; }\n\n.loader:before {\n  display: block;\n  position: absolute;\n  content: \"\";\n  left: -200px;\n  width: 200px;\n  height: 4px;\n  background-color: #2980b9;\n  animation: loading 2s linear infinite; }\n\n.no-border {\n  border: none;\n  width: inherit;\n  background-color: transparent; }\n\n@keyframes loading {\n  from {\n    left: -200px;\n    width: 30%; }\n  50% {\n    width: 30%; }\n  70% {\n    width: 70%; }\n  80% {\n    left: 50%; }\n  95% {\n    left: 120%; }\n  to {\n    left: 100%; } }\n\ntable.sensor-details-table td:nth-child(1) {\n  text-transform: Capitalize; }\n\ntable.sensorHealthTable tbody tr:nth-last-child(1) {\n  background-color: #f1f1f1;\n  border-top: 0.5px solid #d3d3d3; }\n\ntable.sensor-details-table tbody {\n  text-align: left; }\n\ntable.sensor-details-table td:nth-child(2), table.sensor-details-table th:nth-child(2) {\n  word-break: break-all;\n  text-align: center; }\n\ntable.actionLog tr > td:nth-child(2) {\n  font-weight: bold; }\n\n.table-container {\n  text-align: center; }\n\n.table-row-highlight {\n  font-weight: bold;\n  border: solid 1px #990000;\n  background-color: rgba(153, 0, 0, 0.4) !important; }\n\n.button-disabled {\n  pointer-events: none;\n  color: #000 !important; }\n\n#top-bar-pin:hover, #top-bar-delete:hover, #top-bar-edit:hover {\n  color: #6abedb; }\n\ninput::-webkit-outer-spin-button,\ninput::-webkit-inner-spin-button {\n  /* display: none; <- Crashes Chrome on hover */\n  -webkit-appearance: none;\n  margin: 0;\n  /* <— Apparently some margin are still there even though it's hidden */ }\n\n.tabs {\n  border: none; }\n\n.addEditSensor > tbody {\n  border: none; }\n\nspan._800 {\n  font-weight: 800; }\n\n.griddle-container {\n  border: none !important; }\n\n.griddle .top-section {\n  clear: both;\n  display: table;\n  width: 100%; }\n\n.griddle .griddle-filter {\n  float: left;\n  width: 50%;\n  text-align: left;\n  color: #222;\n  min-height: 1px; }\n\n.griddle-body {\n  font-size: 1em;\n  overflow-x: scroll; }\n\n.griddle .griddle-settings-toggle {\n  float: left;\n  width: 50%;\n  text-align: right;\n  color: #f8f8f8; }\n\n.griddle .griddle-settings {\n  background-color: #FFF;\n  border: 1px solid #DDD;\n  color: #222;\n  padding: 10px;\n  margin-bottom: 10px; }\n\n.griddle .griddle-settings .settings {\n  color: #f8f8f8; }\n\n.griddle .griddle-settings .griddle-columns {\n  clear: both;\n  display: table;\n  width: 100%;\n  border-bottom: 1px solid #EDEDED;\n  margin-bottom: 10px; }\n\n.griddle .griddle-settings .griddle-column-selection {\n  float: left;\n  width: 20%; }\n\n.griddle table {\n  width: 100%;\n  table-layout: auto !important; }\n\n.griddle th {\n  background-color: #EDEDEF;\n  border: 0px;\n  border-bottom: 1px solid #DDD;\n  color: #222;\n  padding: 5px; }\n\n.griddle td {\n  padding: 5px;\n  background-color: #FFF;\n  border-top-color: #DDD;\n  color: #222; }\n\n.griddle .footer-container {\n  padding: 0px;\n  background-color: #EDEDED;\n  border: 0px;\n  color: #222; }\n\n.griddle button {\n  font-weight: bold;\n  color: #232f32; }\n\n.griddle .griddle-previous, .griddle .griddle-page, .griddle .griddle-next {\n  float: left;\n  width: 33%;\n  min-height: 1px;\n  margin-top: 5px; }\n\n.griddle .griddle-page {\n  text-align: center; }\n\n.griddle .griddle-next {\n  text-align: right; }\n", ""]);
+	exports.push([module.id, "@charset \"UTF-8\";\nbody,\nhtml {\n  background: #f2f2f2;\n  height: 100%;\n  font-family: 'Roboto', sans-serif;\n  color: #1a1b1b; }\n\nbody {\n  -webkit-animation-delay: 0.1s;\n  -webkit-animation-name: fontfix;\n  -webkit-animation-duration: 0.1s;\n  -webkit-animation-iteration-count: 1;\n  -webkit-animation-timing-function: linear; }\n\n@-webkit-keyframes fontfix {\n  from {\n    opacity: 1; }\n  to {\n    opacity: 1; } }\n\n.row {\n  max-width: 80rem; }\n\n.loading-overlay {\n  background-color: rgba(10, 10, 10, 0.45) !important;\n  position: fixed;\n  top: 0;\n  bottom: 0;\n  left: 0;\n  right: 0; }\n\ndiv#offCanvas {\n  width: 350px;\n  height: 100%;\n  background: #e8e8e8; }\n\n.is-open-right {\n  transform: translateX(-350px); }\n\n.off-canvas.position-right {\n  right: -350px; }\n\n.off-canvas-content {\n  background: #f2f2f2; }\n\na {\n  color: #1a1b1b; }\n  a a:hover {\n    color: #6abedb; }\n\nhr {\n  border-color: #bdbdbd;\n  margin-top: 0.5rem;\n  max-width: 100%; }\n\n.divider {\n  border-color: #bdbdbd;\n  margin-bottom: 10px; }\n\n.reveal {\n  top: 100px !important; }\n\ntable thead {\n  background: #d3d3d3;\n  color: #1a1b1b;\n  border: 1px solid #e4e4e4; }\n\ntable tbody {\n  color: #1a1b1b;\n  border: 1px solid #e4e4e4; }\n\n.margin-top-large {\n  margin-top: 4rem; }\n\n.margin-bottom-large {\n  margin-bottom: 4rem; }\n\n.margin-right-small {\n  margin-right: 2rem; }\n\n.margin-left-small {\n  margin-left: 2rem; }\n\n.margin-left-tiny {\n  margin-left: 0.5rem; }\n\n.margin-right-tiny {\n  margin-right: 0.5rem; }\n\n.margin-top-md {\n  margin-top: 2rem; }\n\n.margin-top-small {\n  margin-top: 1rem; }\n\n.margin-bottom-md {\n  margin-bottom: 2rem; }\n\n.margin-bottom-small {\n  margin-bottom: 1rem; }\n\n.textAlignCenter {\n  text-align: center; }\n\nul.header-list {\n  display: inline-block;\n  list-style: none;\n  margin-bottom: 0; }\n\n.sticky {\n  z-index: 10000;\n  left: 0 !important; }\n\n.callout {\n  background-color: #fff; }\n\n.callout-dark {\n  padding: 1.5rem;\n  background-color: #fff;\n  border: 2px solid #bdbdbd;\n  border-top: none;\n  margin-top: 0;\n  border-bottom-right-radius: 4px;\n  border-bottom-left-radius: 4px; }\n\n.scroll {\n  max-height: 100vh;\n  overflow-y: scroll; }\n\n.callout-dark-header {\n  padding: 0.5rem;\n  background-color: #fff;\n  border: 2px solid #bdbdbd;\n  border-bottom: 1px solid #bdbdbd;\n  border-top-left-radius: 4px;\n  border-top-right-radius: 4px;\n  margin-bottom: 0; }\n\n.callout-top-header {\n  padding: 1rem;\n  background-color: #f2f2f2;\n  border: 2px solid #bdbdbd;\n  border-radius: 4px; }\n\n.callout-minimize {\n  margin-bottom: 1rem;\n  border-radius: 4px 4px;\n  padding: 0.5rem; }\n\n.icon-btn-text-small {\n  font-family: 'Roboto', sans-serif;\n  text-transform: Captitalize;\n  top: 15px;\n  right: 15px;\n  position: absolute;\n  color: #323232;\n  font-size: 1.1rem; }\n\n.test {\n  font-family: 'Pathway Gothic One', sans-serif;\n  text-transform: uppercase;\n  color: #fff;\n  font-size: 1rem;\n  background: #6abedb; }\n\nlabel {\n  text-transform: capitalize;\n  color: #232f32; }\n\n.page-title {\n  color: #323232;\n  font-family: 'Roboto', sans-serif;\n  font-weight: 500;\n  font-size: 1.2rem; }\n\n.header {\n  color: #323232;\n  margin-bottom: 0;\n  text-transform: capitalize;\n  font-weight: 500;\n  font-family: 'Roboto', sans-serif; }\n\n.sub-header {\n  color: #232f32;\n  font-size: 1.3rem;\n  font-family: 'Pathway Gothic One', sans-serif; }\n  .sub-header a {\n    text-transform: capitalize; }\n\n#watchList {\n  display: none; }\n\n.settings-page-title {\n  color: #323232;\n  font-family: 'Roboto', sans-serif;\n  font-weight: 700;\n  font-size: 1.4rem; }\n\n.settings-subheader {\n  font-weight: 200;\n  white-space: nowrap; }\n\n.settings-subheader-container {\n  padding-top: 1rem; }\n\n.settings-wrapper {\n  margin-left: 1.8rem; }\n\ninput[type=search] {\n  box-shadow: none; }\n\n.top-bar-upper {\n  color: #333;\n  font-size: 0.5rem; }\n\n.app-header {\n  font-size: 1.3rem; }\n\ntable.overview-custom tbody,\ntable.overview-custom th,\ntable.overview-custom thead,\ntable.overview-custom tr {\n  text-align: center; }\n\ntable.sensor-details-table tbody {\n  text-align: left; }\n\n.statusText {\n  color: red;\n  margin-bottom: 1rem;\n  text-transform: uppercase;\n  font-size: 0.85em; }\n\n.notificationHeader {\n  color: #fff;\n  text-transform: uppercase;\n  font-size: 0.5em;\n  font-weight: bold; }\n\n.sensorBlock {\n  height: 30px;\n  border-radius: 30px;\n  width: auto;\n  color: #fff;\n  text-align: center;\n  font-family: 'Pathway Gothic One', sans-serif;\n  text-transform: uppercase; }\n\n.sensorBlockSquare {\n  height: 30px;\n  width: 30px;\n  border-radius: 4px;\n  cursor: pointer;\n  text-align: center;\n  line-height: 28px;\n  color: white;\n  font-weight: bold; }\n\n.sensorBlockSquare:hover {\n  opacity: 0.5; }\n\n.sensorList {\n  display: inline-block;\n  margin-right: 1px; }\n\n#uptime-form select {\n  margin-right: 2rem; }\n\n.recharts-tooltip-wrapper {\n  z-index: 1000;\n  box-shadow: 1px 1px 4px #323232;\n  background-color: #fff; }\n\n#glance-tooltip > table tr:nth-of-type(even) {\n  background-color: transparent !important; }\n\n.button-custom {\n  height: 30px;\n  width: auto !important;\n  margin: 0;\n  color: #fff !important;\n  text-align: center;\n  font-family: 'Pathway Gothic One', sans-serif;\n  text-transform: uppercase; }\n\n.proceed {\n  background: #6abedb; }\n\n.cancel {\n  background: #990000; }\n\n.cancel:hover {\n  background: #7a0000; }\n\n.remove {\n  border: 1px solid #990000;\n  background-color: #fff;\n  color: #990000;\n  cursor: pointer; }\n\n.remove:hover {\n  background-color: #990000;\n  color: #fff !important; }\n\n.pin {\n  border: 1px solid #008000;\n  background-color: #fff;\n  color: #008000;\n  cursor: pointer; }\n\n.pin:hover {\n  background-color: #006600;\n  color: #fff !important; }\n\n.disabled {\n  pointer-events: none;\n  background: #e8e8e8;\n  border: none;\n  color: white;\n  cursor: default; }\n\n.disabled:hover {\n  pointer-events: none;\n  background: #e8e8e8;\n  border: none;\n  color: white;\n  cursor: default; }\n\n.tableOptions > li > a {\n  color: #323232;\n  font-weight: normal;\n  font-size: 1rem;\n  padding: 0.5rem 0.7rem; }\n\n.menuHeader:hover,\n.tableOptions .menuHeader {\n  background-color: #232f32 !important;\n  color: #fff;\n  padding: 0.3rem 0.7rem;\n  text-transform: uppercase; }\n\n.tableOptions > li {\n  border-bottom: 1px solid #f2f2f2; }\n\n.tableOptions > li:hover {\n  background-color: #f2f2f2; }\n\n.dropdown-pane {\n  padding: 0; }\n\n.panel-grey {\n  background-color: #e4e4e4; }\n\n#emailPanel,\n#namePanel,\n#passwordPanel,\n#dailyReportTimePanel,\n#flappingDownsPanel,\n#considerationPeriodPanel,\n#emailRecipientPanel {\n  display: none;\n  padding: 1rem;\n  background: #e4e4e4; }\n\ninput[type=checkbox]:checked ~ #port {\n  display: none; }\n\n#port {\n  display: block; }\n\n.inactive-link {\n  display: none; }\n\n.button-cancel {\n  border-color: #990000 !important;\n  color: #990000 !important; }\n\n.green {\n  background-color: #008000; }\n\n.orange {\n  background-color: #cc7a00; }\n\n.red {\n  background-color: #990000; }\n\n.black {\n  background-color: #1a1b1b; }\n\n.yellow {\n  background-color: #ffcc00; }\n\n.grey {\n  background-color: #737373; }\n\n.loader {\n  height: 4px;\n  width: 100%;\n  position: relative;\n  overflow: hidden;\n  background-color: #ddd; }\n\n.loader:before {\n  display: block;\n  position: absolute;\n  content: \"\";\n  left: -200px;\n  width: 200px;\n  height: 4px;\n  background-color: #2980b9;\n  animation: loading 2s linear infinite; }\n\n.no-border {\n  border: none;\n  width: inherit;\n  background-color: transparent; }\n\n@keyframes loading {\n  from {\n    left: -200px;\n    width: 30%; }\n  50% {\n    width: 30%; }\n  70% {\n    width: 70%; }\n  80% {\n    left: 50%; }\n  95% {\n    left: 120%; }\n  to {\n    left: 100%; } }\n\ntable.sensor-details-table td:nth-child(1) {\n  text-transform: Capitalize; }\n\ntable.sensorHealthTable tbody tr:nth-last-child(1) {\n  background-color: #fafafa;\n  border-top: 0.25px solid #e4e4e4; }\n\ntable.sensorHealthTable tbody th:nth-child(1) {\n  font-weight: normal; }\n\ntable.sensor-details-table tbody {\n  text-align: left; }\n\ntable.sensor-details-table td:nth-child(2), table.sensor-details-table th:nth-child(2) {\n  word-break: break-all;\n  text-align: center; }\n\ntable.actionLog tr > td:nth-child(2) {\n  font-weight: bold; }\n\n.table-container {\n  text-align: center; }\n\n.table-row-highlight {\n  font-weight: bold;\n  border: solid 1px #990000;\n  background-color: rgba(153, 0, 0, 0.4) !important; }\n\n.button-disabled {\n  pointer-events: none;\n  color: #000 !important; }\n\n#top-bar-pin:hover, #top-bar-delete:hover, #top-bar-edit:hover {\n  color: #6abedb; }\n\ninput::-webkit-outer-spin-button,\ninput::-webkit-inner-spin-button {\n  /* display: none; <- Crashes Chrome on hover */\n  -webkit-appearance: none;\n  margin: 0;\n  /* <— Apparently some margin are still there even though it's hidden */ }\n\n.tabs {\n  border: none; }\n\n.addEditSensor > tbody {\n  border: none; }\n\nspan._800 {\n  font-weight: 800; }\n\n.griddle-container {\n  border: none !important; }\n\n.griddle .top-section {\n  clear: both;\n  display: table;\n  width: 100%; }\n\n.griddle .griddle-filter {\n  float: left;\n  width: 50%;\n  text-align: left;\n  color: #222;\n  min-height: 1px; }\n\n.griddle-body {\n  font-size: 1em;\n  overflow-x: scroll; }\n\n.griddle .griddle-settings-toggle {\n  float: left;\n  width: 50%;\n  text-align: right;\n  color: #f8f8f8; }\n\n.griddle .griddle-settings {\n  background-color: #FFF;\n  border: 1px solid #DDD;\n  color: #222;\n  padding: 10px;\n  margin-bottom: 10px; }\n\n.griddle .griddle-settings .settings {\n  color: #f8f8f8; }\n\n.griddle .griddle-settings .griddle-columns {\n  clear: both;\n  display: table;\n  width: 100%;\n  border-bottom: 1px solid #EDEDED;\n  margin-bottom: 10px; }\n\n.griddle .griddle-settings .griddle-column-selection {\n  float: left;\n  width: 20%; }\n\n.griddle table {\n  width: 100%;\n  table-layout: auto !important; }\n\n.griddle th {\n  background-color: #EDEDEF;\n  border: 0px;\n  border-bottom: 1px solid #DDD;\n  color: #222;\n  padding: 5px; }\n\n.griddle td {\n  padding: 5px;\n  background-color: #FFF;\n  border-top-color: #DDD;\n  color: #222; }\n\n.griddle .footer-container {\n  padding: 0px;\n  background-color: #EDEDED;\n  border: 0px;\n  color: #222; }\n\n.griddle button {\n  font-weight: bold;\n  color: #232f32; }\n\n.griddle .griddle-previous, .griddle .griddle-page, .griddle .griddle-next {\n  float: left;\n  width: 33%;\n  min-height: 1px;\n  margin-top: 5px; }\n\n.griddle .griddle-page {\n  text-align: center; }\n\n.griddle .griddle-next {\n  text-align: right; }\n", ""]);
 
 	// exports
 

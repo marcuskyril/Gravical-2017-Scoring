@@ -32,10 +32,6 @@ class ConfirmationModal extends React.Component {
 
     render() {
 
-        // TO DO
-        // update on click event
-        // update error message on failure
-
         return (
             <div id="confirmation-modal" className="reveal tiny text-center" data-reveal="">
                 <form>
@@ -71,7 +67,10 @@ class AccountSettings extends React.Component {
         this.state = {
             userDisplayName: '-',
             email: '-',
-            emailVerified: '-'
+            emailVerified: '-',
+            reportTiming: '-',
+            emailRecipient: '-',
+            flappingThreshold: '-'
         }
     }
 
@@ -327,7 +326,13 @@ class AccountSettings extends React.Component {
                 console.log("response", response);
                 that.setState({
                     message: response.message
+
                 });
+
+                that.refs.reportTiming.value = '';
+                that.refs.emailRecipient.value = '';
+                that.refs.flappingThreshold.value = '';
+
                 $('#namePanel').slideUp("slow");
                 $('#passwordPanel').slideUp("slow");
                 $('#emailPanel').slideUp("slow");
@@ -350,7 +355,7 @@ class AccountSettings extends React.Component {
             if(response.error) {
                 console.log("Error", response.error);
             } else {
-                // console.log("response", response);
+                console.log("response", response);
                 that.setState({
                     currentSettings: response
                 });
@@ -379,14 +384,6 @@ class AccountSettings extends React.Component {
         if (messageState) {
             message = messageState;
         }
-
-
-        // console.log("currentSettings: ", currentSettings);
-        //
-        // console.log("daily report time", currentSettings.daily_notification_time);
-
-        // TO DO
-        // set padding for forms
 
         return (
             <div className="margin-top-md">
@@ -503,9 +500,10 @@ class AccountSettings extends React.Component {
 
                             <div className="row" id="dailyReportTimePanel">
                                 <form>
+                                    <div style={{fontSize: '0.9rem'}}>Tell us when you'd like to receive your daily notification email! (Format: HH-MM)</div>
                                     <div className="row">
-                                        <div className="medium-6 columns">
-                                            <input type="text" ref="reportTiming" placeholder="Daily Report Time"/>
+                                        <div className="medium-3 columns">
+                                            <input type="text" ref="reportTiming" placeholder="HH-MM"/>
                                         </div>
                                         <button className="button" type="button" onClick={this.onUpdateUniversalSettings.bind(this)}>Update</button>
                                         <button className="button hollow button-cancel margin-left-tiny" type="button" onClick={() => {

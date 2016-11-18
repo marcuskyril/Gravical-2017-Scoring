@@ -151,14 +151,14 @@ class Uptime extends React.Component {
             </div>
             <form id="uptime-form" style={{display: 'flex'}}>
                 <label className="margin-right-tiny">Start Date
-                  <input type="date" name="startDate" ref="startDate"/>
+                  <input type="date" name="startDate" defaultValue={startDate} ref="startDate"/>
                 </label>
                 <label className="margin-right-tiny">End Date
-                    <input type="date" name="endDate" ref="endDate"/>
+                    <input type="date" name="endDate" defaultValue={endDate} ref="endDate"/>
                 </label>
 
                 <label className="margin-right-tiny"> Interval
-                  <select ref="interval">
+                  <select defaultValue={`${interval}`} ref="interval">
                     <option value="30">30 mins</option>
                     <option value="15">15 mins</option>
                   </select>

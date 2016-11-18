@@ -53,13 +53,13 @@ module.exports = {
         });
     },
 
-    retrieveHistoricalChart: function(mac, startDate, endDate, interval, metric) {
+    retrieveHistoricalChart: function(macAdd, startDate, endDate, interval, metric) {
 
         console.log("macAdd", macAdd);
         console.log("metric", metric);
 
         var data = {
-          mac: mac,
+          mac: macAdd,
           'start_date': startDate,
           'end_date': endDate,
           interval: interval,
@@ -74,7 +74,7 @@ module.exports = {
             url: RETRIEVE_HISTORICAL_DATA_URL,
             data: data,
             success: function(response) {
-                console.log("Que pasar?", response);
+                // console.log("Que pasar?", response);
             }
         });
     }

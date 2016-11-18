@@ -176,10 +176,10 @@ class SensorDetails extends React.Component {
 
     render() {
 
-        console.log("sensordetails state", this.state);
+        // console.log("sensordetails state", this.state);
 
         var {macAdd, building, latency, amIAlive, isLoading, port, status, location, lastReboot, diagnosis, stats, top5, thresholds} = this.state;
-        var {userId, dispatch} = this.props;
+        var {userId, userEmail, dispatch} = this.props;
         var location = `${building} ${location}`
         var amIAliveColor = amIAlive ? "green" : colorMap['down'];
         var dataColStatus = status === "down" ? "Data last collected at " : "Up since "
@@ -213,7 +213,7 @@ class SensorDetails extends React.Component {
 
         return (
             <div>
-                <TopBar dispatch={dispatch} macAdd={macAdd} userId={userId} building={building} location={location}/>
+                <TopBar dispatch={dispatch} macAdd={macAdd} userId={userId} userEmail={userEmail} building={building} location={location}/>
 
                 <div className="textAlignCenter" style={{padding: '0.5rem 1.5rem'}}>
                     {renderSensorDetails()}
@@ -231,12 +231,12 @@ class SensorDetails extends React.Component {
                     <Stats stats={stats}/>
                     <Top5Processes processes={top5}/>
 
-                    <ButtonList dispatch={dispatch} macAdd={macAdd} userId={userId} building={building} location={location} status={status}/>
+                    <ButtonList dispatch={dispatch} macAdd={macAdd} userEmail={userEmail} building={building} location={location} status={status}/>
                 </div>
-                <DeleteSensor {...this.state}/>
-                <PauseSensor {...this.state}/>
+                <DeleteSensor {...this.props} {...this.state}/>
+                <PauseSensor {...this.props} {...this.state}/>
                 <PinSensor macAdd={macAdd}/>
-                <EditSensor {...this.state}/>
+                <EditSensor {...this.props} {...this.state}/>
                 <RebootSensor macAdd={macAdd}/>
                 <Terminal macAdd={macAdd} port={port}/>
             </div>
@@ -343,12 +343,12 @@ class ButtonList extends React.Component {
 
     handleClick(type) {
 
-        var {dispatch, macAdd, building, location, userId} = this.props;
+        var {dispatch, macAdd, building, location, userEmail} = this.props;
 
         switch(type) {
             case 'terminal':
                 var actionDesc = `Launched terminal for ${macAdd} (${location})`;
-                dispatch(actions.startAddToLog(userId, actionDesc));
+                dispatch(actions.startAddToLog(userEmail, actionDesc));
 
                 $('#terminal').foundation('open');
                 break;
@@ -362,7 +362,7 @@ class ButtonList extends React.Component {
     }
 
     render() {
-        var {status} = this.props;
+        var {status, macAdd, building} = this.props;
 
         if(status === '-') {
             return (
@@ -371,7 +371,7 @@ class ButtonList extends React.Component {
         }
 
         var pauseMsg = status === "paused" ? "Unpause" : "Pause"
-        var historicalLink = `/historical/${this.props.macAdd}`;
+        var historicalLink = `/historical/${building}&${macAdd}`;
 
         return (
             <div>
@@ -450,7 +450,7 @@ class TopBar extends React.Component {
 }
 
 function mapStateToProps(state, ownProps) {
-    return {sensorData: state.activeSensor, userId: state.syncData.userId}
+    return {sensorData: state.activeSensor, userId: state.syncData.userId, userEmail: state.syncData.userEmail}
 }
 
 module.exports = connect(mapStateToProps)(SensorDetails);

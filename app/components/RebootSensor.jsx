@@ -28,8 +28,7 @@ class RebootSensor extends React.Component {
 
     var username = this.refs.username.value;
     var password = this.refs.password.value;
-    var userId = this.props.userId;
-    var {dispatch} = this.props;
+    var {dispatch, userEmail} = this.props;
     var {macAdd} = this.state;
 
     var that = this;
@@ -56,7 +55,7 @@ class RebootSensor extends React.Component {
         document.dispatchEvent(myCustomEvent);
 
         var actionDesc = `Rebooted ${macAdd}`;
-        dispatch(actions.startAddToLog(userId, actionDesc));
+        dispatch(actions.startAddToLog(userEmail, actionDesc));
       }
 
       that.refs.username.value = '';
@@ -118,7 +117,7 @@ class RebootSensorMessage extends React.Component {
 }
 
 function mapStateToProps(state, ownProps) {
-    return {sensorData: state.activeSensor, userId: state.syncData.userId}
+    return {sensorData: state.activeSensor, userId: state.syncData.userId, userEmail: state.syncData.userEmail}
 }
 
 module.exports = connect(mapStateToProps)(RebootSensor);

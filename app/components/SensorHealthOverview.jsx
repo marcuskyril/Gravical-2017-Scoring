@@ -133,7 +133,7 @@ class BuildingHeader extends React.Component {
             <thead>
                 <tr>
 
-                    <td style={{
+                    <td className="header" style={{
                         width: "8rem",
                         textAlign: "center"
                     }}>{this.props.buildingName}</td>

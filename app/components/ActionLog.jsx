@@ -6,11 +6,11 @@ var Griddle = require('griddle-react');
 
 const tableMetaData = [
     {
-        "columnName": "userId",
+        "columnName": "userEmail",
         "order": 1,
         "locked": false,
         "visible": true,
-        "displayName": "User ID"
+        "displayName": "User Email"
     }, {
         "columnName": "action",
         "order": 2,
@@ -30,7 +30,6 @@ class ActionLog extends React.Component{
 
     constructor(props) {
         super(props);
-        console.log("ActionLog props", props);
 
         this.state = {
             logs: []
@@ -58,10 +57,8 @@ class ActionLog extends React.Component{
 
         for (var id in logs) {
 
-            // console.log("userId", logs[id]['userId']);
-
             var row = {
-                userId: logs[id]['userId'],
+                userId: logs[id]['userEmail'],
                 action: logs[id]['action'],
                 timestamp: logs[id]['timestamp']
             };
@@ -81,7 +78,7 @@ class ActionLog extends React.Component{
                                   resultsPerPage={25}
                                   initialSort="timestamp"
                                   tableClassName="actionLog"
-                                  columns={["userId", "action", "timestamp"]}
+                                  columns={["userEmail", "action", "timestamp"]}
                                   columnMetadata={tableMetaData}/>
                     </div>
                 </div>
@@ -97,7 +94,7 @@ function mapStateToProps(state, ownProps) {
 
     return {
         sensorData: state.activeSensor,
-        userId: state.syncData.userId,
+        userEmail: state.syncData.userEmail,
         logs: state.auditLog.logs
     }
 }

@@ -53,22 +53,6 @@ class Nav extends React.Component {
                                 color: 'blue'
                             }}><FontAwesome name='cog'/></Link>
                             <ul className="menu vertical">
-
-                                <li>
-                                    <Link to="/accountSettings" activeClassName="active" activeStyle={{
-                                        color: '#222`'
-                                    }}>Update Profile</Link>
-                                </li>
-                                <li>
-                                    <Link to="/notificationLog" activeClassName="active" activeStyle={{
-                                        color: '#222`'
-                                    }}>Notification Log</Link>
-                                </li>
-                                <li>
-                                    <Link to="/actionLog" activeClassName="active" activeStyle={{
-                                        color: '#222`'
-                                    }}>Action Log</Link>
-                                </li>
                                 <li>
                                     <Link to="/accountSettings" activeClassName="active" activeStyle={{
                                         color: '#222`'
@@ -76,8 +60,18 @@ class Nav extends React.Component {
                                 </li>
                                 <li>
                                     <a onClick={this.launchDowntimeManager}>Downtime Manager</a>
-                            </li>
+                                </li>
                                 <li>
+                                    <Link to="/actionLog" activeClassName="active" activeStyle={{
+                                        color: '#222`'
+                                    }}>Action Log</Link>
+                                </li>
+                                <li>
+                                    <Link to="/notificationLog" activeClassName="active" activeStyle={{
+                                        color: '#222`'
+                                    }}>Notification Log</Link>
+                                </li>
+                                <li style={{borderTop: "0.5px solid #f8f8f8"}}>
                                     <a onClick={this.onLogout}>Log Out</a>
                                 </li>
                             </ul>

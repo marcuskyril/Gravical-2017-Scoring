@@ -9,13 +9,14 @@ export var auditLogReducer = (state = {logs: []}, action) => {
     }
 }
 
-export var syncDataReducer = (state = {currentTime: '-', userId: '-'}, action) => {
+export var syncDataReducer = (state = {currentTime: '-', userId: '-', userEmail: '-'}, action) => {
     switch(action.type) {
         case 'STORE_SYNC_DATA':
 
             return {
                 currentTime: action.currentTime,
-                userId: action.userId
+                userId: action.userId,
+                userEmail: action.userEmail
             }
         default:
             return state;

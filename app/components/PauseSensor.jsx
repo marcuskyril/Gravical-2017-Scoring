@@ -33,7 +33,7 @@ class PauseSensor extends React.Component {
         event.preventDefault();
 
         var {macAdd, location, building, status} = this.state;
-        var {dispatch, userId} = this.props;
+        var {dispatch, userEmail} = this.props;
         var that = this;
 
         var isPaused = status === "paused" ? true : false;
@@ -62,7 +62,7 @@ class PauseSensor extends React.Component {
                 document.dispatchEvent(myCustomEvent);
                 var actionDesc = `${pauseMsg} ${macAdd} from ${building} ${location}`;
 
-                dispatch(actions.startAddToLog(userId, actionDesc));
+                dispatch(actions.startAddToLog(userEmail, actionDesc));
             }
         });
     }

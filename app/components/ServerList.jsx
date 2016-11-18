@@ -54,10 +54,10 @@ class ServerGroupList extends React.Component {
         }
 
         return (
-          <table>
+          <table className="sensorHealthTable">
             <thead>
               <tr>
-                <th style={{textAlign: 'center', width: '20%'}}>{this.props.serverName}</th>
+                <th className="header" style={{textAlign: 'center', width: '20%'}}>{this.props.serverName}</th>
                 <th></th>
               </tr>
             </thead>

@@ -41,7 +41,7 @@ class EditSNMPSpeedTest extends React.Component {
         var inputInterval = this.refs.inputInterval.value;
         var that = this;
 
-        var {dispatch, userId} = this.props;
+        var {dispatch, userId, userEmail} = this.props;
 
         editSNMPSpeedTestAPI.editSNMPSpeedTest(inputMac, inputUsername, inputPassword, inputInterval).then(function(response) {
 
@@ -66,7 +66,7 @@ class EditSNMPSpeedTest extends React.Component {
                 });
 
                 var actionDesc = `Edited SNMP settings (${inputMac})`;
-                dispatch(actions.startAddToLog(userId, actionDesc));
+                dispatch(actions.startAddToLog(userEmail, actionDesc));
             }
 
             that.refs.inputUsername.value = '';
@@ -141,7 +141,6 @@ function mapStateToProps(state, ownProps) {
     return {
         sensorData: state.activeSensor.sensorData,
         currentInterval: state.activeSensor.currentInterval
-
     }
 }
 

@@ -2,8 +2,8 @@ import firebase, {firebaseRef} from 'app/firebase/';
 import moment from 'moment';
 var axios = require('axios');
 
-export var storeSyncData = (currentTime, userId) => {
-    return {type: 'STORE_SYNC_DATA', currentTime, userId}
+export var storeSyncData = (currentTime, userId, userEmail) => {
+    return {type: 'STORE_SYNC_DATA', currentTime, userId, userEmail}
 }
 
 export var startSensorDataFetch = () => {
@@ -24,11 +24,11 @@ export var completeUpdateWatchList = (pin_mac) => {
 
 // add to log test
 
-export var startAddToLog = (userId, action) => {
+export var startAddToLog = (userEmail, action) => {
 
     return (dispatch, getState) => {
         var logItem = {
-            userId,
+            userEmail,
             action,
             timestamp: moment().format('YYYY-MM-DD')
         };
@@ -45,7 +45,6 @@ export var startAddToLog = (userId, action) => {
 };
 
 export var addToLog = (action) => {
-    console.log("action: ", action);
 
     return {type: 'ADD_TO_LOG', action}
 }
@@ -60,6 +59,7 @@ export var startRetrieveLogs = () => {
             var parsedLogs = [];
 
             Object.keys(logs).forEach((logId) => {
+
                 parsedLogs.push({
                     id: logId,
                     ...logs[logId]
@@ -72,15 +72,12 @@ export var startRetrieveLogs = () => {
 };
 
 export var retrieveLogs = (logs) => {
-    console.log("logs", logs);
-
     return {type: 'RETRIEVE_LOGS', logs}
 }
 
 // end add to log test
 
 export var storeActiveSensor = (macAdd, currentInterval) => {
-    console.log("activeSensor", macAdd, currentInterval);
     return {type: 'STORE_ACTIVE_SENSOR', macAdd, currentInterval}
 }
 

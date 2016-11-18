@@ -32,7 +32,7 @@ class DeleteSensor extends React.Component {
         event.preventDefault();
 
         var {macAdd, location, building} = this.state;
-        var {dispatch, userId} = this.props;
+        var {dispatch, userEmail} = this.props;
         var that = this;
 
         manageSensorAPI.deleteSensor(macAdd).then(function(response) {
@@ -55,7 +55,7 @@ class DeleteSensor extends React.Component {
                 document.dispatchEvent(myCustomEvent);
                 var actionDesc = `Deleted ${macAdd} from ${building} ${location}`;
 
-                dispatch(actions.startAddToLog(userId, actionDesc));
+                dispatch(actions.startAddToLog(userEmail, actionDesc));
             }
         });
     }

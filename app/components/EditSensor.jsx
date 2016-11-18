@@ -139,9 +139,10 @@ class EditSensor extends React.Component {
         var inputWarningDTPercentage = this.refs.warningDTPercentage.value;
         var inputWarningTemp = this.refs.warningTemp.value;
 
-        var userId = this.props.userId;
+        var {userEmail, dispatch} = this.props;
 
-        var {dispatch} = this.props;
+        console.log("userEmail edit", userEmail);
+
         var that = this;
 
         manageSensorAPI.editSensor(inputMac, inputRegion, inputLocationLevel, inputLocationID, inputBuilding, inputPort, inputDangerDisk, inputDangerCPU, inputDangerRAM, inputDangerDTPercentage, inputDangerTemp, inputWarningDisk, inputWarningCPU, inputWarningRAM, inputWarningDTPercentage, inputWarningTemp).then(function(response) {
@@ -164,7 +165,7 @@ class EditSensor extends React.Component {
                 document.dispatchEvent(myCustomEvent);
 
                 var actionDesc = `Edited ${inputMac} from ${inputBuilding} ${inputLocationLevel}${inputLocationID}`;
-                dispatch(actions.startAddToLog(userId, actionDesc));
+                dispatch(actions.startAddToLog(userEmail, actionDesc));
             }
         });
     }

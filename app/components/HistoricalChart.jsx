@@ -40,11 +40,11 @@ class HistoricalChart extends React.Component {
         var startDate = d.toISOString().substring(0, 10);
         var endDate = new Date().toISOString().substring(0, 10);
 
-        // var arr = props.params.macAddress.split("+");
-        
+        var arr = props.params.macAddress.split("&");
+
         this.state = {
-            macAdd: props.params.macAddress,
-            buildingName: 'arr[0]',
+            macAdd: arr[1],
+            buildingName: arr[0],
             data: {
                 cpu: null,
                 ram: null,
@@ -99,9 +99,6 @@ class HistoricalChart extends React.Component {
         var that = this;
 
         $.when(retrieveHistoricalDataAPI.retrieveHistoricalChart(macAdd, startDate, endDate, interval, "cpu"), retrieveHistoricalDataAPI.retrieveHistoricalChart(macAdd, startDate, endDate, interval, "ram"), retrieveHistoricalDataAPI.retrieveHistoricalChart(macAdd, startDate, endDate, interval, "storage"), retrieveHistoricalDataAPI.retrieveHistoricalChart(macAdd, startDate, endDate, interval, "network")).then(function(cpuData, ramData, storageData, networkData) {
-
-            console.log("cpuData", cpuData);
-
             that.setState({
                 data: {
                     cpu: cpuData[0],
@@ -169,7 +166,7 @@ class HistoricalChart extends React.Component {
                             <div className="margin-bottom-small" style={{
                                 display: 'flex'
                             }}>
-                                <div className="page-title">{buildingName}:{macAdd}</div>
+                                <div className="page-title">Historical Charts ({buildingName}: {macAdd})</div>
                                 <button className="margin-left-small" onClick={that.minimizeAll}>
                                     <FontAwesome name='expand' style={{
                                         marginRight: '0.5rem'
@@ -177,29 +174,23 @@ class HistoricalChart extends React.Component {
                                     Show/Hide all
                                 </button>
                             </div>
-                            <form id="uptime-form" style={{
-                                display: 'flex'
-                            }}>
+                            <form id="uptime-form" style={{display: 'flex'}}>
                                 <label className="margin-right-tiny">Start Date
-                                    <input type="date" name="startDate" ref="startDate"/>
+                                    <input type="date" name="startDate" defaultValue={startDate} ref="startDate"/>
                                 </label>
                                 <label className="margin-right-tiny">End Date
-                                    <input type="date" name="endDate" ref="endDate"/>
+                                    <input type="date" name="endDate" defaultValue={endDate} ref="endDate"/>
                                 </label>
 
                                 <label className="margin-right-tiny">
                                     Interval
-                                    <select ref="interval">
+                                    <select defaultValue={`${interval}`} ref="interval">
                                         <option value="30">30 mins</option>
                                         <option value="15">15 mins</option>
                                     </select>
                                 </label>
 
-                                <a className="button proceed expanded" style={{
-                                    height: '40px',
-                                    width: '100px',
-                                    alignSelf: 'flex-end'
-                                }} onClick={(e) => that.onSubmit()}>Go</a>
+                                <a className="button proceed expanded" style={{height: '40px', width: '100px', alignSelf: 'flex-end'}} onClick={(e) => that.onSubmit()}>Go</a>
                             </form>
 
                             <div id="uptimeMessage"><UptimeMessage message={message}/></div>
@@ -272,23 +263,41 @@ class HistoricalChart extends React.Component {
 
 // <SimpleLineChart dataUp={data['network_up'] dataDown={data['network_down']}}/>
 
+class CustomizedAxisTick extends React.Component {
+    render () {
+        const {x, y, stroke, payload} = this.props;
+
+       	return (
+        	<g transform={`translate(${x},${y})`}>
+            <text x={0} y={15} dy={16} textAnchor="middle" width={30} fill="#666" transform="rotate(-15)" >{payload.value}</text>
+          </g>
+        );
+    }
+}
+
 class SimpleAreaChart extends React.Component {
     render() {
-        var width = $('.row').width() * 0.95;
+        var width = $('.row').width() * 0.90;
 
         return (
             <AreaChart syncId='chart' width={width} height={250} data={this.props.data} margin={{
-                top: 10,
-                right: 30,
-                left: 0,
-                bottom: 0
+                top: 20,
+                right: 40,
+                left: 20,
+                bottom: 40
             }}>
-                <XAxis dataKey="timestamp" tickCount={7}/>
-                <YAxis/>
+                <defs>
+                    <linearGradient id="gradient" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="5%" stopColor="#009900" stopOpacity={0.8}/>
+                      <stop offset="95%" stopColor="#009900" stopOpacity={0}/>
+                    </linearGradient>
+                </defs>
+                <XAxis dataKey="timestamp" tick={<CustomizedAxisTick/>} padding={{right: 0}}/>
+                <YAxis />
                 <CartesianGrid strokeDasharray="3 3"/>
                 <Tooltip/>
                 <ReferenceLine y={1} label="Max" stroke="red" strokeDasharray="3 3" />
-                <Area connectNulls={true} type='monotone' dataKey='value' stroke='#006600' fill='#009900'/>
+                <Area type='monotone' connectNulls={true} dataKey='value' stroke='#009900' fill='url(#gradient)'/>
             </AreaChart>
         );
     }
@@ -296,7 +305,7 @@ class SimpleAreaChart extends React.Component {
 
 const SimpleLineChart = React.createClass({
     render() {
-        var width = $('.row').width() * 0.95;
+        var width = $('.row').width() * 0.90;
 
         return (
             <LineChart syncId='chart' width={width} height={250} data={this.props.data} margin={{
@@ -305,7 +314,7 @@ const SimpleLineChart = React.createClass({
                 left: 20,
                 bottom: 5
             }}>
-                <XAxis dataKey="name" tickCount={7}/>
+                <XAxis dataKey="name" tickCount={7} />
                 <YAxis/>
                 <CartesianGrid strokeDasharray="3 3"/>
                 <Tooltip/>

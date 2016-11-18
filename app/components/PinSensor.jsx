@@ -98,7 +98,7 @@ class PinSensorMessage extends React.Component {
 }
 
 function mapStateToProps(state, ownProps) {
-    return {pin_mac: state.pin_mac, userId: state.syncData.userId}
+    return {pin_mac: state.pin_mac, userId: state.syncData.userId, userEmail: state.syncData.userEmail}
 }
 
 module.exports = connect(mapStateToProps)(PinSensor);
