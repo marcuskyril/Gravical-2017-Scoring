@@ -18,7 +18,7 @@ class Building extends React.Component {
             <div className="column row">
                 <table className="sensorHealthTable">
                     <BuildingHeader dispatch={this.props.dispatch} buildingName={this.props.buildingName} snmpSpeedTest={this.props.speedTest}/>
-                    <LevelList totalCount={this.props.sensorCount} areaArray={this.props.areaNames} levelArray={this.props.levelNames} sensors={this.props.sensors}/>
+                    <LevelList totalCount={this.props.sensorCount} snmpSpeedTest={this.props.speedTest} areaArray={this.props.areaNames} levelArray={this.props.levelNames} sensors={this.props.sensors}/>
                 </table>
             </div>
         );
@@ -129,9 +129,6 @@ class BuildingHeader extends React.Component {
         var uptimeLink = `/uptime/${this.props.buildingName}`;
         var id = "routerDropdown"+sensor;
 
-        var upload = `${snmpSpeedTest.upload_speed} Mbit/s`;
-        var download = `${snmpSpeedTest.download_speed} Mbit/s`;
-
         return (
             <thead>
                 <tr>
@@ -145,12 +142,7 @@ class BuildingHeader extends React.Component {
                         "fontSize": "0.8rem",
                         fontWeight: '300'
                     }}>
-                        <span style={{
-                            fontWeight: '500'
-                        }}>Upload</span>: {upload} |
-                        <span style={{
-                            fontWeight: '500'
-                        }}> Download</span>: {download}
+
 
                         <a type="button" className="pane" onClick={() => this.handleClick(sensor)} style={{marginLeft:'0.5rem'}}>
                             <FontAwesome className="pane" name='cog' size='lg'/>
@@ -213,9 +205,11 @@ class LevelList extends React.Component {
         var port;
 
         var tableRows = [];
-        var areaArray = this.props.areaArray;
-        var levelArray = this.props.levelArray;
-        var sensors = this.props.sensors;
+        var {snmpSpeedTest, areaArray, levelArray, sensors, totalCount} = this.props;
+        var {download_speed, upload_speed} = snmpSpeedTest;
+
+        var upload = `${snmpSpeedTest.upload_speed} Mbit/s`;
+        var download = `${snmpSpeedTest.download_speed} Mbit/s`;
 
         for (var i = 0; i < levelArray.length; i++) {
             var sensorsOnThisFloor = sensors[levelArray[i]];
@@ -273,7 +267,9 @@ class LevelList extends React.Component {
                 <tr>
                     <td></td>
                     <td style={{float: 'right', fontSize: '0.8rem'}}>
-                            Total Count: {this.props.totalCount}
+                        <span className="_800">Upload</span>: {upload}
+                        <span className="_800"> | Download</span>: {download}
+                        <span className="_800"> | Sensor Count: </span>{totalCount}
                     </td>
                 </tr>
             </tbody>
