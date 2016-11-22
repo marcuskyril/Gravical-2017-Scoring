@@ -14,8 +14,6 @@ class ConfirmationModal extends React.Component {
         }
     }
 
-    componentDidMount() {}
-
     launchConfirmationModal() {
         var assocArr = {
             'updateEmail': 'Update Email',
@@ -95,9 +93,11 @@ class AccountSettings extends React.Component {
             if(response.error) {
                 console.log("Error", response.error);
             } else {
-                // console.log("response", response);
+                console.log("response", response);
                 that.setState({
-                    currentSettings: response
+                    reportTiming: response.daily_notification_time,
+                    emailRecipient: response.report_recipient,
+                    flappingThreshold: response.flapping_threshold
                 });
             }
         });
@@ -115,7 +115,7 @@ class AccountSettings extends React.Component {
                     $('#passwordPanel').slideUp("slow");
                     $('#dailyReportTimePanel').slideUp("slow");
                     $('#flappingDownsPanel').slideUp("slow");
-                    $('#considerationPeriodPanel').slideUp("slow");
+                    // $('#considerationPeriodPanel').slideUp("slow");
                     $('#emailRecipientPanel').slideUp("slow");
                     $('.nameHeader, .passwordHeader, .dailyReportTimeHeader, .flappingDownsHeader, .considerationPeriodHeader, .emailRecipientHeader').removeClass('panel-grey');
                     break;
@@ -125,7 +125,7 @@ class AccountSettings extends React.Component {
                     $('#passwordPanel').slideUp("slow");
                     $('#dailyReportTimePanel').slideUp("slow");
                     $('#flappingDownsPanel').slideUp("slow");
-                    $('#considerationPeriodPanel').slideUp("slow");
+                    // $('#considerationPeriodPanel').slideUp("slow");
                     $('#emailRecipientPanel').slideUp("slow");
                     $('.emailHeader, .passwordHeader, .dailyReportTimeHeader, .flappingDownsHeader, .considerationPeriodHeader, .emailRecipientHeader').removeClass('panel-grey');
                     break;
@@ -135,7 +135,7 @@ class AccountSettings extends React.Component {
                     $('#namePanel').slideUp("slow");
                     $('#dailyReportTimePanel').slideUp("slow");
                     $('#flappingDownsPanel').slideUp("slow");
-                    $('#considerationPeriodPanel').slideUp("slow");
+                    // $('#considerationPeriodPanel').slideUp("slow");
                     $('#emailRecipientPanel').slideUp("slow");
                     $('.emailHeader, .nameHeader, .dailyReportTimeHeader, .flappingDownsHeader, .considerationPeriodHeader, .emailRecipientHeader').removeClass('panel-grey');
                     break;
@@ -145,7 +145,7 @@ class AccountSettings extends React.Component {
                     $('#passwordPanel').slideUp("slow");
                     $('#emailPanel').slideUp("slow");
                     $('#flappingDownsPanel').slideUp("slow");
-                    $('#considerationPeriodPanel').slideUp("slow");
+                    // $('#considerationPeriodPanel').slideUp("slow");
                     $('#emailRecipientPanel').slideUp("slow");
                     $('.emailHeader, .nameHeader, .passwordHeader, .flappingDownsHeader, .considerationPeriodHeader, .emailRecipientHeader').removeClass('panel-grey');
                     break;
@@ -155,20 +155,20 @@ class AccountSettings extends React.Component {
                     $('#passwordPanel').slideUp("slow");
                     $('#emailPanel').slideUp("slow");
                     $('#dailyReportTimePanel').slideUp("slow");
-                    $('#considerationPeriodPanel').slideUp("slow");
+                    // $('#considerationPeriodPanel').slideUp("slow");
                     $('#emailRecipientPanel').slideUp("slow");
                     $('.emailHeader, .nameHeader, .passwordHeader, .dailyReportTimeHeader, .considerationPeriodHeader, .emailRecipientHeader').removeClass('panel-grey');
                     break;
-                case "considerationPeriodPanel":
-                    $('.considerationPeriodHeader').addClass('panel-grey');
-                    $('#namePanel').slideUp("slow");
-                    $('#passwordPanel').slideUp("slow");
-                    $('#emailPanel').slideUp("slow");
-                    $('#dailyReportTimePanel').slideUp("slow");
-                    $('#flappingDownsPanel').slideUp("slow");
-                    $('#emailRecipientPanel').slideUp("slow");
-                    $('.emailHeader, .nameHeader, .passwordHeader, .dailyReportTimeHeader, .flappingDownsHeader, .emailRecipientHeader').removeClass('panel-grey');
-                    break;
+                // case "considerationPeriodPanel":
+                //     $('.considerationPeriodHeader').addClass('panel-grey');
+                //     $('#namePanel').slideUp("slow");
+                //     $('#passwordPanel').slideUp("slow");
+                //     $('#emailPanel').slideUp("slow");
+                //     $('#dailyReportTimePanel').slideUp("slow");
+                //     $('#flappingDownsPanel').slideUp("slow");
+                //     $('#emailRecipientPanel').slideUp("slow");
+                //     $('.emailHeader, .nameHeader, .passwordHeader, .dailyReportTimeHeader, .flappingDownsHeader, .emailRecipientHeader').removeClass('panel-grey');
+                //     break;
                 case "emailRecipientPanel":
                     $('.emailRecipientHeader').addClass('panel-grey');
                     $('#namePanel').slideUp("slow");
@@ -285,38 +285,65 @@ class AccountSettings extends React.Component {
         }
     }
 
-    onUpdateUniversalSettings(e) {
+    onUpdateReportTiming(e) {
         e.preventDefault();
 
         var that = this;
-
+        var {emailRecipient} = this.state
         var reportTiming = this.refs.reportTiming.value;
+
+        settingsAPI.updateReportSettings(reportTiming, emailRecipient).then(function(response) {
+            if(response.error) {
+                console.log("error", response.error);
+                that.setState({
+                    message: response.error
+                });
+            } else {
+                console.log("response", response);
+                that.setState({
+                    message: response.message,
+                    reportTiming: reportTiming
+                });
+
+                that.refs.reportTiming.value = '';
+            }
+        });
+    }
+
+    onUpdateEmailRecipient(e) {
+        e.preventDefault();
+
+        var that = this;
+        var {reportTiming} = this.state
         var emailRecipient = this.refs.emailRecipient.value;
+
+        settingsAPI.updateReportSettings(reportTiming, emailRecipient).then(function(response) {
+            if(response.error) {
+                console.log("error", response.error);
+                that.setState({
+                    message: response.error
+                });
+            } else {
+                console.log("response", response);
+                that.setState({
+                    message: response.message,
+                    emailRecipient: emailRecipient
+                });
+
+                that.refs.emailRecipient.value = '';
+            }
+        });
+    }
+
+    onUpdateFlappingThreshold(e) {
+        e.preventDefault();
+
+        var that = this;
         var flappingThreshold = this.refs.flappingThreshold.value;
 
-        var currentSettings = that.state.currentSettings;
-        var currentReportTiming = "";
-        var currentEmailRecipient = "";
-        var currentFlappingThreshold = "";
-        if (currentSettings) {
-            currentReportTiming = currentSettings.daily_notification_time;
-            currentEmailRecipient = currentSettings.report_recipient;
-            currentFlappingThreshold = currentSettings.flapping_threshold;
-        }
-
-
-        if (reportTiming == "") {
-            reportTiming = currentReportTiming;
-        }
-        if (emailRecipient == "") {
-            emailRecipient = currentEmailRecipient;
-        }
-        if (flappingThreshold == "") {
-            flappingThreshold = currentFlappingThreshold;
-        }
-
-        settingsAPI.changeCurrentSettings(reportTiming, emailRecipient, flappingThreshold).then(function(response) {
+        settingsAPI.updateFlappingSettings(flappingThreshold).then(function(response) {
             $('#settingsAPIMessage').show();
+
             if(response.error) {
                 console.log("Error1", response.error);
                 that.setState({
@@ -325,12 +352,10 @@ class AccountSettings extends React.Component {
             } else {
                 console.log("response", response);
                 that.setState({
-                    message: response.message
-
+                    message: response.message,
+                    flappingThreshold: flappingThreshold
                 });
 
-                that.refs.reportTiming.value = '';
-                that.refs.emailRecipient.value = '';
                 that.refs.flappingThreshold.value = '';
 
                 $('#namePanel').slideUp("slow");
@@ -338,7 +363,7 @@ class AccountSettings extends React.Component {
                 $('#emailPanel').slideUp("slow");
                 $('#dailyReportTimePanel').slideUp("slow");
                 $('#flappingDownsPanel').slideUp("slow");
-                $('#considerationPeriodPanel').slideUp("slow");
+                // $('#considerationPeriodPanel').slideUp("slow");
                 $('#emailRecipientPanel').slideUp("slow");
                 $('.emailHeader, .nameHeader, .passwordHeader, .dailyReportTimeHeader, .flappingDownsHeader, .considerationPeriodHeader, .emailRecipientHeader').removeClass('panel-grey');
             }
@@ -347,27 +372,91 @@ class AccountSettings extends React.Component {
                 $('#settingsAPIMessage').fadeOut();
             }, 10000);
         });
-
-
-
-        // refresh currentSettings
-        settingsAPI.retrieveCurrentSettings().then(function(response) {
-            if(response.error) {
-                console.log("Error", response.error);
-            } else {
-                console.log("response", response);
-                that.setState({
-                    currentSettings: response
-                });
-            }
-        });
-
     }
+
+    // onUpdateUniversalSettings(e) {
+    //     e.preventDefault();
+    //
+    //     var that = this;
+    //
+    //     var reportTiming = this.refs.reportTiming.value;
+    //     var emailRecipient = this.refs.emailRecipient.value;
+    //     var flappingThreshold = this.refs.flappingThreshold.value;
+    //
+    //     var currentSettings = that.state.currentSettings;
+    //     var currentReportTiming = "";
+    //     var currentEmailRecipient = "";
+    //     var currentFlappingThreshold = "";
+    //     if (currentSettings) {
+    //         currentReportTiming = currentSettings.daily_notification_time;
+    //         currentEmailRecipient = currentSettings.report_recipient;
+    //         currentFlappingThreshold = currentSettings.flapping_threshold;
+    //     }
+    //
+    //
+    //     if (reportTiming == "") {
+    //         reportTiming = currentReportTiming;
+    //     }
+    //     if (emailRecipient == "") {
+    //         emailRecipient = currentEmailRecipient;
+    //     }
+    //     if (flappingThreshold == "") {
+    //         flappingThreshold = currentFlappingThreshold;
+    //     }
+    //
+    //     settingsAPI.changeCurrentSettings(reportTiming, emailRecipient, flappingThreshold).then(function(response) {
+    //         $('#settingsAPIMessage').show();
+    //         if(response.error) {
+    //             console.log("Error1", response.error);
+    //             that.setState({
+    //                 message: response.error
+    //             });
+    //         } else {
+    //             console.log("response", response);
+    //             that.setState({
+    //                 message: response.message
+    //
+    //             });
+    //
+    //             that.refs.reportTiming.value = '';
+    //             that.refs.emailRecipient.value = '';
+    //             that.refs.flappingThreshold.value = '';
+    //
+    //             $('#namePanel').slideUp("slow");
+    //             $('#passwordPanel').slideUp("slow");
+    //             $('#emailPanel').slideUp("slow");
+    //             $('#dailyReportTimePanel').slideUp("slow");
+    //             $('#flappingDownsPanel').slideUp("slow");
+    //             $('#considerationPeriodPanel').slideUp("slow");
+    //             $('#emailRecipientPanel').slideUp("slow");
+    //             $('.emailHeader, .nameHeader, .passwordHeader, .dailyReportTimeHeader, .flappingDownsHeader, .considerationPeriodHeader, .emailRecipientHeader').removeClass('panel-grey');
+    //         }
+    //
+    //         setTimeout(function () {
+    //             $('#settingsAPIMessage').fadeOut();
+    //         }, 10000);
+    //     });
+    //
+    //
+    //
+    //     // refresh currentSettings
+    //     settingsAPI.retrieveCurrentSettings().then(function(response) {
+    //         if(response.error) {
+    //             console.log("Error", response.error);
+    //         } else {
+    //             console.log("response", response);
+    //             that.setState({
+    //                 currentSettings: response
+    //             });
+    //         }
+    //     });
+    //
+    // }
 
     render() {
 
         var that = this;
-
+        var {reportTiming, emailRecipient, flappingThreshold} = this.state;
         var currentSettings = that.state.currentSettings;
         var currentReportTiming = "";
         var currentEmailRecipient = "";
@@ -492,7 +581,7 @@ class AccountSettings extends React.Component {
                                 <div className="columns large-2">
                                     <b className="settings-subheader">Daily Report Time</b>
                                 </div>
-                                <div className="columns large-5">{currentReportTiming}</div>
+                                <div className="columns large-5">{reportTiming}</div>
                                 <div className="columns large-5">
                                     <a id="triggerDailyReportTimePanel" onClick={this.reveal('triggerDailyReportTimePanel', 'dailyReportTimePanel')}>Edit</a>
                                 </div>
@@ -500,12 +589,12 @@ class AccountSettings extends React.Component {
 
                             <div className="row" id="dailyReportTimePanel">
                                 <form>
-                                    <div style={{fontSize: '0.9rem'}}>Tell us when you'd like to receive your daily notification email! (Format: HH-MM)</div>
+                                    <div style={{fontSize: '0.9rem'}}>Tell us when you'd like to receive your daily notification email! (Format: HHMM)</div>
                                     <div className="row">
                                         <div className="medium-3 columns">
-                                            <input type="text" ref="reportTiming" placeholder="HH-MM"/>
+                                            <input type="text" ref="reportTiming" placeholder="HHMM"/>
                                         </div>
-                                        <button className="button" type="button" onClick={this.onUpdateUniversalSettings.bind(this)}>Update</button>
+                                        <button className="button" type="button" onClick={this.onUpdateReportTiming.bind(this)}>Update</button>
                                         <button className="button hollow button-cancel margin-left-tiny" type="button" onClick={() => {
                                             $('#dailyReportTimePanel').slideUp();
                                             $('.dailyReportTimeHeader').removeClass('panel-grey')
@@ -518,7 +607,7 @@ class AccountSettings extends React.Component {
                                 <div className="columns large-2">
                                     <b className="settings-subheader">Email Recipient</b>
                                 </div>
-                                <div className="columns large-5">{currentEmailRecipient}</div>
+                                <div className="columns large-5">{emailRecipient}</div>
                                 <div className="columns large-5">
                                     <a id="triggerEmailRecipientPanel" onClick={this.reveal('triggerEmailRecipientPanel', 'emailRecipientPanel')}>Edit</a>
                                 </div>
@@ -530,7 +619,7 @@ class AccountSettings extends React.Component {
                                         <div className="medium-6 columns">
                                             <input type="text" ref="emailRecipient" placeholder="Email Recipient"/>
                                         </div>
-                                        <button className="button" type="button" onClick={this.onUpdateUniversalSettings.bind(this)}>Update</button>
+                                        <button className="button" type="button" onClick={this.onUpdateEmailRecipient.bind(this)}>Update</button>
                                         <button className="button hollow button-cancel margin-left-tiny" type="button" onClick={() => {
                                             $('#emailRecipientPanel').slideUp();
                                             $('.emailRecipientHeader').removeClass('panel-grey')
@@ -550,7 +639,7 @@ class AccountSettings extends React.Component {
                                 <div className="columns large-2">
                                     <b className="settings-subheader">Threshold</b>
                                 </div>
-                                <div className="columns large-5">{currentFlappingThreshold}</div>
+                                <div className="columns large-5">{flappingThreshold}</div>
                                 <div className="columns large-5">
                                     <a id="triggerFlappingDownsPanel" onClick={this.reveal('triggerFlappingDownsPanel', 'flappingDownsPanel')}>Edit</a>
                                 </div>
@@ -562,7 +651,7 @@ class AccountSettings extends React.Component {
                                         <div className="medium-6 columns">
                                             <input type="text" ref="flappingThreshold" placeholder="Threshold"/>
                                         </div>
-                                        <button className="button" type="button" onClick={this.onUpdateUniversalSettings.bind(this)}>Update</button>
+                                        <button className="button" type="button" onClick={this.onUpdateFlappingThreshold.bind(this)}>Update</button>
                                         <button className="button hollow button-cancel margin-left-tiny" type="button" onClick={() => {
                                             $('#flappingDownsPanel').slideUp();
                                             $('.flappingDownsHeader').removeClass('panel-grey')
@@ -570,9 +659,6 @@ class AccountSettings extends React.Component {
                                     </div>
                                 </form>
                             </div>
-
-
-
                         </div>
                     </div>
                     <div className="statusText" id="settingsAPIMessage">
@@ -612,6 +698,3 @@ class AccountSettings extends React.Component {
 };
 
 module.exports = AccountSettings;
-
-// onSubmit={(e) => onUpdatePassword.bind(this) }
-// e.preventDefault();

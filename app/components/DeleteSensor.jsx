@@ -51,6 +51,10 @@ class DeleteSensor extends React.Component {
                     location: location
                 };
 
+                $('#offCanvas').foundation('close', function(){
+                    console.log("Closing canvas");
+                });
+
                 myCustomEvent.initEvent("customEvent", true, true);
                 document.dispatchEvent(myCustomEvent);
                 var actionDesc = `Deleted ${macAdd} from ${building} ${location}`;

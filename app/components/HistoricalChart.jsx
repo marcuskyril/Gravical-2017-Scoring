@@ -2,6 +2,7 @@ var React = require('react');
 var Recharts = require('recharts');
 var FontAwesome = require('react-fontawesome');
 var retrieveHistoricalDataAPI = require('retrieveHistoricalDataAPI');
+var {Link, IndexLink} = require('react-router');
 
 const {
     XAxis,
@@ -51,6 +52,13 @@ class HistoricalChart extends React.Component {
                 storage: null,
                 network: null
             },
+            noData: true,
+            cpuDanger: 0,
+            cpuWarning: 0,
+            ramDanger: 0,
+            ramWarning: 0,
+            storageDanger: 0,
+            storageWarning: 0,
             isLoading: false,
             message: '',
             startDate: startDate,
@@ -99,13 +107,25 @@ class HistoricalChart extends React.Component {
         var that = this;
 
         $.when(retrieveHistoricalDataAPI.retrieveHistoricalChart(macAdd, startDate, endDate, interval, "cpu"), retrieveHistoricalDataAPI.retrieveHistoricalChart(macAdd, startDate, endDate, interval, "ram"), retrieveHistoricalDataAPI.retrieveHistoricalChart(macAdd, startDate, endDate, interval, "storage"), retrieveHistoricalDataAPI.retrieveHistoricalChart(macAdd, startDate, endDate, interval, "network")).then(function(cpuData, ramData, storageData, networkData) {
+
+            console.log("what you asked for: ", cpuData[0][1]['danger'], ramData[0][1]['warning']);
+
+            console.log('howdy', cpuData);
+
             that.setState({
                 data: {
-                    cpu: cpuData[0],
-                    ram: ramData[0],
-                    storage: storageData[0],
+                    cpu: cpuData[0][2],
+                    ram: ramData[0][2],
+                    storage: storageData[0][2],
                     network: networkData[0]
                 },
+                noData: cpuData[0][0] === "No Data Available" ? true : false,
+                cpuDanger: cpuData[0][1]['danger'],
+                cpuWarning: cpuData[0][1]['warning'],
+                ramDanger: ramData[0][1]['danger'],
+                ramWarning: ramData[0][1]['warning'],
+                storageDanger: storageData[0][1]['danger'],
+                storageWarning: storageData[0][1]['warning'],
                 isLoading: false,
                 startDate: startDate,
                 endDate: endDate,
@@ -140,12 +160,26 @@ class HistoricalChart extends React.Component {
             macAdd,
             isLoading,
             data,
+            noData,
+            cpuDanger,
+            cpuWarning,
+            ramDanger,
+            ramWarning,
+            storageDanger,
+            storageWarning,
             buildingName,
             startDate,
             endDate,
             interval,
             message
         } = this.state;
+
+        console.log("warning: ", cpuDanger,
+        cpuWarning,
+        ramDanger,
+        ramWarning,
+        storageDanger,
+        storageWarning);
 
         var desc = `You are viewing historical data for ${macAdd} between ${startDate}
                         & ${endDate} at an interval of ${interval} minutes.`;
@@ -159,6 +193,15 @@ class HistoricalChart extends React.Component {
                     <div className="loader"></div>
                 );
 
+            } else if(noData) {
+                return (
+                    <div className="row textAlignCenter">
+                      <div className="columns large-12 margin-top-md">
+                          <div className="page-title">No data available</div>
+                          <Link to='/dashboard'>Back to dashboard</Link>
+                      </div>
+                    </div>
+                );
             } else {
                 return (
                     <div>
@@ -207,7 +250,7 @@ class HistoricalChart extends React.Component {
                         </div>
 
                         <div id="cpu" className="callout callout-dark">
-                            <SimpleAreaChart data={data['cpu']}/>
+                            <SimpleAreaChart warning={cpuWarning} danger={cpuDanger} data={data['cpu']}/>
                         </div>
 
                         <div className="callout callout-dark-header">
@@ -218,7 +261,7 @@ class HistoricalChart extends React.Component {
                         </div>
 
                         <div id="ram" className="callout callout-dark">
-                            <SimpleAreaChart data={data['ram']}/>
+                            <SimpleAreaChart warning={ramWarning} danger={ramDanger} data={data['ram']}/>
                         </div>
 
                         <div className="callout callout-dark-header">
@@ -229,7 +272,7 @@ class HistoricalChart extends React.Component {
                         </div>
 
                         <div id="storage" className="callout callout-dark">
-                            <SimpleAreaChart data={data['storage']}/>
+                            <SimpleAreaChart warning={storageWarning} danger={storageDanger} data={data['storage']}/>
                         </div>
 
                         <div className="callout callout-dark-header">
@@ -279,10 +322,13 @@ class SimpleAreaChart extends React.Component {
     render() {
         var width = $('.row').width() * 0.90;
 
+        console.log("warning", this.props.warning);
+        console.log("danger", this.props.danger);
+
         return (
             <AreaChart syncId='chart' width={width} height={250} data={this.props.data} margin={{
                 top: 20,
-                right: 40,
+                right: 65,
                 left: 20,
                 bottom: 40
             }}>
@@ -296,7 +342,8 @@ class SimpleAreaChart extends React.Component {
                 <YAxis />
                 <CartesianGrid strokeDasharray="3 3"/>
                 <Tooltip/>
-                <ReferenceLine y={1} label="Max" stroke="red" strokeDasharray="3 3" />
+                <ReferenceLine y={this.props.warning} label="Warning" stroke="#ffcc00" strokeDasharray="3 3" />
+                <ReferenceLine y={this.props.danger} label="Danger" stroke="#cc7a00" strokeDasharray="3 3" />
                 <Area type='monotone' connectNulls={true} dataKey='value' stroke='#009900' fill='url(#gradient)'/>
             </AreaChart>
         );

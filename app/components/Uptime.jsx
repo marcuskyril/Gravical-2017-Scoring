@@ -25,7 +25,7 @@ class SimpleBarChart extends React.Component{
                   margin={{top: 5, right: 30, left: 20, bottom: 5}} barGap={0} barCategoryGap={0}>
              <CartesianGrid strokeDasharray="3 3"/>
              <Tooltip content={<CustomTooltip external={this.props.uptimeData}/>}/>
-             <Bar dataKey="value">
+             <Bar dataKey="value" isAnimationActive={false}>
                {
                  this.props.uptimeData.map((entry, index) =>(
                   <Cell key={`cell=${index}`} stroke={colorMap[entry['status']]} fill={colorMap[entry['status']]} />
@@ -80,7 +80,7 @@ class Uptime extends React.Component {
     var interval = parseInt(this.refs.interval.value);
 
     var diff = (Date.parse(endDate) - Date.parse(startDate)) / 1000 / 3600 / 24;
-    console.log("diff", diff);
+    // console.log("diff", diff);
 
     if(Date.parse(endDate) < Date.parse(startDate)) {
         this.setState({message: 'End date is before start date. Please try again.'});
