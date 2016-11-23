@@ -369,7 +369,7 @@ const SimpleLineChart = React.createClass({
                 <Line connectNulls={true} dot={false} type="monotone" dataKey="network_up" stroke="#6DBDD6" activeDot={{
                     r: 2
                 }}/>
-            <Line connectNulls={true} dot={false} type="monotone" dataKey="network_down" stroke="#1a1b1b" activeDot={{
+                <Line connectNulls={true} dot={false} type="monotone" dataKey="network_down" stroke="#1a1b1b" activeDot={{
                     r: 2
                 }}/>
             </LineChart>

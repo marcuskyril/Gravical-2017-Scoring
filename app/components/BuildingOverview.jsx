@@ -35,9 +35,9 @@ class Building extends React.Component {
                             &nbsp;|&nbsp;
                             <span style={{'color':'#990000'}}>{this.props.down}</span>
                             &nbsp;|&nbsp;
-                            <span style={{'color':'#737373'}}>{this.props.noData}</span>
+                            <span style={{'color':'#737373'}}>{this.props.paused}</span>
                             &nbsp;|&nbsp;
-                            <span style={{'color':'#1a1b1b'}}>{this.props.paused}</span>
+                            <span style={{'color':'#1a1b1b'}}>{this.props.noData}</span>
                         </div>
                     </div>
                 </div>
@@ -69,11 +69,11 @@ class Building extends React.Component {
                                    <tr style={{'color':'#990000'}}>
                                        <td>down</td><td>{this.props.down}</td>
                                    </tr>
-                                   <tr style={{'color':'#737373'}}>
-                                       <td>no data</td><td>{this.props.noData}</td>
-                                   </tr>
                                    <tr style={{'color':'#1a1b1b'}}>
                                        <td>paused</td><td>{this.props.paused}</td>
+                                   </tr>
+                                   <tr style={{'color':'#737373'}}>
+                                       <td>no data</td><td>{this.props.noData}</td>
                                    </tr>
                                  </tbody>
                                </table>
@@ -83,8 +83,8 @@ class Building extends React.Component {
                        <Bar dataKey="warning" stackId="a" fill="#ffcc00" isAnimationActive={false}/>
                        <Bar dataKey="danger" stackId="a" fill="#cc7a00" isAnimationActive={false}/>
                        <Bar dataKey="down" stackId="a" fill="#990000" isAnimationActive={false}/>
-                       <Bar dataKey="noData" stackId="a" fill="#737373" isAnimationActive={false}/>
                        <Bar dataKey="paused" stackId="a" fill="#1a1b1b" isAnimationActive={false}/>
+                       <Bar dataKey="noData" stackId="a" fill="#737373" isAnimationActive={false}/>
                       </BarChart>
 
                      </ResponsiveContainer>

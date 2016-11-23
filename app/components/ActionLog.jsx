@@ -58,7 +58,7 @@ class ActionLog extends React.Component{
         for (var id in logs) {
 
             var row = {
-                userId: logs[id]['userEmail'],
+                userEmail: logs[id]['userEmail'],
                 action: logs[id]['action'],
                 timestamp: logs[id]['timestamp']
             };

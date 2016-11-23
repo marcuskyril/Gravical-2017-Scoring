@@ -87896,7 +87896,7 @@
 	            for (var id in logs) {
 
 	                var row = {
-	                    userId: logs[id]['userEmail'],
+	                    userEmail: logs[id]['userEmail'],
 	                    action: logs[id]['action'],
 	                    timestamp: logs[id]['timestamp']
 	                };
@@ -98848,13 +98848,13 @@
 	                            React.createElement(
 	                                'span',
 	                                { style: { 'color': '#737373' } },
-	                                this.props.noData
+	                                this.props.paused
 	                            ),
 	                            ' | ',
 	                            React.createElement(
 	                                'span',
 	                                { style: { 'color': '#1a1b1b' } },
-	                                this.props.paused
+	                                this.props.noData
 	                            )
 	                        )
 	                    )
@@ -98946,20 +98946,6 @@
 	                                            ),
 	                                            React.createElement(
 	                                                'tr',
-	                                                { style: { 'color': '#737373' } },
-	                                                React.createElement(
-	                                                    'td',
-	                                                    null,
-	                                                    'no data'
-	                                                ),
-	                                                React.createElement(
-	                                                    'td',
-	                                                    null,
-	                                                    this.props.noData
-	                                                )
-	                                            ),
-	                                            React.createElement(
-	                                                'tr',
 	                                                { style: { 'color': '#1a1b1b' } },
 	                                                React.createElement(
 	                                                    'td',
@@ -98971,6 +98957,20 @@
 	                                                    null,
 	                                                    this.props.paused
 	                                                )
+	                                            ),
+	                                            React.createElement(
+	                                                'tr',
+	                                                { style: { 'color': '#737373' } },
+	                                                React.createElement(
+	                                                    'td',
+	                                                    null,
+	                                                    'no data'
+	                                                ),
+	                                                React.createElement(
+	                                                    'td',
+	                                                    null,
+	                                                    this.props.noData
+	                                                )
 	                                            )
 	                                        )
 	                                    )
@@ -98979,8 +98979,8 @@
 	                            React.createElement(Bar, { dataKey: 'warning', stackId: 'a', fill: '#ffcc00', isAnimationActive: false }),
 	                            React.createElement(Bar, { dataKey: 'danger', stackId: 'a', fill: '#cc7a00', isAnimationActive: false }),
 	                            React.createElement(Bar, { dataKey: 'down', stackId: 'a', fill: '#990000', isAnimationActive: false }),
-	                            React.createElement(Bar, { dataKey: 'noData', stackId: 'a', fill: '#737373', isAnimationActive: false }),
-	                            React.createElement(Bar, { dataKey: 'paused', stackId: 'a', fill: '#1a1b1b', isAnimationActive: false })
+	                            React.createElement(Bar, { dataKey: 'paused', stackId: 'a', fill: '#1a1b1b', isAnimationActive: false }),
+	                            React.createElement(Bar, { dataKey: 'noData', stackId: 'a', fill: '#737373', isAnimationActive: false })
 	                        )
 	                    )
 	                )
