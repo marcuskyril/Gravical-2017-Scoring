@@ -33,6 +33,17 @@ class PinComponent extends React.Component {
         var dispatch = this.props.data.dispatch;
         dispatch(actions.startUpdateWatchList(macAddress));
         $('#pin-sensor-modal').foundation('open');
+
+        console.log("macAddress", macAddress);
+
+        var tobascoSauce = document.createEvent("Event");
+
+        tobascoSauce.data = {
+            macAdd: macAddress
+        };
+
+        tobascoSauce.initEvent("tobascoSauce", true, true);
+        document.dispatchEvent(tobascoSauce);
     }
 
     renderClass(){

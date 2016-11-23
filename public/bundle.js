@@ -29489,7 +29489,7 @@
 	    key: 'render',
 	    value: function render() {
 
-	      var width = $('.row').width() * 0.80;
+	      var width = $('.row').width() * 0.7;
 	      var historicalLink = '/historical/' + this.props.buildingName + '&' + this.props.mac;
 
 	      return React.createElement(
@@ -29500,10 +29500,10 @@
 	          { className: 'row' },
 	          React.createElement(
 	            'div',
-	            { className: 'columns large-2' },
+	            { className: 'columns large-3' },
 	            React.createElement(
 	              'div',
-	              { className: 'header margin-top-tiny' },
+	              { className: 'margin-top-tiny' },
 	              React.createElement(
 	                IndexLink,
 	                { to: historicalLink },
@@ -29515,7 +29515,7 @@
 	          ),
 	          React.createElement(
 	            'div',
-	            { className: 'columns large-10' },
+	            { className: 'columns large-9' },
 	            React.createElement(
 	              BarChart,
 	              { width: width, height: 40, data: this.props.uptimeData,
@@ -91570,6 +91570,17 @@
 	            var dispatch = this.props.data.dispatch;
 	            dispatch(actions.startUpdateWatchList(macAddress));
 	            $('#pin-sensor-modal').foundation('open');
+
+	            console.log("macAddress", macAddress);
+
+	            var tobascoSauce = document.createEvent("Event");
+
+	            tobascoSauce.data = {
+	                macAdd: macAddress
+	            };
+
+	            tobascoSauce.initEvent("tobascoSauce", true, true);
+	            document.dispatchEvent(tobascoSauce);
 	        }
 	    }, {
 	        key: 'renderClass',

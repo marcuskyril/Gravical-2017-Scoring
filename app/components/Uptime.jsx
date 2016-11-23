@@ -19,18 +19,18 @@ class SimpleBarChart extends React.Component{
 
 	render () {
 
-        var width = $('.row').width() * 0.80;
+        var width = $('.row').width() * 0.7;
         var historicalLink = `/historical/${this.props.buildingName}&${this.props.mac}`;
 
       	return (
           <div key={this.props.id}>
             <div className="row">
-                <div className="columns large-2">
-                    <div className="header margin-top-tiny">
+                <div className="columns large-3">
+                    <div className="margin-top-tiny">
                         <IndexLink to={historicalLink}>{this.props.id} | {this.props.mac}</IndexLink>
                     </div>
                 </div>
-                <div className="columns large-10">
+                <div className="columns large-9">
                     <BarChart width={width} height={40} data={this.props.uptimeData}
                               margin={{top: 5, right: 30, left: 20, bottom: 5}} barGap={0} barCategoryGap={0}>
                          <CartesianGrid strokeDasharray="3 3"/>
