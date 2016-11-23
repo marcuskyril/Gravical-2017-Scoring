@@ -61,8 +61,8 @@ class Terminal extends React.Component {
                 <div className="top-bar">
                     <div style={{color: "#fff"}}className="top-bar-left">{macAdd}</div>
                     <div className="top-bar-right">
-                        <a className="margin-right-tiny" onClick={this.refresh}><FontAwesome name='refresh'/></a>
-                        <a onClick={this.close}><FontAwesome name='close'/></a>
+                        <a className="margin-right-tiny font-white" onClick={this.refresh}><FontAwesome name='refresh'/></a>
+                        <a onClick={this.close} className="font-white"><FontAwesome name='close'/></a>
                     </div>
                 </div>
                 {renderIFrame(port)}

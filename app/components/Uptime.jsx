@@ -3,6 +3,7 @@ var axios = require('axios');
 var Recharts = require('recharts');
 var FontAwesome = require('react-fontawesome');
 var retrievehistoricalDataAPI = require('retrieveHistoricalDataAPI');
+var {Link, IndexLink} = require('react-router');
 const {XAxis, Cell, YAxis, Legend, BarChart, Bar, CartesianGrid, Tooltip, Brush, ResponsiveContainer} = Recharts;
 
 var colorMap = {
@@ -10,32 +11,43 @@ var colorMap = {
   "warning" : "#ffcc00",
   "danger" : "#cc7a00",
   "down" : "#990000",
-  "no data" : "#737373"
+  "no data" : "#737373",
+  "others" : "#0A083B"
 }
 
 class SimpleBarChart extends React.Component{
+
 	render () {
 
-    var width = $('.row').width() * 0.95;
+        var width = $('.row').width() * 0.80;
+        var historicalLink = `/historical/${this.props.buildingName}&${this.props.mac}`;
 
-  	return (
-      <div key={this.props.id}>
-        <div className="header">{this.props.id} | {this.props.mac}</div>
-        <BarChart width={width} height={40} data={this.props.uptimeData}
-                  margin={{top: 5, right: 30, left: 20, bottom: 5}} barGap={0} barCategoryGap={0}>
-             <CartesianGrid strokeDasharray="3 3"/>
-             <Tooltip content={<CustomTooltip external={this.props.uptimeData}/>}/>
-             <Bar dataKey="value" isAnimationActive={false}>
-               {
-                 this.props.uptimeData.map((entry, index) =>(
-                  <Cell key={`cell=${index}`} stroke={colorMap[entry['status']]} fill={colorMap[entry['status']]} />
-                 ))
-               }
-             </Bar>
-        </BarChart>
-      </div>
-    );
-  }
+      	return (
+          <div key={this.props.id}>
+            <div className="row">
+                <div className="columns large-2">
+                    <div className="header margin-top-tiny">
+                        <IndexLink to={historicalLink}>{this.props.id} | {this.props.mac}</IndexLink>
+                    </div>
+                </div>
+                <div className="columns large-10">
+                    <BarChart width={width} height={40} data={this.props.uptimeData}
+                              margin={{top: 5, right: 30, left: 20, bottom: 5}} barGap={0} barCategoryGap={0}>
+                         <CartesianGrid strokeDasharray="3 3"/>
+                         <Tooltip content={<CustomTooltip external={this.props.uptimeData}/>}/>
+                         <Bar dataKey="value" isAnimationActive={false}>
+                           {
+                             this.props.uptimeData.map((entry, index) =>(
+                              <Cell key={`cell=${index}`} stroke={colorMap[entry['status']]} fill={colorMap[entry['status']]} />
+                             ))
+                           }
+                         </Bar>
+                    </BarChart>
+                </div>
+            </div>
+          </div>
+        );
+    }
 };
 
 class Uptime extends React.Component {
@@ -80,7 +92,6 @@ class Uptime extends React.Component {
     var interval = parseInt(this.refs.interval.value);
 
     var diff = (Date.parse(endDate) - Date.parse(startDate)) / 1000 / 3600 / 24;
-    // console.log("diff", diff);
 
     if(Date.parse(endDate) < Date.parse(startDate)) {
         this.setState({message: 'End date is before start date. Please try again.'});
@@ -141,8 +152,8 @@ class Uptime extends React.Component {
         return (
           <div>
             <div className="margin-bottom-small">
-                <div className="page-title">Uptime Charts: {buildingName}</div><br/>
-                <button onClick={that.minimizeAll}>
+                <div style={{float: 'left'}} className="page-title">Uptime Charts: {buildingName}</div>
+                <button className="margin-left-small" onClick={that.minimizeAll}>
                     <FontAwesome name='expand' style={{
                         marginRight: '0.5rem'
                     }}/>
@@ -182,7 +193,7 @@ class Uptime extends React.Component {
           <div className="columns large-12">
 
             {renderContent()}
-            <UptimeList data={this.state.data}/>
+            <UptimeList buildingName={buildingName} data={this.state.data}/>
           </div>
         </div>
       </div>
@@ -210,7 +221,7 @@ class UptimeList extends React.Component {
           if (dataList.hasOwnProperty(level)) {
 
               var sensorsOnLevel = dataList[level];
-              rows.push(<SensorList key={level} level={level} data={sensorsOnLevel}/>);
+              rows.push(<SensorList key={level} level={level} buildingName={this.props.buildingName} data={sensorsOnLevel}/>);
           }
         }
 
@@ -248,7 +259,7 @@ class SensorList extends React.Component {
         var id = sensor["id"];
         var data = sensor["data"];
 
-        rows.push(<SimpleBarChart key={mac} mac={mac} id={id} level={level} uptimeData={data}/>);
+        rows.push(<SimpleBarChart key={mac} mac={mac} id={id} buildingName={this.props.buildingName} level={level} uptimeData={data}/>);
       }
     }
 

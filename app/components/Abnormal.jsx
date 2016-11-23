@@ -7,14 +7,14 @@ import {connect} from 'react-redux';
 class SensorBlockComponent extends React.Component {
 
     render() {
-        // url ="speakers/" + this.props.rowData.state + "/" + this.props.data;
 
         var colorMap = {
-          "ok" : "sensorBlock green",
-          "warning" : "sensorBlock yellow",
-          "danger" : "sensorBlock orange",
-          "down" : "sensorBlock red",
-          "-" : "sensorBlock grey",
+            "ok" : "sensorBlock green",
+            "warning" : "sensorBlock yellow",
+            "danger" : "sensorBlock orange",
+            "down" : "sensorBlock red",
+            "-" : "sensorBlock grey",
+            "paused" : "sensorBlock black"
         }
 
         return (

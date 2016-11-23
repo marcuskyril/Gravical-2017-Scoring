@@ -2,6 +2,7 @@ var React = require('react');
 var Griddle = require('griddle-react');
 var axios = require('axios');
 var notificationLogAPI = require('notificationLogAPI');
+var FontAwesome = require('react-fontawesome');
 
 const tableMetaData = [
     {
@@ -123,7 +124,9 @@ class NotificationLog extends React.Component {
                 <div className="notificationWrapper" style={{paddingTop: '2rem', paddingBottom: '2rem'}}>
                     <div className="callout callout-dark-header">
                         <div className="header">Your Notifications</div>
-                        <button className="icon-btn-text-small" onClick={() => that.handleClick()}>REFRESH</button>
+                        <a className="margin-right-tiny"
+                            style={{top: '8px', position: 'absolute', right: '15px'}}
+                            onClick={() => that.handleClick()}><FontAwesome name='refresh'/></a>
                     </div>
                     <div className="callout-dark">
                         <Griddle results={dataList}

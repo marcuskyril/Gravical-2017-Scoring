@@ -138,6 +138,10 @@ table tbody {
     margin-top: 1rem;
 }
 
+.margin-top-tiny {
+    margin-top: 0.5rem;
+}
+
 .margin-bottom-md {
     margin-bottom: 2rem;
 }
@@ -272,7 +276,8 @@ label {
 }
 
 .settings-wrapper {
-    margin-left: 1.8rem
+    margin-left: 1.8rem;
+    color: #000;
 }
 
 input[type=search] {
@@ -462,7 +467,9 @@ table.sensor-details-table {
 #dailyReportTimePanel,
 #flappingDownsPanel,
 #considerationPeriodPanel,
-#emailRecipientPanel {
+#emailRecipientPanel,
+#maxDataGapPanel,
+#sensorOfflineAllowancePanel {
     display: none;
     padding: 1rem;
     background: #e4e4e4;
@@ -483,6 +490,10 @@ input[type=checkbox]:checked ~ #port {
 .button-cancel {
     border-color: $red !important;
     color: $red !important;
+}
+
+.font-white {
+  color: #fff;
 }
 
 .green {

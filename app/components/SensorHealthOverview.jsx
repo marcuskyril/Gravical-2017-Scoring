@@ -144,10 +144,10 @@ class BuildingHeader extends React.Component {
                     }}>
 
 
-                        <a type="button" className="pane" onClick={() => this.handleClick(sensor)} style={{marginLeft:'0.5rem'}}>
+                        <a type="button" className="pane margin-left-tiny" onClick={() => this.handleClick(sensor)}>
                             <FontAwesome className="pane" name='cog' size='lg'/>
                         </a>
-                        <IndexLink activeClassName='active' to={uptimeLink}>
+                        <IndexLink activeClassName='active' className="margin-left-tiny" to={uptimeLink}>
                             <FontAwesome name='bar-chart' style={{
                                 marginLeft: '5px'
                             }}/>

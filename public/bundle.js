@@ -10703,6 +10703,14 @@
 	var settingsAPI = __webpack_require__(266);
 	var user = null;
 
+	var DEFAULT_VALUES = {
+	    reportTiming: '0800',
+	    emailRecipient: 'uat@gmail.com',
+	    maxDataGap: '30',
+	    sensorOfflineAllowance: '30',
+	    flappingThreshold: '5'
+	};
+
 	var ConfirmationModal = function (_React$Component) {
 	    _inherits(ConfirmationModal, _React$Component);
 
@@ -10799,7 +10807,10 @@
 	            emailVerified: '-',
 	            reportTiming: '-',
 	            emailRecipient: '-',
-	            flappingThreshold: '-'
+	            maxDataGap: '-',
+	            sensorOfflineAllowance: '-',
+	            flappingThreshold: '-',
+	            message: ''
 	        };
 	        return _this2;
 	    }
@@ -10810,10 +10821,6 @@
 
 	            var that = this;
 
-	            that.setState({
-	                message: ""
-	            });
-
 	            _firebase2.default.auth().onAuthStateChanged(function (user) {
 
 	                if (user) {
@@ -10823,6 +10830,44 @@
 	                console.warn(error);
 	            });
 
+	            this.retrieveCurrentSettings();
+	        }
+	    }, {
+	        key: 'restoreDefaultSettings',
+	        value: function restoreDefaultSettings() {
+	            var that = this;
+	            var reportTiming = DEFAULT_VALUES.reportTiming;
+	            var emailRecipient = DEFAULT_VALUES.emailRecipient;
+	            var maxDataGap = DEFAULT_VALUES.maxDataGap;
+	            var sensorOfflineAllowance = DEFAULT_VALUES.sensorOfflineAllowance;
+
+
+	            console.log("restoring", reportTiming, emailRecipient, maxDataGap, sensorOfflineAllowance);
+
+	            settingsAPI.updateReportSettings(reportTiming, emailRecipient, maxDataGap, sensorOfflineAllowance).then(function (response) {
+	                if (response.error) {
+	                    console.log("error", response.error);
+	                    that.setState({
+	                        message: response.error
+	                    });
+	                } else {
+	                    console.log("response", response);
+	                    that.setState({
+	                        message: response.message,
+	                        reportTiming: reportTiming,
+	                        emailRecipient: emailRecipient,
+	                        maxDataGap: maxDataGap,
+	                        sensorOfflineAllowance: sensorOfflineAllowance
+	                    });
+	                }
+	            });
+	        }
+	    }, {
+	        key: 'retrieveCurrentSettings',
+	        value: function retrieveCurrentSettings() {
+
+	            var that = this;
+
 	            settingsAPI.retrieveCurrentSettings().then(function (response) {
 	                if (response.error) {
 	                    console.log("Error", response.error);
@@ -10831,6 +10876,8 @@
 	                    that.setState({
 	                        reportTiming: response.daily_notification_time,
 	                        emailRecipient: response.report_recipient,
+	                        sensorOfflineAllowance: response.sensor_offline_allowance,
+	                        maxDataGap: response.max_data_gap,
 	                        flappingThreshold: response.flapping_threshold
 	                    });
 	                }
@@ -10849,9 +10896,10 @@
 	                        $('#passwordPanel').slideUp("slow");
 	                        $('#dailyReportTimePanel').slideUp("slow");
 	                        $('#flappingDownsPanel').slideUp("slow");
-	                        // $('#considerationPeriodPanel').slideUp("slow");
+	                        $('#sensorOfflineAllowancePanel').slideUp("slow");
+	                        $('#maxDataGapPanel').slideUp("slow");
 	                        $('#emailRecipientPanel').slideUp("slow");
-	                        $('.nameHeader, .passwordHeader, .dailyReportTimeHeader, .flappingDownsHeader, .considerationPeriodHeader, .emailRecipientHeader').removeClass('panel-grey');
+	                        $('.nameHeader, .passwordHeader, .dailyReportTimeHeader, .flappingDownsHeader, .emailRecipientHeader, .sensorOfflineAllowanceHeader, .maxDataGapHeader').removeClass('panel-grey');
 	                        break;
 	                    case "namePanel":
 	                        $('.nameHeader').addClass('panel-grey');
@@ -10859,9 +10907,10 @@
 	                        $('#passwordPanel').slideUp("slow");
 	                        $('#dailyReportTimePanel').slideUp("slow");
 	                        $('#flappingDownsPanel').slideUp("slow");
-	                        // $('#considerationPeriodPanel').slideUp("slow");
+	                        $('#sensorOfflineAllowancePanel').slideUp("slow");
+	                        $('#maxDataGapPanel').slideUp("slow");
 	                        $('#emailRecipientPanel').slideUp("slow");
-	                        $('.emailHeader, .passwordHeader, .dailyReportTimeHeader, .flappingDownsHeader, .considerationPeriodHeader, .emailRecipientHeader').removeClass('panel-grey');
+	                        $('.emailHeader, .passwordHeader, .dailyReportTimeHeader, .flappingDownsHeader, .emailRecipientHeader, .sensorOfflineAllowanceHeader, .maxDataGapHeader').removeClass('panel-grey');
 	                        break;
 	                    case "passwordPanel":
 	                        $('.passwordHeader').addClass('panel-grey');
@@ -10869,9 +10918,10 @@
 	                        $('#namePanel').slideUp("slow");
 	                        $('#dailyReportTimePanel').slideUp("slow");
 	                        $('#flappingDownsPanel').slideUp("slow");
-	                        // $('#considerationPeriodPanel').slideUp("slow");
+	                        $('#sensorOfflineAllowancePanel').slideUp("slow");
+	                        $('#maxDataGapPanel').slideUp("slow");
 	                        $('#emailRecipientPanel').slideUp("slow");
-	                        $('.emailHeader, .nameHeader, .dailyReportTimeHeader, .flappingDownsHeader, .considerationPeriodHeader, .emailRecipientHeader').removeClass('panel-grey');
+	                        $('.emailHeader, .nameHeader, .dailyReportTimeHeader, .flappingDownsHeader, .emailRecipientHeader, .sensorOfflineAllowanceHeader, .maxDataGapHeader').removeClass('panel-grey');
 	                        break;
 	                    case "dailyReportTimePanel":
 	                        $('.dailyReportTimeHeader').addClass('panel-grey');
@@ -10879,9 +10929,11 @@
 	                        $('#passwordPanel').slideUp("slow");
 	                        $('#emailPanel').slideUp("slow");
 	                        $('#flappingDownsPanel').slideUp("slow");
-	                        // $('#considerationPeriodPanel').slideUp("slow");
+	                        $('#elapsedDowntime').slideUp("slow");
+	                        $('#sensorOfflineAllowancePanel').slideUp("slow");
+	                        $('#maxDataGapPanel').slideUp("slow");
 	                        $('#emailRecipientPanel').slideUp("slow");
-	                        $('.emailHeader, .nameHeader, .passwordHeader, .flappingDownsHeader, .considerationPeriodHeader, .emailRecipientHeader').removeClass('panel-grey');
+	                        $('.emailHeader, .nameHeader, .passwordHeader, .flappingDownsHeader, .emailRecipientHeader, .sensorOfflineAllowanceHeader, .maxDataGapHeader').removeClass('panel-grey');
 	                        break;
 	                    case "flappingDownsPanel":
 	                        $('.flappingDownsHeader').addClass('panel-grey');
@@ -10889,20 +10941,11 @@
 	                        $('#passwordPanel').slideUp("slow");
 	                        $('#emailPanel').slideUp("slow");
 	                        $('#dailyReportTimePanel').slideUp("slow");
-	                        // $('#considerationPeriodPanel').slideUp("slow");
 	                        $('#emailRecipientPanel').slideUp("slow");
-	                        $('.emailHeader, .nameHeader, .passwordHeader, .dailyReportTimeHeader, .considerationPeriodHeader, .emailRecipientHeader').removeClass('panel-grey');
+	                        $('#sensorOfflineAllowancePanel').slideUp("slow");
+	                        $('#maxDataGapPanel').slideUp("slow");
+	                        $('.emailHeader, .nameHeader, .passwordHeader, .dailyReportTimeHeader, .emailRecipientHeader, .sensorOfflineAllowanceHeader, .maxDataGapHeader').removeClass('panel-grey');
 	                        break;
-	                    // case "considerationPeriodPanel":
-	                    //     $('.considerationPeriodHeader').addClass('panel-grey');
-	                    //     $('#namePanel').slideUp("slow");
-	                    //     $('#passwordPanel').slideUp("slow");
-	                    //     $('#emailPanel').slideUp("slow");
-	                    //     $('#dailyReportTimePanel').slideUp("slow");
-	                    //     $('#flappingDownsPanel').slideUp("slow");
-	                    //     $('#emailRecipientPanel').slideUp("slow");
-	                    //     $('.emailHeader, .nameHeader, .passwordHeader, .dailyReportTimeHeader, .flappingDownsHeader, .emailRecipientHeader').removeClass('panel-grey');
-	                    //     break;
 	                    case "emailRecipientPanel":
 	                        $('.emailRecipientHeader').addClass('panel-grey');
 	                        $('#namePanel').slideUp("slow");
@@ -10910,8 +10953,31 @@
 	                        $('#emailPanel').slideUp("slow");
 	                        $('#dailyReportTimePanel').slideUp("slow");
 	                        $('#flappingDownsPanel').slideUp("slow");
-	                        $('#considerationPeriodPanel').slideUp("slow");
-	                        $('.emailHeader, .nameHeader, .passwordHeader, .dailyReportTimeHeader, .flappingDownsHeader, .considerationPeriodHeader').removeClass('panel-grey');
+	                        $('#sensorOfflineAllowancePanel').slideUp("slow");
+	                        $('#maxDataGapPanel').slideUp("slow");
+	                        $('.emailHeader, .nameHeader, .passwordHeader, .dailyReportTimeHeader, .flappingDownsHeader, .sensorOfflineAllowanceHeader, .maxDataGapHeader').removeClass('panel-grey');
+	                        break;
+	                    case "maxDataGapPanel":
+	                        $('.maxDataGapHeader').addClass('panel-grey');
+	                        $('#namePanel').slideUp("slow");
+	                        $('#passwordPanel').slideUp("slow");
+	                        $('#emailPanel').slideUp("slow");
+	                        $('#dailyReportTimePanel').slideUp("slow");
+	                        $('#flappingDownsPanel').slideUp("slow");
+	                        $('#emailRecipientPanel').slideUp("slow");
+	                        $('#sensorOfflineAllowancePanel').slideUp("slow");
+	                        $('.emailHeader, .nameHeader, .passwordHeader, .dailyReportTimeHeader, .flappingDownsHeader, .emailRecipientHeader, .sensorOfflineAllowanceHeader').removeClass('panel-grey');
+	                        break;
+	                    case "sensorOfflineAllowancePanel":
+	                        $('.sensorOfflineAllowanceHeader').addClass('panel-grey');
+	                        $('#namePanel').slideUp("slow");
+	                        $('#passwordPanel').slideUp("slow");
+	                        $('#emailPanel').slideUp("slow");
+	                        $('#dailyReportTimePanel').slideUp("slow");
+	                        $('#flappingDownsPanel').slideUp("slow");
+	                        $('#emailRecipientPanel').slideUp("slow");
+	                        $('#maxDataGapPanel').slideUp("slow");
+	                        $('.emailHeader, .nameHeader, .passwordHeader, .dailyReportTimeHeader, .flappingDownsHeader, .emailRecipientHeader, .maxDataGapHeader').removeClass('panel-grey');
 	                        break;
 	                    default:
 	                        console.warn("Oh snap. Something went wrong.");
@@ -11025,11 +11091,17 @@
 	            e.preventDefault();
 
 	            var that = this;
-	            var emailRecipient = this.state.emailRecipient;
+	            var _state = this.state;
+	            var emailRecipient = _state.emailRecipient;
+	            var maxDataGap = _state.maxDataGap;
+	            var sensorOfflineAllowance = _state.sensorOfflineAllowance;
+	            var maxDataGap = _state.maxDataGap;
 
 	            var reportTiming = this.refs.reportTiming.value;
 
-	            settingsAPI.updateReportSettings(reportTiming, emailRecipient).then(function (response) {
+	            console.log(emailRecipient, reportTiming, maxDataGap, sensorOfflineAllowance);
+
+	            settingsAPI.updateReportSettings(reportTiming, emailRecipient, maxDataGap, sensorOfflineAllowance).then(function (response) {
 	                if (response.error) {
 	                    console.log("error", response.error);
 	                    that.setState({
@@ -11043,6 +11115,77 @@
 	                    });
 
 	                    that.refs.reportTiming.value = '';
+
+	                    $('#dailyReportTimePanel').slideUp("slow");
+	                    $('.dailyReportTimeHeader').removeClass('panel-grey');
+	                }
+	            });
+	        }
+	    }, {
+	        key: 'onUpdateOfflineAllowance',
+	        value: function onUpdateOfflineAllowance(e) {
+	            e.preventDefault();
+
+	            var that = this;
+	            var _state2 = this.state;
+	            var reportTiming = _state2.reportTiming;
+	            var emailRecipient = _state2.emailRecipient;
+	            var maxDataGap = _state2.maxDataGap;
+
+	            var sensorOfflineAllowance = this.refs.sensorOfflineAllowance.value;
+
+	            settingsAPI.updateReportSettings(reportTiming, emailRecipient, maxDataGap, sensorOfflineAllowance).then(function (response) {
+	                if (response.error) {
+	                    console.log("error", response.error);
+	                    that.setState({
+	                        message: response.error
+	                    });
+	                } else {
+	                    console.log("response", response);
+	                    that.setState({
+	                        message: response.message,
+	                        sensorOfflineAllowance: sensorOfflineAllowance
+	                    });
+
+	                    that.refs.sensorOfflineAllowance.value = '';
+
+	                    $('#sensorOfflineAllowancePanel').slideUp("slow");
+	                    $('.sensorOfflineAllowanceHeader').removeClass('panel-grey');
+	                }
+	            });
+	        }
+	    }, {
+	        key: 'onUpdateMaxDataGap',
+	        value: function onUpdateMaxDataGap(e) {
+	            e.preventDefault();
+
+	            var that = this;
+	            var _state3 = this.state;
+	            var reportTiming = _state3.reportTiming;
+	            var emailRecipient = _state3.emailRecipient;
+	            var sensorOfflineAllowance = _state3.sensorOfflineAllowance;
+
+	            var maxDataGap = this.refs.maxDataGap.value;
+
+	            console.log(emailRecipient, reportTiming, maxDataGap, sensorOfflineAllowance);
+
+	            settingsAPI.updateReportSettings(reportTiming, emailRecipient, maxDataGap, sensorOfflineAllowance).then(function (response) {
+	                if (response.error) {
+	                    console.log("error", response.error);
+	                    that.setState({
+	                        message: response.error
+	                    });
+	                } else {
+	                    console.log("response", response);
+	                    that.setState({
+	                        message: response.message,
+	                        maxDataGap: maxDataGap
+	                    });
+
+	                    that.refs.maxDataGap.value = '';
+
+	                    $('#maxDataGapPanel').slideUp("slow");
+	                    $('.maxDataGapHeader').removeClass('panel-grey');
 	                }
 	            });
 	        }
@@ -11052,11 +11195,17 @@
 	            e.preventDefault();
 
 	            var that = this;
-	            var reportTiming = this.state.reportTiming;
+	            var _state4 = this.state;
+	            var reportTiming = _state4.reportTiming;
+	            var maxDataGap = _state4.maxDataGap;
+	            var sensorOfflineAllowance = _state4.sensorOfflineAllowance;
+	            var maxDataGap = _state4.maxDataGap;
 
 	            var emailRecipient = this.refs.emailRecipient.value;
 
-	            settingsAPI.updateReportSettings(reportTiming, emailRecipient).then(function (response) {
+	            console.log(emailRecipient, reportTiming, maxDataGap, sensorOfflineAllowance);
+
+	            settingsAPI.updateReportSettings(reportTiming, emailRecipient, maxDataGap, sensorOfflineAllowance).then(function (response) {
 	                if (response.error) {
 	                    console.log("error", response.error);
 	                    that.setState({
@@ -11070,6 +11219,9 @@
 	                    });
 
 	                    that.refs.emailRecipient.value = '';
+
+	                    $('#emailRecipientPanel').slideUp("slow");
+	                    $('.emailRecipientHeader').removeClass('panel-grey');
 	                }
 	            });
 	        }
@@ -11098,127 +11250,24 @@
 
 	                    that.refs.flappingThreshold.value = '';
 
-	                    $('#namePanel').slideUp("slow");
-	                    $('#passwordPanel').slideUp("slow");
-	                    $('#emailPanel').slideUp("slow");
-	                    $('#dailyReportTimePanel').slideUp("slow");
 	                    $('#flappingDownsPanel').slideUp("slow");
-	                    // $('#considerationPeriodPanel').slideUp("slow");
-	                    $('#emailRecipientPanel').slideUp("slow");
-	                    $('.emailHeader, .nameHeader, .passwordHeader, .dailyReportTimeHeader, .flappingDownsHeader, .considerationPeriodHeader, .emailRecipientHeader').removeClass('panel-grey');
+	                    $('.flappingDownsHeader').removeClass('panel-grey');
 	                }
-
-	                setTimeout(function () {
-	                    $('#settingsAPIMessage').fadeOut();
-	                }, 10000);
 	            });
 	        }
-
-	        // onUpdateUniversalSettings(e) {
-	        //     e.preventDefault();
-	        //
-	        //     var that = this;
-	        //
-	        //     var reportTiming = this.refs.reportTiming.value;
-	        //     var emailRecipient = this.refs.emailRecipient.value;
-	        //     var flappingThreshold = this.refs.flappingThreshold.value;
-	        //
-	        //     var currentSettings = that.state.currentSettings;
-	        //     var currentReportTiming = "";
-	        //     var currentEmailRecipient = "";
-	        //     var currentFlappingThreshold = "";
-	        //     if (currentSettings) {
-	        //         currentReportTiming = currentSettings.daily_notification_time;
-	        //         currentEmailRecipient = currentSettings.report_recipient;
-	        //         currentFlappingThreshold = currentSettings.flapping_threshold;
-	        //     }
-	        //
-	        //
-	        //     if (reportTiming == "") {
-	        //         reportTiming = currentReportTiming;
-	        //     }
-	        //     if (emailRecipient == "") {
-	        //         emailRecipient = currentEmailRecipient;
-	        //     }
-	        //     if (flappingThreshold == "") {
-	        //         flappingThreshold = currentFlappingThreshold;
-	        //     }
-	        //
-	        //     settingsAPI.changeCurrentSettings(reportTiming, emailRecipient, flappingThreshold).then(function(response) {
-	        //         $('#settingsAPIMessage').show();
-	        //         if(response.error) {
-	        //             console.log("Error1", response.error);
-	        //             that.setState({
-	        //                 message: response.error
-	        //             });
-	        //         } else {
-	        //             console.log("response", response);
-	        //             that.setState({
-	        //                 message: response.message
-	        //
-	        //             });
-	        //
-	        //             that.refs.reportTiming.value = '';
-	        //             that.refs.emailRecipient.value = '';
-	        //             that.refs.flappingThreshold.value = '';
-	        //
-	        //             $('#namePanel').slideUp("slow");
-	        //             $('#passwordPanel').slideUp("slow");
-	        //             $('#emailPanel').slideUp("slow");
-	        //             $('#dailyReportTimePanel').slideUp("slow");
-	        //             $('#flappingDownsPanel').slideUp("slow");
-	        //             $('#considerationPeriodPanel').slideUp("slow");
-	        //             $('#emailRecipientPanel').slideUp("slow");
-	        //             $('.emailHeader, .nameHeader, .passwordHeader, .dailyReportTimeHeader, .flappingDownsHeader, .considerationPeriodHeader, .emailRecipientHeader').removeClass('panel-grey');
-	        //         }
-	        //
-	        //         setTimeout(function () {
-	        //             $('#settingsAPIMessage').fadeOut();
-	        //         }, 10000);
-	        //     });
-	        //
-	        //
-	        //
-	        //     // refresh currentSettings
-	        //     settingsAPI.retrieveCurrentSettings().then(function(response) {
-	        //         if(response.error) {
-	        //             console.log("Error", response.error);
-	        //         } else {
-	        //             console.log("response", response);
-	        //             that.setState({
-	        //                 currentSettings: response
-	        //             });
-	        //         }
-	        //     });
-	        //
-	        // }
-
 	    }, {
 	        key: 'render',
 	        value: function render() {
 
 	            var that = this;
-	            var _state = this.state;
-	            var reportTiming = _state.reportTiming;
-	            var emailRecipient = _state.emailRecipient;
-	            var flappingThreshold = _state.flappingThreshold;
+	            var _state5 = this.state;
+	            var reportTiming = _state5.reportTiming;
+	            var emailRecipient = _state5.emailRecipient;
+	            var sensorOfflineAllowance = _state5.sensorOfflineAllowance;
+	            var maxDataGap = _state5.maxDataGap;
+	            var flappingThreshold = _state5.flappingThreshold;
+	            var message = _state5.message;
 
-	            var currentSettings = that.state.currentSettings;
-	            var currentReportTiming = "";
-	            var currentEmailRecipient = "";
-	            var currentFlappingThreshold = "";
-
-	            if (currentSettings) {
-	                currentReportTiming = currentSettings.daily_notification_time;
-	                currentEmailRecipient = currentSettings.report_recipient;
-	                currentFlappingThreshold = currentSettings.flapping_threshold;
-	            }
-
-	            var messageState = that.state.message;
-	            var message = "";
-	            if (messageState) {
-	                message = messageState;
-	            }
 
 	            return React.createElement(
 	                'div',
@@ -11445,13 +11494,11 @@
 	                        React.createElement(
 	                            'div',
 	                            { className: 'page-title' },
-	                            'Reports'
+	                            'Report Settings'
 	                        ),
 	                        React.createElement(
 	                            'div',
-	                            { className: 'profile wrapper settings-wrapper', style: {
-	                                    'color': '#000'
-	                                } },
+	                            { className: 'profile wrapper settings-wrapper' },
 	                            React.createElement(
 	                                'div',
 	                                { className: 'row dailyReportTimeHeader settings-subheader-container' },
@@ -11485,11 +11532,6 @@
 	                                React.createElement(
 	                                    'form',
 	                                    null,
-	                                    React.createElement(
-	                                        'div',
-	                                        { style: { fontSize: '0.9rem' } },
-	                                        'Tell us when you\'d like to receive your daily notification email! (Format: HHMM)'
-	                                    ),
 	                                    React.createElement(
 	                                        'div',
 	                                        { className: 'row' },
@@ -11570,22 +11612,121 @@
 	                                        )
 	                                    )
 	                                )
-	                            )
-	                        )
-	                    ),
-	                    React.createElement(
-	                        'div',
-	                        { style: { marginBottom: '1.2rem' } },
-	                        React.createElement(
-	                            'div',
-	                            { className: 'page-title' },
-	                            'Flapping'
-	                        ),
-	                        React.createElement(
-	                            'div',
-	                            { className: 'profile wrapper settings-wrapper', style: {
-	                                    'color': '#000'
-	                                } },
+	                            ),
+	                            React.createElement(
+	                                'div',
+	                                { className: 'row sensorOfflineAllowanceHeader settings-subheader-container' },
+	                                React.createElement(
+	                                    'div',
+	                                    { className: 'columns large-2' },
+	                                    React.createElement(
+	                                        'b',
+	                                        { className: 'settings-subheader' },
+	                                        'Sensor Offline Allowance'
+	                                    )
+	                                ),
+	                                React.createElement(
+	                                    'div',
+	                                    { className: 'columns large-5' },
+	                                    sensorOfflineAllowance
+	                                ),
+	                                React.createElement(
+	                                    'div',
+	                                    { className: 'columns large-5' },
+	                                    React.createElement(
+	                                        'a',
+	                                        { id: 'triggerOfflineAllowanceHeader', onClick: this.reveal('triggerOfflineAllowanceHeader', 'sensorOfflineAllowancePanel') },
+	                                        'Edit'
+	                                    )
+	                                )
+	                            ),
+	                            React.createElement(
+	                                'div',
+	                                { className: 'row', id: 'sensorOfflineAllowancePanel' },
+	                                React.createElement(
+	                                    'form',
+	                                    null,
+	                                    React.createElement(
+	                                        'div',
+	                                        { className: 'row' },
+	                                        React.createElement(
+	                                            'div',
+	                                            { className: 'medium-6 columns' },
+	                                            React.createElement('input', { type: 'text', ref: 'sensorOfflineAllowance', placeholder: 'Sensor Offline Allowance' })
+	                                        ),
+	                                        React.createElement(
+	                                            'button',
+	                                            { className: 'button', type: 'button', onClick: this.onUpdateOfflineAllowance.bind(this) },
+	                                            'Update'
+	                                        ),
+	                                        React.createElement(
+	                                            'button',
+	                                            { className: 'button hollow button-cancel margin-left-tiny', type: 'button', onClick: function onClick() {
+	                                                    $('#sensorOfflineAllowancePanel').slideUp();
+	                                                    $('.sensorOfflineAllowanceHeader').removeClass('panel-grey');
+	                                                } },
+	                                            'Cancel'
+	                                        )
+	                                    )
+	                                )
+	                            ),
+	                            React.createElement(
+	                                'div',
+	                                { className: 'row maxDataGapHeader settings-subheader-container' },
+	                                React.createElement(
+	                                    'div',
+	                                    { className: 'columns large-2' },
+	                                    React.createElement(
+	                                        'b',
+	                                        { className: 'settings-subheader' },
+	                                        'Maximum Data Gap'
+	                                    )
+	                                ),
+	                                React.createElement(
+	                                    'div',
+	                                    { className: 'columns large-5' },
+	                                    maxDataGap
+	                                ),
+	                                React.createElement(
+	                                    'div',
+	                                    { className: 'columns large-5' },
+	                                    React.createElement(
+	                                        'a',
+	                                        { id: 'triggerMaxDataGap', onClick: this.reveal('triggerMaxDataGap', 'maxDataGapPanel') },
+	                                        'Edit'
+	                                    )
+	                                )
+	                            ),
+	                            React.createElement(
+	                                'div',
+	                                { className: 'row', id: 'maxDataGapPanel' },
+	                                React.createElement(
+	                                    'form',
+	                                    null,
+	                                    React.createElement(
+	                                        'div',
+	                                        { className: 'row' },
+	                                        React.createElement(
+	                                            'div',
+	                                            { className: 'medium-6 columns' },
+	                                            React.createElement('input', { type: 'text', ref: 'maxDataGap', placeholder: 'Max Data Gap' })
+	                                        ),
+	                                        React.createElement(
+	                                            'button',
+	                                            { className: 'button', type: 'button', onClick: this.onUpdateMaxDataGap.bind(this) },
+	                                            'Update'
+	                                        ),
+	                                        React.createElement(
+	                                            'button',
+	                                            { className: 'button hollow button-cancel margin-left-tiny', type: 'button', onClick: function onClick() {
+	                                                    $('#maxDataGapPanel').slideUp();
+	                                                    $('.maxDataGapHeader').removeClass('panel-grey');
+	                                                } },
+	                                            'Cancel'
+	                                        )
+	                                    )
+	                                )
+	                            ),
 	                            React.createElement(
 	                                'div',
 	                                { className: 'row flappingDownsHeader settings-subheader-container' },
@@ -11595,7 +11736,7 @@
 	                                    React.createElement(
 	                                        'b',
 	                                        { className: 'settings-subheader' },
-	                                        'Threshold'
+	                                        'Flapping Threshold'
 	                                    )
 	                                ),
 	                                React.createElement(
@@ -11646,37 +11787,13 @@
 	                        )
 	                    ),
 	                    React.createElement(
-	                        'div',
-	                        { className: 'statusText', id: 'settingsAPIMessage' },
-	                        message
-	                    )
+	                        'a',
+	                        { onClick: this.restoreDefaultSettings.bind(this) },
+	                        'Restore default values'
+	                    ),
+	                    React.createElement(ResponseMessage, { message: message })
 	                )
 	            );
-
-	            // <div className="row considerationPeriodHeader">
-	            //     <div className="columns large-2">
-	            //         <b className="settings-subheader">Consideration Period</b>
-	            //     </div>
-	            //     <div className="columns large-5">{this.state.userDisplayName}</div>
-	            //     <div className="columns large-5">
-	            //         <a id="triggerConsiderationPeriodPanel" onClick={this.reveal('triggerConsiderationPeriodPanel', 'considerationPeriodPanel')}>Edit</a>
-	            //     </div>
-	            // </div>
-	            //
-	            // <div className="row" id="considerationPeriodPanel">
-	            //     <form>
-	            //         <div className="row">
-	            //             <div className="medium-6 columns">
-	            //                 <input type="text" ref="displayName" placeholder={this.state.userDisplayName}/>
-	            //             </div>
-	            //             <button className="button" type="button" onClick={this.onUpdateDisplayName.bind(this)}>Update</button>
-	            //             <button className="button hollow button-cancel margin-left-tiny" type="button" onClick={() => {
-	            //                 $('#considerationPeriodPanel').slideUp();
-	            //                 $('.considerationPeriodHeader').removeClass('panel-grey')
-	            //             }}>Cancel</button>
-	            //         </div>
-	            //     </form>
-	            // </div>
 	        }
 	    }]);
 
@@ -11686,6 +11803,29 @@
 	;
 
 	module.exports = AccountSettings;
+
+	var ResponseMessage = function (_React$Component3) {
+	    _inherits(ResponseMessage, _React$Component3);
+
+	    function ResponseMessage() {
+	        _classCallCheck(this, ResponseMessage);
+
+	        return _possibleConstructorReturn(this, Object.getPrototypeOf(ResponseMessage).apply(this, arguments));
+	    }
+
+	    _createClass(ResponseMessage, [{
+	        key: 'render',
+	        value: function render() {
+	            return React.createElement(
+	                'div',
+	                { className: 'statusText' },
+	                this.props.message
+	            );
+	        }
+	    }]);
+
+	    return ResponseMessage;
+	}(React.Component);
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(9)))
 
 /***/ },
@@ -29209,7 +29349,7 @@
 
 	/* WEBPACK VAR INJECTION */(function($) {"use strict";
 
-	var CURRENT_SETTINGS_URL = "http://opsdev.sence.io/backend/restful-apis/get_universal_settings.php";
+	var GET_CURRENT_SETTINGS_URL = "http://opsdev.sence.io/backend/restful-apis/retrieve_settings.php";
 	var MODIFY_SETTINGS_URL = "http://opsdev.sence.io/backend/restful-apis/change_universal_settings.php";
 	var UDPATE_REPORT_URL = "http://opsdev.sence.io/backend/restful-apis/change_report_settings.php";
 	var UDPATE_FLAPPING_URL = "http://opsdev.sence.io/backend/restful-apis/change_flapping_settings.php";
@@ -29222,7 +29362,7 @@
 	            beforeSend: function beforeSend(request) {
 	                request.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
 	            },
-	            url: CURRENT_SETTINGS_URL,
+	            url: GET_CURRENT_SETTINGS_URL,
 	            success: function success(response) {
 	                console.log("Tres manifique, monsieur", response);
 	            }
@@ -29247,10 +29387,12 @@
 	        });
 	    },
 
-	    updateReportSettings: function updateReportSettings(report_time, email_recipient) {
+	    updateReportSettings: function updateReportSettings(report_time, email_recipient, max_data_gap, sensor_offline_allowance) {
 	        var data = {
 	            report_time: report_time,
-	            email_recipient: email_recipient
+	            email_recipient: email_recipient,
+	            max_data_gap: max_data_gap,
+	            sensor_offline_allowance: sensor_offline_allowance
 	        };
 
 	        return $.ajax({
@@ -29308,6 +29450,11 @@
 	var Recharts = __webpack_require__(268);
 	var FontAwesome = __webpack_require__(689);
 	var retrievehistoricalDataAPI = __webpack_require__(690);
+
+	var _require = __webpack_require__(47);
+
+	var Link = _require.Link;
+	var IndexLink = _require.IndexLink;
 	var XAxis = Recharts.XAxis;
 	var Cell = Recharts.Cell;
 	var YAxis = Recharts.YAxis;
@@ -29325,7 +29472,8 @@
 	  "warning": "#ffcc00",
 	  "danger": "#cc7a00",
 	  "down": "#990000",
-	  "no data": "#737373"
+	  "no data": "#737373",
+	  "others": "#0A083B"
 	};
 
 	var SimpleBarChart = function (_React$Component) {
@@ -29341,30 +29489,47 @@
 	    key: 'render',
 	    value: function render() {
 
-	      var width = $('.row').width() * 0.95;
+	      var width = $('.row').width() * 0.80;
+	      var historicalLink = '/historical/' + this.props.buildingName + '&' + this.props.mac;
 
 	      return React.createElement(
 	        'div',
 	        { key: this.props.id },
 	        React.createElement(
 	          'div',
-	          { className: 'header' },
-	          this.props.id,
-	          ' | ',
-	          this.props.mac
-	        ),
-	        React.createElement(
-	          BarChart,
-	          { width: width, height: 40, data: this.props.uptimeData,
-	            margin: { top: 5, right: 30, left: 20, bottom: 5 }, barGap: 0, barCategoryGap: 0 },
-	          React.createElement(CartesianGrid, { strokeDasharray: '3 3' }),
-	          React.createElement(Tooltip, { content: React.createElement(CustomTooltip, { external: this.props.uptimeData }) }),
+	          { className: 'row' },
 	          React.createElement(
-	            Bar,
-	            { dataKey: 'value', isAnimationActive: false },
-	            this.props.uptimeData.map(function (entry, index) {
-	              return React.createElement(Cell, { key: 'cell=' + index, stroke: colorMap[entry['status']], fill: colorMap[entry['status']] });
-	            })
+	            'div',
+	            { className: 'columns large-2' },
+	            React.createElement(
+	              'div',
+	              { className: 'header margin-top-tiny' },
+	              React.createElement(
+	                IndexLink,
+	                { to: historicalLink },
+	                this.props.id,
+	                ' | ',
+	                this.props.mac
+	              )
+	            )
+	          ),
+	          React.createElement(
+	            'div',
+	            { className: 'columns large-10' },
+	            React.createElement(
+	              BarChart,
+	              { width: width, height: 40, data: this.props.uptimeData,
+	                margin: { top: 5, right: 30, left: 20, bottom: 5 }, barGap: 0, barCategoryGap: 0 },
+	              React.createElement(CartesianGrid, { strokeDasharray: '3 3' }),
+	              React.createElement(Tooltip, { content: React.createElement(CustomTooltip, { external: this.props.uptimeData }) }),
+	              React.createElement(
+	                Bar,
+	                { dataKey: 'value', isAnimationActive: false },
+	                this.props.uptimeData.map(function (entry, index) {
+	                  return React.createElement(Cell, { key: 'cell=' + index, stroke: colorMap[entry['status']], fill: colorMap[entry['status']] });
+	                })
+	              )
+	            )
 	          )
 	        )
 	      );
@@ -29429,7 +29594,6 @@
 	      var interval = parseInt(this.refs.interval.value);
 
 	      var diff = (Date.parse(endDate) - Date.parse(startDate)) / 1000 / 3600 / 24;
-	      // console.log("diff", diff);
 
 	      if (Date.parse(endDate) < Date.parse(startDate)) {
 	        this.setState({ message: 'End date is before start date. Please try again.' });
@@ -29503,14 +29667,13 @@
 	              { className: 'margin-bottom-small' },
 	              React.createElement(
 	                'div',
-	                { className: 'page-title' },
+	                { style: { float: 'left' }, className: 'page-title' },
 	                'Uptime Charts: ',
 	                buildingName
 	              ),
-	              React.createElement('br', null),
 	              React.createElement(
 	                'button',
-	                { onClick: that.minimizeAll },
+	                { className: 'margin-left-small', onClick: that.minimizeAll },
 	                React.createElement(FontAwesome, { name: 'expand', style: {
 	                    marginRight: '0.5rem'
 	                  } }),
@@ -29592,7 +29755,7 @@
 	            'div',
 	            { className: 'columns large-12' },
 	            renderContent(),
-	            React.createElement(UptimeList, { data: this.state.data })
+	            React.createElement(UptimeList, { buildingName: buildingName, data: this.state.data })
 	          )
 	        )
 	      );
@@ -29647,7 +29810,7 @@
 	        if (dataList.hasOwnProperty(level)) {
 
 	          var sensorsOnLevel = dataList[level];
-	          rows.push(React.createElement(SensorList, { key: level, level: level, data: sensorsOnLevel }));
+	          rows.push(React.createElement(SensorList, { key: level, level: level, buildingName: this.props.buildingName, data: sensorsOnLevel }));
 	        }
 	      }
 
@@ -29700,7 +29863,7 @@
 	          var id = sensor["id"];
 	          var data = sensor["data"];
 
-	          rows.push(React.createElement(SimpleBarChart, { key: mac, mac: mac, id: id, level: level, uptimeData: data }));
+	          rows.push(React.createElement(SimpleBarChart, { key: mac, mac: mac, id: id, buildingName: this.props.buildingName, level: level, uptimeData: data }));
 	        }
 	      }
 
@@ -78638,6 +78801,7 @@
 	var Griddle = __webpack_require__(693);
 	var axios = __webpack_require__(247);
 	var notificationLogAPI = __webpack_require__(890);
+	var FontAwesome = __webpack_require__(689);
 
 	var tableMetaData = [{
 	    "columnName": "mac_address",
@@ -78774,11 +78938,13 @@
 	                            'Your Notifications'
 	                        ),
 	                        React.createElement(
-	                            'button',
-	                            { className: 'icon-btn-text-small', onClick: function onClick() {
+	                            'a',
+	                            { className: 'margin-right-tiny',
+	                                style: { top: '8px', position: 'absolute', right: '15px' },
+	                                onClick: function onClick() {
 	                                    return that.handleClick();
 	                                } },
-	                            'REFRESH'
+	                            React.createElement(FontAwesome, { name: 'refresh' })
 	                        )
 	                    ),
 	                    React.createElement(
@@ -88123,6 +88289,7 @@
 	            location: '-',
 	            status: '-',
 	            lastReboot: '-',
+	            latestTimestamp: '-',
 	            stats: {},
 	            top5: []
 	        };
@@ -88167,6 +88334,7 @@
 	                            region: response["geo_region"],
 	                            level: response["sensor_location_level"],
 	                            areaID: response["sensor_location_id"],
+	                            latestTimestamp: response['latestTimestamp'],
 	                            location: '' + response["sensor_location_level"] + response["sensor_location_id"],
 	                            thresholds: response["thresholds"]
 	                        });
@@ -88191,6 +88359,7 @@
 	                                status: response["status"],
 	                                lastReboot: response["last_reboot"],
 	                                diagnosis: response["diagnosis"],
+	                                latestTimestamp: response['latest_timestamp'],
 	                                stats: {
 	                                    uptime: response["uptime_percentage"] + '%',
 	                                    temperature: response["temperature"] + 'C',
@@ -88227,6 +88396,7 @@
 	                    location: '-',
 	                    status: '-',
 	                    lastReboot: '-',
+	                    latestTimestamp: '-',
 	                    stats: {},
 	                    top5: []
 	                });
@@ -88270,6 +88440,7 @@
 	            var location = _state.location;
 	            var lastReboot = _state.lastReboot;
 	            var diagnosis = _state.diagnosis;
+	            var latestTimestamp = _state.latestTimestamp;
 	            var stats = _state.stats;
 	            var top5 = _state.top5;
 	            var thresholds = _state.thresholds;
@@ -88281,6 +88452,7 @@
 	            var location = building + ' ' + location;
 	            var amIAliveColor = amIAlive ? "green" : colorMap['down'];
 	            var dataColStatus = status === "down" ? "Data last collected at " : "Up since ";
+	            var timestamp = status === "down" ? latestTimestamp : lastReboot;
 
 	            $('#uptime').removeClass('table-row-highlight');
 	            $('#temp').removeClass('table-row-highlight');
@@ -88337,7 +88509,7 @@
 	                        ' ',
 	                        React.createElement('br', null),
 	                        ' ',
-	                        lastReboot
+	                        timestamp
 	                    ),
 	                    React.createElement(Stats, { stats: stats }),
 	                    React.createElement(Top5Processes, { processes: top5 }),
@@ -90514,12 +90686,12 @@
 	                        { className: "top-bar-right" },
 	                        React.createElement(
 	                            "a",
-	                            { className: "margin-right-tiny", onClick: this.refresh },
+	                            { className: "margin-right-tiny font-white", onClick: this.refresh },
 	                            React.createElement(FontAwesome, { name: "refresh" })
 	                        ),
 	                        React.createElement(
 	                            "a",
-	                            { onClick: this.close },
+	                            { onClick: this.close, className: "font-white" },
 	                            React.createElement(FontAwesome, { name: "close" })
 	                        )
 	                    )
@@ -90994,6 +91166,12 @@
 
 	var actions = _interopRequireWildcard(_actions);
 
+	var _moment = __webpack_require__(140);
+
+	var _moment2 = _interopRequireDefault(_moment);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
 	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -91081,7 +91259,7 @@
 	            var connection = new ab.Session(HOST, function () {
 	                connection.subscribe('', function (topic, data) {
 
-	                    timestamp = new Date().toLocaleString();
+	                    timestamp = (0, _moment2.default)().format('YYYY-MM-DD, h:mm:ss a');
 	                    dispatch(actions.storeSyncData(timestamp, userDisplayName, userEmail));
 
 	                    that.setState({
@@ -91103,7 +91281,7 @@
 	                    this.state.connection.subscribe('', function (topic, data) {
 
 	                        console.warn('Reinitiating connection');
-	                        timestamp = new Date().toLocaleString();
+	                        timestamp = (0, _moment2.default)().format('YYYY-MM-DD, h:mm:ss a');
 	                        // dispatch(actions.storeSyncData(timestamp, userDisplayName, userEmail));
 
 	                        that.setState({
@@ -91354,14 +91532,14 @@
 	    _createClass(SensorBlockComponent, [{
 	        key: 'render',
 	        value: function render() {
-	            // url ="speakers/" + this.props.rowData.state + "/" + this.props.data;
 
 	            var colorMap = {
 	                "ok": "sensorBlock green",
 	                "warning": "sensorBlock yellow",
 	                "danger": "sensorBlock orange",
 	                "down": "sensorBlock red",
-	                "-": "sensorBlock grey"
+	                "-": "sensorBlock grey",
+	                "paused": "sensorBlock black"
 	            };
 
 	            return React.createElement(
@@ -91768,14 +91946,14 @@
 	                            } },
 	                        React.createElement(
 	                            'a',
-	                            { type: 'button', className: 'pane', onClick: function onClick() {
+	                            { type: 'button', className: 'pane margin-left-tiny', onClick: function onClick() {
 	                                    return _this5.handleClick(sensor);
-	                                }, style: { marginLeft: '0.5rem' } },
+	                                } },
 	                            React.createElement(FontAwesome, { className: 'pane', name: 'cog', size: 'lg' })
 	                        ),
 	                        React.createElement(
 	                            IndexLink,
-	                            { activeClassName: 'active', to: uptimeLink },
+	                            { activeClassName: 'active', className: 'margin-left-tiny', to: uptimeLink },
 	                            React.createElement(FontAwesome, { name: 'bar-chart', style: {
 	                                    marginLeft: '5px'
 	                                } })
@@ -98847,13 +99025,13 @@
 	                            ' | ',
 	                            React.createElement(
 	                                'span',
-	                                { style: { 'color': '#737373' } },
+	                                { style: { 'color': '#1a1b1b' } },
 	                                this.props.paused
 	                            ),
 	                            ' | ',
 	                            React.createElement(
 	                                'span',
-	                                { style: { 'color': '#1a1b1b' } },
+	                                { style: { 'color': '#737373' } },
 	                                this.props.noData
 	                            )
 	                        )
@@ -103253,7 +103431,7 @@
 	exports.push([module.id, "@import url(https://fonts.googleapis.com/css?family=Lato:400,900i);", ""]);
 
 	// module
-	exports.push([module.id, "@charset \"UTF-8\";\nbody,\nhtml {\n  background: #f2f2f2;\n  height: 100%;\n  font-family: 'Roboto', sans-serif;\n  color: #1a1b1b; }\n\nbody {\n  -webkit-animation-delay: 0.1s;\n  -webkit-animation-name: fontfix;\n  -webkit-animation-duration: 0.1s;\n  -webkit-animation-iteration-count: 1;\n  -webkit-animation-timing-function: linear; }\n\n@-webkit-keyframes fontfix {\n  from {\n    opacity: 1; }\n  to {\n    opacity: 1; } }\n\n.row {\n  max-width: 80rem; }\n\n.loading-overlay {\n  background-color: rgba(10, 10, 10, 0.45) !important;\n  position: fixed;\n  top: 0;\n  bottom: 0;\n  left: 0;\n  right: 0; }\n\ndiv#offCanvas {\n  width: 350px;\n  height: 100%;\n  background: #e8e8e8; }\n\n.is-open-right {\n  transform: translateX(-350px); }\n\n.off-canvas.position-right {\n  right: -350px; }\n\n.off-canvas-content {\n  background: #f2f2f2; }\n\na {\n  color: #1a1b1b; }\n  a a:hover {\n    color: #6abedb; }\n\nhr {\n  border-color: #bdbdbd;\n  margin-top: 0.5rem;\n  max-width: 100%; }\n\n.divider {\n  border-color: #bdbdbd;\n  margin-bottom: 10px; }\n\n.reveal {\n  top: 100px !important; }\n\ntable thead {\n  background: #d3d3d3;\n  color: #1a1b1b;\n  border: 1px solid #e4e4e4; }\n\ntable tbody {\n  color: #1a1b1b;\n  border: 1px solid #e4e4e4; }\n\n.margin-top-large {\n  margin-top: 4rem; }\n\n.margin-bottom-large {\n  margin-bottom: 4rem; }\n\n.margin-right-small {\n  margin-right: 2rem; }\n\n.margin-left-small {\n  margin-left: 2rem; }\n\n.margin-left-tiny {\n  margin-left: 0.5rem; }\n\n.margin-right-tiny {\n  margin-right: 0.5rem; }\n\n.margin-top-md {\n  margin-top: 2rem; }\n\n.margin-top-small {\n  margin-top: 1rem; }\n\n.margin-bottom-md {\n  margin-bottom: 2rem; }\n\n.margin-bottom-small {\n  margin-bottom: 1rem; }\n\n.textAlignCenter {\n  text-align: center; }\n\nul.header-list {\n  display: inline-block;\n  list-style: none;\n  margin-bottom: 0; }\n\n.sticky {\n  z-index: 10000;\n  left: 0 !important; }\n\n.callout {\n  background-color: #fff; }\n\n.callout-dark {\n  padding: 1.5rem;\n  background-color: #fff;\n  border: 2px solid #bdbdbd;\n  border-top: none;\n  margin-top: 0;\n  border-bottom-right-radius: 4px;\n  border-bottom-left-radius: 4px; }\n\n.scroll {\n  max-height: 100vh;\n  overflow-y: scroll; }\n\n.callout-dark-header {\n  padding: 0.5rem;\n  background-color: #fff;\n  border: 2px solid #bdbdbd;\n  border-bottom: 1px solid #bdbdbd;\n  border-top-left-radius: 4px;\n  border-top-right-radius: 4px;\n  margin-bottom: 0; }\n\n.callout-top-header {\n  padding: 1rem;\n  background-color: #f2f2f2;\n  border: 2px solid #bdbdbd;\n  border-radius: 4px; }\n\n.callout-minimize {\n  margin-bottom: 1rem;\n  border-radius: 4px 4px;\n  padding: 0.5rem; }\n\n.icon-btn-text-small {\n  font-family: 'Roboto', sans-serif;\n  text-transform: Captitalize;\n  top: 15px;\n  right: 15px;\n  position: absolute;\n  color: #323232;\n  font-size: 1.1rem; }\n\n.test {\n  font-family: 'Pathway Gothic One', sans-serif;\n  text-transform: uppercase;\n  color: #fff;\n  font-size: 1rem;\n  background: #6abedb; }\n\nlabel {\n  text-transform: capitalize;\n  color: #232f32; }\n\n.page-title {\n  color: #323232;\n  font-family: 'Roboto', sans-serif;\n  font-weight: 500;\n  font-size: 1.2rem; }\n\n.header {\n  color: #323232;\n  margin-bottom: 0;\n  text-transform: capitalize;\n  font-weight: 500;\n  font-family: 'Roboto', sans-serif; }\n\n.sub-header {\n  color: #232f32;\n  font-size: 1.3rem;\n  font-family: 'Pathway Gothic One', sans-serif; }\n  .sub-header a {\n    text-transform: capitalize; }\n\n#watchList {\n  display: none; }\n\n.settings-page-title {\n  color: #323232;\n  font-family: 'Roboto', sans-serif;\n  font-weight: 700;\n  font-size: 1.4rem; }\n\n.settings-subheader {\n  font-weight: 200;\n  white-space: nowrap; }\n\n.settings-subheader-container {\n  padding-top: 1rem; }\n\n.settings-wrapper {\n  margin-left: 1.8rem; }\n\ninput[type=search] {\n  box-shadow: none; }\n\n.top-bar-upper {\n  color: #333;\n  font-size: 0.5rem; }\n\n.app-header {\n  font-size: 1.3rem; }\n\ntable.overview-custom tbody,\ntable.overview-custom th,\ntable.overview-custom thead,\ntable.overview-custom tr {\n  text-align: center; }\n\ntable.sensor-details-table tbody {\n  text-align: left; }\n\n.statusText {\n  color: red;\n  margin-bottom: 1rem;\n  text-transform: uppercase;\n  font-size: 0.85em; }\n\n.notificationHeader {\n  color: #fff;\n  text-transform: uppercase;\n  font-size: 0.5em;\n  font-weight: bold; }\n\n.sensorBlock {\n  height: 30px;\n  border-radius: 30px;\n  width: auto;\n  color: #fff;\n  text-align: center;\n  font-family: 'Pathway Gothic One', sans-serif;\n  text-transform: uppercase; }\n\n.sensorBlockSquare {\n  height: 30px;\n  width: 30px;\n  border-radius: 4px;\n  cursor: pointer;\n  text-align: center;\n  line-height: 28px;\n  color: white;\n  font-weight: bold;\n  margin-bottom: 1px; }\n\n.sensorBlockSquare:hover {\n  opacity: 0.5; }\n\n.sensorList {\n  display: inline-block;\n  margin-right: 1px; }\n\n#uptime-form select {\n  margin-right: 2rem; }\n\n.recharts-tooltip-wrapper {\n  z-index: 1000;\n  box-shadow: 1px 1px 4px #323232;\n  background-color: #fff; }\n\n#glance-tooltip > table tr:nth-of-type(even) {\n  background-color: transparent !important; }\n\n.button-custom {\n  height: 30px;\n  width: auto !important;\n  margin: 0;\n  color: #fff !important;\n  text-align: center;\n  font-family: 'Pathway Gothic One', sans-serif;\n  text-transform: uppercase; }\n\n.proceed {\n  background: #6abedb; }\n\n.cancel {\n  background: #990000; }\n\n.cancel:hover {\n  background: #7a0000; }\n\n.remove {\n  border: 1px solid #990000;\n  background-color: #fff;\n  color: #990000;\n  cursor: pointer; }\n\n.remove:hover {\n  background-color: #990000;\n  color: #fff !important; }\n\n.pin {\n  border: 1px solid #008000;\n  background-color: #fff;\n  color: #008000;\n  cursor: pointer; }\n\n.pin:hover {\n  background-color: #006600;\n  color: #fff !important; }\n\n.disabled {\n  pointer-events: none;\n  background: #e8e8e8;\n  border: none;\n  color: white;\n  cursor: default; }\n\n.disabled:hover {\n  pointer-events: none;\n  background: #e8e8e8;\n  border: none;\n  color: white;\n  cursor: default; }\n\n.tableOptions > li > a {\n  color: #323232;\n  font-weight: normal;\n  font-size: 1rem;\n  padding: 0.5rem 0.7rem; }\n\n.menuHeader:hover,\n.tableOptions .menuHeader {\n  background-color: #232f32 !important;\n  color: #fff;\n  padding: 0.3rem 0.7rem;\n  text-transform: uppercase; }\n\n.tableOptions > li {\n  border-bottom: 1px solid #f2f2f2; }\n\n.tableOptions > li:hover {\n  background-color: #f2f2f2; }\n\n.dropdown-pane {\n  padding: 0; }\n\n.panel-grey {\n  background-color: #e4e4e4; }\n\n#emailPanel,\n#namePanel,\n#passwordPanel,\n#dailyReportTimePanel,\n#flappingDownsPanel,\n#considerationPeriodPanel,\n#emailRecipientPanel {\n  display: none;\n  padding: 1rem;\n  background: #e4e4e4; }\n\ninput[type=checkbox]:checked ~ #port {\n  display: none; }\n\n#port {\n  display: block; }\n\n.inactive-link {\n  display: none; }\n\n.button-cancel {\n  border-color: #990000 !important;\n  color: #990000 !important; }\n\n.green {\n  background-color: #008000; }\n\n.orange {\n  background-color: #cc7a00; }\n\n.red {\n  background-color: #990000; }\n\n.black {\n  background-color: #1a1b1b; }\n\n.yellow {\n  background-color: #ffcc00; }\n\n.grey {\n  background-color: #737373; }\n\n.loader {\n  height: 4px;\n  width: 100%;\n  position: relative;\n  overflow: hidden;\n  background-color: #ddd; }\n\n.loader:before {\n  display: block;\n  position: absolute;\n  content: \"\";\n  left: -200px;\n  width: 200px;\n  height: 4px;\n  background-color: #2980b9;\n  animation: loading 2s linear infinite; }\n\n.no-border {\n  border: none;\n  width: inherit;\n  background-color: transparent; }\n\n@keyframes loading {\n  from {\n    left: -200px;\n    width: 30%; }\n  50% {\n    width: 30%; }\n  70% {\n    width: 70%; }\n  80% {\n    left: 50%; }\n  95% {\n    left: 120%; }\n  to {\n    left: 100%; } }\n\ntable.sensor-details-table td:nth-child(1) {\n  text-transform: Capitalize; }\n\ntable.sensorHealthTable tbody tr:nth-last-child(1) {\n  background-color: #fafafa;\n  border-top: 0.25px solid #e4e4e4; }\n\ntable.sensorHealthTable tbody th:nth-child(1) {\n  font-weight: normal; }\n\ntable.sensor-details-table tbody {\n  text-align: left; }\n\ntable.sensor-details-table td:nth-child(2), table.sensor-details-table th:nth-child(2) {\n  word-break: break-all;\n  text-align: center; }\n\ntable.actionLog tr > td:nth-child(2) {\n  font-weight: bold; }\n\n.table-container {\n  text-align: center; }\n\n.table-row-highlight {\n  font-weight: bold;\n  border: solid 1px #990000;\n  background-color: rgba(153, 0, 0, 0.4) !important; }\n\n.button-disabled {\n  pointer-events: none;\n  color: #000 !important; }\n\n#top-bar-pin:hover, #top-bar-delete:hover, #top-bar-edit:hover {\n  color: #6abedb; }\n\ninput::-webkit-outer-spin-button,\ninput::-webkit-inner-spin-button {\n  /* display: none; <- Crashes Chrome on hover */\n  -webkit-appearance: none;\n  margin: 0;\n  /* <— Apparently some margin are still there even though it's hidden */ }\n\n.tabs {\n  border: none; }\n\n.addEditSensor > tbody {\n  border: none; }\n\nspan._800 {\n  font-weight: 800; }\n", ""]);
+	exports.push([module.id, "@charset \"UTF-8\";\nbody,\nhtml {\n  background: #f2f2f2;\n  height: 100%;\n  font-family: 'Roboto', sans-serif;\n  color: #1a1b1b; }\n\nbody {\n  -webkit-animation-delay: 0.1s;\n  -webkit-animation-name: fontfix;\n  -webkit-animation-duration: 0.1s;\n  -webkit-animation-iteration-count: 1;\n  -webkit-animation-timing-function: linear; }\n\n@-webkit-keyframes fontfix {\n  from {\n    opacity: 1; }\n  to {\n    opacity: 1; } }\n\n.row {\n  max-width: 80rem; }\n\n.loading-overlay {\n  background-color: rgba(10, 10, 10, 0.45) !important;\n  position: fixed;\n  top: 0;\n  bottom: 0;\n  left: 0;\n  right: 0; }\n\ndiv#offCanvas {\n  width: 350px;\n  height: 100%;\n  background: #e8e8e8; }\n\n.is-open-right {\n  transform: translateX(-350px); }\n\n.off-canvas.position-right {\n  right: -350px; }\n\n.off-canvas-content {\n  background: #f2f2f2; }\n\na {\n  color: #1a1b1b; }\n  a a:hover {\n    color: #6abedb; }\n\nhr {\n  border-color: #bdbdbd;\n  margin-top: 0.5rem;\n  max-width: 100%; }\n\n.divider {\n  border-color: #bdbdbd;\n  margin-bottom: 10px; }\n\n.reveal {\n  top: 100px !important; }\n\ntable thead {\n  background: #d3d3d3;\n  color: #1a1b1b;\n  border: 1px solid #e4e4e4; }\n\ntable tbody {\n  color: #1a1b1b;\n  border: 1px solid #e4e4e4; }\n\n.margin-top-large {\n  margin-top: 4rem; }\n\n.margin-bottom-large {\n  margin-bottom: 4rem; }\n\n.margin-right-small {\n  margin-right: 2rem; }\n\n.margin-left-small {\n  margin-left: 2rem; }\n\n.margin-left-tiny {\n  margin-left: 0.5rem; }\n\n.margin-right-tiny {\n  margin-right: 0.5rem; }\n\n.margin-top-md {\n  margin-top: 2rem; }\n\n.margin-top-small {\n  margin-top: 1rem; }\n\n.margin-top-tiny {\n  margin-top: 0.5rem; }\n\n.margin-bottom-md {\n  margin-bottom: 2rem; }\n\n.margin-bottom-small {\n  margin-bottom: 1rem; }\n\n.textAlignCenter {\n  text-align: center; }\n\nul.header-list {\n  display: inline-block;\n  list-style: none;\n  margin-bottom: 0; }\n\n.sticky {\n  z-index: 10000;\n  left: 0 !important; }\n\n.callout {\n  background-color: #fff; }\n\n.callout-dark {\n  padding: 1.5rem;\n  background-color: #fff;\n  border: 2px solid #bdbdbd;\n  border-top: none;\n  margin-top: 0;\n  border-bottom-right-radius: 4px;\n  border-bottom-left-radius: 4px; }\n\n.scroll {\n  max-height: 100vh;\n  overflow-y: scroll; }\n\n.callout-dark-header {\n  padding: 0.5rem;\n  background-color: #fff;\n  border: 2px solid #bdbdbd;\n  border-bottom: 1px solid #bdbdbd;\n  border-top-left-radius: 4px;\n  border-top-right-radius: 4px;\n  margin-bottom: 0; }\n\n.callout-top-header {\n  padding: 1rem;\n  background-color: #f2f2f2;\n  border: 2px solid #bdbdbd;\n  border-radius: 4px; }\n\n.callout-minimize {\n  margin-bottom: 1rem;\n  border-radius: 4px 4px;\n  padding: 0.5rem; }\n\n.icon-btn-text-small {\n  font-family: 'Roboto', sans-serif;\n  text-transform: Captitalize;\n  top: 15px;\n  right: 15px;\n  position: absolute;\n  color: #323232;\n  font-size: 1.1rem; }\n\n.test {\n  font-family: 'Pathway Gothic One', sans-serif;\n  text-transform: uppercase;\n  color: #fff;\n  font-size: 1rem;\n  background: #6abedb; }\n\nlabel {\n  text-transform: capitalize;\n  color: #232f32; }\n\n.page-title {\n  color: #323232;\n  font-family: 'Roboto', sans-serif;\n  font-weight: 500;\n  font-size: 1.2rem; }\n\n.header {\n  color: #323232;\n  margin-bottom: 0;\n  text-transform: capitalize;\n  font-weight: 500;\n  font-family: 'Roboto', sans-serif; }\n\n.sub-header {\n  color: #232f32;\n  font-size: 1.3rem;\n  font-family: 'Pathway Gothic One', sans-serif; }\n  .sub-header a {\n    text-transform: capitalize; }\n\n#watchList {\n  display: none; }\n\n.settings-page-title {\n  color: #323232;\n  font-family: 'Roboto', sans-serif;\n  font-weight: 700;\n  font-size: 1.4rem; }\n\n.settings-subheader {\n  font-weight: 200;\n  white-space: nowrap; }\n\n.settings-subheader-container {\n  padding-top: 1rem; }\n\n.settings-wrapper {\n  margin-left: 1.8rem;\n  color: #000; }\n\ninput[type=search] {\n  box-shadow: none; }\n\n.top-bar-upper {\n  color: #333;\n  font-size: 0.5rem; }\n\n.app-header {\n  font-size: 1.3rem; }\n\ntable.overview-custom tbody,\ntable.overview-custom th,\ntable.overview-custom thead,\ntable.overview-custom tr {\n  text-align: center; }\n\ntable.sensor-details-table tbody {\n  text-align: left; }\n\n.statusText {\n  color: red;\n  margin-bottom: 1rem;\n  text-transform: uppercase;\n  font-size: 0.85em; }\n\n.notificationHeader {\n  color: #fff;\n  text-transform: uppercase;\n  font-size: 0.5em;\n  font-weight: bold; }\n\n.sensorBlock {\n  height: 30px;\n  border-radius: 30px;\n  width: auto;\n  color: #fff;\n  text-align: center;\n  font-family: 'Pathway Gothic One', sans-serif;\n  text-transform: uppercase; }\n\n.sensorBlockSquare {\n  height: 30px;\n  width: 30px;\n  border-radius: 4px;\n  cursor: pointer;\n  text-align: center;\n  line-height: 28px;\n  color: white;\n  font-weight: bold;\n  margin-bottom: 1px; }\n\n.sensorBlockSquare:hover {\n  opacity: 0.5; }\n\n.sensorList {\n  display: inline-block;\n  margin-right: 1px; }\n\n#uptime-form select {\n  margin-right: 2rem; }\n\n.recharts-tooltip-wrapper {\n  z-index: 1000;\n  box-shadow: 1px 1px 4px #323232;\n  background-color: #fff; }\n\n#glance-tooltip > table tr:nth-of-type(even) {\n  background-color: transparent !important; }\n\n.button-custom {\n  height: 30px;\n  width: auto !important;\n  margin: 0;\n  color: #fff !important;\n  text-align: center;\n  font-family: 'Pathway Gothic One', sans-serif;\n  text-transform: uppercase; }\n\n.proceed {\n  background: #6abedb; }\n\n.cancel {\n  background: #990000; }\n\n.cancel:hover {\n  background: #7a0000; }\n\n.remove {\n  border: 1px solid #990000;\n  background-color: #fff;\n  color: #990000;\n  cursor: pointer; }\n\n.remove:hover {\n  background-color: #990000;\n  color: #fff !important; }\n\n.pin {\n  border: 1px solid #008000;\n  background-color: #fff;\n  color: #008000;\n  cursor: pointer; }\n\n.pin:hover {\n  background-color: #006600;\n  color: #fff !important; }\n\n.disabled {\n  pointer-events: none;\n  background: #e8e8e8;\n  border: none;\n  color: white;\n  cursor: default; }\n\n.disabled:hover {\n  pointer-events: none;\n  background: #e8e8e8;\n  border: none;\n  color: white;\n  cursor: default; }\n\n.tableOptions > li > a {\n  color: #323232;\n  font-weight: normal;\n  font-size: 1rem;\n  padding: 0.5rem 0.7rem; }\n\n.menuHeader:hover,\n.tableOptions .menuHeader {\n  background-color: #232f32 !important;\n  color: #fff;\n  padding: 0.3rem 0.7rem;\n  text-transform: uppercase; }\n\n.tableOptions > li {\n  border-bottom: 1px solid #f2f2f2; }\n\n.tableOptions > li:hover {\n  background-color: #f2f2f2; }\n\n.dropdown-pane {\n  padding: 0; }\n\n.panel-grey {\n  background-color: #e4e4e4; }\n\n#emailPanel,\n#namePanel,\n#passwordPanel,\n#dailyReportTimePanel,\n#flappingDownsPanel,\n#considerationPeriodPanel,\n#emailRecipientPanel,\n#maxDataGapPanel,\n#sensorOfflineAllowancePanel {\n  display: none;\n  padding: 1rem;\n  background: #e4e4e4; }\n\ninput[type=checkbox]:checked ~ #port {\n  display: none; }\n\n#port {\n  display: block; }\n\n.inactive-link {\n  display: none; }\n\n.button-cancel {\n  border-color: #990000 !important;\n  color: #990000 !important; }\n\n.font-white {\n  color: #fff; }\n\n.green {\n  background-color: #008000; }\n\n.orange {\n  background-color: #cc7a00; }\n\n.red {\n  background-color: #990000; }\n\n.black {\n  background-color: #1a1b1b; }\n\n.yellow {\n  background-color: #ffcc00; }\n\n.grey {\n  background-color: #737373; }\n\n.loader {\n  height: 4px;\n  width: 100%;\n  position: relative;\n  overflow: hidden;\n  background-color: #ddd; }\n\n.loader:before {\n  display: block;\n  position: absolute;\n  content: \"\";\n  left: -200px;\n  width: 200px;\n  height: 4px;\n  background-color: #2980b9;\n  animation: loading 2s linear infinite; }\n\n.no-border {\n  border: none;\n  width: inherit;\n  background-color: transparent; }\n\n@keyframes loading {\n  from {\n    left: -200px;\n    width: 30%; }\n  50% {\n    width: 30%; }\n  70% {\n    width: 70%; }\n  80% {\n    left: 50%; }\n  95% {\n    left: 120%; }\n  to {\n    left: 100%; } }\n\ntable.sensor-details-table td:nth-child(1) {\n  text-transform: Capitalize; }\n\ntable.sensorHealthTable tbody tr:nth-last-child(1) {\n  background-color: #fafafa;\n  border-top: 0.25px solid #e4e4e4; }\n\ntable.sensorHealthTable tbody th:nth-child(1) {\n  font-weight: normal; }\n\ntable.sensor-details-table tbody {\n  text-align: left; }\n\ntable.sensor-details-table td:nth-child(2), table.sensor-details-table th:nth-child(2) {\n  word-break: break-all;\n  text-align: center; }\n\ntable.actionLog tr > td:nth-child(2) {\n  font-weight: bold; }\n\n.table-container {\n  text-align: center; }\n\n.table-row-highlight {\n  font-weight: bold;\n  border: solid 1px #990000;\n  background-color: rgba(153, 0, 0, 0.4) !important; }\n\n.button-disabled {\n  pointer-events: none;\n  color: #000 !important; }\n\n#top-bar-pin:hover, #top-bar-delete:hover, #top-bar-edit:hover {\n  color: #6abedb; }\n\ninput::-webkit-outer-spin-button,\ninput::-webkit-inner-spin-button {\n  /* display: none; <- Crashes Chrome on hover */\n  -webkit-appearance: none;\n  margin: 0;\n  /* <— Apparently some margin are still there even though it's hidden */ }\n\n.tabs {\n  border: none; }\n\n.addEditSensor > tbody {\n  border: none; }\n\nspan._800 {\n  font-weight: 800; }\n", ""]);
 
 	// exports
 
@@ -103295,7 +103473,7 @@
 	exports.push([module.id, "@import url(https://fonts.googleapis.com/css?family=Lato:400,900i);", ""]);
 
 	// module
-	exports.push([module.id, "@charset \"UTF-8\";\nbody,\nhtml {\n  background: #f2f2f2;\n  height: 100%;\n  font-family: 'Roboto', sans-serif;\n  color: #1a1b1b; }\n\nbody {\n  -webkit-animation-delay: 0.1s;\n  -webkit-animation-name: fontfix;\n  -webkit-animation-duration: 0.1s;\n  -webkit-animation-iteration-count: 1;\n  -webkit-animation-timing-function: linear; }\n\n@-webkit-keyframes fontfix {\n  from {\n    opacity: 1; }\n  to {\n    opacity: 1; } }\n\n.row {\n  max-width: 80rem; }\n\n.loading-overlay {\n  background-color: rgba(10, 10, 10, 0.45) !important;\n  position: fixed;\n  top: 0;\n  bottom: 0;\n  left: 0;\n  right: 0; }\n\ndiv#offCanvas {\n  width: 350px;\n  height: 100%;\n  background: #e8e8e8; }\n\n.is-open-right {\n  transform: translateX(-350px); }\n\n.off-canvas.position-right {\n  right: -350px; }\n\n.off-canvas-content {\n  background: #f2f2f2; }\n\na {\n  color: #1a1b1b; }\n  a a:hover {\n    color: #6abedb; }\n\nhr {\n  border-color: #bdbdbd;\n  margin-top: 0.5rem;\n  max-width: 100%; }\n\n.divider {\n  border-color: #bdbdbd;\n  margin-bottom: 10px; }\n\n.reveal {\n  top: 100px !important; }\n\ntable thead {\n  background: #d3d3d3;\n  color: #1a1b1b;\n  border: 1px solid #e4e4e4; }\n\ntable tbody {\n  color: #1a1b1b;\n  border: 1px solid #e4e4e4; }\n\n.margin-top-large {\n  margin-top: 4rem; }\n\n.margin-bottom-large {\n  margin-bottom: 4rem; }\n\n.margin-right-small {\n  margin-right: 2rem; }\n\n.margin-left-small {\n  margin-left: 2rem; }\n\n.margin-left-tiny {\n  margin-left: 0.5rem; }\n\n.margin-right-tiny {\n  margin-right: 0.5rem; }\n\n.margin-top-md {\n  margin-top: 2rem; }\n\n.margin-top-small {\n  margin-top: 1rem; }\n\n.margin-bottom-md {\n  margin-bottom: 2rem; }\n\n.margin-bottom-small {\n  margin-bottom: 1rem; }\n\n.textAlignCenter {\n  text-align: center; }\n\nul.header-list {\n  display: inline-block;\n  list-style: none;\n  margin-bottom: 0; }\n\n.sticky {\n  z-index: 10000;\n  left: 0 !important; }\n\n.callout {\n  background-color: #fff; }\n\n.callout-dark {\n  padding: 1.5rem;\n  background-color: #fff;\n  border: 2px solid #bdbdbd;\n  border-top: none;\n  margin-top: 0;\n  border-bottom-right-radius: 4px;\n  border-bottom-left-radius: 4px; }\n\n.scroll {\n  max-height: 100vh;\n  overflow-y: scroll; }\n\n.callout-dark-header {\n  padding: 0.5rem;\n  background-color: #fff;\n  border: 2px solid #bdbdbd;\n  border-bottom: 1px solid #bdbdbd;\n  border-top-left-radius: 4px;\n  border-top-right-radius: 4px;\n  margin-bottom: 0; }\n\n.callout-top-header {\n  padding: 1rem;\n  background-color: #f2f2f2;\n  border: 2px solid #bdbdbd;\n  border-radius: 4px; }\n\n.callout-minimize {\n  margin-bottom: 1rem;\n  border-radius: 4px 4px;\n  padding: 0.5rem; }\n\n.icon-btn-text-small {\n  font-family: 'Roboto', sans-serif;\n  text-transform: Captitalize;\n  top: 15px;\n  right: 15px;\n  position: absolute;\n  color: #323232;\n  font-size: 1.1rem; }\n\n.test {\n  font-family: 'Pathway Gothic One', sans-serif;\n  text-transform: uppercase;\n  color: #fff;\n  font-size: 1rem;\n  background: #6abedb; }\n\nlabel {\n  text-transform: capitalize;\n  color: #232f32; }\n\n.page-title {\n  color: #323232;\n  font-family: 'Roboto', sans-serif;\n  font-weight: 500;\n  font-size: 1.2rem; }\n\n.header {\n  color: #323232;\n  margin-bottom: 0;\n  text-transform: capitalize;\n  font-weight: 500;\n  font-family: 'Roboto', sans-serif; }\n\n.sub-header {\n  color: #232f32;\n  font-size: 1.3rem;\n  font-family: 'Pathway Gothic One', sans-serif; }\n  .sub-header a {\n    text-transform: capitalize; }\n\n#watchList {\n  display: none; }\n\n.settings-page-title {\n  color: #323232;\n  font-family: 'Roboto', sans-serif;\n  font-weight: 700;\n  font-size: 1.4rem; }\n\n.settings-subheader {\n  font-weight: 200;\n  white-space: nowrap; }\n\n.settings-subheader-container {\n  padding-top: 1rem; }\n\n.settings-wrapper {\n  margin-left: 1.8rem; }\n\ninput[type=search] {\n  box-shadow: none; }\n\n.top-bar-upper {\n  color: #333;\n  font-size: 0.5rem; }\n\n.app-header {\n  font-size: 1.3rem; }\n\ntable.overview-custom tbody,\ntable.overview-custom th,\ntable.overview-custom thead,\ntable.overview-custom tr {\n  text-align: center; }\n\ntable.sensor-details-table tbody {\n  text-align: left; }\n\n.statusText {\n  color: red;\n  margin-bottom: 1rem;\n  text-transform: uppercase;\n  font-size: 0.85em; }\n\n.notificationHeader {\n  color: #fff;\n  text-transform: uppercase;\n  font-size: 0.5em;\n  font-weight: bold; }\n\n.sensorBlock {\n  height: 30px;\n  border-radius: 30px;\n  width: auto;\n  color: #fff;\n  text-align: center;\n  font-family: 'Pathway Gothic One', sans-serif;\n  text-transform: uppercase; }\n\n.sensorBlockSquare {\n  height: 30px;\n  width: 30px;\n  border-radius: 4px;\n  cursor: pointer;\n  text-align: center;\n  line-height: 28px;\n  color: white;\n  font-weight: bold;\n  margin-bottom: 1px; }\n\n.sensorBlockSquare:hover {\n  opacity: 0.5; }\n\n.sensorList {\n  display: inline-block;\n  margin-right: 1px; }\n\n#uptime-form select {\n  margin-right: 2rem; }\n\n.recharts-tooltip-wrapper {\n  z-index: 1000;\n  box-shadow: 1px 1px 4px #323232;\n  background-color: #fff; }\n\n#glance-tooltip > table tr:nth-of-type(even) {\n  background-color: transparent !important; }\n\n.button-custom {\n  height: 30px;\n  width: auto !important;\n  margin: 0;\n  color: #fff !important;\n  text-align: center;\n  font-family: 'Pathway Gothic One', sans-serif;\n  text-transform: uppercase; }\n\n.proceed {\n  background: #6abedb; }\n\n.cancel {\n  background: #990000; }\n\n.cancel:hover {\n  background: #7a0000; }\n\n.remove {\n  border: 1px solid #990000;\n  background-color: #fff;\n  color: #990000;\n  cursor: pointer; }\n\n.remove:hover {\n  background-color: #990000;\n  color: #fff !important; }\n\n.pin {\n  border: 1px solid #008000;\n  background-color: #fff;\n  color: #008000;\n  cursor: pointer; }\n\n.pin:hover {\n  background-color: #006600;\n  color: #fff !important; }\n\n.disabled {\n  pointer-events: none;\n  background: #e8e8e8;\n  border: none;\n  color: white;\n  cursor: default; }\n\n.disabled:hover {\n  pointer-events: none;\n  background: #e8e8e8;\n  border: none;\n  color: white;\n  cursor: default; }\n\n.tableOptions > li > a {\n  color: #323232;\n  font-weight: normal;\n  font-size: 1rem;\n  padding: 0.5rem 0.7rem; }\n\n.menuHeader:hover,\n.tableOptions .menuHeader {\n  background-color: #232f32 !important;\n  color: #fff;\n  padding: 0.3rem 0.7rem;\n  text-transform: uppercase; }\n\n.tableOptions > li {\n  border-bottom: 1px solid #f2f2f2; }\n\n.tableOptions > li:hover {\n  background-color: #f2f2f2; }\n\n.dropdown-pane {\n  padding: 0; }\n\n.panel-grey {\n  background-color: #e4e4e4; }\n\n#emailPanel,\n#namePanel,\n#passwordPanel,\n#dailyReportTimePanel,\n#flappingDownsPanel,\n#considerationPeriodPanel,\n#emailRecipientPanel {\n  display: none;\n  padding: 1rem;\n  background: #e4e4e4; }\n\ninput[type=checkbox]:checked ~ #port {\n  display: none; }\n\n#port {\n  display: block; }\n\n.inactive-link {\n  display: none; }\n\n.button-cancel {\n  border-color: #990000 !important;\n  color: #990000 !important; }\n\n.green {\n  background-color: #008000; }\n\n.orange {\n  background-color: #cc7a00; }\n\n.red {\n  background-color: #990000; }\n\n.black {\n  background-color: #1a1b1b; }\n\n.yellow {\n  background-color: #ffcc00; }\n\n.grey {\n  background-color: #737373; }\n\n.loader {\n  height: 4px;\n  width: 100%;\n  position: relative;\n  overflow: hidden;\n  background-color: #ddd; }\n\n.loader:before {\n  display: block;\n  position: absolute;\n  content: \"\";\n  left: -200px;\n  width: 200px;\n  height: 4px;\n  background-color: #2980b9;\n  animation: loading 2s linear infinite; }\n\n.no-border {\n  border: none;\n  width: inherit;\n  background-color: transparent; }\n\n@keyframes loading {\n  from {\n    left: -200px;\n    width: 30%; }\n  50% {\n    width: 30%; }\n  70% {\n    width: 70%; }\n  80% {\n    left: 50%; }\n  95% {\n    left: 120%; }\n  to {\n    left: 100%; } }\n\ntable.sensor-details-table td:nth-child(1) {\n  text-transform: Capitalize; }\n\ntable.sensorHealthTable tbody tr:nth-last-child(1) {\n  background-color: #fafafa;\n  border-top: 0.25px solid #e4e4e4; }\n\ntable.sensorHealthTable tbody th:nth-child(1) {\n  font-weight: normal; }\n\ntable.sensor-details-table tbody {\n  text-align: left; }\n\ntable.sensor-details-table td:nth-child(2), table.sensor-details-table th:nth-child(2) {\n  word-break: break-all;\n  text-align: center; }\n\ntable.actionLog tr > td:nth-child(2) {\n  font-weight: bold; }\n\n.table-container {\n  text-align: center; }\n\n.table-row-highlight {\n  font-weight: bold;\n  border: solid 1px #990000;\n  background-color: rgba(153, 0, 0, 0.4) !important; }\n\n.button-disabled {\n  pointer-events: none;\n  color: #000 !important; }\n\n#top-bar-pin:hover, #top-bar-delete:hover, #top-bar-edit:hover {\n  color: #6abedb; }\n\ninput::-webkit-outer-spin-button,\ninput::-webkit-inner-spin-button {\n  /* display: none; <- Crashes Chrome on hover */\n  -webkit-appearance: none;\n  margin: 0;\n  /* <— Apparently some margin are still there even though it's hidden */ }\n\n.tabs {\n  border: none; }\n\n.addEditSensor > tbody {\n  border: none; }\n\nspan._800 {\n  font-weight: 800; }\n\n.top-bar-left {\n  margin-top: 1.5rem; }\n\n.top-bar-right {\n  margin-top: 1.5rem;\n  text-align: right; }\n\n.top-bar {\n  padding: 0rem 2rem 0rem 2rem;\n  background: #232f32;\n  height: 4rem;\n  box-shadow: 0.5px 0.5px 5px #373837; }\n\n.top-bar ul {\n  background: #232f32;\n  /* temporary fix */\n  position: absolute;\n  top: 15px;\n  right: 15px; }\n\n.top-bar.lower {\n  padding-top: 0px; }\n\n.top-bar-title {\n  font-size: 1.5rem;\n  font-family: 'Lato', sans-serif;\n  font-weight: bold;\n  position: absolute;\n  top: 15px;\n  left: 15px;\n  color: #fff; }\n\n.menu > li > a {\n  color: #fafafa;\n  font-weight: bold;\n  font-size: 0.9rem;\n  text-transform: capitalize; }\n\n.is-dropdown-submenu {\n  border: 1px solid #373737; }\n", ""]);
+	exports.push([module.id, "@charset \"UTF-8\";\nbody,\nhtml {\n  background: #f2f2f2;\n  height: 100%;\n  font-family: 'Roboto', sans-serif;\n  color: #1a1b1b; }\n\nbody {\n  -webkit-animation-delay: 0.1s;\n  -webkit-animation-name: fontfix;\n  -webkit-animation-duration: 0.1s;\n  -webkit-animation-iteration-count: 1;\n  -webkit-animation-timing-function: linear; }\n\n@-webkit-keyframes fontfix {\n  from {\n    opacity: 1; }\n  to {\n    opacity: 1; } }\n\n.row {\n  max-width: 80rem; }\n\n.loading-overlay {\n  background-color: rgba(10, 10, 10, 0.45) !important;\n  position: fixed;\n  top: 0;\n  bottom: 0;\n  left: 0;\n  right: 0; }\n\ndiv#offCanvas {\n  width: 350px;\n  height: 100%;\n  background: #e8e8e8; }\n\n.is-open-right {\n  transform: translateX(-350px); }\n\n.off-canvas.position-right {\n  right: -350px; }\n\n.off-canvas-content {\n  background: #f2f2f2; }\n\na {\n  color: #1a1b1b; }\n  a a:hover {\n    color: #6abedb; }\n\nhr {\n  border-color: #bdbdbd;\n  margin-top: 0.5rem;\n  max-width: 100%; }\n\n.divider {\n  border-color: #bdbdbd;\n  margin-bottom: 10px; }\n\n.reveal {\n  top: 100px !important; }\n\ntable thead {\n  background: #d3d3d3;\n  color: #1a1b1b;\n  border: 1px solid #e4e4e4; }\n\ntable tbody {\n  color: #1a1b1b;\n  border: 1px solid #e4e4e4; }\n\n.margin-top-large {\n  margin-top: 4rem; }\n\n.margin-bottom-large {\n  margin-bottom: 4rem; }\n\n.margin-right-small {\n  margin-right: 2rem; }\n\n.margin-left-small {\n  margin-left: 2rem; }\n\n.margin-left-tiny {\n  margin-left: 0.5rem; }\n\n.margin-right-tiny {\n  margin-right: 0.5rem; }\n\n.margin-top-md {\n  margin-top: 2rem; }\n\n.margin-top-small {\n  margin-top: 1rem; }\n\n.margin-top-tiny {\n  margin-top: 0.5rem; }\n\n.margin-bottom-md {\n  margin-bottom: 2rem; }\n\n.margin-bottom-small {\n  margin-bottom: 1rem; }\n\n.textAlignCenter {\n  text-align: center; }\n\nul.header-list {\n  display: inline-block;\n  list-style: none;\n  margin-bottom: 0; }\n\n.sticky {\n  z-index: 10000;\n  left: 0 !important; }\n\n.callout {\n  background-color: #fff; }\n\n.callout-dark {\n  padding: 1.5rem;\n  background-color: #fff;\n  border: 2px solid #bdbdbd;\n  border-top: none;\n  margin-top: 0;\n  border-bottom-right-radius: 4px;\n  border-bottom-left-radius: 4px; }\n\n.scroll {\n  max-height: 100vh;\n  overflow-y: scroll; }\n\n.callout-dark-header {\n  padding: 0.5rem;\n  background-color: #fff;\n  border: 2px solid #bdbdbd;\n  border-bottom: 1px solid #bdbdbd;\n  border-top-left-radius: 4px;\n  border-top-right-radius: 4px;\n  margin-bottom: 0; }\n\n.callout-top-header {\n  padding: 1rem;\n  background-color: #f2f2f2;\n  border: 2px solid #bdbdbd;\n  border-radius: 4px; }\n\n.callout-minimize {\n  margin-bottom: 1rem;\n  border-radius: 4px 4px;\n  padding: 0.5rem; }\n\n.icon-btn-text-small {\n  font-family: 'Roboto', sans-serif;\n  text-transform: Captitalize;\n  top: 15px;\n  right: 15px;\n  position: absolute;\n  color: #323232;\n  font-size: 1.1rem; }\n\n.test {\n  font-family: 'Pathway Gothic One', sans-serif;\n  text-transform: uppercase;\n  color: #fff;\n  font-size: 1rem;\n  background: #6abedb; }\n\nlabel {\n  text-transform: capitalize;\n  color: #232f32; }\n\n.page-title {\n  color: #323232;\n  font-family: 'Roboto', sans-serif;\n  font-weight: 500;\n  font-size: 1.2rem; }\n\n.header {\n  color: #323232;\n  margin-bottom: 0;\n  text-transform: capitalize;\n  font-weight: 500;\n  font-family: 'Roboto', sans-serif; }\n\n.sub-header {\n  color: #232f32;\n  font-size: 1.3rem;\n  font-family: 'Pathway Gothic One', sans-serif; }\n  .sub-header a {\n    text-transform: capitalize; }\n\n#watchList {\n  display: none; }\n\n.settings-page-title {\n  color: #323232;\n  font-family: 'Roboto', sans-serif;\n  font-weight: 700;\n  font-size: 1.4rem; }\n\n.settings-subheader {\n  font-weight: 200;\n  white-space: nowrap; }\n\n.settings-subheader-container {\n  padding-top: 1rem; }\n\n.settings-wrapper {\n  margin-left: 1.8rem;\n  color: #000; }\n\ninput[type=search] {\n  box-shadow: none; }\n\n.top-bar-upper {\n  color: #333;\n  font-size: 0.5rem; }\n\n.app-header {\n  font-size: 1.3rem; }\n\ntable.overview-custom tbody,\ntable.overview-custom th,\ntable.overview-custom thead,\ntable.overview-custom tr {\n  text-align: center; }\n\ntable.sensor-details-table tbody {\n  text-align: left; }\n\n.statusText {\n  color: red;\n  margin-bottom: 1rem;\n  text-transform: uppercase;\n  font-size: 0.85em; }\n\n.notificationHeader {\n  color: #fff;\n  text-transform: uppercase;\n  font-size: 0.5em;\n  font-weight: bold; }\n\n.sensorBlock {\n  height: 30px;\n  border-radius: 30px;\n  width: auto;\n  color: #fff;\n  text-align: center;\n  font-family: 'Pathway Gothic One', sans-serif;\n  text-transform: uppercase; }\n\n.sensorBlockSquare {\n  height: 30px;\n  width: 30px;\n  border-radius: 4px;\n  cursor: pointer;\n  text-align: center;\n  line-height: 28px;\n  color: white;\n  font-weight: bold;\n  margin-bottom: 1px; }\n\n.sensorBlockSquare:hover {\n  opacity: 0.5; }\n\n.sensorList {\n  display: inline-block;\n  margin-right: 1px; }\n\n#uptime-form select {\n  margin-right: 2rem; }\n\n.recharts-tooltip-wrapper {\n  z-index: 1000;\n  box-shadow: 1px 1px 4px #323232;\n  background-color: #fff; }\n\n#glance-tooltip > table tr:nth-of-type(even) {\n  background-color: transparent !important; }\n\n.button-custom {\n  height: 30px;\n  width: auto !important;\n  margin: 0;\n  color: #fff !important;\n  text-align: center;\n  font-family: 'Pathway Gothic One', sans-serif;\n  text-transform: uppercase; }\n\n.proceed {\n  background: #6abedb; }\n\n.cancel {\n  background: #990000; }\n\n.cancel:hover {\n  background: #7a0000; }\n\n.remove {\n  border: 1px solid #990000;\n  background-color: #fff;\n  color: #990000;\n  cursor: pointer; }\n\n.remove:hover {\n  background-color: #990000;\n  color: #fff !important; }\n\n.pin {\n  border: 1px solid #008000;\n  background-color: #fff;\n  color: #008000;\n  cursor: pointer; }\n\n.pin:hover {\n  background-color: #006600;\n  color: #fff !important; }\n\n.disabled {\n  pointer-events: none;\n  background: #e8e8e8;\n  border: none;\n  color: white;\n  cursor: default; }\n\n.disabled:hover {\n  pointer-events: none;\n  background: #e8e8e8;\n  border: none;\n  color: white;\n  cursor: default; }\n\n.tableOptions > li > a {\n  color: #323232;\n  font-weight: normal;\n  font-size: 1rem;\n  padding: 0.5rem 0.7rem; }\n\n.menuHeader:hover,\n.tableOptions .menuHeader {\n  background-color: #232f32 !important;\n  color: #fff;\n  padding: 0.3rem 0.7rem;\n  text-transform: uppercase; }\n\n.tableOptions > li {\n  border-bottom: 1px solid #f2f2f2; }\n\n.tableOptions > li:hover {\n  background-color: #f2f2f2; }\n\n.dropdown-pane {\n  padding: 0; }\n\n.panel-grey {\n  background-color: #e4e4e4; }\n\n#emailPanel,\n#namePanel,\n#passwordPanel,\n#dailyReportTimePanel,\n#flappingDownsPanel,\n#considerationPeriodPanel,\n#emailRecipientPanel,\n#maxDataGapPanel,\n#sensorOfflineAllowancePanel {\n  display: none;\n  padding: 1rem;\n  background: #e4e4e4; }\n\ninput[type=checkbox]:checked ~ #port {\n  display: none; }\n\n#port {\n  display: block; }\n\n.inactive-link {\n  display: none; }\n\n.button-cancel {\n  border-color: #990000 !important;\n  color: #990000 !important; }\n\n.font-white {\n  color: #fff; }\n\n.green {\n  background-color: #008000; }\n\n.orange {\n  background-color: #cc7a00; }\n\n.red {\n  background-color: #990000; }\n\n.black {\n  background-color: #1a1b1b; }\n\n.yellow {\n  background-color: #ffcc00; }\n\n.grey {\n  background-color: #737373; }\n\n.loader {\n  height: 4px;\n  width: 100%;\n  position: relative;\n  overflow: hidden;\n  background-color: #ddd; }\n\n.loader:before {\n  display: block;\n  position: absolute;\n  content: \"\";\n  left: -200px;\n  width: 200px;\n  height: 4px;\n  background-color: #2980b9;\n  animation: loading 2s linear infinite; }\n\n.no-border {\n  border: none;\n  width: inherit;\n  background-color: transparent; }\n\n@keyframes loading {\n  from {\n    left: -200px;\n    width: 30%; }\n  50% {\n    width: 30%; }\n  70% {\n    width: 70%; }\n  80% {\n    left: 50%; }\n  95% {\n    left: 120%; }\n  to {\n    left: 100%; } }\n\ntable.sensor-details-table td:nth-child(1) {\n  text-transform: Capitalize; }\n\ntable.sensorHealthTable tbody tr:nth-last-child(1) {\n  background-color: #fafafa;\n  border-top: 0.25px solid #e4e4e4; }\n\ntable.sensorHealthTable tbody th:nth-child(1) {\n  font-weight: normal; }\n\ntable.sensor-details-table tbody {\n  text-align: left; }\n\ntable.sensor-details-table td:nth-child(2), table.sensor-details-table th:nth-child(2) {\n  word-break: break-all;\n  text-align: center; }\n\ntable.actionLog tr > td:nth-child(2) {\n  font-weight: bold; }\n\n.table-container {\n  text-align: center; }\n\n.table-row-highlight {\n  font-weight: bold;\n  border: solid 1px #990000;\n  background-color: rgba(153, 0, 0, 0.4) !important; }\n\n.button-disabled {\n  pointer-events: none;\n  color: #000 !important; }\n\n#top-bar-pin:hover, #top-bar-delete:hover, #top-bar-edit:hover {\n  color: #6abedb; }\n\ninput::-webkit-outer-spin-button,\ninput::-webkit-inner-spin-button {\n  /* display: none; <- Crashes Chrome on hover */\n  -webkit-appearance: none;\n  margin: 0;\n  /* <— Apparently some margin are still there even though it's hidden */ }\n\n.tabs {\n  border: none; }\n\n.addEditSensor > tbody {\n  border: none; }\n\nspan._800 {\n  font-weight: 800; }\n\n.top-bar-left {\n  margin-top: 1.5rem; }\n\n.top-bar-right {\n  margin-top: 1.5rem;\n  text-align: right; }\n\n.top-bar {\n  padding: 0rem 2rem 0rem 2rem;\n  background: #232f32;\n  height: 4rem;\n  box-shadow: 0.5px 0.5px 5px #373837; }\n\n.top-bar ul {\n  background: #232f32;\n  /* temporary fix */\n  position: absolute;\n  top: 15px;\n  right: 15px; }\n\n.top-bar.lower {\n  padding-top: 0px; }\n\n.top-bar-title {\n  font-size: 1.5rem;\n  font-family: 'Lato', sans-serif;\n  font-weight: bold;\n  position: absolute;\n  top: 15px;\n  left: 15px;\n  color: #fff; }\n\n.menu > li > a {\n  color: #fafafa;\n  font-weight: bold;\n  font-size: 0.9rem;\n  text-transform: capitalize; }\n\n.is-dropdown-submenu {\n  border: 1px solid #373737; }\n", ""]);
 
 	// exports
 
@@ -103377,7 +103555,7 @@
 	exports.push([module.id, "@import url(https://fonts.googleapis.com/css?family=Lato:400,900i);", ""]);
 
 	// module
-	exports.push([module.id, "@charset \"UTF-8\";\nbody,\nhtml {\n  background: #f2f2f2;\n  height: 100%;\n  font-family: 'Roboto', sans-serif;\n  color: #1a1b1b; }\n\nbody {\n  -webkit-animation-delay: 0.1s;\n  -webkit-animation-name: fontfix;\n  -webkit-animation-duration: 0.1s;\n  -webkit-animation-iteration-count: 1;\n  -webkit-animation-timing-function: linear; }\n\n@-webkit-keyframes fontfix {\n  from {\n    opacity: 1; }\n  to {\n    opacity: 1; } }\n\n.row {\n  max-width: 80rem; }\n\n.loading-overlay {\n  background-color: rgba(10, 10, 10, 0.45) !important;\n  position: fixed;\n  top: 0;\n  bottom: 0;\n  left: 0;\n  right: 0; }\n\ndiv#offCanvas {\n  width: 350px;\n  height: 100%;\n  background: #e8e8e8; }\n\n.is-open-right {\n  transform: translateX(-350px); }\n\n.off-canvas.position-right {\n  right: -350px; }\n\n.off-canvas-content {\n  background: #f2f2f2; }\n\na {\n  color: #1a1b1b; }\n  a a:hover {\n    color: #6abedb; }\n\nhr {\n  border-color: #bdbdbd;\n  margin-top: 0.5rem;\n  max-width: 100%; }\n\n.divider {\n  border-color: #bdbdbd;\n  margin-bottom: 10px; }\n\n.reveal {\n  top: 100px !important; }\n\ntable thead {\n  background: #d3d3d3;\n  color: #1a1b1b;\n  border: 1px solid #e4e4e4; }\n\ntable tbody {\n  color: #1a1b1b;\n  border: 1px solid #e4e4e4; }\n\n.margin-top-large {\n  margin-top: 4rem; }\n\n.margin-bottom-large {\n  margin-bottom: 4rem; }\n\n.margin-right-small {\n  margin-right: 2rem; }\n\n.margin-left-small {\n  margin-left: 2rem; }\n\n.margin-left-tiny {\n  margin-left: 0.5rem; }\n\n.margin-right-tiny {\n  margin-right: 0.5rem; }\n\n.margin-top-md {\n  margin-top: 2rem; }\n\n.margin-top-small {\n  margin-top: 1rem; }\n\n.margin-bottom-md {\n  margin-bottom: 2rem; }\n\n.margin-bottom-small {\n  margin-bottom: 1rem; }\n\n.textAlignCenter {\n  text-align: center; }\n\nul.header-list {\n  display: inline-block;\n  list-style: none;\n  margin-bottom: 0; }\n\n.sticky {\n  z-index: 10000;\n  left: 0 !important; }\n\n.callout {\n  background-color: #fff; }\n\n.callout-dark {\n  padding: 1.5rem;\n  background-color: #fff;\n  border: 2px solid #bdbdbd;\n  border-top: none;\n  margin-top: 0;\n  border-bottom-right-radius: 4px;\n  border-bottom-left-radius: 4px; }\n\n.scroll {\n  max-height: 100vh;\n  overflow-y: scroll; }\n\n.callout-dark-header {\n  padding: 0.5rem;\n  background-color: #fff;\n  border: 2px solid #bdbdbd;\n  border-bottom: 1px solid #bdbdbd;\n  border-top-left-radius: 4px;\n  border-top-right-radius: 4px;\n  margin-bottom: 0; }\n\n.callout-top-header {\n  padding: 1rem;\n  background-color: #f2f2f2;\n  border: 2px solid #bdbdbd;\n  border-radius: 4px; }\n\n.callout-minimize {\n  margin-bottom: 1rem;\n  border-radius: 4px 4px;\n  padding: 0.5rem; }\n\n.icon-btn-text-small {\n  font-family: 'Roboto', sans-serif;\n  text-transform: Captitalize;\n  top: 15px;\n  right: 15px;\n  position: absolute;\n  color: #323232;\n  font-size: 1.1rem; }\n\n.test {\n  font-family: 'Pathway Gothic One', sans-serif;\n  text-transform: uppercase;\n  color: #fff;\n  font-size: 1rem;\n  background: #6abedb; }\n\nlabel {\n  text-transform: capitalize;\n  color: #232f32; }\n\n.page-title {\n  color: #323232;\n  font-family: 'Roboto', sans-serif;\n  font-weight: 500;\n  font-size: 1.2rem; }\n\n.header {\n  color: #323232;\n  margin-bottom: 0;\n  text-transform: capitalize;\n  font-weight: 500;\n  font-family: 'Roboto', sans-serif; }\n\n.sub-header {\n  color: #232f32;\n  font-size: 1.3rem;\n  font-family: 'Pathway Gothic One', sans-serif; }\n  .sub-header a {\n    text-transform: capitalize; }\n\n#watchList {\n  display: none; }\n\n.settings-page-title {\n  color: #323232;\n  font-family: 'Roboto', sans-serif;\n  font-weight: 700;\n  font-size: 1.4rem; }\n\n.settings-subheader {\n  font-weight: 200;\n  white-space: nowrap; }\n\n.settings-subheader-container {\n  padding-top: 1rem; }\n\n.settings-wrapper {\n  margin-left: 1.8rem; }\n\ninput[type=search] {\n  box-shadow: none; }\n\n.top-bar-upper {\n  color: #333;\n  font-size: 0.5rem; }\n\n.app-header {\n  font-size: 1.3rem; }\n\ntable.overview-custom tbody,\ntable.overview-custom th,\ntable.overview-custom thead,\ntable.overview-custom tr {\n  text-align: center; }\n\ntable.sensor-details-table tbody {\n  text-align: left; }\n\n.statusText {\n  color: red;\n  margin-bottom: 1rem;\n  text-transform: uppercase;\n  font-size: 0.85em; }\n\n.notificationHeader {\n  color: #fff;\n  text-transform: uppercase;\n  font-size: 0.5em;\n  font-weight: bold; }\n\n.sensorBlock {\n  height: 30px;\n  border-radius: 30px;\n  width: auto;\n  color: #fff;\n  text-align: center;\n  font-family: 'Pathway Gothic One', sans-serif;\n  text-transform: uppercase; }\n\n.sensorBlockSquare {\n  height: 30px;\n  width: 30px;\n  border-radius: 4px;\n  cursor: pointer;\n  text-align: center;\n  line-height: 28px;\n  color: white;\n  font-weight: bold;\n  margin-bottom: 1px; }\n\n.sensorBlockSquare:hover {\n  opacity: 0.5; }\n\n.sensorList {\n  display: inline-block;\n  margin-right: 1px; }\n\n#uptime-form select {\n  margin-right: 2rem; }\n\n.recharts-tooltip-wrapper {\n  z-index: 1000;\n  box-shadow: 1px 1px 4px #323232;\n  background-color: #fff; }\n\n#glance-tooltip > table tr:nth-of-type(even) {\n  background-color: transparent !important; }\n\n.button-custom {\n  height: 30px;\n  width: auto !important;\n  margin: 0;\n  color: #fff !important;\n  text-align: center;\n  font-family: 'Pathway Gothic One', sans-serif;\n  text-transform: uppercase; }\n\n.proceed {\n  background: #6abedb; }\n\n.cancel {\n  background: #990000; }\n\n.cancel:hover {\n  background: #7a0000; }\n\n.remove {\n  border: 1px solid #990000;\n  background-color: #fff;\n  color: #990000;\n  cursor: pointer; }\n\n.remove:hover {\n  background-color: #990000;\n  color: #fff !important; }\n\n.pin {\n  border: 1px solid #008000;\n  background-color: #fff;\n  color: #008000;\n  cursor: pointer; }\n\n.pin:hover {\n  background-color: #006600;\n  color: #fff !important; }\n\n.disabled {\n  pointer-events: none;\n  background: #e8e8e8;\n  border: none;\n  color: white;\n  cursor: default; }\n\n.disabled:hover {\n  pointer-events: none;\n  background: #e8e8e8;\n  border: none;\n  color: white;\n  cursor: default; }\n\n.tableOptions > li > a {\n  color: #323232;\n  font-weight: normal;\n  font-size: 1rem;\n  padding: 0.5rem 0.7rem; }\n\n.menuHeader:hover,\n.tableOptions .menuHeader {\n  background-color: #232f32 !important;\n  color: #fff;\n  padding: 0.3rem 0.7rem;\n  text-transform: uppercase; }\n\n.tableOptions > li {\n  border-bottom: 1px solid #f2f2f2; }\n\n.tableOptions > li:hover {\n  background-color: #f2f2f2; }\n\n.dropdown-pane {\n  padding: 0; }\n\n.panel-grey {\n  background-color: #e4e4e4; }\n\n#emailPanel,\n#namePanel,\n#passwordPanel,\n#dailyReportTimePanel,\n#flappingDownsPanel,\n#considerationPeriodPanel,\n#emailRecipientPanel {\n  display: none;\n  padding: 1rem;\n  background: #e4e4e4; }\n\ninput[type=checkbox]:checked ~ #port {\n  display: none; }\n\n#port {\n  display: block; }\n\n.inactive-link {\n  display: none; }\n\n.button-cancel {\n  border-color: #990000 !important;\n  color: #990000 !important; }\n\n.green {\n  background-color: #008000; }\n\n.orange {\n  background-color: #cc7a00; }\n\n.red {\n  background-color: #990000; }\n\n.black {\n  background-color: #1a1b1b; }\n\n.yellow {\n  background-color: #ffcc00; }\n\n.grey {\n  background-color: #737373; }\n\n.loader {\n  height: 4px;\n  width: 100%;\n  position: relative;\n  overflow: hidden;\n  background-color: #ddd; }\n\n.loader:before {\n  display: block;\n  position: absolute;\n  content: \"\";\n  left: -200px;\n  width: 200px;\n  height: 4px;\n  background-color: #2980b9;\n  animation: loading 2s linear infinite; }\n\n.no-border {\n  border: none;\n  width: inherit;\n  background-color: transparent; }\n\n@keyframes loading {\n  from {\n    left: -200px;\n    width: 30%; }\n  50% {\n    width: 30%; }\n  70% {\n    width: 70%; }\n  80% {\n    left: 50%; }\n  95% {\n    left: 120%; }\n  to {\n    left: 100%; } }\n\ntable.sensor-details-table td:nth-child(1) {\n  text-transform: Capitalize; }\n\ntable.sensorHealthTable tbody tr:nth-last-child(1) {\n  background-color: #fafafa;\n  border-top: 0.25px solid #e4e4e4; }\n\ntable.sensorHealthTable tbody th:nth-child(1) {\n  font-weight: normal; }\n\ntable.sensor-details-table tbody {\n  text-align: left; }\n\ntable.sensor-details-table td:nth-child(2), table.sensor-details-table th:nth-child(2) {\n  word-break: break-all;\n  text-align: center; }\n\ntable.actionLog tr > td:nth-child(2) {\n  font-weight: bold; }\n\n.table-container {\n  text-align: center; }\n\n.table-row-highlight {\n  font-weight: bold;\n  border: solid 1px #990000;\n  background-color: rgba(153, 0, 0, 0.4) !important; }\n\n.button-disabled {\n  pointer-events: none;\n  color: #000 !important; }\n\n#top-bar-pin:hover, #top-bar-delete:hover, #top-bar-edit:hover {\n  color: #6abedb; }\n\ninput::-webkit-outer-spin-button,\ninput::-webkit-inner-spin-button {\n  /* display: none; <- Crashes Chrome on hover */\n  -webkit-appearance: none;\n  margin: 0;\n  /* <— Apparently some margin are still there even though it's hidden */ }\n\n.tabs {\n  border: none; }\n\n.addEditSensor > tbody {\n  border: none; }\n\nspan._800 {\n  font-weight: 800; }\n\n.griddle-container {\n  border: none !important; }\n\n.griddle .top-section {\n  clear: both;\n  display: table;\n  width: 100%; }\n\n.griddle .griddle-filter {\n  float: left;\n  width: 50%;\n  text-align: left;\n  color: #222;\n  min-height: 1px; }\n\n.griddle-body {\n  font-size: 1em;\n  overflow-x: scroll; }\n\n.griddle .griddle-settings-toggle {\n  float: left;\n  width: 50%;\n  text-align: right;\n  color: #f8f8f8; }\n\n.griddle .griddle-settings {\n  background-color: #FFF;\n  border: 1px solid #DDD;\n  color: #222;\n  padding: 10px;\n  margin-bottom: 10px; }\n\n.griddle .griddle-settings .settings {\n  color: #f8f8f8; }\n\n.griddle .griddle-settings .griddle-columns {\n  clear: both;\n  display: table;\n  width: 100%;\n  border-bottom: 1px solid #EDEDED;\n  margin-bottom: 10px; }\n\n.griddle .griddle-settings .griddle-column-selection {\n  float: left;\n  width: 20%; }\n\n.griddle table {\n  width: 100%;\n  table-layout: auto !important; }\n\n.griddle th {\n  background-color: #EDEDEF;\n  border: 0px;\n  border-bottom: 1px solid #DDD;\n  color: #222;\n  padding: 5px; }\n\n.griddle td {\n  padding: 5px;\n  background-color: #FFF;\n  border-top-color: #DDD;\n  color: #222; }\n\n.griddle .footer-container {\n  padding: 0px;\n  background-color: #EDEDED;\n  border: 0px;\n  color: #222; }\n\n.griddle button {\n  font-weight: bold;\n  color: #232f32; }\n\n.griddle .griddle-previous, .griddle .griddle-page, .griddle .griddle-next {\n  float: left;\n  width: 33%;\n  min-height: 1px;\n  margin-top: 5px; }\n\n.griddle .griddle-page {\n  text-align: center; }\n\n.griddle .griddle-next {\n  text-align: right; }\n", ""]);
+	exports.push([module.id, "@charset \"UTF-8\";\nbody,\nhtml {\n  background: #f2f2f2;\n  height: 100%;\n  font-family: 'Roboto', sans-serif;\n  color: #1a1b1b; }\n\nbody {\n  -webkit-animation-delay: 0.1s;\n  -webkit-animation-name: fontfix;\n  -webkit-animation-duration: 0.1s;\n  -webkit-animation-iteration-count: 1;\n  -webkit-animation-timing-function: linear; }\n\n@-webkit-keyframes fontfix {\n  from {\n    opacity: 1; }\n  to {\n    opacity: 1; } }\n\n.row {\n  max-width: 80rem; }\n\n.loading-overlay {\n  background-color: rgba(10, 10, 10, 0.45) !important;\n  position: fixed;\n  top: 0;\n  bottom: 0;\n  left: 0;\n  right: 0; }\n\ndiv#offCanvas {\n  width: 350px;\n  height: 100%;\n  background: #e8e8e8; }\n\n.is-open-right {\n  transform: translateX(-350px); }\n\n.off-canvas.position-right {\n  right: -350px; }\n\n.off-canvas-content {\n  background: #f2f2f2; }\n\na {\n  color: #1a1b1b; }\n  a a:hover {\n    color: #6abedb; }\n\nhr {\n  border-color: #bdbdbd;\n  margin-top: 0.5rem;\n  max-width: 100%; }\n\n.divider {\n  border-color: #bdbdbd;\n  margin-bottom: 10px; }\n\n.reveal {\n  top: 100px !important; }\n\ntable thead {\n  background: #d3d3d3;\n  color: #1a1b1b;\n  border: 1px solid #e4e4e4; }\n\ntable tbody {\n  color: #1a1b1b;\n  border: 1px solid #e4e4e4; }\n\n.margin-top-large {\n  margin-top: 4rem; }\n\n.margin-bottom-large {\n  margin-bottom: 4rem; }\n\n.margin-right-small {\n  margin-right: 2rem; }\n\n.margin-left-small {\n  margin-left: 2rem; }\n\n.margin-left-tiny {\n  margin-left: 0.5rem; }\n\n.margin-right-tiny {\n  margin-right: 0.5rem; }\n\n.margin-top-md {\n  margin-top: 2rem; }\n\n.margin-top-small {\n  margin-top: 1rem; }\n\n.margin-top-tiny {\n  margin-top: 0.5rem; }\n\n.margin-bottom-md {\n  margin-bottom: 2rem; }\n\n.margin-bottom-small {\n  margin-bottom: 1rem; }\n\n.textAlignCenter {\n  text-align: center; }\n\nul.header-list {\n  display: inline-block;\n  list-style: none;\n  margin-bottom: 0; }\n\n.sticky {\n  z-index: 10000;\n  left: 0 !important; }\n\n.callout {\n  background-color: #fff; }\n\n.callout-dark {\n  padding: 1.5rem;\n  background-color: #fff;\n  border: 2px solid #bdbdbd;\n  border-top: none;\n  margin-top: 0;\n  border-bottom-right-radius: 4px;\n  border-bottom-left-radius: 4px; }\n\n.scroll {\n  max-height: 100vh;\n  overflow-y: scroll; }\n\n.callout-dark-header {\n  padding: 0.5rem;\n  background-color: #fff;\n  border: 2px solid #bdbdbd;\n  border-bottom: 1px solid #bdbdbd;\n  border-top-left-radius: 4px;\n  border-top-right-radius: 4px;\n  margin-bottom: 0; }\n\n.callout-top-header {\n  padding: 1rem;\n  background-color: #f2f2f2;\n  border: 2px solid #bdbdbd;\n  border-radius: 4px; }\n\n.callout-minimize {\n  margin-bottom: 1rem;\n  border-radius: 4px 4px;\n  padding: 0.5rem; }\n\n.icon-btn-text-small {\n  font-family: 'Roboto', sans-serif;\n  text-transform: Captitalize;\n  top: 15px;\n  right: 15px;\n  position: absolute;\n  color: #323232;\n  font-size: 1.1rem; }\n\n.test {\n  font-family: 'Pathway Gothic One', sans-serif;\n  text-transform: uppercase;\n  color: #fff;\n  font-size: 1rem;\n  background: #6abedb; }\n\nlabel {\n  text-transform: capitalize;\n  color: #232f32; }\n\n.page-title {\n  color: #323232;\n  font-family: 'Roboto', sans-serif;\n  font-weight: 500;\n  font-size: 1.2rem; }\n\n.header {\n  color: #323232;\n  margin-bottom: 0;\n  text-transform: capitalize;\n  font-weight: 500;\n  font-family: 'Roboto', sans-serif; }\n\n.sub-header {\n  color: #232f32;\n  font-size: 1.3rem;\n  font-family: 'Pathway Gothic One', sans-serif; }\n  .sub-header a {\n    text-transform: capitalize; }\n\n#watchList {\n  display: none; }\n\n.settings-page-title {\n  color: #323232;\n  font-family: 'Roboto', sans-serif;\n  font-weight: 700;\n  font-size: 1.4rem; }\n\n.settings-subheader {\n  font-weight: 200;\n  white-space: nowrap; }\n\n.settings-subheader-container {\n  padding-top: 1rem; }\n\n.settings-wrapper {\n  margin-left: 1.8rem;\n  color: #000; }\n\ninput[type=search] {\n  box-shadow: none; }\n\n.top-bar-upper {\n  color: #333;\n  font-size: 0.5rem; }\n\n.app-header {\n  font-size: 1.3rem; }\n\ntable.overview-custom tbody,\ntable.overview-custom th,\ntable.overview-custom thead,\ntable.overview-custom tr {\n  text-align: center; }\n\ntable.sensor-details-table tbody {\n  text-align: left; }\n\n.statusText {\n  color: red;\n  margin-bottom: 1rem;\n  text-transform: uppercase;\n  font-size: 0.85em; }\n\n.notificationHeader {\n  color: #fff;\n  text-transform: uppercase;\n  font-size: 0.5em;\n  font-weight: bold; }\n\n.sensorBlock {\n  height: 30px;\n  border-radius: 30px;\n  width: auto;\n  color: #fff;\n  text-align: center;\n  font-family: 'Pathway Gothic One', sans-serif;\n  text-transform: uppercase; }\n\n.sensorBlockSquare {\n  height: 30px;\n  width: 30px;\n  border-radius: 4px;\n  cursor: pointer;\n  text-align: center;\n  line-height: 28px;\n  color: white;\n  font-weight: bold;\n  margin-bottom: 1px; }\n\n.sensorBlockSquare:hover {\n  opacity: 0.5; }\n\n.sensorList {\n  display: inline-block;\n  margin-right: 1px; }\n\n#uptime-form select {\n  margin-right: 2rem; }\n\n.recharts-tooltip-wrapper {\n  z-index: 1000;\n  box-shadow: 1px 1px 4px #323232;\n  background-color: #fff; }\n\n#glance-tooltip > table tr:nth-of-type(even) {\n  background-color: transparent !important; }\n\n.button-custom {\n  height: 30px;\n  width: auto !important;\n  margin: 0;\n  color: #fff !important;\n  text-align: center;\n  font-family: 'Pathway Gothic One', sans-serif;\n  text-transform: uppercase; }\n\n.proceed {\n  background: #6abedb; }\n\n.cancel {\n  background: #990000; }\n\n.cancel:hover {\n  background: #7a0000; }\n\n.remove {\n  border: 1px solid #990000;\n  background-color: #fff;\n  color: #990000;\n  cursor: pointer; }\n\n.remove:hover {\n  background-color: #990000;\n  color: #fff !important; }\n\n.pin {\n  border: 1px solid #008000;\n  background-color: #fff;\n  color: #008000;\n  cursor: pointer; }\n\n.pin:hover {\n  background-color: #006600;\n  color: #fff !important; }\n\n.disabled {\n  pointer-events: none;\n  background: #e8e8e8;\n  border: none;\n  color: white;\n  cursor: default; }\n\n.disabled:hover {\n  pointer-events: none;\n  background: #e8e8e8;\n  border: none;\n  color: white;\n  cursor: default; }\n\n.tableOptions > li > a {\n  color: #323232;\n  font-weight: normal;\n  font-size: 1rem;\n  padding: 0.5rem 0.7rem; }\n\n.menuHeader:hover,\n.tableOptions .menuHeader {\n  background-color: #232f32 !important;\n  color: #fff;\n  padding: 0.3rem 0.7rem;\n  text-transform: uppercase; }\n\n.tableOptions > li {\n  border-bottom: 1px solid #f2f2f2; }\n\n.tableOptions > li:hover {\n  background-color: #f2f2f2; }\n\n.dropdown-pane {\n  padding: 0; }\n\n.panel-grey {\n  background-color: #e4e4e4; }\n\n#emailPanel,\n#namePanel,\n#passwordPanel,\n#dailyReportTimePanel,\n#flappingDownsPanel,\n#considerationPeriodPanel,\n#emailRecipientPanel,\n#maxDataGapPanel,\n#sensorOfflineAllowancePanel {\n  display: none;\n  padding: 1rem;\n  background: #e4e4e4; }\n\ninput[type=checkbox]:checked ~ #port {\n  display: none; }\n\n#port {\n  display: block; }\n\n.inactive-link {\n  display: none; }\n\n.button-cancel {\n  border-color: #990000 !important;\n  color: #990000 !important; }\n\n.font-white {\n  color: #fff; }\n\n.green {\n  background-color: #008000; }\n\n.orange {\n  background-color: #cc7a00; }\n\n.red {\n  background-color: #990000; }\n\n.black {\n  background-color: #1a1b1b; }\n\n.yellow {\n  background-color: #ffcc00; }\n\n.grey {\n  background-color: #737373; }\n\n.loader {\n  height: 4px;\n  width: 100%;\n  position: relative;\n  overflow: hidden;\n  background-color: #ddd; }\n\n.loader:before {\n  display: block;\n  position: absolute;\n  content: \"\";\n  left: -200px;\n  width: 200px;\n  height: 4px;\n  background-color: #2980b9;\n  animation: loading 2s linear infinite; }\n\n.no-border {\n  border: none;\n  width: inherit;\n  background-color: transparent; }\n\n@keyframes loading {\n  from {\n    left: -200px;\n    width: 30%; }\n  50% {\n    width: 30%; }\n  70% {\n    width: 70%; }\n  80% {\n    left: 50%; }\n  95% {\n    left: 120%; }\n  to {\n    left: 100%; } }\n\ntable.sensor-details-table td:nth-child(1) {\n  text-transform: Capitalize; }\n\ntable.sensorHealthTable tbody tr:nth-last-child(1) {\n  background-color: #fafafa;\n  border-top: 0.25px solid #e4e4e4; }\n\ntable.sensorHealthTable tbody th:nth-child(1) {\n  font-weight: normal; }\n\ntable.sensor-details-table tbody {\n  text-align: left; }\n\ntable.sensor-details-table td:nth-child(2), table.sensor-details-table th:nth-child(2) {\n  word-break: break-all;\n  text-align: center; }\n\ntable.actionLog tr > td:nth-child(2) {\n  font-weight: bold; }\n\n.table-container {\n  text-align: center; }\n\n.table-row-highlight {\n  font-weight: bold;\n  border: solid 1px #990000;\n  background-color: rgba(153, 0, 0, 0.4) !important; }\n\n.button-disabled {\n  pointer-events: none;\n  color: #000 !important; }\n\n#top-bar-pin:hover, #top-bar-delete:hover, #top-bar-edit:hover {\n  color: #6abedb; }\n\ninput::-webkit-outer-spin-button,\ninput::-webkit-inner-spin-button {\n  /* display: none; <- Crashes Chrome on hover */\n  -webkit-appearance: none;\n  margin: 0;\n  /* <— Apparently some margin are still there even though it's hidden */ }\n\n.tabs {\n  border: none; }\n\n.addEditSensor > tbody {\n  border: none; }\n\nspan._800 {\n  font-weight: 800; }\n\n.griddle-container {\n  border: none !important; }\n\n.griddle .top-section {\n  clear: both;\n  display: table;\n  width: 100%; }\n\n.griddle .griddle-filter {\n  float: left;\n  width: 50%;\n  text-align: left;\n  color: #222;\n  min-height: 1px; }\n\n.griddle-body {\n  font-size: 1em;\n  overflow-x: scroll; }\n\n.griddle .griddle-settings-toggle {\n  float: left;\n  width: 50%;\n  text-align: right;\n  color: #f8f8f8; }\n\n.griddle .griddle-settings {\n  background-color: #FFF;\n  border: 1px solid #DDD;\n  color: #222;\n  padding: 10px;\n  margin-bottom: 10px; }\n\n.griddle .griddle-settings .settings {\n  color: #f8f8f8; }\n\n.griddle .griddle-settings .griddle-columns {\n  clear: both;\n  display: table;\n  width: 100%;\n  border-bottom: 1px solid #EDEDED;\n  margin-bottom: 10px; }\n\n.griddle .griddle-settings .griddle-column-selection {\n  float: left;\n  width: 20%; }\n\n.griddle table {\n  width: 100%;\n  table-layout: auto !important; }\n\n.griddle th {\n  background-color: #EDEDEF;\n  border: 0px;\n  border-bottom: 1px solid #DDD;\n  color: #222;\n  padding: 5px; }\n\n.griddle td {\n  padding: 5px;\n  background-color: #FFF;\n  border-top-color: #DDD;\n  color: #222; }\n\n.griddle .footer-container {\n  padding: 0px;\n  background-color: #EDEDED;\n  border: 0px;\n  color: #222; }\n\n.griddle button {\n  font-weight: bold;\n  color: #232f32; }\n\n.griddle .griddle-previous, .griddle .griddle-page, .griddle .griddle-next {\n  float: left;\n  width: 33%;\n  min-height: 1px;\n  margin-top: 5px; }\n\n.griddle .griddle-page {\n  text-align: center; }\n\n.griddle .griddle-next {\n  text-align: right; }\n", ""]);
 
 	// exports
 

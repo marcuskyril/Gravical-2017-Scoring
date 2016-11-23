@@ -5,6 +5,14 @@ import firebase, {firebaseRef} from 'app/firebase/';
 var settingsAPI = require('settingsAPI');
 var user = null;
 
+const DEFAULT_VALUES = {
+    reportTiming: '0800',
+    emailRecipient: 'uat@gmail.com',
+    maxDataGap: '30',
+    sensorOfflineAllowance: '30',
+    flappingThreshold: '5'
+}
+
 class ConfirmationModal extends React.Component {
     constructor(props) {
         super(props);
@@ -68,7 +76,10 @@ class AccountSettings extends React.Component {
             emailVerified: '-',
             reportTiming: '-',
             emailRecipient: '-',
-            flappingThreshold: '-'
+            maxDataGap: '-',
+            sensorOfflineAllowance: '-',
+            flappingThreshold: '-',
+            message: ''
         }
     }
 
@@ -76,18 +87,47 @@ class AccountSettings extends React.Component {
 
         var that = this;
 
-        that.setState({
-            message: ""
-        });
-
         firebase.auth().onAuthStateChanged(function(user) {
 
             if (user) {
                 that.setState({userDisplayName: user.displayName, email: user.email, emailVerified: user.emailVerified});
             }
+
         }, function(error) {
             console.warn(error);
         });
+
+        this.retrieveCurrentSettings();
+    }
+
+    restoreDefaultSettings() {
+        var that = this;
+        var {reportTiming, emailRecipient, maxDataGap, sensorOfflineAllowance} = DEFAULT_VALUES;
+
+        console.log("restoring", reportTiming, emailRecipient, maxDataGap, sensorOfflineAllowance);
+
+        settingsAPI.updateReportSettings(reportTiming, emailRecipient, maxDataGap, sensorOfflineAllowance).then(function(response) {
+            if(response.error) {
+                console.log("error", response.error);
+                that.setState({
+                    message: response.error
+                });
+            } else {
+                console.log("response", response);
+                that.setState({
+                    message: response.message,
+                    reportTiming,
+                    emailRecipient,
+                    maxDataGap,
+                    sensorOfflineAllowance
+                });
+            }
+        });
+    }
+
+    retrieveCurrentSettings() {
+
+        var that = this;
 
         settingsAPI.retrieveCurrentSettings().then(function(response) {
             if(response.error) {
@@ -97,11 +137,12 @@ class AccountSettings extends React.Component {
                 that.setState({
                     reportTiming: response.daily_notification_time,
                     emailRecipient: response.report_recipient,
+                    sensorOfflineAllowance: response.sensor_offline_allowance,
+                    maxDataGap: response.max_data_gap,
                     flappingThreshold: response.flapping_threshold
                 });
             }
         });
-
     }
 
     reveal(clickTarget, revealTarget) {
@@ -115,9 +156,10 @@ class AccountSettings extends React.Component {
                     $('#passwordPanel').slideUp("slow");
                     $('#dailyReportTimePanel').slideUp("slow");
                     $('#flappingDownsPanel').slideUp("slow");
-                    // $('#considerationPeriodPanel').slideUp("slow");
+                    $('#sensorOfflineAllowancePanel').slideUp("slow");
+                    $('#maxDataGapPanel').slideUp("slow");
                     $('#emailRecipientPanel').slideUp("slow");
-                    $('.nameHeader, .passwordHeader, .dailyReportTimeHeader, .flappingDownsHeader, .considerationPeriodHeader, .emailRecipientHeader').removeClass('panel-grey');
+                    $('.nameHeader, .passwordHeader, .dailyReportTimeHeader, .flappingDownsHeader, .emailRecipientHeader, .sensorOfflineAllowanceHeader, .maxDataGapHeader').removeClass('panel-grey');
                     break;
                 case "namePanel":
                     $('.nameHeader').addClass('panel-grey');
@@ -125,9 +167,10 @@ class AccountSettings extends React.Component {
                     $('#passwordPanel').slideUp("slow");
                     $('#dailyReportTimePanel').slideUp("slow");
                     $('#flappingDownsPanel').slideUp("slow");
-                    // $('#considerationPeriodPanel').slideUp("slow");
+                    $('#sensorOfflineAllowancePanel').slideUp("slow");
+                    $('#maxDataGapPanel').slideUp("slow");
                     $('#emailRecipientPanel').slideUp("slow");
-                    $('.emailHeader, .passwordHeader, .dailyReportTimeHeader, .flappingDownsHeader, .considerationPeriodHeader, .emailRecipientHeader').removeClass('panel-grey');
+                    $('.emailHeader, .passwordHeader, .dailyReportTimeHeader, .flappingDownsHeader, .emailRecipientHeader, .sensorOfflineAllowanceHeader, .maxDataGapHeader').removeClass('panel-grey');
                     break;
                 case "passwordPanel":
                     $('.passwordHeader').addClass('panel-grey');
@@ -135,9 +178,10 @@ class AccountSettings extends React.Component {
                     $('#namePanel').slideUp("slow");
                     $('#dailyReportTimePanel').slideUp("slow");
                     $('#flappingDownsPanel').slideUp("slow");
-                    // $('#considerationPeriodPanel').slideUp("slow");
+                    $('#sensorOfflineAllowancePanel').slideUp("slow");
+                    $('#maxDataGapPanel').slideUp("slow");
                     $('#emailRecipientPanel').slideUp("slow");
-                    $('.emailHeader, .nameHeader, .dailyReportTimeHeader, .flappingDownsHeader, .considerationPeriodHeader, .emailRecipientHeader').removeClass('panel-grey');
+                    $('.emailHeader, .nameHeader, .dailyReportTimeHeader, .flappingDownsHeader, .emailRecipientHeader, .sensorOfflineAllowanceHeader, .maxDataGapHeader').removeClass('panel-grey');
                     break;
                 case "dailyReportTimePanel":
                     $('.dailyReportTimeHeader').addClass('panel-grey');
@@ -145,9 +189,11 @@ class AccountSettings extends React.Component {
                     $('#passwordPanel').slideUp("slow");
                     $('#emailPanel').slideUp("slow");
                     $('#flappingDownsPanel').slideUp("slow");
-                    // $('#considerationPeriodPanel').slideUp("slow");
+                    $('#elapsedDowntime').slideUp("slow");
+                    $('#sensorOfflineAllowancePanel').slideUp("slow");
+                    $('#maxDataGapPanel').slideUp("slow");
                     $('#emailRecipientPanel').slideUp("slow");
-                    $('.emailHeader, .nameHeader, .passwordHeader, .flappingDownsHeader, .considerationPeriodHeader, .emailRecipientHeader').removeClass('panel-grey');
+                    $('.emailHeader, .nameHeader, .passwordHeader, .flappingDownsHeader, .emailRecipientHeader, .sensorOfflineAllowanceHeader, .maxDataGapHeader').removeClass('panel-grey');
                     break;
                 case "flappingDownsPanel":
                     $('.flappingDownsHeader').addClass('panel-grey');
@@ -155,20 +201,11 @@ class AccountSettings extends React.Component {
                     $('#passwordPanel').slideUp("slow");
                     $('#emailPanel').slideUp("slow");
                     $('#dailyReportTimePanel').slideUp("slow");
-                    // $('#considerationPeriodPanel').slideUp("slow");
                     $('#emailRecipientPanel').slideUp("slow");
-                    $('.emailHeader, .nameHeader, .passwordHeader, .dailyReportTimeHeader, .considerationPeriodHeader, .emailRecipientHeader').removeClass('panel-grey');
+                    $('#sensorOfflineAllowancePanel').slideUp("slow");
+                    $('#maxDataGapPanel').slideUp("slow");
+                    $('.emailHeader, .nameHeader, .passwordHeader, .dailyReportTimeHeader, .emailRecipientHeader, .sensorOfflineAllowanceHeader, .maxDataGapHeader').removeClass('panel-grey');
                     break;
-                // case "considerationPeriodPanel":
-                //     $('.considerationPeriodHeader').addClass('panel-grey');
-                //     $('#namePanel').slideUp("slow");
-                //     $('#passwordPanel').slideUp("slow");
-                //     $('#emailPanel').slideUp("slow");
-                //     $('#dailyReportTimePanel').slideUp("slow");
-                //     $('#flappingDownsPanel').slideUp("slow");
-                //     $('#emailRecipientPanel').slideUp("slow");
-                //     $('.emailHeader, .nameHeader, .passwordHeader, .dailyReportTimeHeader, .flappingDownsHeader, .emailRecipientHeader').removeClass('panel-grey');
-                //     break;
                 case "emailRecipientPanel":
                     $('.emailRecipientHeader').addClass('panel-grey');
                     $('#namePanel').slideUp("slow");
@@ -176,8 +213,31 @@ class AccountSettings extends React.Component {
                     $('#emailPanel').slideUp("slow");
                     $('#dailyReportTimePanel').slideUp("slow");
                     $('#flappingDownsPanel').slideUp("slow");
-                    $('#considerationPeriodPanel').slideUp("slow");
-                    $('.emailHeader, .nameHeader, .passwordHeader, .dailyReportTimeHeader, .flappingDownsHeader, .considerationPeriodHeader').removeClass('panel-grey');
+                    $('#sensorOfflineAllowancePanel').slideUp("slow");
+                    $('#maxDataGapPanel').slideUp("slow");
+                    $('.emailHeader, .nameHeader, .passwordHeader, .dailyReportTimeHeader, .flappingDownsHeader, .sensorOfflineAllowanceHeader, .maxDataGapHeader').removeClass('panel-grey');
+                    break;
+                case "maxDataGapPanel":
+                    $('.maxDataGapHeader').addClass('panel-grey');
+                    $('#namePanel').slideUp("slow");
+                    $('#passwordPanel').slideUp("slow");
+                    $('#emailPanel').slideUp("slow");
+                    $('#dailyReportTimePanel').slideUp("slow");
+                    $('#flappingDownsPanel').slideUp("slow");
+                    $('#emailRecipientPanel').slideUp("slow");
+                    $('#sensorOfflineAllowancePanel').slideUp("slow");
+                    $('.emailHeader, .nameHeader, .passwordHeader, .dailyReportTimeHeader, .flappingDownsHeader, .emailRecipientHeader, .sensorOfflineAllowanceHeader').removeClass('panel-grey');
+                    break;
+                case "sensorOfflineAllowancePanel":
+                    $('.sensorOfflineAllowanceHeader').addClass('panel-grey');
+                    $('#namePanel').slideUp("slow");
+                    $('#passwordPanel').slideUp("slow");
+                    $('#emailPanel').slideUp("slow");
+                    $('#dailyReportTimePanel').slideUp("slow");
+                    $('#flappingDownsPanel').slideUp("slow");
+                    $('#emailRecipientPanel').slideUp("slow");
+                    $('#maxDataGapPanel').slideUp("slow");
+                    $('.emailHeader, .nameHeader, .passwordHeader, .dailyReportTimeHeader, .flappingDownsHeader, .emailRecipientHeader, .maxDataGapHeader').removeClass('panel-grey');
                     break;
                 default:
                     console.warn("Oh snap. Something went wrong.");
@@ -289,10 +349,12 @@ class AccountSettings extends React.Component {
         e.preventDefault();
 
         var that = this;
-        var {emailRecipient} = this.state
+        var {emailRecipient, maxDataGap, sensorOfflineAllowance, maxDataGap} = this.state
         var reportTiming = this.refs.reportTiming.value;
 
-        settingsAPI.updateReportSettings(reportTiming, emailRecipient).then(function(response) {
+        console.log(emailRecipient, reportTiming, maxDataGap, sensorOfflineAllowance);
+
+        settingsAPI.updateReportSettings(reportTiming, emailRecipient, maxDataGap, sensorOfflineAllowance).then(function(response) {
             if(response.error) {
                 console.log("error", response.error);
                 that.setState({
@@ -306,6 +368,67 @@ class AccountSettings extends React.Component {
                 });
 
                 that.refs.reportTiming.value = '';
+
+                $('#dailyReportTimePanel').slideUp("slow");
+                $('.dailyReportTimeHeader').removeClass('panel-grey');
+            }
+        });
+    }
+
+    onUpdateOfflineAllowance(e) {
+        e.preventDefault();
+
+        var that = this;
+        var {reportTiming, emailRecipient, maxDataGap} = this.state
+        var sensorOfflineAllowance = this.refs.sensorOfflineAllowance.value;
+
+        settingsAPI.updateReportSettings(reportTiming, emailRecipient, maxDataGap, sensorOfflineAllowance).then(function(response) {
+            if(response.error) {
+                console.log("error", response.error);
+                that.setState({
+                    message: response.error
+                });
+            } else {
+                console.log("response", response);
+                that.setState({
+                    message: response.message,
+                    sensorOfflineAllowance: sensorOfflineAllowance
+                });
+
+                that.refs.sensorOfflineAllowance.value = '';
+
+                $('#sensorOfflineAllowancePanel').slideUp("slow");
+                $('.sensorOfflineAllowanceHeader').removeClass('panel-grey');
+            }
+        });
+    }
+
+    onUpdateMaxDataGap(e) {
+        e.preventDefault();
+
+        var that = this;
+        var {reportTiming, emailRecipient, sensorOfflineAllowance} = this.state
+        var maxDataGap = this.refs.maxDataGap.value;
+
+        console.log(emailRecipient, reportTiming, maxDataGap, sensorOfflineAllowance);
+
+        settingsAPI.updateReportSettings(reportTiming, emailRecipient, maxDataGap, sensorOfflineAllowance).then(function(response) {
+            if(response.error) {
+                console.log("error", response.error);
+                that.setState({
+                    message: response.error
+                });
+            } else {
+                console.log("response", response);
+                that.setState({
+                    message: response.message,
+                    maxDataGap: maxDataGap
+                });
+
+                that.refs.maxDataGap.value = '';
+
+                $('#maxDataGapPanel').slideUp("slow");
+                $('.maxDataGapHeader').removeClass('panel-grey');
             }
         });
     }
@@ -314,10 +437,12 @@ class AccountSettings extends React.Component {
         e.preventDefault();
 
         var that = this;
-        var {reportTiming} = this.state
+        var {reportTiming, maxDataGap, sensorOfflineAllowance, maxDataGap} = this.state
         var emailRecipient = this.refs.emailRecipient.value;
 
-        settingsAPI.updateReportSettings(reportTiming, emailRecipient).then(function(response) {
+        console.log(emailRecipient, reportTiming, maxDataGap, sensorOfflineAllowance);
+
+        settingsAPI.updateReportSettings(reportTiming, emailRecipient, maxDataGap, sensorOfflineAllowance).then(function(response) {
             if(response.error) {
                 console.log("error", response.error);
                 that.setState({
@@ -331,6 +456,9 @@ class AccountSettings extends React.Component {
                 });
 
                 that.refs.emailRecipient.value = '';
+
+                $('#emailRecipientPanel').slideUp("slow");
+                $('.emailRecipientHeader').removeClass('panel-grey');
             }
         });
     }
@@ -358,121 +486,16 @@ class AccountSettings extends React.Component {
 
                 that.refs.flappingThreshold.value = '';
 
-                $('#namePanel').slideUp("slow");
-                $('#passwordPanel').slideUp("slow");
-                $('#emailPanel').slideUp("slow");
-                $('#dailyReportTimePanel').slideUp("slow");
                 $('#flappingDownsPanel').slideUp("slow");
-                // $('#considerationPeriodPanel').slideUp("slow");
-                $('#emailRecipientPanel').slideUp("slow");
-                $('.emailHeader, .nameHeader, .passwordHeader, .dailyReportTimeHeader, .flappingDownsHeader, .considerationPeriodHeader, .emailRecipientHeader').removeClass('panel-grey');
+                $('.flappingDownsHeader').removeClass('panel-grey');
             }
-
-            setTimeout(function () {
-                $('#settingsAPIMessage').fadeOut();
-            }, 10000);
         });
     }
-
-    // onUpdateUniversalSettings(e) {
-    //     e.preventDefault();
-    //
-    //     var that = this;
-    //
-    //     var reportTiming = this.refs.reportTiming.value;
-    //     var emailRecipient = this.refs.emailRecipient.value;
-    //     var flappingThreshold = this.refs.flappingThreshold.value;
-    //
-    //     var currentSettings = that.state.currentSettings;
-    //     var currentReportTiming = "";
-    //     var currentEmailRecipient = "";
-    //     var currentFlappingThreshold = "";
-    //     if (currentSettings) {
-    //         currentReportTiming = currentSettings.daily_notification_time;
-    //         currentEmailRecipient = currentSettings.report_recipient;
-    //         currentFlappingThreshold = currentSettings.flapping_threshold;
-    //     }
-    //
-    //
-    //     if (reportTiming == "") {
-    //         reportTiming = currentReportTiming;
-    //     }
-    //     if (emailRecipient == "") {
-    //         emailRecipient = currentEmailRecipient;
-    //     }
-    //     if (flappingThreshold == "") {
-    //         flappingThreshold = currentFlappingThreshold;
-    //     }
-    //
-    //     settingsAPI.changeCurrentSettings(reportTiming, emailRecipient, flappingThreshold).then(function(response) {
-    //         $('#settingsAPIMessage').show();
-    //         if(response.error) {
-    //             console.log("Error1", response.error);
-    //             that.setState({
-    //                 message: response.error
-    //             });
-    //         } else {
-    //             console.log("response", response);
-    //             that.setState({
-    //                 message: response.message
-    //
-    //             });
-    //
-    //             that.refs.reportTiming.value = '';
-    //             that.refs.emailRecipient.value = '';
-    //             that.refs.flappingThreshold.value = '';
-    //
-    //             $('#namePanel').slideUp("slow");
-    //             $('#passwordPanel').slideUp("slow");
-    //             $('#emailPanel').slideUp("slow");
-    //             $('#dailyReportTimePanel').slideUp("slow");
-    //             $('#flappingDownsPanel').slideUp("slow");
-    //             $('#considerationPeriodPanel').slideUp("slow");
-    //             $('#emailRecipientPanel').slideUp("slow");
-    //             $('.emailHeader, .nameHeader, .passwordHeader, .dailyReportTimeHeader, .flappingDownsHeader, .considerationPeriodHeader, .emailRecipientHeader').removeClass('panel-grey');
-    //         }
-    //
-    //         setTimeout(function () {
-    //             $('#settingsAPIMessage').fadeOut();
-    //         }, 10000);
-    //     });
-    //
-    //
-    //
-    //     // refresh currentSettings
-    //     settingsAPI.retrieveCurrentSettings().then(function(response) {
-    //         if(response.error) {
-    //             console.log("Error", response.error);
-    //         } else {
-    //             console.log("response", response);
-    //             that.setState({
-    //                 currentSettings: response
-    //             });
-    //         }
-    //     });
-    //
-    // }
 
     render() {
 
         var that = this;
-        var {reportTiming, emailRecipient, flappingThreshold} = this.state;
-        var currentSettings = that.state.currentSettings;
-        var currentReportTiming = "";
-        var currentEmailRecipient = "";
-        var currentFlappingThreshold = "";
-
-        if (currentSettings) {
-            currentReportTiming = currentSettings.daily_notification_time;
-            currentEmailRecipient = currentSettings.report_recipient;
-            currentFlappingThreshold = currentSettings.flapping_threshold;
-        }
-
-        var messageState = that.state.message;
-        var message = "";
-        if (messageState) {
-            message = messageState;
-        }
+        var {reportTiming, emailRecipient, sensorOfflineAllowance, maxDataGap, flappingThreshold, message} = this.state;
 
         return (
             <div className="margin-top-md">
@@ -573,10 +596,8 @@ class AccountSettings extends React.Component {
                         </div>
                     </div>
                     <div style={{marginBottom : '1.2rem'}}>
-                        <div className="page-title">Reports</div>
-                        <div className="profile wrapper settings-wrapper" style={{
-                            'color': '#000'
-                        }}>
+                        <div className="page-title">Report Settings</div>
+                        <div className="profile wrapper settings-wrapper">
                             <div className="row dailyReportTimeHeader settings-subheader-container">
                                 <div className="columns large-2">
                                     <b className="settings-subheader">Daily Report Time</b>
@@ -589,7 +610,6 @@ class AccountSettings extends React.Component {
 
                             <div className="row" id="dailyReportTimePanel">
                                 <form>
-                                    <div style={{fontSize: '0.9rem'}}>Tell us when you'd like to receive your daily notification email! (Format: HHMM)</div>
                                     <div className="row">
                                         <div className="medium-3 columns">
                                             <input type="text" ref="reportTiming" placeholder="HHMM"/>
@@ -628,16 +648,59 @@ class AccountSettings extends React.Component {
                                 </form>
                             </div>
 
-                        </div>
-                    </div>
-                    <div style={{marginBottom : '1.2rem'}}>
-                        <div className="page-title">Flapping</div>
-                        <div className="profile wrapper settings-wrapper" style={{
-                            'color': '#000'
-                        }}>
+                            <div className="row sensorOfflineAllowanceHeader settings-subheader-container">
+                                <div className="columns large-2">
+                                    <b className="settings-subheader">Sensor Offline Allowance</b>
+                                </div>
+                                <div className="columns large-5">{sensorOfflineAllowance}</div>
+                                <div className="columns large-5">
+                                    <a id="triggerOfflineAllowanceHeader" onClick={this.reveal('triggerOfflineAllowanceHeader', 'sensorOfflineAllowancePanel')}>Edit</a>
+                                </div>
+                            </div>
+
+                            <div className="row" id="sensorOfflineAllowancePanel">
+                                <form>
+                                    <div className="row">
+                                        <div className="medium-6 columns">
+                                            <input type="text" ref="sensorOfflineAllowance" placeholder="Sensor Offline Allowance"/>
+                                        </div>
+                                        <button className="button" type="button" onClick={this.onUpdateOfflineAllowance.bind(this)}>Update</button>
+                                        <button className="button hollow button-cancel margin-left-tiny" type="button" onClick={() => {
+                                            $('#sensorOfflineAllowancePanel').slideUp();
+                                            $('.sensorOfflineAllowanceHeader').removeClass('panel-grey')
+                                        }}>Cancel</button>
+                                    </div>
+                                </form>
+                            </div>
+
+                            <div className="row maxDataGapHeader settings-subheader-container">
+                                <div className="columns large-2">
+                                    <b className="settings-subheader">Maximum Data Gap</b>
+                                </div>
+                                <div className="columns large-5">{maxDataGap}</div>
+                                <div className="columns large-5">
+                                    <a id="triggerMaxDataGap" onClick={this.reveal('triggerMaxDataGap', 'maxDataGapPanel')}>Edit</a>
+                                </div>
+                            </div>
+
+                            <div className="row" id="maxDataGapPanel">
+                                <form>
+                                    <div className="row">
+                                        <div className="medium-6 columns">
+                                            <input type="text" ref="maxDataGap" placeholder="Max Data Gap"/>
+                                        </div>
+                                        <button className="button" type="button" onClick={this.onUpdateMaxDataGap.bind(this)}>Update</button>
+                                        <button className="button hollow button-cancel margin-left-tiny" type="button" onClick={() => {
+                                            $('#maxDataGapPanel').slideUp();
+                                            $('.maxDataGapHeader').removeClass('panel-grey')
+                                        }}>Cancel</button>
+                                    </div>
+                                </form>
+                            </div>
+
                             <div className="row flappingDownsHeader settings-subheader-container">
                                 <div className="columns large-2">
-                                    <b className="settings-subheader">Threshold</b>
+                                    <b className="settings-subheader">Flapping Threshold</b>
                                 </div>
                                 <div className="columns large-5">{flappingThreshold}</div>
                                 <div className="columns large-5">
@@ -661,40 +724,23 @@ class AccountSettings extends React.Component {
                             </div>
                         </div>
                     </div>
-                    <div className="statusText" id="settingsAPIMessage">
-                        {message}
-                    </div>
-                </div>
 
+                    <a onClick={this.restoreDefaultSettings.bind(this)}>Restore default values</a>
+
+                    <ResponseMessage message={message}/>
+                </div>
             </div>
 
         );
-
-        // <div className="row considerationPeriodHeader">
-        //     <div className="columns large-2">
-        //         <b className="settings-subheader">Consideration Period</b>
-        //     </div>
-        //     <div className="columns large-5">{this.state.userDisplayName}</div>
-        //     <div className="columns large-5">
-        //         <a id="triggerConsiderationPeriodPanel" onClick={this.reveal('triggerConsiderationPeriodPanel', 'considerationPeriodPanel')}>Edit</a>
-        //     </div>
-        // </div>
-        //
-        // <div className="row" id="considerationPeriodPanel">
-        //     <form>
-        //         <div className="row">
-        //             <div className="medium-6 columns">
-        //                 <input type="text" ref="displayName" placeholder={this.state.userDisplayName}/>
-        //             </div>
-        //             <button className="button" type="button" onClick={this.onUpdateDisplayName.bind(this)}>Update</button>
-        //             <button className="button hollow button-cancel margin-left-tiny" type="button" onClick={() => {
-        //                 $('#considerationPeriodPanel').slideUp();
-        //                 $('.considerationPeriodHeader').removeClass('panel-grey')
-        //             }}>Cancel</button>
-        //         </div>
-        //     </form>
-        // </div>
     }
 };
 
 module.exports = AccountSettings;
+
+class ResponseMessage extends React.Component {
+    render() {
+        return(
+            <div className="statusText">{this.props.message}</div>
+        );
+    }
+}

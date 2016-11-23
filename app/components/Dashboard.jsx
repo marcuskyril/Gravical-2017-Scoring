@@ -18,6 +18,7 @@ var PinSensor = require('PinSensor');
 var Terminal = require('Terminal');
 import * as Redux from 'react-redux';
 import * as actions from 'actions';
+import moment from 'moment';
 var {connect} = require('react-redux');
 var {Link, IndexLink} = require('react-router');
 const HOST = 'ws://119.81.104.46:9000';
@@ -64,7 +65,7 @@ class Dashboard extends React.Component {
         var connection = new ab.Session(HOST, function() {
             connection.subscribe('', function(topic, data) {
 
-                timestamp = new Date().toLocaleString();
+                timestamp = moment().format('YYYY-MM-DD, h:mm:ss a');
                 dispatch(actions.storeSyncData(timestamp, userDisplayName, userEmail));
 
                 that.setState({
@@ -87,7 +88,7 @@ class Dashboard extends React.Component {
                 this.state.connection.subscribe('', function(topic, data) {
 
                     console.warn('Reinitiating connection');
-                    timestamp = new Date().toLocaleString();
+                    timestamp = moment().format('YYYY-MM-DD, h:mm:ss a');
                     // dispatch(actions.storeSyncData(timestamp, userDisplayName, userEmail));
 
                     that.setState({

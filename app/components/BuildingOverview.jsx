@@ -35,9 +35,9 @@ class Building extends React.Component {
                             &nbsp;|&nbsp;
                             <span style={{'color':'#990000'}}>{this.props.down}</span>
                             &nbsp;|&nbsp;
-                            <span style={{'color':'#737373'}}>{this.props.paused}</span>
+                            <span style={{'color':'#1a1b1b'}}>{this.props.paused}</span>
                             &nbsp;|&nbsp;
-                            <span style={{'color':'#1a1b1b'}}>{this.props.noData}</span>
+                            <span style={{'color':'#737373'}}>{this.props.noData}</span>
                         </div>
                     </div>
                 </div>

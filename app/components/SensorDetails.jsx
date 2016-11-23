@@ -36,6 +36,7 @@ class SensorDetails extends React.Component {
             location: '-',
             status: '-',
             lastReboot: '-',
+            latestTimestamp: '-',
             stats: {},
             top5: []
         };
@@ -77,6 +78,7 @@ class SensorDetails extends React.Component {
                         region: response["geo_region"],
                         level: response["sensor_location_level"],
                         areaID: response["sensor_location_id"],
+                        latestTimestamp: response['latestTimestamp'],
                         location: `${response["sensor_location_level"]}${response["sensor_location_id"]}`,
                         thresholds: response["thresholds"]
                     });
@@ -101,6 +103,7 @@ class SensorDetails extends React.Component {
                             status: response["status"],
                             lastReboot: response["last_reboot"],
                             diagnosis: response["diagnosis"],
+                            latestTimestamp: response['latest_timestamp'],
                             stats: {
                                 uptime: `${response["uptime_percentage"]}%`,
                                 temperature: `${response["temperature"]}C`,
@@ -148,6 +151,7 @@ class SensorDetails extends React.Component {
                 location: '-',
                 status: '-',
                 lastReboot: '-',
+                latestTimestamp: '-',
                 stats: {},
                 top5: []
             })
@@ -178,11 +182,12 @@ class SensorDetails extends React.Component {
 
         // console.log("sensordetails state", this.state);
 
-        var {macAdd, building, latency, amIAlive, isLoading, port, status, location, lastReboot, diagnosis, stats, top5, thresholds} = this.state;
+        var {macAdd, building, latency, amIAlive, isLoading, port, status, location, lastReboot, diagnosis, latestTimestamp, stats, top5, thresholds} = this.state;
         var {userId, userEmail, dispatch} = this.props;
         var location = `${building} ${location}`
         var amIAliveColor = amIAlive ? "green" : colorMap['down'];
-        var dataColStatus = status === "down" ? "Data last collected at " : "Up since "
+        var dataColStatus = status === "down" ? "Data last collected at " : "Up since ";
+        var timestamp = status === "down" ? latestTimestamp : lastReboot;
 
         $('#uptime').removeClass('table-row-highlight');
         $('#temp').removeClass('table-row-highlight');
@@ -226,7 +231,7 @@ class SensorDetails extends React.Component {
                     </span>{latency} ms
                     <div className="page-title" style={{fontWeight:'bold', textTransform: 'uppercase', color: colorMap[status]}}>{status}</div>
 
-                    <div style={{fontWeight:'100',marginBottom:'1.5rem'}}>{dataColStatus} <br></br> {lastReboot}</div>
+                    <div style={{fontWeight:'100',marginBottom:'1.5rem'}}>{dataColStatus} <br></br> {timestamp}</div>
 
                     <Stats stats={stats}/>
                     <Top5Processes processes={top5}/>

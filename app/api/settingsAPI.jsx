@@ -1,4 +1,4 @@
-const CURRENT_SETTINGS_URL = "http://opsdev.sence.io/backend/restful-apis/get_universal_settings.php";
+const GET_CURRENT_SETTINGS_URL = "http://opsdev.sence.io/backend/restful-apis/retrieve_settings.php";
 const MODIFY_SETTINGS_URL = "http://opsdev.sence.io/backend/restful-apis/change_universal_settings.php";
 const UDPATE_REPORT_URL = "http://opsdev.sence.io/backend/restful-apis/change_report_settings.php";
 const UDPATE_FLAPPING_URL = "http://opsdev.sence.io/backend/restful-apis/change_flapping_settings.php";
@@ -11,7 +11,7 @@ module.exports = {
             beforeSend: function(request) {
                 request.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
             },
-            url: CURRENT_SETTINGS_URL,
+            url: GET_CURRENT_SETTINGS_URL,
             success: function(response) {
                 console.log("Tres manifique, monsieur", response);
             }
@@ -37,10 +37,12 @@ module.exports = {
 
     },
 
-    updateReportSettings: function(report_time, email_recipient) {
+    updateReportSettings: function(report_time, email_recipient, max_data_gap, sensor_offline_allowance) {
         var data = {
             report_time: report_time,
-            email_recipient: email_recipient
+            email_recipient: email_recipient,
+            max_data_gap: max_data_gap,
+            sensor_offline_allowance: sensor_offline_allowance
         }
 
         return $.ajax({
