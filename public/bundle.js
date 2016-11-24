@@ -29762,13 +29762,13 @@
 	                    { className: 'row', style: { minHeight: '100vh' } },
 	                    React.createElement(
 	                        'div',
-	                        { className: 'columns large-10' },
+	                        { className: 'columns small-10 large-10' },
 	                        renderContent(),
 	                        React.createElement(UptimeList, { buildingName: buildingName, data: this.state.data })
 	                    ),
 	                    React.createElement(
 	                        'div',
-	                        { className: 'columns large-2' },
+	                        { className: 'columns small-2 large-2' },
 	                        renderSticky()
 	                    )
 	                )

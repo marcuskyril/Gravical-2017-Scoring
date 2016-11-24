@@ -199,11 +199,11 @@ class Uptime extends React.Component {
     return (
       <div id="uptime-wrapper" className="margin-top-large">
         <div className="row" style={{minHeight: '100vh'}}>
-          <div className="columns large-10">
+          <div className="columns small-10 large-10">
             {renderContent()}
             <UptimeList buildingName={buildingName} data={this.state.data}/>
           </div>
-          <div className="columns large-2">
+          <div className="columns small-2 large-2">
               {renderSticky()}
           </div>
         </div>
