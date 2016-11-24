@@ -29439,6 +29439,8 @@
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
+	var _reactSticky = __webpack_require__(904);
+
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
@@ -29468,502 +29470,591 @@
 
 
 	var colorMap = {
-	  "ok": "#006600",
-	  "warning": "#ffcc00",
-	  "danger": "#cc7a00",
-	  "down": "#990000",
-	  "no data": "#737373",
-	  "others": "#0A083B"
+	    "ok": "#006600",
+	    "warning": "#ffcc00",
+	    "danger": "#cc7a00",
+	    "down": "#990000",
+	    "no data": "#737373",
+	    "others": "#0A083B"
 	};
 
 	var SimpleBarChart = function (_React$Component) {
-	  _inherits(SimpleBarChart, _React$Component);
+	    _inherits(SimpleBarChart, _React$Component);
 
-	  function SimpleBarChart() {
-	    _classCallCheck(this, SimpleBarChart);
+	    function SimpleBarChart() {
+	        _classCallCheck(this, SimpleBarChart);
 
-	    return _possibleConstructorReturn(this, Object.getPrototypeOf(SimpleBarChart).apply(this, arguments));
-	  }
-
-	  _createClass(SimpleBarChart, [{
-	    key: 'render',
-	    value: function render() {
-
-	      var width = $('.row').width() * 0.7;
-	      var historicalLink = '/historical/' + this.props.buildingName + '&' + this.props.mac;
-
-	      return React.createElement(
-	        'div',
-	        { key: this.props.id },
-	        React.createElement(
-	          'div',
-	          { className: 'row' },
-	          React.createElement(
-	            'div',
-	            { className: 'columns large-3' },
-	            React.createElement(
-	              'div',
-	              { className: 'margin-top-tiny' },
-	              React.createElement(
-	                IndexLink,
-	                { to: historicalLink },
-	                this.props.id,
-	                ' | ',
-	                this.props.mac
-	              )
-	            )
-	          ),
-	          React.createElement(
-	            'div',
-	            { className: 'columns large-9' },
-	            React.createElement(
-	              BarChart,
-	              { width: width, height: 40, data: this.props.uptimeData,
-	                margin: { top: 5, right: 30, left: 20, bottom: 5 }, barGap: 0, barCategoryGap: 0 },
-	              React.createElement(CartesianGrid, { strokeDasharray: '3 3' }),
-	              React.createElement(Tooltip, { content: React.createElement(CustomTooltip, { external: this.props.uptimeData }) }),
-	              React.createElement(
-	                Bar,
-	                { dataKey: 'value', isAnimationActive: false },
-	                this.props.uptimeData.map(function (entry, index) {
-	                  return React.createElement(Cell, { key: 'cell=' + index, stroke: colorMap[entry['status']], fill: colorMap[entry['status']] });
-	                })
-	              )
-	            )
-	          )
-	        )
-	      );
+	        return _possibleConstructorReturn(this, Object.getPrototypeOf(SimpleBarChart).apply(this, arguments));
 	    }
-	  }]);
 
-	  return SimpleBarChart;
+	    _createClass(SimpleBarChart, [{
+	        key: 'render',
+	        value: function render() {
+
+	            var width = $('.row').width() * 0.6;
+	            var historicalLink = '/historical/' + this.props.buildingName + '&' + this.props.mac;
+
+	            return React.createElement(
+	                'div',
+	                { key: this.props.id },
+	                React.createElement(
+	                    'div',
+	                    { className: 'row' },
+	                    React.createElement(
+	                        'div',
+	                        { className: 'columns large-3' },
+	                        React.createElement(
+	                            'div',
+	                            { className: 'margin-top-tiny' },
+	                            React.createElement(
+	                                IndexLink,
+	                                { to: historicalLink },
+	                                this.props.id,
+	                                ' | ',
+	                                this.props.mac
+	                            )
+	                        )
+	                    ),
+	                    React.createElement(
+	                        'div',
+	                        { className: 'columns large-9' },
+	                        React.createElement(
+	                            BarChart,
+	                            { width: width, height: 40, data: this.props.uptimeData,
+	                                margin: { top: 5, right: 30, left: 20, bottom: 5 }, barGap: 0, barCategoryGap: 0 },
+	                            React.createElement(CartesianGrid, { strokeDasharray: '3 3' }),
+	                            React.createElement(Tooltip, { content: React.createElement(CustomTooltip, { external: this.props.uptimeData }) }),
+	                            React.createElement(
+	                                Bar,
+	                                { dataKey: 'value', isAnimationActive: false },
+	                                this.props.uptimeData.map(function (entry, index) {
+	                                    return React.createElement(Cell, { key: 'cell=' + index, stroke: colorMap[entry['status']], fill: colorMap[entry['status']] });
+	                                })
+	                            )
+	                        )
+	                    )
+	                )
+	            );
+	        }
+	    }]);
+
+	    return SimpleBarChart;
 	}(React.Component);
 
 	;
 
 	var Uptime = function (_React$Component2) {
-	  _inherits(Uptime, _React$Component2);
+	    _inherits(Uptime, _React$Component2);
 
-	  function Uptime(props) {
-	    _classCallCheck(this, Uptime);
+	    function Uptime(props) {
+	        _classCallCheck(this, Uptime);
 
-	    var _this2 = _possibleConstructorReturn(this, Object.getPrototypeOf(Uptime).call(this, props));
+	        var _this2 = _possibleConstructorReturn(this, Object.getPrototypeOf(Uptime).call(this, props));
 
-	    var d = new Date();
-	    d.setDate(d.getDate() - 6);
+	        var d = new Date();
+	        d.setDate(d.getDate() - 6);
 
-	    var startDate = d.toISOString().substring(0, 10);
-	    var endDate = new Date().toISOString().substring(0, 10);
+	        var startDate = d.toISOString().substring(0, 10);
+	        var endDate = new Date().toISOString().substring(0, 10);
 
-	    _this2.state = {
-	      buildingName: props.params.buildingName,
-	      data: null,
-	      isLoading: false,
-	      message: '',
-	      startDate: startDate,
-	      endDate: endDate,
-	      interval: 15
-	    };
-	    return _this2;
-	  }
-
-	  _createClass(Uptime, [{
-	    key: 'componentDidMount',
-	    value: function componentDidMount() {
-
-	      this.setState({
-	        isLoading: true
-	      });
-
-	      window.scrollTo(0, 0);
-
-	      var _state = this.state;
-	      var startDate = _state.startDate;
-	      var endDate = _state.endDate;
-	      var interval = _state.interval;
-
-
-	      this.retrieveData(startDate, endDate, interval);
+	        _this2.state = {
+	            buildingName: props.params.buildingName,
+	            data: null,
+	            isLoading: false,
+	            message: '',
+	            startDate: startDate,
+	            endDate: endDate,
+	            interval: 15
+	        };
+	        return _this2;
 	    }
-	  }, {
-	    key: 'onSubmit',
-	    value: function onSubmit() {
 
-	      var startDate = this.refs.startDate.value;
-	      var endDate = this.refs.endDate.value;
-	      var interval = parseInt(this.refs.interval.value);
+	    _createClass(Uptime, [{
+	        key: 'componentDidMount',
+	        value: function componentDidMount() {
 
-	      var diff = (Date.parse(endDate) - Date.parse(startDate)) / 1000 / 3600 / 24;
+	            this.setState({
+	                isLoading: true
+	            });
 
-	      if (Date.parse(endDate) < Date.parse(startDate)) {
-	        this.setState({ message: 'End date is before start date. Please try again.' });
-	      } else if (endDate.length == 0 || startDate.length == 0) {
-	        this.setState({ message: 'Please ensure that the date fields are filled.' });
-	      } else if (diff > 21) {
-	        this.setState({ message: 'Date window selected exceeds 21 days.' });
-	      } else {
-	        this.setState({
-	          data: "",
-	          isLoading: true,
-	          message: ''
-	        });
+	            window.scrollTo(0, 0);
 
-	        this.retrieveData(startDate, endDate, interval);
-	      }
-	    }
-	  }, {
-	    key: 'retrieveData',
-	    value: function retrieveData(startDate, endDate, interval) {
+	            var _state = this.state;
+	            var startDate = _state.startDate;
+	            var endDate = _state.endDate;
+	            var interval = _state.interval;
 
-	      var that = this;
-	      retrievehistoricalDataAPI.retrieveHistoricalData(that.state.buildingName, startDate, endDate, interval).then(function (response) {
 
-	        that.setState({
-	          data: response,
-	          isLoading: false,
-	          startDate: startDate,
-	          endDate: endDate,
-	          interval: interval
-	        });
-	      });
-	    }
-	  }, {
-	    key: 'minimizeAll',
-	    value: function minimizeAll() {
-	      var panels = $('.callout-dark');
-
-	      if (panels.css('display') === 'block') {
-	        panels.slideUp();
-	      } else {
-	        panels.slideDown();
-	      }
-	    }
-	  }, {
-	    key: 'render',
-	    value: function render() {
-
-	      // console.log("data", this.state.data);
-	      var _state2 = this.state;
-	      var isLoading = _state2.isLoading;
-	      var data = _state2.data;
-	      var buildingName = _state2.buildingName;
-	      var startDate = _state2.startDate;
-	      var endDate = _state2.endDate;
-	      var interval = _state2.interval;
-	      var message = _state2.message;
-
-	      var that = this;
-
-	      function renderContent() {
-	        if (isLoading) {
-
-	          return React.createElement('div', { className: 'loader' });
-	        } else {
-	          return React.createElement(
-	            'div',
-	            null,
-	            React.createElement(
-	              'div',
-	              { className: 'margin-bottom-small' },
-	              React.createElement(
-	                'div',
-	                { style: { float: 'left' }, className: 'page-title' },
-	                'Uptime Charts: ',
-	                buildingName
-	              ),
-	              React.createElement(
-	                'button',
-	                { className: 'margin-left-small', onClick: that.minimizeAll },
-	                React.createElement(FontAwesome, { name: 'expand', style: {
-	                    marginRight: '0.5rem'
-	                  } }),
-	                'Show/Hide all'
-	              )
-	            ),
-	            React.createElement(
-	              'form',
-	              { id: 'uptime-form', style: { display: 'flex' } },
-	              React.createElement(
-	                'label',
-	                { className: 'margin-right-tiny' },
-	                'Start Date',
-	                React.createElement('input', { type: 'date', name: 'startDate', defaultValue: startDate, ref: 'startDate' })
-	              ),
-	              React.createElement(
-	                'label',
-	                { className: 'margin-right-tiny' },
-	                'End Date',
-	                React.createElement('input', { type: 'date', name: 'endDate', defaultValue: endDate, ref: 'endDate' })
-	              ),
-	              React.createElement(
-	                'label',
-	                { className: 'margin-right-tiny' },
-	                ' Interval',
-	                React.createElement(
-	                  'select',
-	                  { defaultValue: '' + interval, ref: 'interval' },
-	                  React.createElement(
-	                    'option',
-	                    { value: '30' },
-	                    '30 mins'
-	                  ),
-	                  React.createElement(
-	                    'option',
-	                    { value: '15' },
-	                    '15 mins'
-	                  )
-	                )
-	              ),
-	              React.createElement(
-	                'a',
-	                { className: 'button proceed expanded', style: { height: '40px', width: '100px', alignSelf: 'flex-end' }, onClick: function onClick(e) {
-	                    return that.onSubmit();
-	                  } },
-	                'Go'
-	              )
-	            ),
-	            React.createElement(
-	              'div',
-	              { id: 'uptimeMessage' },
-	              React.createElement(UptimeMessage, { message: message })
-	            ),
-	            React.createElement(
-	              'div',
-	              { className: 'margin-bottom-small' },
-	              'You are viewing historical data for ',
-	              buildingName,
-	              ' between ',
-	              startDate,
-	              ' & ',
-	              endDate,
-	              ' at an interval of ',
-	              interval,
-	              ' minutes.'
-	            ),
-	            React.createElement('hr', null)
-	          );
+	            this.retrieveData(startDate, endDate, interval);
 	        }
-	      }
+	    }, {
+	        key: 'onSubmit',
+	        value: function onSubmit() {
 
-	      return React.createElement(
-	        'div',
-	        { id: 'uptime-wrapper', className: 'margin-top-large' },
-	        React.createElement(
-	          'div',
-	          { className: 'row', style: { minHeight: '100vh' } },
-	          React.createElement(
-	            'div',
-	            { className: 'columns large-12' },
-	            renderContent(),
-	            React.createElement(UptimeList, { buildingName: buildingName, data: this.state.data })
-	          )
-	        )
-	      );
-	    }
-	  }]);
+	            var startDate = this.refs.startDate.value;
+	            var endDate = this.refs.endDate.value;
+	            var interval = parseInt(this.refs.interval.value);
 
-	  return Uptime;
+	            var diff = (Date.parse(endDate) - Date.parse(startDate)) / 1000 / 3600 / 24;
+
+	            if (Date.parse(endDate) < Date.parse(startDate)) {
+	                this.setState({ message: 'End date is before start date. Please try again.' });
+	            } else if (endDate.length == 0 || startDate.length == 0) {
+	                this.setState({ message: 'Please ensure that the date fields are filled.' });
+	            } else if (diff > 21) {
+	                this.setState({ message: 'Date window selected exceeds 21 days.' });
+	            } else {
+	                this.setState({
+	                    data: "",
+	                    isLoading: true,
+	                    message: ''
+	                });
+
+	                this.retrieveData(startDate, endDate, interval);
+	            }
+	        }
+	    }, {
+	        key: 'retrieveData',
+	        value: function retrieveData(startDate, endDate, interval) {
+
+	            var that = this;
+	            retrievehistoricalDataAPI.retrieveHistoricalData(that.state.buildingName, startDate, endDate, interval).then(function (response) {
+
+	                that.setState({
+	                    data: response,
+	                    isLoading: false,
+	                    startDate: startDate,
+	                    endDate: endDate,
+	                    interval: interval
+	                });
+	            });
+	        }
+	    }, {
+	        key: 'minimizeAll',
+	        value: function minimizeAll() {
+	            var panels = $('.callout-dark');
+
+	            if (panels.css('display') === 'block') {
+	                panels.slideUp();
+	            } else {
+	                panels.slideDown();
+	            }
+	        }
+	    }, {
+	        key: 'render',
+	        value: function render() {
+
+	            // console.log("data", this.state.data);
+	            var _state2 = this.state;
+	            var isLoading = _state2.isLoading;
+	            var data = _state2.data;
+	            var buildingName = _state2.buildingName;
+	            var startDate = _state2.startDate;
+	            var endDate = _state2.endDate;
+	            var interval = _state2.interval;
+	            var message = _state2.message;
+
+	            var that = this;
+
+	            function renderContent() {
+	                if (isLoading) {
+
+	                    return React.createElement('div', { className: 'loader' });
+	                } else {
+	                    return React.createElement(
+	                        'div',
+	                        null,
+	                        React.createElement(
+	                            'div',
+	                            { className: 'margin-bottom-small' },
+	                            React.createElement(
+	                                'div',
+	                                { style: { float: 'left' }, className: 'page-title' },
+	                                'Uptime Charts: ',
+	                                buildingName
+	                            ),
+	                            React.createElement(
+	                                'button',
+	                                { className: 'margin-left-small', onClick: that.minimizeAll },
+	                                React.createElement(FontAwesome, { name: 'expand', style: {
+	                                        marginRight: '0.5rem'
+	                                    } }),
+	                                'Show/Hide all'
+	                            )
+	                        ),
+	                        React.createElement(
+	                            'form',
+	                            { id: 'uptime-form', style: { display: 'flex' } },
+	                            React.createElement(
+	                                'label',
+	                                { className: 'margin-right-tiny' },
+	                                'Start Date',
+	                                React.createElement('input', { type: 'date', name: 'startDate', defaultValue: startDate, ref: 'startDate' })
+	                            ),
+	                            React.createElement(
+	                                'label',
+	                                { className: 'margin-right-tiny' },
+	                                'End Date',
+	                                React.createElement('input', { type: 'date', name: 'endDate', defaultValue: endDate, ref: 'endDate' })
+	                            ),
+	                            React.createElement(
+	                                'label',
+	                                { className: 'margin-right-tiny' },
+	                                ' Interval',
+	                                React.createElement(
+	                                    'select',
+	                                    { defaultValue: '' + interval, ref: 'interval' },
+	                                    React.createElement(
+	                                        'option',
+	                                        { value: '30' },
+	                                        '30 mins'
+	                                    ),
+	                                    React.createElement(
+	                                        'option',
+	                                        { value: '15' },
+	                                        '15 mins'
+	                                    )
+	                                )
+	                            ),
+	                            React.createElement(
+	                                'a',
+	                                { className: 'button proceed expanded', style: { height: '40px', width: '100px', alignSelf: 'flex-end' }, onClick: function onClick(e) {
+	                                        return that.onSubmit();
+	                                    } },
+	                                'Go'
+	                            )
+	                        ),
+	                        React.createElement(
+	                            'div',
+	                            { id: 'uptimeMessage' },
+	                            React.createElement(UptimeMessage, { message: message })
+	                        ),
+	                        React.createElement(
+	                            'div',
+	                            { className: 'margin-bottom-small' },
+	                            'You are viewing historical data for ',
+	                            buildingName,
+	                            ' between ',
+	                            startDate,
+	                            ' & ',
+	                            endDate,
+	                            ' at an interval of ',
+	                            interval,
+	                            ' minutes.'
+	                        ),
+	                        React.createElement('hr', null)
+	                    );
+	                }
+	            }
+
+	            function renderSticky() {
+
+	                if (!isLoading) {
+	                    return React.createElement(StickyLegend, null);
+	                }
+	            }
+
+	            return React.createElement(
+	                'div',
+	                { id: 'uptime-wrapper', className: 'margin-top-large' },
+	                React.createElement(
+	                    'div',
+	                    { className: 'row', style: { minHeight: '100vh' } },
+	                    React.createElement(
+	                        'div',
+	                        { className: 'columns large-10' },
+	                        renderContent(),
+	                        React.createElement(UptimeList, { buildingName: buildingName, data: this.state.data })
+	                    ),
+	                    React.createElement(
+	                        'div',
+	                        { className: 'columns large-2' },
+	                        renderSticky()
+	                    )
+	                )
+	            );
+	        }
+	    }]);
+
+	    return Uptime;
 	}(React.Component);
 
 	var UptimeMessage = function (_React$Component3) {
-	  _inherits(UptimeMessage, _React$Component3);
+	    _inherits(UptimeMessage, _React$Component3);
 
-	  function UptimeMessage() {
-	    _classCallCheck(this, UptimeMessage);
+	    function UptimeMessage() {
+	        _classCallCheck(this, UptimeMessage);
 
-	    return _possibleConstructorReturn(this, Object.getPrototypeOf(UptimeMessage).apply(this, arguments));
-	  }
-
-	  _createClass(UptimeMessage, [{
-	    key: 'render',
-	    value: function render() {
-	      var message = this.props.message;
-	      // console.log("message from parent: ", message);
-
-	      return React.createElement(
-	        'div',
-	        { className: 'statusText' },
-	        message
-	      );
+	        return _possibleConstructorReturn(this, Object.getPrototypeOf(UptimeMessage).apply(this, arguments));
 	    }
-	  }]);
 
-	  return UptimeMessage;
+	    _createClass(UptimeMessage, [{
+	        key: 'render',
+	        value: function render() {
+	            var message = this.props.message;
+
+	            return React.createElement(
+	                'div',
+	                { className: 'statusText' },
+	                message
+	            );
+	        }
+	    }]);
+
+	    return UptimeMessage;
 	}(React.Component);
 
-	var UptimeList = function (_React$Component4) {
-	  _inherits(UptimeList, _React$Component4);
+	var StickyLegend = function (_React$Component4) {
+	    _inherits(StickyLegend, _React$Component4);
 
-	  function UptimeList() {
-	    _classCallCheck(this, UptimeList);
+	    function StickyLegend() {
+	        _classCallCheck(this, StickyLegend);
 
-	    return _possibleConstructorReturn(this, Object.getPrototypeOf(UptimeList).apply(this, arguments));
-	  }
-
-	  _createClass(UptimeList, [{
-	    key: 'render',
-	    value: function render() {
-	      var dataList = this.props.data;
-	      var rows = [];
-
-	      for (var level in dataList) {
-	        if (dataList.hasOwnProperty(level)) {
-
-	          var sensorsOnLevel = dataList[level];
-	          rows.push(React.createElement(SensorList, { key: level, level: level, buildingName: this.props.buildingName, data: sensorsOnLevel }));
-	        }
-	      }
-
-	      return React.createElement(
-	        'div',
-	        null,
-	        rows
-	      );
+	        return _possibleConstructorReturn(this, Object.getPrototypeOf(StickyLegend).apply(this, arguments));
 	    }
-	  }]);
 
-	  return UptimeList;
+	    _createClass(StickyLegend, [{
+	        key: 'render',
+	        value: function render() {
+
+	            var LEGEND_VAL = [{ status: "ok", val: "sensorBlockSquare green sensorList" }, { status: "warning", val: "sensorBlockSquare yellow sensorList" }, { status: "danger", val: "sensorBlockSquare orange sensorList" }, { status: "down", val: "sensorBlockSquare red sensorList" }, { status: "no data", val: "sensorBlockSquare grey sensorList" }, { status: "others", val: "sensorBlockSquare blue sensorList" }, { status: "paused", val: "sensorBlockSquare black sensorList" }];
+
+	            var customStyleObject = {
+	                top: '30%'
+	            };
+
+	            var rows = [];
+
+	            LEGEND_VAL.forEach(function (item) {
+	                rows.push(React.createElement(
+	                    'tr',
+	                    null,
+	                    React.createElement(
+	                        'td',
+	                        null,
+	                        React.createElement('div', { className: item['val'] })
+	                    ),
+	                    React.createElement(
+	                        'td',
+	                        null,
+	                        React.createElement(
+	                            'div',
+	                            { style: { textTransform: 'capitalize' } },
+	                            item['status']
+	                        )
+	                    )
+	                ));
+	            });
+
+	            return React.createElement(
+	                _reactSticky.StickyContainer,
+	                null,
+	                React.createElement(
+	                    _reactSticky.Sticky,
+	                    { stickyStyle: customStyleObject },
+	                    React.createElement(
+	                        'table',
+	                        { style: { margin: '11rem 2rem', width: '75px', float: 'right' } },
+	                        React.createElement(
+	                            'thead',
+	                            null,
+	                            React.createElement(
+	                                'tr',
+	                                null,
+	                                React.createElement(
+	                                    'th',
+	                                    { colSpan: 2 },
+	                                    'Legend'
+	                                )
+	                            )
+	                        ),
+	                        React.createElement(
+	                            'tbody',
+	                            null,
+	                            rows
+	                        )
+	                    )
+	                )
+	            );
+	        }
+	    }]);
+
+	    return StickyLegend;
 	}(React.Component);
 
-	var SensorList = function (_React$Component5) {
-	  _inherits(SensorList, _React$Component5);
+	var UptimeList = function (_React$Component5) {
+	    _inherits(UptimeList, _React$Component5);
 
-	  function SensorList() {
-	    _classCallCheck(this, SensorList);
+	    function UptimeList() {
+	        _classCallCheck(this, UptimeList);
 
-	    return _possibleConstructorReturn(this, Object.getPrototypeOf(SensorList).apply(this, arguments));
-	  }
-
-	  _createClass(SensorList, [{
-	    key: 'minimize',
-	    value: function minimize(level) {
-	      var pane = $('#' + level);
-
-	      if (pane.css('display') === 'block') {
-	        pane.slideUp();
-	      } else {
-	        pane.slideDown();
-	      }
+	        return _possibleConstructorReturn(this, Object.getPrototypeOf(UptimeList).apply(this, arguments));
 	    }
-	  }, {
-	    key: 'render',
-	    value: function render() {
-	      var _this6 = this;
 
-	      var sensorsOnLevel = this.props.data;
-	      var rows = [];
-	      var currentLevel = 'Level ' + this.props.level;
+	    _createClass(UptimeList, [{
+	        key: 'render',
+	        value: function render() {
+	            var dataList = this.props.data;
+	            var rows = [];
 
-	      for (var sensor in sensorsOnLevel) {
-	        if (sensorsOnLevel.hasOwnProperty(sensor)) {
-	          var sensor = sensorsOnLevel[sensor];
-	          var mac = sensor["mac"];
-	          var building = sensor["building"];
-	          var level = sensor["level"];
-	          var id = sensor["id"];
-	          var data = sensor["data"];
+	            for (var level in dataList) {
+	                if (dataList.hasOwnProperty(level)) {
 
-	          rows.push(React.createElement(SimpleBarChart, { key: mac, mac: mac, id: id, buildingName: this.props.buildingName, level: level, uptimeData: data }));
+	                    var sensorsOnLevel = dataList[level];
+	                    rows.push(React.createElement(SensorList, { key: level, level: level, buildingName: this.props.buildingName, data: sensorsOnLevel }));
+	                }
+	            }
+
+	            return React.createElement(
+	                'div',
+	                null,
+	                rows
+	            );
 	        }
-	      }
+	    }]);
 
-	      return React.createElement(
-	        'div',
-	        { key: this.props.level, className: 'margin-bottom-md' },
-	        React.createElement(
-	          'div',
-	          { className: 'callout callout-dark-header' },
-	          React.createElement(
-	            'div',
-	            { className: 'page-title' },
-	            currentLevel
-	          ),
-	          React.createElement(
-	            'button',
-	            { onClick: function onClick() {
-	                return _this6.minimize(_this6.props.level);
-	              }, className: 'icon-btn-text-small' },
-	            React.createElement(FontAwesome, { name: 'expand' })
-	          )
-	        ),
-	        React.createElement(
-	          'div',
-	          { key: this.props.level, id: this.props.level, className: 'callout callout-dark' },
-	          rows
-	        )
-	      );
+	    return UptimeList;
+	}(React.Component);
+
+	var SensorList = function (_React$Component6) {
+	    _inherits(SensorList, _React$Component6);
+
+	    function SensorList() {
+	        _classCallCheck(this, SensorList);
+
+	        return _possibleConstructorReturn(this, Object.getPrototypeOf(SensorList).apply(this, arguments));
 	    }
-	  }]);
 
-	  return SensorList;
+	    _createClass(SensorList, [{
+	        key: 'minimize',
+	        value: function minimize(level) {
+	            var pane = $('#' + level);
+
+	            if (pane.css('display') === 'block') {
+	                pane.slideUp();
+	            } else {
+	                pane.slideDown();
+	            }
+	        }
+	    }, {
+	        key: 'render',
+	        value: function render() {
+	            var _this7 = this;
+
+	            var sensorsOnLevel = this.props.data;
+	            var rows = [];
+	            var currentLevel = 'Level ' + this.props.level;
+
+	            for (var sensor in sensorsOnLevel) {
+	                if (sensorsOnLevel.hasOwnProperty(sensor)) {
+	                    var sensor = sensorsOnLevel[sensor];
+	                    var mac = sensor["mac"];
+	                    var building = sensor["building"];
+	                    var level = sensor["level"];
+	                    var id = sensor["id"];
+	                    var data = sensor["data"];
+
+	                    rows.push(React.createElement(SimpleBarChart, { key: mac, mac: mac, id: id, buildingName: this.props.buildingName, level: level, uptimeData: data }));
+	                }
+	            }
+
+	            return React.createElement(
+	                'div',
+	                { key: this.props.level, className: 'margin-bottom-md' },
+	                React.createElement(
+	                    'div',
+	                    { className: 'callout callout-dark-header' },
+	                    React.createElement(
+	                        'div',
+	                        { className: 'page-title' },
+	                        currentLevel
+	                    ),
+	                    React.createElement(
+	                        'button',
+	                        { onClick: function onClick() {
+	                                return _this7.minimize(_this7.props.level);
+	                            }, className: 'icon-btn-text-small' },
+	                        React.createElement(FontAwesome, { name: 'expand' })
+	                    )
+	                ),
+	                React.createElement(
+	                    'div',
+	                    { key: this.props.level, id: this.props.level, className: 'callout callout-dark' },
+	                    rows
+	                )
+	            );
+	        }
+	    }]);
+
+	    return SensorList;
 	}(React.Component);
 
 	module.exports = Uptime;
 
-	var CustomTooltip = function (_React$Component6) {
-	  _inherits(CustomTooltip, _React$Component6);
+	var CustomTooltip = function (_React$Component7) {
+	    _inherits(CustomTooltip, _React$Component7);
 
-	  function CustomTooltip() {
-	    _classCallCheck(this, CustomTooltip);
+	    function CustomTooltip() {
+	        _classCallCheck(this, CustomTooltip);
 
-	    return _possibleConstructorReturn(this, Object.getPrototypeOf(CustomTooltip).apply(this, arguments));
-	  }
-
-	  _createClass(CustomTooltip, [{
-	    key: 'getDetails',
-	    value: function getDetails(label) {
-	      var external = this.props.external;
-
-	      var timestamp = external[label]['timestamp'];
-	      var status = external[label]['status'];
-
-	      return React.createElement(
-	        'div',
-	        null,
-	        React.createElement(
-	          'p',
-	          { className: 'label' },
-	          status
-	        ),
-	        React.createElement(
-	          'p',
-	          { className: 'desc' },
-	          timestamp
-	        )
-	      );
+	        return _possibleConstructorReturn(this, Object.getPrototypeOf(CustomTooltip).apply(this, arguments));
 	    }
-	  }, {
-	    key: 'render',
-	    value: function render() {
-	      var active = this.props.active;
+
+	    _createClass(CustomTooltip, [{
+	        key: 'getDetails',
+	        value: function getDetails(label) {
+	            var external = this.props.external;
+
+	            var timestamp = external[label]['timestamp'];
+	            var status = external[label]['status'];
+
+	            return React.createElement(
+	                'div',
+	                null,
+	                React.createElement(
+	                    'p',
+	                    { className: 'label' },
+	                    status
+	                ),
+	                React.createElement(
+	                    'p',
+	                    { className: 'desc' },
+	                    timestamp
+	                )
+	            );
+	        }
+	    }, {
+	        key: 'render',
+	        value: function render() {
+	            var active = this.props.active;
 
 
-	      if (active) {
-	        var _props = this.props;
-	        var payload = _props.payload;
-	        var external = _props.external;
-	        var label = _props.label;
+	            if (active) {
+	                var _props = this.props;
+	                var payload = _props.payload;
+	                var external = _props.external;
+	                var label = _props.label;
 
 
-	        return React.createElement(
-	          'div',
-	          { className: 'custom-tooltip' },
-	          this.getDetails(label)
-	        );
-	      }
-	      return null;
-	    }
-	  }]);
+	                return React.createElement(
+	                    'div',
+	                    { className: 'custom-tooltip' },
+	                    this.getDetails(label)
+	                );
+	            }
+	            return null;
+	        }
+	    }]);
 
-	  return CustomTooltip;
+	    return CustomTooltip;
 	}(React.Component);
 
 	;
 
 	CustomTooltip.propTypes = {
-	  type: React.PropTypes.string,
-	  payload: React.PropTypes.array,
-	  label: React.PropTypes.number
+	    type: React.PropTypes.string,
+	    payload: React.PropTypes.array,
+	    label: React.PropTypes.number
 	};
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(9)))
 
@@ -103442,7 +103533,7 @@
 	exports.push([module.id, "@import url(https://fonts.googleapis.com/css?family=Lato:400,900i);", ""]);
 
 	// module
-	exports.push([module.id, "@charset \"UTF-8\";\nbody,\nhtml {\n  background: #f2f2f2;\n  height: 100%;\n  font-family: 'Roboto', sans-serif;\n  color: #1a1b1b; }\n\nbody {\n  -webkit-animation-delay: 0.1s;\n  -webkit-animation-name: fontfix;\n  -webkit-animation-duration: 0.1s;\n  -webkit-animation-iteration-count: 1;\n  -webkit-animation-timing-function: linear; }\n\n@-webkit-keyframes fontfix {\n  from {\n    opacity: 1; }\n  to {\n    opacity: 1; } }\n\n.row {\n  max-width: 80rem; }\n\n.loading-overlay {\n  background-color: rgba(10, 10, 10, 0.45) !important;\n  position: fixed;\n  top: 0;\n  bottom: 0;\n  left: 0;\n  right: 0; }\n\ndiv#offCanvas {\n  width: 350px;\n  height: 100%;\n  background: #e8e8e8; }\n\n.is-open-right {\n  transform: translateX(-350px); }\n\n.off-canvas.position-right {\n  right: -350px; }\n\n.off-canvas-content {\n  background: #f2f2f2; }\n\na {\n  color: #1a1b1b; }\n  a a:hover {\n    color: #6abedb; }\n\nhr {\n  border-color: #bdbdbd;\n  margin-top: 0.5rem;\n  max-width: 100%; }\n\n.divider {\n  border-color: #bdbdbd;\n  margin-bottom: 10px; }\n\n.reveal {\n  top: 100px !important; }\n\ntable thead {\n  background: #d3d3d3;\n  color: #1a1b1b;\n  border: 1px solid #e4e4e4; }\n\ntable tbody {\n  color: #1a1b1b;\n  border: 1px solid #e4e4e4; }\n\n.margin-top-large {\n  margin-top: 4rem; }\n\n.margin-bottom-large {\n  margin-bottom: 4rem; }\n\n.margin-right-small {\n  margin-right: 2rem; }\n\n.margin-left-small {\n  margin-left: 2rem; }\n\n.margin-left-tiny {\n  margin-left: 0.5rem; }\n\n.margin-right-tiny {\n  margin-right: 0.5rem; }\n\n.margin-top-md {\n  margin-top: 2rem; }\n\n.margin-top-small {\n  margin-top: 1rem; }\n\n.margin-top-tiny {\n  margin-top: 0.5rem; }\n\n.margin-bottom-md {\n  margin-bottom: 2rem; }\n\n.margin-bottom-small {\n  margin-bottom: 1rem; }\n\n.textAlignCenter {\n  text-align: center; }\n\nul.header-list {\n  display: inline-block;\n  list-style: none;\n  margin-bottom: 0; }\n\n.sticky {\n  z-index: 10000;\n  left: 0 !important; }\n\n.callout {\n  background-color: #fff; }\n\n.callout-dark {\n  padding: 1.5rem;\n  background-color: #fff;\n  border: 2px solid #bdbdbd;\n  border-top: none;\n  margin-top: 0;\n  border-bottom-right-radius: 4px;\n  border-bottom-left-radius: 4px; }\n\n.scroll {\n  max-height: 100vh;\n  overflow-y: scroll; }\n\n.callout-dark-header {\n  padding: 0.5rem;\n  background-color: #fff;\n  border: 2px solid #bdbdbd;\n  border-bottom: 1px solid #bdbdbd;\n  border-top-left-radius: 4px;\n  border-top-right-radius: 4px;\n  margin-bottom: 0; }\n\n.callout-top-header {\n  padding: 1rem;\n  background-color: #f2f2f2;\n  border: 2px solid #bdbdbd;\n  border-radius: 4px; }\n\n.callout-minimize {\n  margin-bottom: 1rem;\n  border-radius: 4px 4px;\n  padding: 0.5rem; }\n\n.icon-btn-text-small {\n  font-family: 'Roboto', sans-serif;\n  text-transform: Captitalize;\n  top: 15px;\n  right: 15px;\n  position: absolute;\n  color: #323232;\n  font-size: 1.1rem; }\n\n.test {\n  font-family: 'Pathway Gothic One', sans-serif;\n  text-transform: uppercase;\n  color: #fff;\n  font-size: 1rem;\n  background: #6abedb; }\n\nlabel {\n  text-transform: capitalize;\n  color: #232f32; }\n\n.page-title {\n  color: #323232;\n  font-family: 'Roboto', sans-serif;\n  font-weight: 500;\n  font-size: 1.2rem; }\n\n.header {\n  color: #323232;\n  margin-bottom: 0;\n  text-transform: capitalize;\n  font-weight: 500;\n  font-family: 'Roboto', sans-serif; }\n\n.sub-header {\n  color: #232f32;\n  font-size: 1.3rem;\n  font-family: 'Pathway Gothic One', sans-serif; }\n  .sub-header a {\n    text-transform: capitalize; }\n\n#watchList {\n  display: none; }\n\n.settings-page-title {\n  color: #323232;\n  font-family: 'Roboto', sans-serif;\n  font-weight: 700;\n  font-size: 1.4rem; }\n\n.settings-subheader {\n  font-weight: 200;\n  white-space: nowrap; }\n\n.settings-subheader-container {\n  padding-top: 1rem; }\n\n.settings-wrapper {\n  margin-left: 1.8rem;\n  color: #000; }\n\ninput[type=search] {\n  box-shadow: none; }\n\n.top-bar-upper {\n  color: #333;\n  font-size: 0.5rem; }\n\n.app-header {\n  font-size: 1.3rem; }\n\ntable.overview-custom tbody,\ntable.overview-custom th,\ntable.overview-custom thead,\ntable.overview-custom tr {\n  text-align: center; }\n\ntable.sensor-details-table tbody {\n  text-align: left; }\n\n.statusText {\n  color: red;\n  margin-bottom: 1rem;\n  text-transform: uppercase;\n  font-size: 0.85em; }\n\n.notificationHeader {\n  color: #fff;\n  text-transform: uppercase;\n  font-size: 0.5em;\n  font-weight: bold; }\n\n.sensorBlock {\n  height: 30px;\n  border-radius: 30px;\n  width: auto;\n  color: #fff;\n  text-align: center;\n  font-family: 'Pathway Gothic One', sans-serif;\n  text-transform: uppercase; }\n\n.sensorBlockSquare {\n  height: 30px;\n  width: 30px;\n  border-radius: 4px;\n  cursor: pointer;\n  text-align: center;\n  line-height: 28px;\n  color: white;\n  font-weight: bold;\n  margin-bottom: 1px; }\n\n.sensorBlockSquare:hover {\n  opacity: 0.5; }\n\n.sensorList {\n  display: inline-block;\n  margin-right: 1px; }\n\n#uptime-form select {\n  margin-right: 2rem; }\n\n.recharts-tooltip-wrapper {\n  z-index: 1000;\n  box-shadow: 1px 1px 4px #323232;\n  background-color: #fff; }\n\n#glance-tooltip > table tr:nth-of-type(even) {\n  background-color: transparent !important; }\n\n.button-custom {\n  height: 30px;\n  width: auto !important;\n  margin: 0;\n  color: #fff !important;\n  text-align: center;\n  font-family: 'Pathway Gothic One', sans-serif;\n  text-transform: uppercase; }\n\n.proceed {\n  background: #6abedb; }\n\n.cancel {\n  background: #990000; }\n\n.cancel:hover {\n  background: #7a0000; }\n\n.remove {\n  border: 1px solid #990000;\n  background-color: #fff;\n  color: #990000;\n  cursor: pointer; }\n\n.remove:hover {\n  background-color: #990000;\n  color: #fff !important; }\n\n.pin {\n  border: 1px solid #008000;\n  background-color: #fff;\n  color: #008000;\n  cursor: pointer; }\n\n.pin:hover {\n  background-color: #006600;\n  color: #fff !important; }\n\n.disabled {\n  pointer-events: none;\n  background: #e8e8e8;\n  border: none;\n  color: white;\n  cursor: default; }\n\n.disabled:hover {\n  pointer-events: none;\n  background: #e8e8e8;\n  border: none;\n  color: white;\n  cursor: default; }\n\n.tableOptions > li > a {\n  color: #323232;\n  font-weight: normal;\n  font-size: 1rem;\n  padding: 0.5rem 0.7rem; }\n\n.menuHeader:hover,\n.tableOptions .menuHeader {\n  background-color: #232f32 !important;\n  color: #fff;\n  padding: 0.3rem 0.7rem;\n  text-transform: uppercase; }\n\n.tableOptions > li {\n  border-bottom: 1px solid #f2f2f2; }\n\n.tableOptions > li:hover {\n  background-color: #f2f2f2; }\n\n.dropdown-pane {\n  padding: 0; }\n\n.panel-grey {\n  background-color: #e4e4e4; }\n\n#emailPanel,\n#namePanel,\n#passwordPanel,\n#dailyReportTimePanel,\n#flappingDownsPanel,\n#considerationPeriodPanel,\n#emailRecipientPanel,\n#maxDataGapPanel,\n#sensorOfflineAllowancePanel {\n  display: none;\n  padding: 1rem;\n  background: #e4e4e4; }\n\ninput[type=checkbox]:checked ~ #port {\n  display: none; }\n\n#port {\n  display: block; }\n\n.inactive-link {\n  display: none; }\n\n.button-cancel {\n  border-color: #990000 !important;\n  color: #990000 !important; }\n\n.font-white {\n  color: #fff; }\n\n.green {\n  background-color: #008000; }\n\n.orange {\n  background-color: #cc7a00; }\n\n.red {\n  background-color: #990000; }\n\n.black {\n  background-color: #1a1b1b; }\n\n.yellow {\n  background-color: #ffcc00; }\n\n.grey {\n  background-color: #737373; }\n\n.loader {\n  height: 4px;\n  width: 100%;\n  position: relative;\n  overflow: hidden;\n  background-color: #ddd; }\n\n.loader:before {\n  display: block;\n  position: absolute;\n  content: \"\";\n  left: -200px;\n  width: 200px;\n  height: 4px;\n  background-color: #2980b9;\n  animation: loading 2s linear infinite; }\n\n.no-border {\n  border: none;\n  width: inherit;\n  background-color: transparent; }\n\n@keyframes loading {\n  from {\n    left: -200px;\n    width: 30%; }\n  50% {\n    width: 30%; }\n  70% {\n    width: 70%; }\n  80% {\n    left: 50%; }\n  95% {\n    left: 120%; }\n  to {\n    left: 100%; } }\n\ntable.sensor-details-table td:nth-child(1) {\n  text-transform: Capitalize; }\n\ntable.sensorHealthTable tbody tr:nth-last-child(1) {\n  background-color: #fafafa;\n  border-top: 0.25px solid #e4e4e4; }\n\ntable.sensorHealthTable tbody th:nth-child(1) {\n  font-weight: normal; }\n\ntable.sensor-details-table tbody {\n  text-align: left; }\n\ntable.sensor-details-table td:nth-child(2), table.sensor-details-table th:nth-child(2) {\n  word-break: break-all;\n  text-align: center; }\n\ntable.actionLog tr > td:nth-child(2) {\n  font-weight: bold; }\n\n.table-container {\n  text-align: center; }\n\n.table-row-highlight {\n  font-weight: bold;\n  border: solid 1px #990000;\n  background-color: rgba(153, 0, 0, 0.4) !important; }\n\n.button-disabled {\n  pointer-events: none;\n  color: #000 !important; }\n\n#top-bar-pin:hover, #top-bar-delete:hover, #top-bar-edit:hover {\n  color: #6abedb; }\n\ninput::-webkit-outer-spin-button,\ninput::-webkit-inner-spin-button {\n  /* display: none; <- Crashes Chrome on hover */\n  -webkit-appearance: none;\n  margin: 0;\n  /* <— Apparently some margin are still there even though it's hidden */ }\n\n.tabs {\n  border: none; }\n\n.addEditSensor > tbody {\n  border: none; }\n\nspan._800 {\n  font-weight: 800; }\n", ""]);
+	exports.push([module.id, "@charset \"UTF-8\";\nbody,\nhtml {\n  background: #f2f2f2;\n  height: 100%;\n  font-family: 'Roboto', sans-serif;\n  color: #1a1b1b; }\n\nbody {\n  -webkit-animation-delay: 0.1s;\n  -webkit-animation-name: fontfix;\n  -webkit-animation-duration: 0.1s;\n  -webkit-animation-iteration-count: 1;\n  -webkit-animation-timing-function: linear; }\n\n@-webkit-keyframes fontfix {\n  from {\n    opacity: 1; }\n  to {\n    opacity: 1; } }\n\n.row {\n  max-width: 80rem; }\n\n.loading-overlay {\n  background-color: rgba(10, 10, 10, 0.45) !important;\n  position: fixed;\n  top: 0;\n  bottom: 0;\n  left: 0;\n  right: 0; }\n\ndiv#offCanvas {\n  width: 350px;\n  height: 100%;\n  background: #e8e8e8; }\n\n.is-open-right {\n  transform: translateX(-350px); }\n\n.off-canvas.position-right {\n  right: -350px; }\n\n.off-canvas-content {\n  background: #f2f2f2; }\n\na {\n  color: #1a1b1b; }\n  a a:hover {\n    color: #6abedb; }\n\nhr {\n  border-color: #bdbdbd;\n  margin-top: 0.5rem;\n  max-width: 100%; }\n\n.divider {\n  border-color: #bdbdbd;\n  margin-bottom: 10px; }\n\n.reveal {\n  top: 100px !important; }\n\ntable thead {\n  background: #d3d3d3;\n  color: #1a1b1b;\n  border: 1px solid #e4e4e4; }\n\ntable tbody {\n  color: #1a1b1b;\n  border: 1px solid #e4e4e4; }\n\n.margin-top-large {\n  margin-top: 4rem; }\n\n.margin-bottom-large {\n  margin-bottom: 4rem; }\n\n.margin-right-small {\n  margin-right: 2rem; }\n\n.margin-left-small {\n  margin-left: 2rem; }\n\n.margin-left-tiny {\n  margin-left: 0.5rem; }\n\n.margin-right-tiny {\n  margin-right: 0.5rem; }\n\n.margin-top-md {\n  margin-top: 2rem; }\n\n.margin-top-small {\n  margin-top: 1rem; }\n\n.margin-top-tiny {\n  margin-top: 0.5rem; }\n\n.margin-bottom-md {\n  margin-bottom: 2rem; }\n\n.margin-bottom-small {\n  margin-bottom: 1rem; }\n\n.textAlignCenter {\n  text-align: center; }\n\nul.header-list {\n  display: inline-block;\n  list-style: none;\n  margin-bottom: 0; }\n\n.sticky {\n  z-index: 10000;\n  left: 0 !important; }\n\n.callout {\n  background-color: #fff; }\n\n.callout-dark {\n  padding: 1.5rem;\n  background-color: #fff;\n  border: 2px solid #bdbdbd;\n  border-top: none;\n  margin-top: 0;\n  border-bottom-right-radius: 4px;\n  border-bottom-left-radius: 4px; }\n\n.scroll {\n  max-height: 100vh;\n  overflow-y: scroll; }\n\n.callout-dark-header {\n  padding: 0.5rem;\n  background-color: #fff;\n  border: 2px solid #bdbdbd;\n  border-bottom: 1px solid #bdbdbd;\n  border-top-left-radius: 4px;\n  border-top-right-radius: 4px;\n  margin-bottom: 0; }\n\n.callout-top-header {\n  padding: 1rem;\n  background-color: #f2f2f2;\n  border: 2px solid #bdbdbd;\n  border-radius: 4px; }\n\n.callout-minimize {\n  margin-bottom: 1rem;\n  border-radius: 4px 4px;\n  padding: 0.5rem; }\n\n.icon-btn-text-small {\n  font-family: 'Roboto', sans-serif;\n  text-transform: Captitalize;\n  top: 15px;\n  right: 15px;\n  position: absolute;\n  color: #323232;\n  font-size: 1.1rem; }\n\n.test {\n  font-family: 'Pathway Gothic One', sans-serif;\n  text-transform: uppercase;\n  color: #fff;\n  font-size: 1rem;\n  background: #6abedb; }\n\nlabel {\n  text-transform: capitalize;\n  color: #232f32; }\n\n.page-title {\n  color: #323232;\n  font-family: 'Roboto', sans-serif;\n  font-weight: 500;\n  font-size: 1.2rem; }\n\n.header {\n  color: #323232;\n  margin-bottom: 0;\n  text-transform: capitalize;\n  font-weight: 500;\n  font-family: 'Roboto', sans-serif; }\n\n.sub-header {\n  color: #232f32;\n  font-size: 1.3rem;\n  font-family: 'Pathway Gothic One', sans-serif; }\n  .sub-header a {\n    text-transform: capitalize; }\n\n#watchList {\n  display: none; }\n\n.settings-page-title {\n  color: #323232;\n  font-family: 'Roboto', sans-serif;\n  font-weight: 700;\n  font-size: 1.4rem; }\n\n.settings-subheader {\n  font-weight: 200;\n  white-space: nowrap; }\n\n.settings-subheader-container {\n  padding-top: 1rem; }\n\n.settings-wrapper {\n  margin-left: 1.8rem;\n  color: #000; }\n\ninput[type=search] {\n  box-shadow: none; }\n\n.top-bar-upper {\n  color: #333;\n  font-size: 0.5rem; }\n\n.app-header {\n  font-size: 1.3rem; }\n\ntable.overview-custom tbody,\ntable.overview-custom th,\ntable.overview-custom thead,\ntable.overview-custom tr {\n  text-align: center; }\n\ntable.sensor-details-table tbody {\n  text-align: left; }\n\n.statusText {\n  color: red;\n  margin-bottom: 1rem;\n  text-transform: uppercase;\n  font-size: 0.85em; }\n\n.notificationHeader {\n  color: #fff;\n  text-transform: uppercase;\n  font-size: 0.5em;\n  font-weight: bold; }\n\n.sensorBlock {\n  height: 30px;\n  border-radius: 30px;\n  width: auto;\n  color: #fff;\n  text-align: center;\n  font-family: 'Pathway Gothic One', sans-serif;\n  text-transform: uppercase; }\n\n.sensorBlockSquare {\n  height: 30px;\n  width: 30px;\n  border-radius: 4px;\n  cursor: pointer;\n  text-align: center;\n  line-height: 28px;\n  color: white;\n  font-weight: bold;\n  margin-bottom: 1px; }\n\n.sensorBlockSquare:hover {\n  opacity: 0.5; }\n\n.sensorList {\n  display: inline-block;\n  margin-right: 1px; }\n\n#uptime-form select {\n  margin-right: 2rem; }\n\n.recharts-tooltip-wrapper {\n  z-index: 1000;\n  box-shadow: 1px 1px 4px #323232;\n  background-color: #fff; }\n\n#glance-tooltip > table tr:nth-of-type(even) {\n  background-color: transparent !important; }\n\n.button-custom {\n  height: 30px;\n  width: auto !important;\n  margin: 0;\n  color: #fff !important;\n  text-align: center;\n  font-family: 'Pathway Gothic One', sans-serif;\n  text-transform: uppercase; }\n\n.proceed {\n  background: #6abedb; }\n\n.cancel {\n  background: #990000; }\n\n.cancel:hover {\n  background: #7a0000; }\n\n.remove {\n  border: 1px solid #990000;\n  background-color: #fff;\n  color: #990000;\n  cursor: pointer; }\n\n.remove:hover {\n  background-color: #990000;\n  color: #fff !important; }\n\n.pin {\n  border: 1px solid #008000;\n  background-color: #fff;\n  color: #008000;\n  cursor: pointer; }\n\n.pin:hover {\n  background-color: #006600;\n  color: #fff !important; }\n\n.disabled {\n  pointer-events: none;\n  background: #e8e8e8;\n  border: none;\n  color: white;\n  cursor: default; }\n\n.disabled:hover {\n  pointer-events: none;\n  background: #e8e8e8;\n  border: none;\n  color: white;\n  cursor: default; }\n\n.tableOptions > li > a {\n  color: #323232;\n  font-weight: normal;\n  font-size: 1rem;\n  padding: 0.5rem 0.7rem; }\n\n.menuHeader:hover,\n.tableOptions .menuHeader {\n  background-color: #232f32 !important;\n  color: #fff;\n  padding: 0.3rem 0.7rem;\n  text-transform: uppercase; }\n\n.tableOptions > li {\n  border-bottom: 1px solid #f2f2f2; }\n\n.tableOptions > li:hover {\n  background-color: #f2f2f2; }\n\n.dropdown-pane {\n  padding: 0; }\n\n.panel-grey {\n  background-color: #e4e4e4; }\n\n#emailPanel,\n#namePanel,\n#passwordPanel,\n#dailyReportTimePanel,\n#flappingDownsPanel,\n#considerationPeriodPanel,\n#emailRecipientPanel,\n#maxDataGapPanel,\n#sensorOfflineAllowancePanel {\n  display: none;\n  padding: 1rem;\n  background: #e4e4e4; }\n\ninput[type=checkbox]:checked ~ #port {\n  display: none; }\n\n#port {\n  display: block; }\n\n.inactive-link {\n  display: none; }\n\n.button-cancel {\n  border-color: #990000 !important;\n  color: #990000 !important; }\n\n.font-white {\n  color: #fff; }\n\n.green {\n  background-color: #008000; }\n\n.orange {\n  background-color: #cc7a00; }\n\n.red {\n  background-color: #990000; }\n\n.black {\n  background-color: #1a1b1b; }\n\n.yellow {\n  background-color: #ffcc00; }\n\n.grey {\n  background-color: #737373; }\n\n.blue {\n  background-color: #0A083B; }\n\n.loader {\n  height: 4px;\n  width: 100%;\n  position: relative;\n  overflow: hidden;\n  background-color: #ddd; }\n\n.loader:before {\n  display: block;\n  position: absolute;\n  content: \"\";\n  left: -200px;\n  width: 200px;\n  height: 4px;\n  background-color: #2980b9;\n  animation: loading 2s linear infinite; }\n\n.no-border {\n  border: none;\n  width: inherit;\n  background-color: transparent; }\n\n@keyframes loading {\n  from {\n    left: -200px;\n    width: 30%; }\n  50% {\n    width: 30%; }\n  70% {\n    width: 70%; }\n  80% {\n    left: 50%; }\n  95% {\n    left: 120%; }\n  to {\n    left: 100%; } }\n\ntable.sensor-details-table td:nth-child(1) {\n  text-transform: Capitalize; }\n\ntable.sensorHealthTable tbody tr:nth-last-child(1) {\n  background-color: #fafafa;\n  border-top: 0.25px solid #e4e4e4; }\n\ntable.sensorHealthTable tbody th:nth-child(1) {\n  font-weight: normal; }\n\ntable.sensor-details-table tbody {\n  text-align: left; }\n\ntable.sensor-details-table td:nth-child(2), table.sensor-details-table th:nth-child(2) {\n  word-break: break-all;\n  text-align: center; }\n\ntable.actionLog tr > td:nth-child(2) {\n  font-weight: bold; }\n\n.table-container {\n  text-align: center; }\n\n.table-row-highlight {\n  font-weight: bold;\n  border: solid 1px #990000;\n  background-color: rgba(153, 0, 0, 0.4) !important; }\n\n.button-disabled {\n  pointer-events: none;\n  color: #000 !important; }\n\n#top-bar-pin:hover, #top-bar-delete:hover, #top-bar-edit:hover {\n  color: #6abedb; }\n\ninput::-webkit-outer-spin-button,\ninput::-webkit-inner-spin-button {\n  /* display: none; <- Crashes Chrome on hover */\n  -webkit-appearance: none;\n  margin: 0;\n  /* <— Apparently some margin are still there even though it's hidden */ }\n\n.tabs {\n  border: none; }\n\n.addEditSensor > tbody {\n  border: none; }\n\nspan._800 {\n  font-weight: 800; }\n", ""]);
 
 	// exports
 
@@ -103484,7 +103575,7 @@
 	exports.push([module.id, "@import url(https://fonts.googleapis.com/css?family=Lato:400,900i);", ""]);
 
 	// module
-	exports.push([module.id, "@charset \"UTF-8\";\nbody,\nhtml {\n  background: #f2f2f2;\n  height: 100%;\n  font-family: 'Roboto', sans-serif;\n  color: #1a1b1b; }\n\nbody {\n  -webkit-animation-delay: 0.1s;\n  -webkit-animation-name: fontfix;\n  -webkit-animation-duration: 0.1s;\n  -webkit-animation-iteration-count: 1;\n  -webkit-animation-timing-function: linear; }\n\n@-webkit-keyframes fontfix {\n  from {\n    opacity: 1; }\n  to {\n    opacity: 1; } }\n\n.row {\n  max-width: 80rem; }\n\n.loading-overlay {\n  background-color: rgba(10, 10, 10, 0.45) !important;\n  position: fixed;\n  top: 0;\n  bottom: 0;\n  left: 0;\n  right: 0; }\n\ndiv#offCanvas {\n  width: 350px;\n  height: 100%;\n  background: #e8e8e8; }\n\n.is-open-right {\n  transform: translateX(-350px); }\n\n.off-canvas.position-right {\n  right: -350px; }\n\n.off-canvas-content {\n  background: #f2f2f2; }\n\na {\n  color: #1a1b1b; }\n  a a:hover {\n    color: #6abedb; }\n\nhr {\n  border-color: #bdbdbd;\n  margin-top: 0.5rem;\n  max-width: 100%; }\n\n.divider {\n  border-color: #bdbdbd;\n  margin-bottom: 10px; }\n\n.reveal {\n  top: 100px !important; }\n\ntable thead {\n  background: #d3d3d3;\n  color: #1a1b1b;\n  border: 1px solid #e4e4e4; }\n\ntable tbody {\n  color: #1a1b1b;\n  border: 1px solid #e4e4e4; }\n\n.margin-top-large {\n  margin-top: 4rem; }\n\n.margin-bottom-large {\n  margin-bottom: 4rem; }\n\n.margin-right-small {\n  margin-right: 2rem; }\n\n.margin-left-small {\n  margin-left: 2rem; }\n\n.margin-left-tiny {\n  margin-left: 0.5rem; }\n\n.margin-right-tiny {\n  margin-right: 0.5rem; }\n\n.margin-top-md {\n  margin-top: 2rem; }\n\n.margin-top-small {\n  margin-top: 1rem; }\n\n.margin-top-tiny {\n  margin-top: 0.5rem; }\n\n.margin-bottom-md {\n  margin-bottom: 2rem; }\n\n.margin-bottom-small {\n  margin-bottom: 1rem; }\n\n.textAlignCenter {\n  text-align: center; }\n\nul.header-list {\n  display: inline-block;\n  list-style: none;\n  margin-bottom: 0; }\n\n.sticky {\n  z-index: 10000;\n  left: 0 !important; }\n\n.callout {\n  background-color: #fff; }\n\n.callout-dark {\n  padding: 1.5rem;\n  background-color: #fff;\n  border: 2px solid #bdbdbd;\n  border-top: none;\n  margin-top: 0;\n  border-bottom-right-radius: 4px;\n  border-bottom-left-radius: 4px; }\n\n.scroll {\n  max-height: 100vh;\n  overflow-y: scroll; }\n\n.callout-dark-header {\n  padding: 0.5rem;\n  background-color: #fff;\n  border: 2px solid #bdbdbd;\n  border-bottom: 1px solid #bdbdbd;\n  border-top-left-radius: 4px;\n  border-top-right-radius: 4px;\n  margin-bottom: 0; }\n\n.callout-top-header {\n  padding: 1rem;\n  background-color: #f2f2f2;\n  border: 2px solid #bdbdbd;\n  border-radius: 4px; }\n\n.callout-minimize {\n  margin-bottom: 1rem;\n  border-radius: 4px 4px;\n  padding: 0.5rem; }\n\n.icon-btn-text-small {\n  font-family: 'Roboto', sans-serif;\n  text-transform: Captitalize;\n  top: 15px;\n  right: 15px;\n  position: absolute;\n  color: #323232;\n  font-size: 1.1rem; }\n\n.test {\n  font-family: 'Pathway Gothic One', sans-serif;\n  text-transform: uppercase;\n  color: #fff;\n  font-size: 1rem;\n  background: #6abedb; }\n\nlabel {\n  text-transform: capitalize;\n  color: #232f32; }\n\n.page-title {\n  color: #323232;\n  font-family: 'Roboto', sans-serif;\n  font-weight: 500;\n  font-size: 1.2rem; }\n\n.header {\n  color: #323232;\n  margin-bottom: 0;\n  text-transform: capitalize;\n  font-weight: 500;\n  font-family: 'Roboto', sans-serif; }\n\n.sub-header {\n  color: #232f32;\n  font-size: 1.3rem;\n  font-family: 'Pathway Gothic One', sans-serif; }\n  .sub-header a {\n    text-transform: capitalize; }\n\n#watchList {\n  display: none; }\n\n.settings-page-title {\n  color: #323232;\n  font-family: 'Roboto', sans-serif;\n  font-weight: 700;\n  font-size: 1.4rem; }\n\n.settings-subheader {\n  font-weight: 200;\n  white-space: nowrap; }\n\n.settings-subheader-container {\n  padding-top: 1rem; }\n\n.settings-wrapper {\n  margin-left: 1.8rem;\n  color: #000; }\n\ninput[type=search] {\n  box-shadow: none; }\n\n.top-bar-upper {\n  color: #333;\n  font-size: 0.5rem; }\n\n.app-header {\n  font-size: 1.3rem; }\n\ntable.overview-custom tbody,\ntable.overview-custom th,\ntable.overview-custom thead,\ntable.overview-custom tr {\n  text-align: center; }\n\ntable.sensor-details-table tbody {\n  text-align: left; }\n\n.statusText {\n  color: red;\n  margin-bottom: 1rem;\n  text-transform: uppercase;\n  font-size: 0.85em; }\n\n.notificationHeader {\n  color: #fff;\n  text-transform: uppercase;\n  font-size: 0.5em;\n  font-weight: bold; }\n\n.sensorBlock {\n  height: 30px;\n  border-radius: 30px;\n  width: auto;\n  color: #fff;\n  text-align: center;\n  font-family: 'Pathway Gothic One', sans-serif;\n  text-transform: uppercase; }\n\n.sensorBlockSquare {\n  height: 30px;\n  width: 30px;\n  border-radius: 4px;\n  cursor: pointer;\n  text-align: center;\n  line-height: 28px;\n  color: white;\n  font-weight: bold;\n  margin-bottom: 1px; }\n\n.sensorBlockSquare:hover {\n  opacity: 0.5; }\n\n.sensorList {\n  display: inline-block;\n  margin-right: 1px; }\n\n#uptime-form select {\n  margin-right: 2rem; }\n\n.recharts-tooltip-wrapper {\n  z-index: 1000;\n  box-shadow: 1px 1px 4px #323232;\n  background-color: #fff; }\n\n#glance-tooltip > table tr:nth-of-type(even) {\n  background-color: transparent !important; }\n\n.button-custom {\n  height: 30px;\n  width: auto !important;\n  margin: 0;\n  color: #fff !important;\n  text-align: center;\n  font-family: 'Pathway Gothic One', sans-serif;\n  text-transform: uppercase; }\n\n.proceed {\n  background: #6abedb; }\n\n.cancel {\n  background: #990000; }\n\n.cancel:hover {\n  background: #7a0000; }\n\n.remove {\n  border: 1px solid #990000;\n  background-color: #fff;\n  color: #990000;\n  cursor: pointer; }\n\n.remove:hover {\n  background-color: #990000;\n  color: #fff !important; }\n\n.pin {\n  border: 1px solid #008000;\n  background-color: #fff;\n  color: #008000;\n  cursor: pointer; }\n\n.pin:hover {\n  background-color: #006600;\n  color: #fff !important; }\n\n.disabled {\n  pointer-events: none;\n  background: #e8e8e8;\n  border: none;\n  color: white;\n  cursor: default; }\n\n.disabled:hover {\n  pointer-events: none;\n  background: #e8e8e8;\n  border: none;\n  color: white;\n  cursor: default; }\n\n.tableOptions > li > a {\n  color: #323232;\n  font-weight: normal;\n  font-size: 1rem;\n  padding: 0.5rem 0.7rem; }\n\n.menuHeader:hover,\n.tableOptions .menuHeader {\n  background-color: #232f32 !important;\n  color: #fff;\n  padding: 0.3rem 0.7rem;\n  text-transform: uppercase; }\n\n.tableOptions > li {\n  border-bottom: 1px solid #f2f2f2; }\n\n.tableOptions > li:hover {\n  background-color: #f2f2f2; }\n\n.dropdown-pane {\n  padding: 0; }\n\n.panel-grey {\n  background-color: #e4e4e4; }\n\n#emailPanel,\n#namePanel,\n#passwordPanel,\n#dailyReportTimePanel,\n#flappingDownsPanel,\n#considerationPeriodPanel,\n#emailRecipientPanel,\n#maxDataGapPanel,\n#sensorOfflineAllowancePanel {\n  display: none;\n  padding: 1rem;\n  background: #e4e4e4; }\n\ninput[type=checkbox]:checked ~ #port {\n  display: none; }\n\n#port {\n  display: block; }\n\n.inactive-link {\n  display: none; }\n\n.button-cancel {\n  border-color: #990000 !important;\n  color: #990000 !important; }\n\n.font-white {\n  color: #fff; }\n\n.green {\n  background-color: #008000; }\n\n.orange {\n  background-color: #cc7a00; }\n\n.red {\n  background-color: #990000; }\n\n.black {\n  background-color: #1a1b1b; }\n\n.yellow {\n  background-color: #ffcc00; }\n\n.grey {\n  background-color: #737373; }\n\n.loader {\n  height: 4px;\n  width: 100%;\n  position: relative;\n  overflow: hidden;\n  background-color: #ddd; }\n\n.loader:before {\n  display: block;\n  position: absolute;\n  content: \"\";\n  left: -200px;\n  width: 200px;\n  height: 4px;\n  background-color: #2980b9;\n  animation: loading 2s linear infinite; }\n\n.no-border {\n  border: none;\n  width: inherit;\n  background-color: transparent; }\n\n@keyframes loading {\n  from {\n    left: -200px;\n    width: 30%; }\n  50% {\n    width: 30%; }\n  70% {\n    width: 70%; }\n  80% {\n    left: 50%; }\n  95% {\n    left: 120%; }\n  to {\n    left: 100%; } }\n\ntable.sensor-details-table td:nth-child(1) {\n  text-transform: Capitalize; }\n\ntable.sensorHealthTable tbody tr:nth-last-child(1) {\n  background-color: #fafafa;\n  border-top: 0.25px solid #e4e4e4; }\n\ntable.sensorHealthTable tbody th:nth-child(1) {\n  font-weight: normal; }\n\ntable.sensor-details-table tbody {\n  text-align: left; }\n\ntable.sensor-details-table td:nth-child(2), table.sensor-details-table th:nth-child(2) {\n  word-break: break-all;\n  text-align: center; }\n\ntable.actionLog tr > td:nth-child(2) {\n  font-weight: bold; }\n\n.table-container {\n  text-align: center; }\n\n.table-row-highlight {\n  font-weight: bold;\n  border: solid 1px #990000;\n  background-color: rgba(153, 0, 0, 0.4) !important; }\n\n.button-disabled {\n  pointer-events: none;\n  color: #000 !important; }\n\n#top-bar-pin:hover, #top-bar-delete:hover, #top-bar-edit:hover {\n  color: #6abedb; }\n\ninput::-webkit-outer-spin-button,\ninput::-webkit-inner-spin-button {\n  /* display: none; <- Crashes Chrome on hover */\n  -webkit-appearance: none;\n  margin: 0;\n  /* <— Apparently some margin are still there even though it's hidden */ }\n\n.tabs {\n  border: none; }\n\n.addEditSensor > tbody {\n  border: none; }\n\nspan._800 {\n  font-weight: 800; }\n\n.top-bar-left {\n  margin-top: 1.5rem; }\n\n.top-bar-right {\n  margin-top: 1.5rem;\n  text-align: right; }\n\n.top-bar {\n  padding: 0rem 2rem 0rem 2rem;\n  background: #232f32;\n  height: 4rem;\n  box-shadow: 0.5px 0.5px 5px #373837; }\n\n.top-bar ul {\n  background: #232f32;\n  /* temporary fix */\n  position: absolute;\n  top: 15px;\n  right: 15px; }\n\n.top-bar.lower {\n  padding-top: 0px; }\n\n.top-bar-title {\n  font-size: 1.5rem;\n  font-family: 'Lato', sans-serif;\n  font-weight: bold;\n  position: absolute;\n  top: 15px;\n  left: 15px;\n  color: #fff; }\n\n.menu > li > a {\n  color: #fafafa;\n  font-weight: bold;\n  font-size: 0.9rem;\n  text-transform: capitalize; }\n\n.is-dropdown-submenu {\n  border: 1px solid #373737; }\n", ""]);
+	exports.push([module.id, "@charset \"UTF-8\";\nbody,\nhtml {\n  background: #f2f2f2;\n  height: 100%;\n  font-family: 'Roboto', sans-serif;\n  color: #1a1b1b; }\n\nbody {\n  -webkit-animation-delay: 0.1s;\n  -webkit-animation-name: fontfix;\n  -webkit-animation-duration: 0.1s;\n  -webkit-animation-iteration-count: 1;\n  -webkit-animation-timing-function: linear; }\n\n@-webkit-keyframes fontfix {\n  from {\n    opacity: 1; }\n  to {\n    opacity: 1; } }\n\n.row {\n  max-width: 80rem; }\n\n.loading-overlay {\n  background-color: rgba(10, 10, 10, 0.45) !important;\n  position: fixed;\n  top: 0;\n  bottom: 0;\n  left: 0;\n  right: 0; }\n\ndiv#offCanvas {\n  width: 350px;\n  height: 100%;\n  background: #e8e8e8; }\n\n.is-open-right {\n  transform: translateX(-350px); }\n\n.off-canvas.position-right {\n  right: -350px; }\n\n.off-canvas-content {\n  background: #f2f2f2; }\n\na {\n  color: #1a1b1b; }\n  a a:hover {\n    color: #6abedb; }\n\nhr {\n  border-color: #bdbdbd;\n  margin-top: 0.5rem;\n  max-width: 100%; }\n\n.divider {\n  border-color: #bdbdbd;\n  margin-bottom: 10px; }\n\n.reveal {\n  top: 100px !important; }\n\ntable thead {\n  background: #d3d3d3;\n  color: #1a1b1b;\n  border: 1px solid #e4e4e4; }\n\ntable tbody {\n  color: #1a1b1b;\n  border: 1px solid #e4e4e4; }\n\n.margin-top-large {\n  margin-top: 4rem; }\n\n.margin-bottom-large {\n  margin-bottom: 4rem; }\n\n.margin-right-small {\n  margin-right: 2rem; }\n\n.margin-left-small {\n  margin-left: 2rem; }\n\n.margin-left-tiny {\n  margin-left: 0.5rem; }\n\n.margin-right-tiny {\n  margin-right: 0.5rem; }\n\n.margin-top-md {\n  margin-top: 2rem; }\n\n.margin-top-small {\n  margin-top: 1rem; }\n\n.margin-top-tiny {\n  margin-top: 0.5rem; }\n\n.margin-bottom-md {\n  margin-bottom: 2rem; }\n\n.margin-bottom-small {\n  margin-bottom: 1rem; }\n\n.textAlignCenter {\n  text-align: center; }\n\nul.header-list {\n  display: inline-block;\n  list-style: none;\n  margin-bottom: 0; }\n\n.sticky {\n  z-index: 10000;\n  left: 0 !important; }\n\n.callout {\n  background-color: #fff; }\n\n.callout-dark {\n  padding: 1.5rem;\n  background-color: #fff;\n  border: 2px solid #bdbdbd;\n  border-top: none;\n  margin-top: 0;\n  border-bottom-right-radius: 4px;\n  border-bottom-left-radius: 4px; }\n\n.scroll {\n  max-height: 100vh;\n  overflow-y: scroll; }\n\n.callout-dark-header {\n  padding: 0.5rem;\n  background-color: #fff;\n  border: 2px solid #bdbdbd;\n  border-bottom: 1px solid #bdbdbd;\n  border-top-left-radius: 4px;\n  border-top-right-radius: 4px;\n  margin-bottom: 0; }\n\n.callout-top-header {\n  padding: 1rem;\n  background-color: #f2f2f2;\n  border: 2px solid #bdbdbd;\n  border-radius: 4px; }\n\n.callout-minimize {\n  margin-bottom: 1rem;\n  border-radius: 4px 4px;\n  padding: 0.5rem; }\n\n.icon-btn-text-small {\n  font-family: 'Roboto', sans-serif;\n  text-transform: Captitalize;\n  top: 15px;\n  right: 15px;\n  position: absolute;\n  color: #323232;\n  font-size: 1.1rem; }\n\n.test {\n  font-family: 'Pathway Gothic One', sans-serif;\n  text-transform: uppercase;\n  color: #fff;\n  font-size: 1rem;\n  background: #6abedb; }\n\nlabel {\n  text-transform: capitalize;\n  color: #232f32; }\n\n.page-title {\n  color: #323232;\n  font-family: 'Roboto', sans-serif;\n  font-weight: 500;\n  font-size: 1.2rem; }\n\n.header {\n  color: #323232;\n  margin-bottom: 0;\n  text-transform: capitalize;\n  font-weight: 500;\n  font-family: 'Roboto', sans-serif; }\n\n.sub-header {\n  color: #232f32;\n  font-size: 1.3rem;\n  font-family: 'Pathway Gothic One', sans-serif; }\n  .sub-header a {\n    text-transform: capitalize; }\n\n#watchList {\n  display: none; }\n\n.settings-page-title {\n  color: #323232;\n  font-family: 'Roboto', sans-serif;\n  font-weight: 700;\n  font-size: 1.4rem; }\n\n.settings-subheader {\n  font-weight: 200;\n  white-space: nowrap; }\n\n.settings-subheader-container {\n  padding-top: 1rem; }\n\n.settings-wrapper {\n  margin-left: 1.8rem;\n  color: #000; }\n\ninput[type=search] {\n  box-shadow: none; }\n\n.top-bar-upper {\n  color: #333;\n  font-size: 0.5rem; }\n\n.app-header {\n  font-size: 1.3rem; }\n\ntable.overview-custom tbody,\ntable.overview-custom th,\ntable.overview-custom thead,\ntable.overview-custom tr {\n  text-align: center; }\n\ntable.sensor-details-table tbody {\n  text-align: left; }\n\n.statusText {\n  color: red;\n  margin-bottom: 1rem;\n  text-transform: uppercase;\n  font-size: 0.85em; }\n\n.notificationHeader {\n  color: #fff;\n  text-transform: uppercase;\n  font-size: 0.5em;\n  font-weight: bold; }\n\n.sensorBlock {\n  height: 30px;\n  border-radius: 30px;\n  width: auto;\n  color: #fff;\n  text-align: center;\n  font-family: 'Pathway Gothic One', sans-serif;\n  text-transform: uppercase; }\n\n.sensorBlockSquare {\n  height: 30px;\n  width: 30px;\n  border-radius: 4px;\n  cursor: pointer;\n  text-align: center;\n  line-height: 28px;\n  color: white;\n  font-weight: bold;\n  margin-bottom: 1px; }\n\n.sensorBlockSquare:hover {\n  opacity: 0.5; }\n\n.sensorList {\n  display: inline-block;\n  margin-right: 1px; }\n\n#uptime-form select {\n  margin-right: 2rem; }\n\n.recharts-tooltip-wrapper {\n  z-index: 1000;\n  box-shadow: 1px 1px 4px #323232;\n  background-color: #fff; }\n\n#glance-tooltip > table tr:nth-of-type(even) {\n  background-color: transparent !important; }\n\n.button-custom {\n  height: 30px;\n  width: auto !important;\n  margin: 0;\n  color: #fff !important;\n  text-align: center;\n  font-family: 'Pathway Gothic One', sans-serif;\n  text-transform: uppercase; }\n\n.proceed {\n  background: #6abedb; }\n\n.cancel {\n  background: #990000; }\n\n.cancel:hover {\n  background: #7a0000; }\n\n.remove {\n  border: 1px solid #990000;\n  background-color: #fff;\n  color: #990000;\n  cursor: pointer; }\n\n.remove:hover {\n  background-color: #990000;\n  color: #fff !important; }\n\n.pin {\n  border: 1px solid #008000;\n  background-color: #fff;\n  color: #008000;\n  cursor: pointer; }\n\n.pin:hover {\n  background-color: #006600;\n  color: #fff !important; }\n\n.disabled {\n  pointer-events: none;\n  background: #e8e8e8;\n  border: none;\n  color: white;\n  cursor: default; }\n\n.disabled:hover {\n  pointer-events: none;\n  background: #e8e8e8;\n  border: none;\n  color: white;\n  cursor: default; }\n\n.tableOptions > li > a {\n  color: #323232;\n  font-weight: normal;\n  font-size: 1rem;\n  padding: 0.5rem 0.7rem; }\n\n.menuHeader:hover,\n.tableOptions .menuHeader {\n  background-color: #232f32 !important;\n  color: #fff;\n  padding: 0.3rem 0.7rem;\n  text-transform: uppercase; }\n\n.tableOptions > li {\n  border-bottom: 1px solid #f2f2f2; }\n\n.tableOptions > li:hover {\n  background-color: #f2f2f2; }\n\n.dropdown-pane {\n  padding: 0; }\n\n.panel-grey {\n  background-color: #e4e4e4; }\n\n#emailPanel,\n#namePanel,\n#passwordPanel,\n#dailyReportTimePanel,\n#flappingDownsPanel,\n#considerationPeriodPanel,\n#emailRecipientPanel,\n#maxDataGapPanel,\n#sensorOfflineAllowancePanel {\n  display: none;\n  padding: 1rem;\n  background: #e4e4e4; }\n\ninput[type=checkbox]:checked ~ #port {\n  display: none; }\n\n#port {\n  display: block; }\n\n.inactive-link {\n  display: none; }\n\n.button-cancel {\n  border-color: #990000 !important;\n  color: #990000 !important; }\n\n.font-white {\n  color: #fff; }\n\n.green {\n  background-color: #008000; }\n\n.orange {\n  background-color: #cc7a00; }\n\n.red {\n  background-color: #990000; }\n\n.black {\n  background-color: #1a1b1b; }\n\n.yellow {\n  background-color: #ffcc00; }\n\n.grey {\n  background-color: #737373; }\n\n.blue {\n  background-color: #0A083B; }\n\n.loader {\n  height: 4px;\n  width: 100%;\n  position: relative;\n  overflow: hidden;\n  background-color: #ddd; }\n\n.loader:before {\n  display: block;\n  position: absolute;\n  content: \"\";\n  left: -200px;\n  width: 200px;\n  height: 4px;\n  background-color: #2980b9;\n  animation: loading 2s linear infinite; }\n\n.no-border {\n  border: none;\n  width: inherit;\n  background-color: transparent; }\n\n@keyframes loading {\n  from {\n    left: -200px;\n    width: 30%; }\n  50% {\n    width: 30%; }\n  70% {\n    width: 70%; }\n  80% {\n    left: 50%; }\n  95% {\n    left: 120%; }\n  to {\n    left: 100%; } }\n\ntable.sensor-details-table td:nth-child(1) {\n  text-transform: Capitalize; }\n\ntable.sensorHealthTable tbody tr:nth-last-child(1) {\n  background-color: #fafafa;\n  border-top: 0.25px solid #e4e4e4; }\n\ntable.sensorHealthTable tbody th:nth-child(1) {\n  font-weight: normal; }\n\ntable.sensor-details-table tbody {\n  text-align: left; }\n\ntable.sensor-details-table td:nth-child(2), table.sensor-details-table th:nth-child(2) {\n  word-break: break-all;\n  text-align: center; }\n\ntable.actionLog tr > td:nth-child(2) {\n  font-weight: bold; }\n\n.table-container {\n  text-align: center; }\n\n.table-row-highlight {\n  font-weight: bold;\n  border: solid 1px #990000;\n  background-color: rgba(153, 0, 0, 0.4) !important; }\n\n.button-disabled {\n  pointer-events: none;\n  color: #000 !important; }\n\n#top-bar-pin:hover, #top-bar-delete:hover, #top-bar-edit:hover {\n  color: #6abedb; }\n\ninput::-webkit-outer-spin-button,\ninput::-webkit-inner-spin-button {\n  /* display: none; <- Crashes Chrome on hover */\n  -webkit-appearance: none;\n  margin: 0;\n  /* <— Apparently some margin are still there even though it's hidden */ }\n\n.tabs {\n  border: none; }\n\n.addEditSensor > tbody {\n  border: none; }\n\nspan._800 {\n  font-weight: 800; }\n\n.top-bar-left {\n  margin-top: 1.5rem; }\n\n.top-bar-right {\n  margin-top: 1.5rem;\n  text-align: right; }\n\n.top-bar {\n  padding: 0rem 2rem 0rem 2rem;\n  background: #232f32;\n  height: 4rem;\n  box-shadow: 0.5px 0.5px 5px #373837; }\n\n.top-bar ul {\n  background: #232f32;\n  /* temporary fix */\n  position: absolute;\n  top: 15px;\n  right: 15px; }\n\n.top-bar.lower {\n  padding-top: 0px; }\n\n.top-bar-title {\n  font-size: 1.5rem;\n  font-family: 'Lato', sans-serif;\n  font-weight: bold;\n  position: absolute;\n  top: 15px;\n  left: 15px;\n  color: #fff; }\n\n.menu > li > a {\n  color: #fafafa;\n  font-weight: bold;\n  font-size: 0.9rem;\n  text-transform: capitalize; }\n\n.is-dropdown-submenu {\n  border: 1px solid #373737; }\n", ""]);
 
 	// exports
 
@@ -103566,7 +103657,7 @@
 	exports.push([module.id, "@import url(https://fonts.googleapis.com/css?family=Lato:400,900i);", ""]);
 
 	// module
-	exports.push([module.id, "@charset \"UTF-8\";\nbody,\nhtml {\n  background: #f2f2f2;\n  height: 100%;\n  font-family: 'Roboto', sans-serif;\n  color: #1a1b1b; }\n\nbody {\n  -webkit-animation-delay: 0.1s;\n  -webkit-animation-name: fontfix;\n  -webkit-animation-duration: 0.1s;\n  -webkit-animation-iteration-count: 1;\n  -webkit-animation-timing-function: linear; }\n\n@-webkit-keyframes fontfix {\n  from {\n    opacity: 1; }\n  to {\n    opacity: 1; } }\n\n.row {\n  max-width: 80rem; }\n\n.loading-overlay {\n  background-color: rgba(10, 10, 10, 0.45) !important;\n  position: fixed;\n  top: 0;\n  bottom: 0;\n  left: 0;\n  right: 0; }\n\ndiv#offCanvas {\n  width: 350px;\n  height: 100%;\n  background: #e8e8e8; }\n\n.is-open-right {\n  transform: translateX(-350px); }\n\n.off-canvas.position-right {\n  right: -350px; }\n\n.off-canvas-content {\n  background: #f2f2f2; }\n\na {\n  color: #1a1b1b; }\n  a a:hover {\n    color: #6abedb; }\n\nhr {\n  border-color: #bdbdbd;\n  margin-top: 0.5rem;\n  max-width: 100%; }\n\n.divider {\n  border-color: #bdbdbd;\n  margin-bottom: 10px; }\n\n.reveal {\n  top: 100px !important; }\n\ntable thead {\n  background: #d3d3d3;\n  color: #1a1b1b;\n  border: 1px solid #e4e4e4; }\n\ntable tbody {\n  color: #1a1b1b;\n  border: 1px solid #e4e4e4; }\n\n.margin-top-large {\n  margin-top: 4rem; }\n\n.margin-bottom-large {\n  margin-bottom: 4rem; }\n\n.margin-right-small {\n  margin-right: 2rem; }\n\n.margin-left-small {\n  margin-left: 2rem; }\n\n.margin-left-tiny {\n  margin-left: 0.5rem; }\n\n.margin-right-tiny {\n  margin-right: 0.5rem; }\n\n.margin-top-md {\n  margin-top: 2rem; }\n\n.margin-top-small {\n  margin-top: 1rem; }\n\n.margin-top-tiny {\n  margin-top: 0.5rem; }\n\n.margin-bottom-md {\n  margin-bottom: 2rem; }\n\n.margin-bottom-small {\n  margin-bottom: 1rem; }\n\n.textAlignCenter {\n  text-align: center; }\n\nul.header-list {\n  display: inline-block;\n  list-style: none;\n  margin-bottom: 0; }\n\n.sticky {\n  z-index: 10000;\n  left: 0 !important; }\n\n.callout {\n  background-color: #fff; }\n\n.callout-dark {\n  padding: 1.5rem;\n  background-color: #fff;\n  border: 2px solid #bdbdbd;\n  border-top: none;\n  margin-top: 0;\n  border-bottom-right-radius: 4px;\n  border-bottom-left-radius: 4px; }\n\n.scroll {\n  max-height: 100vh;\n  overflow-y: scroll; }\n\n.callout-dark-header {\n  padding: 0.5rem;\n  background-color: #fff;\n  border: 2px solid #bdbdbd;\n  border-bottom: 1px solid #bdbdbd;\n  border-top-left-radius: 4px;\n  border-top-right-radius: 4px;\n  margin-bottom: 0; }\n\n.callout-top-header {\n  padding: 1rem;\n  background-color: #f2f2f2;\n  border: 2px solid #bdbdbd;\n  border-radius: 4px; }\n\n.callout-minimize {\n  margin-bottom: 1rem;\n  border-radius: 4px 4px;\n  padding: 0.5rem; }\n\n.icon-btn-text-small {\n  font-family: 'Roboto', sans-serif;\n  text-transform: Captitalize;\n  top: 15px;\n  right: 15px;\n  position: absolute;\n  color: #323232;\n  font-size: 1.1rem; }\n\n.test {\n  font-family: 'Pathway Gothic One', sans-serif;\n  text-transform: uppercase;\n  color: #fff;\n  font-size: 1rem;\n  background: #6abedb; }\n\nlabel {\n  text-transform: capitalize;\n  color: #232f32; }\n\n.page-title {\n  color: #323232;\n  font-family: 'Roboto', sans-serif;\n  font-weight: 500;\n  font-size: 1.2rem; }\n\n.header {\n  color: #323232;\n  margin-bottom: 0;\n  text-transform: capitalize;\n  font-weight: 500;\n  font-family: 'Roboto', sans-serif; }\n\n.sub-header {\n  color: #232f32;\n  font-size: 1.3rem;\n  font-family: 'Pathway Gothic One', sans-serif; }\n  .sub-header a {\n    text-transform: capitalize; }\n\n#watchList {\n  display: none; }\n\n.settings-page-title {\n  color: #323232;\n  font-family: 'Roboto', sans-serif;\n  font-weight: 700;\n  font-size: 1.4rem; }\n\n.settings-subheader {\n  font-weight: 200;\n  white-space: nowrap; }\n\n.settings-subheader-container {\n  padding-top: 1rem; }\n\n.settings-wrapper {\n  margin-left: 1.8rem;\n  color: #000; }\n\ninput[type=search] {\n  box-shadow: none; }\n\n.top-bar-upper {\n  color: #333;\n  font-size: 0.5rem; }\n\n.app-header {\n  font-size: 1.3rem; }\n\ntable.overview-custom tbody,\ntable.overview-custom th,\ntable.overview-custom thead,\ntable.overview-custom tr {\n  text-align: center; }\n\ntable.sensor-details-table tbody {\n  text-align: left; }\n\n.statusText {\n  color: red;\n  margin-bottom: 1rem;\n  text-transform: uppercase;\n  font-size: 0.85em; }\n\n.notificationHeader {\n  color: #fff;\n  text-transform: uppercase;\n  font-size: 0.5em;\n  font-weight: bold; }\n\n.sensorBlock {\n  height: 30px;\n  border-radius: 30px;\n  width: auto;\n  color: #fff;\n  text-align: center;\n  font-family: 'Pathway Gothic One', sans-serif;\n  text-transform: uppercase; }\n\n.sensorBlockSquare {\n  height: 30px;\n  width: 30px;\n  border-radius: 4px;\n  cursor: pointer;\n  text-align: center;\n  line-height: 28px;\n  color: white;\n  font-weight: bold;\n  margin-bottom: 1px; }\n\n.sensorBlockSquare:hover {\n  opacity: 0.5; }\n\n.sensorList {\n  display: inline-block;\n  margin-right: 1px; }\n\n#uptime-form select {\n  margin-right: 2rem; }\n\n.recharts-tooltip-wrapper {\n  z-index: 1000;\n  box-shadow: 1px 1px 4px #323232;\n  background-color: #fff; }\n\n#glance-tooltip > table tr:nth-of-type(even) {\n  background-color: transparent !important; }\n\n.button-custom {\n  height: 30px;\n  width: auto !important;\n  margin: 0;\n  color: #fff !important;\n  text-align: center;\n  font-family: 'Pathway Gothic One', sans-serif;\n  text-transform: uppercase; }\n\n.proceed {\n  background: #6abedb; }\n\n.cancel {\n  background: #990000; }\n\n.cancel:hover {\n  background: #7a0000; }\n\n.remove {\n  border: 1px solid #990000;\n  background-color: #fff;\n  color: #990000;\n  cursor: pointer; }\n\n.remove:hover {\n  background-color: #990000;\n  color: #fff !important; }\n\n.pin {\n  border: 1px solid #008000;\n  background-color: #fff;\n  color: #008000;\n  cursor: pointer; }\n\n.pin:hover {\n  background-color: #006600;\n  color: #fff !important; }\n\n.disabled {\n  pointer-events: none;\n  background: #e8e8e8;\n  border: none;\n  color: white;\n  cursor: default; }\n\n.disabled:hover {\n  pointer-events: none;\n  background: #e8e8e8;\n  border: none;\n  color: white;\n  cursor: default; }\n\n.tableOptions > li > a {\n  color: #323232;\n  font-weight: normal;\n  font-size: 1rem;\n  padding: 0.5rem 0.7rem; }\n\n.menuHeader:hover,\n.tableOptions .menuHeader {\n  background-color: #232f32 !important;\n  color: #fff;\n  padding: 0.3rem 0.7rem;\n  text-transform: uppercase; }\n\n.tableOptions > li {\n  border-bottom: 1px solid #f2f2f2; }\n\n.tableOptions > li:hover {\n  background-color: #f2f2f2; }\n\n.dropdown-pane {\n  padding: 0; }\n\n.panel-grey {\n  background-color: #e4e4e4; }\n\n#emailPanel,\n#namePanel,\n#passwordPanel,\n#dailyReportTimePanel,\n#flappingDownsPanel,\n#considerationPeriodPanel,\n#emailRecipientPanel,\n#maxDataGapPanel,\n#sensorOfflineAllowancePanel {\n  display: none;\n  padding: 1rem;\n  background: #e4e4e4; }\n\ninput[type=checkbox]:checked ~ #port {\n  display: none; }\n\n#port {\n  display: block; }\n\n.inactive-link {\n  display: none; }\n\n.button-cancel {\n  border-color: #990000 !important;\n  color: #990000 !important; }\n\n.font-white {\n  color: #fff; }\n\n.green {\n  background-color: #008000; }\n\n.orange {\n  background-color: #cc7a00; }\n\n.red {\n  background-color: #990000; }\n\n.black {\n  background-color: #1a1b1b; }\n\n.yellow {\n  background-color: #ffcc00; }\n\n.grey {\n  background-color: #737373; }\n\n.loader {\n  height: 4px;\n  width: 100%;\n  position: relative;\n  overflow: hidden;\n  background-color: #ddd; }\n\n.loader:before {\n  display: block;\n  position: absolute;\n  content: \"\";\n  left: -200px;\n  width: 200px;\n  height: 4px;\n  background-color: #2980b9;\n  animation: loading 2s linear infinite; }\n\n.no-border {\n  border: none;\n  width: inherit;\n  background-color: transparent; }\n\n@keyframes loading {\n  from {\n    left: -200px;\n    width: 30%; }\n  50% {\n    width: 30%; }\n  70% {\n    width: 70%; }\n  80% {\n    left: 50%; }\n  95% {\n    left: 120%; }\n  to {\n    left: 100%; } }\n\ntable.sensor-details-table td:nth-child(1) {\n  text-transform: Capitalize; }\n\ntable.sensorHealthTable tbody tr:nth-last-child(1) {\n  background-color: #fafafa;\n  border-top: 0.25px solid #e4e4e4; }\n\ntable.sensorHealthTable tbody th:nth-child(1) {\n  font-weight: normal; }\n\ntable.sensor-details-table tbody {\n  text-align: left; }\n\ntable.sensor-details-table td:nth-child(2), table.sensor-details-table th:nth-child(2) {\n  word-break: break-all;\n  text-align: center; }\n\ntable.actionLog tr > td:nth-child(2) {\n  font-weight: bold; }\n\n.table-container {\n  text-align: center; }\n\n.table-row-highlight {\n  font-weight: bold;\n  border: solid 1px #990000;\n  background-color: rgba(153, 0, 0, 0.4) !important; }\n\n.button-disabled {\n  pointer-events: none;\n  color: #000 !important; }\n\n#top-bar-pin:hover, #top-bar-delete:hover, #top-bar-edit:hover {\n  color: #6abedb; }\n\ninput::-webkit-outer-spin-button,\ninput::-webkit-inner-spin-button {\n  /* display: none; <- Crashes Chrome on hover */\n  -webkit-appearance: none;\n  margin: 0;\n  /* <— Apparently some margin are still there even though it's hidden */ }\n\n.tabs {\n  border: none; }\n\n.addEditSensor > tbody {\n  border: none; }\n\nspan._800 {\n  font-weight: 800; }\n\n.griddle-container {\n  border: none !important; }\n\n.griddle .top-section {\n  clear: both;\n  display: table;\n  width: 100%; }\n\n.griddle .griddle-filter {\n  float: left;\n  width: 50%;\n  text-align: left;\n  color: #222;\n  min-height: 1px; }\n\n.griddle-body {\n  font-size: 1em;\n  overflow-x: scroll; }\n\n.griddle .griddle-settings-toggle {\n  float: left;\n  width: 50%;\n  text-align: right;\n  color: #f8f8f8; }\n\n.griddle .griddle-settings {\n  background-color: #FFF;\n  border: 1px solid #DDD;\n  color: #222;\n  padding: 10px;\n  margin-bottom: 10px; }\n\n.griddle .griddle-settings .settings {\n  color: #f8f8f8; }\n\n.griddle .griddle-settings .griddle-columns {\n  clear: both;\n  display: table;\n  width: 100%;\n  border-bottom: 1px solid #EDEDED;\n  margin-bottom: 10px; }\n\n.griddle .griddle-settings .griddle-column-selection {\n  float: left;\n  width: 20%; }\n\n.griddle table {\n  width: 100%;\n  table-layout: auto !important; }\n\n.griddle th {\n  background-color: #EDEDEF;\n  border: 0px;\n  border-bottom: 1px solid #DDD;\n  color: #222;\n  padding: 5px; }\n\n.griddle td {\n  padding: 5px;\n  background-color: #FFF;\n  border-top-color: #DDD;\n  color: #222; }\n\n.griddle .footer-container {\n  padding: 0px;\n  background-color: #EDEDED;\n  border: 0px;\n  color: #222; }\n\n.griddle button {\n  font-weight: bold;\n  color: #232f32; }\n\n.griddle .griddle-previous, .griddle .griddle-page, .griddle .griddle-next {\n  float: left;\n  width: 33%;\n  min-height: 1px;\n  margin-top: 5px; }\n\n.griddle .griddle-page {\n  text-align: center; }\n\n.griddle .griddle-next {\n  text-align: right; }\n", ""]);
+	exports.push([module.id, "@charset \"UTF-8\";\nbody,\nhtml {\n  background: #f2f2f2;\n  height: 100%;\n  font-family: 'Roboto', sans-serif;\n  color: #1a1b1b; }\n\nbody {\n  -webkit-animation-delay: 0.1s;\n  -webkit-animation-name: fontfix;\n  -webkit-animation-duration: 0.1s;\n  -webkit-animation-iteration-count: 1;\n  -webkit-animation-timing-function: linear; }\n\n@-webkit-keyframes fontfix {\n  from {\n    opacity: 1; }\n  to {\n    opacity: 1; } }\n\n.row {\n  max-width: 80rem; }\n\n.loading-overlay {\n  background-color: rgba(10, 10, 10, 0.45) !important;\n  position: fixed;\n  top: 0;\n  bottom: 0;\n  left: 0;\n  right: 0; }\n\ndiv#offCanvas {\n  width: 350px;\n  height: 100%;\n  background: #e8e8e8; }\n\n.is-open-right {\n  transform: translateX(-350px); }\n\n.off-canvas.position-right {\n  right: -350px; }\n\n.off-canvas-content {\n  background: #f2f2f2; }\n\na {\n  color: #1a1b1b; }\n  a a:hover {\n    color: #6abedb; }\n\nhr {\n  border-color: #bdbdbd;\n  margin-top: 0.5rem;\n  max-width: 100%; }\n\n.divider {\n  border-color: #bdbdbd;\n  margin-bottom: 10px; }\n\n.reveal {\n  top: 100px !important; }\n\ntable thead {\n  background: #d3d3d3;\n  color: #1a1b1b;\n  border: 1px solid #e4e4e4; }\n\ntable tbody {\n  color: #1a1b1b;\n  border: 1px solid #e4e4e4; }\n\n.margin-top-large {\n  margin-top: 4rem; }\n\n.margin-bottom-large {\n  margin-bottom: 4rem; }\n\n.margin-right-small {\n  margin-right: 2rem; }\n\n.margin-left-small {\n  margin-left: 2rem; }\n\n.margin-left-tiny {\n  margin-left: 0.5rem; }\n\n.margin-right-tiny {\n  margin-right: 0.5rem; }\n\n.margin-top-md {\n  margin-top: 2rem; }\n\n.margin-top-small {\n  margin-top: 1rem; }\n\n.margin-top-tiny {\n  margin-top: 0.5rem; }\n\n.margin-bottom-md {\n  margin-bottom: 2rem; }\n\n.margin-bottom-small {\n  margin-bottom: 1rem; }\n\n.textAlignCenter {\n  text-align: center; }\n\nul.header-list {\n  display: inline-block;\n  list-style: none;\n  margin-bottom: 0; }\n\n.sticky {\n  z-index: 10000;\n  left: 0 !important; }\n\n.callout {\n  background-color: #fff; }\n\n.callout-dark {\n  padding: 1.5rem;\n  background-color: #fff;\n  border: 2px solid #bdbdbd;\n  border-top: none;\n  margin-top: 0;\n  border-bottom-right-radius: 4px;\n  border-bottom-left-radius: 4px; }\n\n.scroll {\n  max-height: 100vh;\n  overflow-y: scroll; }\n\n.callout-dark-header {\n  padding: 0.5rem;\n  background-color: #fff;\n  border: 2px solid #bdbdbd;\n  border-bottom: 1px solid #bdbdbd;\n  border-top-left-radius: 4px;\n  border-top-right-radius: 4px;\n  margin-bottom: 0; }\n\n.callout-top-header {\n  padding: 1rem;\n  background-color: #f2f2f2;\n  border: 2px solid #bdbdbd;\n  border-radius: 4px; }\n\n.callout-minimize {\n  margin-bottom: 1rem;\n  border-radius: 4px 4px;\n  padding: 0.5rem; }\n\n.icon-btn-text-small {\n  font-family: 'Roboto', sans-serif;\n  text-transform: Captitalize;\n  top: 15px;\n  right: 15px;\n  position: absolute;\n  color: #323232;\n  font-size: 1.1rem; }\n\n.test {\n  font-family: 'Pathway Gothic One', sans-serif;\n  text-transform: uppercase;\n  color: #fff;\n  font-size: 1rem;\n  background: #6abedb; }\n\nlabel {\n  text-transform: capitalize;\n  color: #232f32; }\n\n.page-title {\n  color: #323232;\n  font-family: 'Roboto', sans-serif;\n  font-weight: 500;\n  font-size: 1.2rem; }\n\n.header {\n  color: #323232;\n  margin-bottom: 0;\n  text-transform: capitalize;\n  font-weight: 500;\n  font-family: 'Roboto', sans-serif; }\n\n.sub-header {\n  color: #232f32;\n  font-size: 1.3rem;\n  font-family: 'Pathway Gothic One', sans-serif; }\n  .sub-header a {\n    text-transform: capitalize; }\n\n#watchList {\n  display: none; }\n\n.settings-page-title {\n  color: #323232;\n  font-family: 'Roboto', sans-serif;\n  font-weight: 700;\n  font-size: 1.4rem; }\n\n.settings-subheader {\n  font-weight: 200;\n  white-space: nowrap; }\n\n.settings-subheader-container {\n  padding-top: 1rem; }\n\n.settings-wrapper {\n  margin-left: 1.8rem;\n  color: #000; }\n\ninput[type=search] {\n  box-shadow: none; }\n\n.top-bar-upper {\n  color: #333;\n  font-size: 0.5rem; }\n\n.app-header {\n  font-size: 1.3rem; }\n\ntable.overview-custom tbody,\ntable.overview-custom th,\ntable.overview-custom thead,\ntable.overview-custom tr {\n  text-align: center; }\n\ntable.sensor-details-table tbody {\n  text-align: left; }\n\n.statusText {\n  color: red;\n  margin-bottom: 1rem;\n  text-transform: uppercase;\n  font-size: 0.85em; }\n\n.notificationHeader {\n  color: #fff;\n  text-transform: uppercase;\n  font-size: 0.5em;\n  font-weight: bold; }\n\n.sensorBlock {\n  height: 30px;\n  border-radius: 30px;\n  width: auto;\n  color: #fff;\n  text-align: center;\n  font-family: 'Pathway Gothic One', sans-serif;\n  text-transform: uppercase; }\n\n.sensorBlockSquare {\n  height: 30px;\n  width: 30px;\n  border-radius: 4px;\n  cursor: pointer;\n  text-align: center;\n  line-height: 28px;\n  color: white;\n  font-weight: bold;\n  margin-bottom: 1px; }\n\n.sensorBlockSquare:hover {\n  opacity: 0.5; }\n\n.sensorList {\n  display: inline-block;\n  margin-right: 1px; }\n\n#uptime-form select {\n  margin-right: 2rem; }\n\n.recharts-tooltip-wrapper {\n  z-index: 1000;\n  box-shadow: 1px 1px 4px #323232;\n  background-color: #fff; }\n\n#glance-tooltip > table tr:nth-of-type(even) {\n  background-color: transparent !important; }\n\n.button-custom {\n  height: 30px;\n  width: auto !important;\n  margin: 0;\n  color: #fff !important;\n  text-align: center;\n  font-family: 'Pathway Gothic One', sans-serif;\n  text-transform: uppercase; }\n\n.proceed {\n  background: #6abedb; }\n\n.cancel {\n  background: #990000; }\n\n.cancel:hover {\n  background: #7a0000; }\n\n.remove {\n  border: 1px solid #990000;\n  background-color: #fff;\n  color: #990000;\n  cursor: pointer; }\n\n.remove:hover {\n  background-color: #990000;\n  color: #fff !important; }\n\n.pin {\n  border: 1px solid #008000;\n  background-color: #fff;\n  color: #008000;\n  cursor: pointer; }\n\n.pin:hover {\n  background-color: #006600;\n  color: #fff !important; }\n\n.disabled {\n  pointer-events: none;\n  background: #e8e8e8;\n  border: none;\n  color: white;\n  cursor: default; }\n\n.disabled:hover {\n  pointer-events: none;\n  background: #e8e8e8;\n  border: none;\n  color: white;\n  cursor: default; }\n\n.tableOptions > li > a {\n  color: #323232;\n  font-weight: normal;\n  font-size: 1rem;\n  padding: 0.5rem 0.7rem; }\n\n.menuHeader:hover,\n.tableOptions .menuHeader {\n  background-color: #232f32 !important;\n  color: #fff;\n  padding: 0.3rem 0.7rem;\n  text-transform: uppercase; }\n\n.tableOptions > li {\n  border-bottom: 1px solid #f2f2f2; }\n\n.tableOptions > li:hover {\n  background-color: #f2f2f2; }\n\n.dropdown-pane {\n  padding: 0; }\n\n.panel-grey {\n  background-color: #e4e4e4; }\n\n#emailPanel,\n#namePanel,\n#passwordPanel,\n#dailyReportTimePanel,\n#flappingDownsPanel,\n#considerationPeriodPanel,\n#emailRecipientPanel,\n#maxDataGapPanel,\n#sensorOfflineAllowancePanel {\n  display: none;\n  padding: 1rem;\n  background: #e4e4e4; }\n\ninput[type=checkbox]:checked ~ #port {\n  display: none; }\n\n#port {\n  display: block; }\n\n.inactive-link {\n  display: none; }\n\n.button-cancel {\n  border-color: #990000 !important;\n  color: #990000 !important; }\n\n.font-white {\n  color: #fff; }\n\n.green {\n  background-color: #008000; }\n\n.orange {\n  background-color: #cc7a00; }\n\n.red {\n  background-color: #990000; }\n\n.black {\n  background-color: #1a1b1b; }\n\n.yellow {\n  background-color: #ffcc00; }\n\n.grey {\n  background-color: #737373; }\n\n.blue {\n  background-color: #0A083B; }\n\n.loader {\n  height: 4px;\n  width: 100%;\n  position: relative;\n  overflow: hidden;\n  background-color: #ddd; }\n\n.loader:before {\n  display: block;\n  position: absolute;\n  content: \"\";\n  left: -200px;\n  width: 200px;\n  height: 4px;\n  background-color: #2980b9;\n  animation: loading 2s linear infinite; }\n\n.no-border {\n  border: none;\n  width: inherit;\n  background-color: transparent; }\n\n@keyframes loading {\n  from {\n    left: -200px;\n    width: 30%; }\n  50% {\n    width: 30%; }\n  70% {\n    width: 70%; }\n  80% {\n    left: 50%; }\n  95% {\n    left: 120%; }\n  to {\n    left: 100%; } }\n\ntable.sensor-details-table td:nth-child(1) {\n  text-transform: Capitalize; }\n\ntable.sensorHealthTable tbody tr:nth-last-child(1) {\n  background-color: #fafafa;\n  border-top: 0.25px solid #e4e4e4; }\n\ntable.sensorHealthTable tbody th:nth-child(1) {\n  font-weight: normal; }\n\ntable.sensor-details-table tbody {\n  text-align: left; }\n\ntable.sensor-details-table td:nth-child(2), table.sensor-details-table th:nth-child(2) {\n  word-break: break-all;\n  text-align: center; }\n\ntable.actionLog tr > td:nth-child(2) {\n  font-weight: bold; }\n\n.table-container {\n  text-align: center; }\n\n.table-row-highlight {\n  font-weight: bold;\n  border: solid 1px #990000;\n  background-color: rgba(153, 0, 0, 0.4) !important; }\n\n.button-disabled {\n  pointer-events: none;\n  color: #000 !important; }\n\n#top-bar-pin:hover, #top-bar-delete:hover, #top-bar-edit:hover {\n  color: #6abedb; }\n\ninput::-webkit-outer-spin-button,\ninput::-webkit-inner-spin-button {\n  /* display: none; <- Crashes Chrome on hover */\n  -webkit-appearance: none;\n  margin: 0;\n  /* <— Apparently some margin are still there even though it's hidden */ }\n\n.tabs {\n  border: none; }\n\n.addEditSensor > tbody {\n  border: none; }\n\nspan._800 {\n  font-weight: 800; }\n\n.griddle-container {\n  border: none !important; }\n\n.griddle .top-section {\n  clear: both;\n  display: table;\n  width: 100%; }\n\n.griddle .griddle-filter {\n  float: left;\n  width: 50%;\n  text-align: left;\n  color: #222;\n  min-height: 1px; }\n\n.griddle-body {\n  font-size: 1em;\n  overflow-x: scroll; }\n\n.griddle .griddle-settings-toggle {\n  float: left;\n  width: 50%;\n  text-align: right;\n  color: #f8f8f8; }\n\n.griddle .griddle-settings {\n  background-color: #FFF;\n  border: 1px solid #DDD;\n  color: #222;\n  padding: 10px;\n  margin-bottom: 10px; }\n\n.griddle .griddle-settings .settings {\n  color: #f8f8f8; }\n\n.griddle .griddle-settings .griddle-columns {\n  clear: both;\n  display: table;\n  width: 100%;\n  border-bottom: 1px solid #EDEDED;\n  margin-bottom: 10px; }\n\n.griddle .griddle-settings .griddle-column-selection {\n  float: left;\n  width: 20%; }\n\n.griddle table {\n  width: 100%;\n  table-layout: auto !important; }\n\n.griddle th {\n  background-color: #EDEDEF;\n  border: 0px;\n  border-bottom: 1px solid #DDD;\n  color: #222;\n  padding: 5px; }\n\n.griddle td {\n  padding: 5px;\n  background-color: #FFF;\n  border-top-color: #DDD;\n  color: #222; }\n\n.griddle .footer-container {\n  padding: 0px;\n  background-color: #EDEDED;\n  border: 0px;\n  color: #222; }\n\n.griddle button {\n  font-weight: bold;\n  color: #232f32; }\n\n.griddle .griddle-previous, .griddle .griddle-page, .griddle .griddle-next {\n  float: left;\n  width: 33%;\n  min-height: 1px;\n  margin-top: 5px; }\n\n.griddle .griddle-page {\n  text-align: center; }\n\n.griddle .griddle-next {\n  text-align: right; }\n", ""]);
 
 	// exports
 

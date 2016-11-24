@@ -19,6 +19,7 @@ $red: #990000;
 $yellow: #ffcc00;
 $black: #1a1b1b;
 $grey: #737373;
+$blue: #0A083B;
 
 body,
 html {
@@ -518,6 +519,10 @@ input[type=checkbox]:checked ~ #port {
 
 .grey {
     background-color: $grey;
+}
+
+.blue {
+    background-color: $blue;
 }
 
 .loader {

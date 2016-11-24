@@ -4,6 +4,7 @@ var Recharts = require('recharts');
 var FontAwesome = require('react-fontawesome');
 var retrievehistoricalDataAPI = require('retrieveHistoricalDataAPI');
 var {Link, IndexLink} = require('react-router');
+import {StickyContainer, Sticky} from 'react-sticky';
 const {XAxis, Cell, YAxis, Legend, BarChart, Bar, CartesianGrid, Tooltip, Brush, ResponsiveContainer} = Recharts;
 
 var colorMap = {
@@ -19,7 +20,7 @@ class SimpleBarChart extends React.Component{
 
 	render () {
 
-        var width = $('.row').width() * 0.7;
+        var width = $('.row').width() * 0.6;
         var historicalLink = `/historical/${this.props.buildingName}&${this.props.mac}`;
 
       	return (
@@ -180,20 +181,30 @@ class Uptime extends React.Component {
 
             <div id="uptimeMessage"><UptimeMessage message={message}/></div>
             <div className="margin-bottom-small">You are viewing historical data for {buildingName} between {startDate} & {endDate} at an interval of {interval} minutes.</div>
-
             <hr/>
           </div>
         );
       }
     }
 
+    function renderSticky () {
+
+        if(!isLoading) {
+            return (
+                <StickyLegend/>
+            );
+        }
+    }
+
     return (
       <div id="uptime-wrapper" className="margin-top-large">
         <div className="row" style={{minHeight: '100vh'}}>
-          <div className="columns large-12">
-
+          <div className="columns large-10">
             {renderContent()}
             <UptimeList buildingName={buildingName} data={this.state.data}/>
+          </div>
+          <div className="columns large-2">
+              {renderSticky()}
           </div>
         </div>
       </div>
@@ -204,10 +215,61 @@ class Uptime extends React.Component {
 class UptimeMessage extends React.Component {
     render() {
         var message = this.props.message;
-        // console.log("message from parent: ", message);
 
         return (
           <div className="statusText">{message}</div>
+        );
+    }
+}
+
+
+class StickyLegend extends React.Component {
+    render() {
+
+        const LEGEND_VAL = [
+            {status: "ok", val: "sensorBlockSquare green sensorList"},
+            {status: "warning", val: "sensorBlockSquare yellow sensorList"},
+            {status: "danger", val: "sensorBlockSquare orange sensorList"},
+            {status: "down", val: "sensorBlockSquare red sensorList"},
+            {status: "no data", val: "sensorBlockSquare grey sensorList"},
+            {status: "others", val: "sensorBlockSquare blue sensorList"},
+            {status: "paused", val: "sensorBlockSquare black sensorList"}
+        ];
+
+        var customStyleObject = {
+            top: '30%'
+        }
+
+        var rows = []
+
+        LEGEND_VAL.forEach(function(item) {
+            rows.push(
+                <tr>
+                    <td>
+                        <div className={item['val']}></div>
+                    </td>
+                    <td>
+                        <div style={{textTransform: 'capitalize'}}>{item['status']}</div>
+                    </td>
+                </tr>
+            );
+        });
+
+        return (
+            <StickyContainer>
+                <Sticky stickyStyle={customStyleObject}>
+                    <table style={{margin: '11rem 2rem', width: '75px', float: 'right'}}>
+                        <thead>
+                            <tr>
+                                <th colSpan={2}>Legend</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {rows}
+                        </tbody>
+                    </table>
+                </Sticky>
+            </StickyContainer>
         );
     }
 }
