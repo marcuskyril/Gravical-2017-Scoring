@@ -22,20 +22,12 @@ class Nav extends React.Component {
     }
 
     onLogout() {
-        console.log("attempting logout");
+        console.log("Logging out.");
 
         firebase.auth().signOut().then(() => {
             console.log('Logged out!');
         });
     }
-
-    // componentDidUpdate(prevProps) {
-    //     console.log(prevProps);
-    //     // var {currentTime, userId} = props;
-    //     // // console.log("what this be?",this.props);
-    //     // console.log("currentTime", currentTime);
-    //     // console.log("userId", userId);
-    // }
 
     render() {
         return (

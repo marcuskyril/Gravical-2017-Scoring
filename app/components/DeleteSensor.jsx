@@ -42,9 +42,9 @@ class DeleteSensor extends React.Component {
             } else {
                 that.setState({message: response.success});
 
-                var myCustomEvent = document.createEvent("Event");
+                var mytriggerNotification = document.createEvent("Event");
 
-                myCustomEvent.data = {
+                mytriggerNotification.data = {
                     type: 'deleteSensor',
                     macAdd: macAdd,
                     building: building,
@@ -55,8 +55,8 @@ class DeleteSensor extends React.Component {
                     console.log("Closing canvas");
                 });
 
-                myCustomEvent.initEvent("customEvent", true, true);
-                document.dispatchEvent(myCustomEvent);
+                mytriggerNotification.initEvent("triggerNotification", true, true);
+                document.dispatchEvent(mytriggerNotification);
                 var actionDesc = `Deleted ${macAdd} from ${building} ${location}`;
 
                 dispatch(actions.startAddToLog(userEmail, actionDesc));
@@ -92,7 +92,7 @@ class DeleteSensor extends React.Component {
                             <a className="button proceed expanded" onClick={this.onDeleteSensor.bind(this)}>
                                 Yes I do
                             </a>
-                            <a id="deleteClose" className="button cancel expanded close-reveal-modal" data-close="" aria-label="Close">Slow Down, Cowboy</a>
+                            <a id="deleteClose" className="button cancel expanded close-reveal-modal" data-close="" aria-label="Close">Cancel</a>
                         </div>
                     </div>
                 </form>

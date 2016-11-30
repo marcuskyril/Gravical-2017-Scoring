@@ -1,6 +1,5 @@
 var React = require('react');
 var Griddle = require('griddle-react');
-var retrieveSensorDetails = require('retrieveSensorDetails');
 var ReactDOM = require('react-dom');
 import * as Redux from 'react-redux';
 import * as actions from 'actions';
@@ -131,14 +130,14 @@ class WatchList extends React.Component {
         if($('#unpin-sensor-modal').css('display') === 'none') {
             $('#offCanvas').foundation('open', event);
 
-            var tobascoSauce = document.createEvent("Event");
+            var triggerCanvas = document.createEvent("Event");
 
-            tobascoSauce.data = {
+            triggerCanvas.data = {
                 macAdd: macAddress
             };
 
-            tobascoSauce.initEvent("tobascoSauce", true, true);
-            document.dispatchEvent(tobascoSauce);
+            triggerCanvas.initEvent("triggerCanvas", true, true);
+            document.dispatchEvent(triggerCanvas);
         }
     }
 

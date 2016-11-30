@@ -123,17 +123,17 @@ class AddSensor extends React.Component {
             } else {
                 that.setState({message: response.success});
 
-                var myCustomEvent = document.createEvent("Event");
+                var mytriggerNotification = document.createEvent("Event");
 
-                myCustomEvent.data = {
+                mytriggerNotification.data = {
                     type: 'addSensor',
                     macAdd: inputMac,
                     building: inputBuilding,
                     location: `${inputLocationLevel}${inputLocationID}`
                 };
 
-                myCustomEvent.initEvent("customEvent", true, true);
-                document.dispatchEvent(myCustomEvent);
+                mytriggerNotification.initEvent("triggerNotification", true, true);
+                document.dispatchEvent(mytriggerNotification);
 
                 var actionDesc = `Added ${inputMac} to ${inputBuilding} ${inputLocationLevel}${inputLocationID}`;
                 dispatch(actions.startAddToLog(userEmail, actionDesc));

@@ -36,14 +36,14 @@ class PinComponent extends React.Component {
 
         console.log("macAddress", macAddress);
 
-        var tobascoSauce = document.createEvent("Event");
+        var triggerCanvas = document.createEvent("Event");
 
-        tobascoSauce.data = {
+        triggerCanvas.data = {
             macAdd: macAddress
         };
 
-        tobascoSauce.initEvent("tobascoSauce", true, true);
-        document.dispatchEvent(tobascoSauce);
+        triggerCanvas.initEvent("triggerCanvas", true, true);
+        document.dispatchEvent(triggerCanvas);
     }
 
     renderClass(){

@@ -118,9 +118,9 @@ class VerticalMenu extends React.Component {
 
     handleClick(serverData, action) {
         var macAdd = serverData["mac"];
-        var tobascoSauce = document.createEvent("Event");
+        var triggerCanvas = document.createEvent("Event");
 
-        tobascoSauce.data = {
+        triggerCanvas.data = {
             macAdd: macAdd
         };
 
@@ -128,8 +128,8 @@ class VerticalMenu extends React.Component {
             macAdd: macAdd
         })
 
-        tobascoSauce.initEvent("tobascoSauce", true, true);
-        document.dispatchEvent(tobascoSauce);
+        triggerCanvas.initEvent("triggerCanvas", true, true);
+        document.dispatchEvent(triggerCanvas);
 
     }
     render() {

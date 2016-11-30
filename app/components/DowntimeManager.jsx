@@ -127,17 +127,17 @@ class DowntimeManager extends React.Component {
             } else {
 
                 that.setState({message: `The following sensors were ${pauseTxt}: ${successMacs.join()}`});
-                var myCustomEvent = document.createEvent("Event");
+                var mytriggerNotification = document.createEvent("Event");
 
-                myCustomEvent.data = {
+                mytriggerNotification.data = {
                     type: 'downtimeManager',
                     macAdd: macAdds_str,
                     building: selectedBuilding,
                     location: locations_str
                 };
 
-                myCustomEvent.initEvent("customEvent", true, true);
-                document.dispatchEvent(myCustomEvent);
+                mytriggerNotification.initEvent("triggerNotification", true, true);
+                document.dispatchEvent(mytriggerNotification);
 
                 var actionDesc = `${pauseTxt} ${macAdds_str} from ${selectedBuilding} at the following locations: ${locations_str}`;
                 dispatch(actions.startAddToLog(userEmail, actionDesc));

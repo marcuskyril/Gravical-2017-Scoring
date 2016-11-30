@@ -48,9 +48,9 @@ class PauseSensor extends React.Component {
             } else {
                 that.setState({message: response[0].success});
 
-                var myCustomEvent = document.createEvent("Event");
+                var mytriggerNotification = document.createEvent("Event");
 
-                myCustomEvent.data = {
+                mytriggerNotification.data = {
                     type: 'pauseSensor',
                     macAdd: macAdd,
                     building: building,
@@ -58,8 +58,8 @@ class PauseSensor extends React.Component {
                     pauseStatus: status === "paused" ? "unpausing" : "pausing"
                 };
 
-                myCustomEvent.initEvent("customEvent", true, true);
-                document.dispatchEvent(myCustomEvent);
+                mytriggerNotification.initEvent("triggerNotification", true, true);
+                document.dispatchEvent(mytriggerNotification);
                 var actionDesc = `${pauseMsg} ${macAdd} from ${building} ${location}`;
 
                 dispatch(actions.startAddToLog(userEmail, actionDesc));
@@ -96,7 +96,7 @@ class PauseSensor extends React.Component {
                             <a className="button proceed expanded" onClick={this.onPauseSensor.bind(this)}>
                                 Yes I do
                             </a>
-                            <a id="pauseClose" className="button cancel expanded close-reveal-modal" data-close="" aria-label="Close">Slow Down, Cowboy</a>
+                            <a id="pauseClose" className="button cancel expanded close-reveal-modal" data-close="" aria-label="Close">Cancel</a>
                         </div>
                     </div>
                 </form>

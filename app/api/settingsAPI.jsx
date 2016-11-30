@@ -13,7 +13,7 @@ module.exports = {
             },
             url: GET_CURRENT_SETTINGS_URL,
             success: function(response) {
-                console.log("Tres manifique, monsieur", response);
+                // console.log("Tres manifique, monsieur", response);
             }
         });
     },
@@ -31,7 +31,7 @@ module.exports = {
             url: UDPATE_FLAPPING_URL,
             data: data,
             success: function(response) {
-                console.log("Tres manifique, monsieur", response);
+                // console.log("Tres manifique, monsieur", response);
             }
         });
 

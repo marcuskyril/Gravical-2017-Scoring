@@ -7,42 +7,38 @@ import firebase from 'app/firebase/';
 
 class Main extends React.Component {
 
-constructor(props) {
-    super(props);
-}
+    constructor(props) {
+        super(props);
+    }
 
-componentDidMount() {
-    $(document).foundation();
-}
+    componentDidMount() {
+        $(document).foundation();
+    }
 
-render() {
-
-    var iframeLink = "./offCrepe.html?";
-
-    return (
-        <div>
-
-            <div className="off-canvas-wrapper">
-                <div className="off-canvas-wrapper-inner" data-off-canvas-wrapper>
-                    <div className="off-canvas position-right" data-position="right" id="offCanvas" data-off-canvas>
-                        <SensorDetails/>
-                    </div>
-
-                    <div className="off-canvas-content" data-off-canvas-content>
-                        <StickyContainer>
-                          <Sticky>
-                            <Nav/>
-                        </Sticky>
-                        <div>
-                          {this.props.children}
+    render() {
+        return (
+            <div>
+                <div className="off-canvas-wrapper">
+                    <div className="off-canvas-wrapper-inner" data-off-canvas-wrapper>
+                        <div className="off-canvas position-right" data-position="right" id="offCanvas" data-off-canvas>
+                            <SensorDetails/>
                         </div>
-                      </StickyContainer>
+
+                        <div className="off-canvas-content" data-off-canvas-content>
+                            <StickyContainer>
+                              <Sticky>
+                                <Nav/>
+                            </Sticky>
+                            <div>
+                              {this.props.children}
+                            </div>
+                          </StickyContainer>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-    );
-}
-};
+            );
+        }
+    };
 
 module.exports = Main;

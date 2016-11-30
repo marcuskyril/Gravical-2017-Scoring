@@ -55,7 +55,7 @@ class ConfirmationModal extends React.Component {
                                 Yes I do
                             </button>
                             <button id="closeDelete" className="button hollow expanded" data-close="">
-                                Slow down, cowboy
+                                Cancel
                             </button>
                         </div>
                     </div>
@@ -104,7 +104,7 @@ class AccountSettings extends React.Component {
         var that = this;
         var {reportTiming, emailRecipient, maxDataGap, sensorOfflineAllowance} = DEFAULT_VALUES;
 
-        console.log("restoring", reportTiming, emailRecipient, maxDataGap, sensorOfflineAllowance);
+        // console.log("restoring", reportTiming, emailRecipient, maxDataGap, sensorOfflineAllowance);
 
         settingsAPI.updateReportSettings(reportTiming, emailRecipient, maxDataGap, sensorOfflineAllowance).then(function(response) {
             if(response.error) {
@@ -113,7 +113,7 @@ class AccountSettings extends React.Component {
                     message: response.error
                 });
             } else {
-                console.log("response", response);
+                // console.log("response", response);
                 that.setState({
                     message: response.message,
                     reportTiming,
@@ -133,7 +133,7 @@ class AccountSettings extends React.Component {
             if(response.error) {
                 console.log("Error", response.error);
             } else {
-                console.log("response", response);
+                // console.log("response", response);
                 that.setState({
                     reportTiming: response.daily_notification_time,
                     emailRecipient: response.report_recipient,
@@ -282,7 +282,7 @@ class AccountSettings extends React.Component {
         var newEmail = this.refs.newEmail.value;
         var {dispatch} = this.props;
 
-        console.log("start update email", newEmail);
+        // console.log("start update email", newEmail);
 
         user = firebase.auth().currentUser;
 
@@ -308,7 +308,7 @@ class AccountSettings extends React.Component {
         var newPassword = this.refs.newPassword.value;
         var confirmPassword = this.refs.confirmPassword.value;
 
-        console.log("start update password");
+        // console.log("start update password");
 
         user = firebase.auth().currentUser;
 
@@ -352,7 +352,7 @@ class AccountSettings extends React.Component {
         var {emailRecipient, maxDataGap, sensorOfflineAllowance, maxDataGap} = this.state
         var reportTiming = this.refs.reportTiming.value;
 
-        console.log(emailRecipient, reportTiming, maxDataGap, sensorOfflineAllowance);
+        // console.log(emailRecipient, reportTiming, maxDataGap, sensorOfflineAllowance);
 
         settingsAPI.updateReportSettings(reportTiming, emailRecipient, maxDataGap, sensorOfflineAllowance).then(function(response) {
             if(response.error) {
@@ -361,7 +361,7 @@ class AccountSettings extends React.Component {
                     message: response.error
                 });
             } else {
-                console.log("response", response);
+                // console.log("response", response);
                 that.setState({
                     message: response.message,
                     reportTiming: reportTiming
@@ -389,7 +389,7 @@ class AccountSettings extends React.Component {
                     message: response.error
                 });
             } else {
-                console.log("response", response);
+                // console.log("response", response);
                 that.setState({
                     message: response.message,
                     sensorOfflineAllowance: sensorOfflineAllowance
@@ -410,7 +410,7 @@ class AccountSettings extends React.Component {
         var {reportTiming, emailRecipient, sensorOfflineAllowance} = this.state
         var maxDataGap = this.refs.maxDataGap.value;
 
-        console.log(emailRecipient, reportTiming, maxDataGap, sensorOfflineAllowance);
+        // console.log(emailRecipient, reportTiming, maxDataGap, sensorOfflineAllowance);
 
         settingsAPI.updateReportSettings(reportTiming, emailRecipient, maxDataGap, sensorOfflineAllowance).then(function(response) {
             if(response.error) {
@@ -419,7 +419,7 @@ class AccountSettings extends React.Component {
                     message: response.error
                 });
             } else {
-                console.log("response", response);
+                // console.log("response", response);
                 that.setState({
                     message: response.message,
                     maxDataGap: maxDataGap
@@ -440,7 +440,7 @@ class AccountSettings extends React.Component {
         var {reportTiming, maxDataGap, sensorOfflineAllowance, maxDataGap} = this.state
         var emailRecipient = this.refs.emailRecipient.value;
 
-        console.log(emailRecipient, reportTiming, maxDataGap, sensorOfflineAllowance);
+        // console.log(emailRecipient, reportTiming, maxDataGap, sensorOfflineAllowance);
 
         settingsAPI.updateReportSettings(reportTiming, emailRecipient, maxDataGap, sensorOfflineAllowance).then(function(response) {
             if(response.error) {
@@ -449,7 +449,7 @@ class AccountSettings extends React.Component {
                     message: response.error
                 });
             } else {
-                console.log("response", response);
+                // console.log("response", response);
                 that.setState({
                     message: response.message,
                     emailRecipient: emailRecipient
@@ -473,12 +473,12 @@ class AccountSettings extends React.Component {
             $('#settingsAPIMessage').show();
 
             if(response.error) {
-                console.log("Error1", response.error);
+                // console.log("Error1", response.error);
                 that.setState({
                     message: response.error
                 });
             } else {
-                console.log("response", response);
+                // console.log("response", response);
                 that.setState({
                     message: response.message,
                     flappingThreshold: flappingThreshold

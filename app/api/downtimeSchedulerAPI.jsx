@@ -17,7 +17,7 @@ module.exports = {
             url: DOWNTIME_URL,
             data: data,
             success: function(response) {
-                console.log("Tres manifique, monsieur", response);
+                // console.log("Tres manifique, monsieur", response);
             }
         });
     },
@@ -30,7 +30,7 @@ module.exports = {
             },
             url: BUILDING_ENUMS,
             success: function(response) {
-                console.log("Tres manifique, monsieur", response);
+                // console.log("Tres manifique, monsieur", response);
             }
         });
     }

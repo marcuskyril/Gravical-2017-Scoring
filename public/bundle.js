@@ -10781,7 +10781,7 @@
 	                            React.createElement(
 	                                'button',
 	                                { id: 'closeDelete', className: 'button hollow expanded', 'data-close': '' },
-	                                'Slow down, cowboy'
+	                                'Cancel'
 	                            )
 	                        )
 	                    )
@@ -10841,8 +10841,7 @@
 	            var maxDataGap = DEFAULT_VALUES.maxDataGap;
 	            var sensorOfflineAllowance = DEFAULT_VALUES.sensorOfflineAllowance;
 
-
-	            console.log("restoring", reportTiming, emailRecipient, maxDataGap, sensorOfflineAllowance);
+	            // console.log("restoring", reportTiming, emailRecipient, maxDataGap, sensorOfflineAllowance);
 
 	            settingsAPI.updateReportSettings(reportTiming, emailRecipient, maxDataGap, sensorOfflineAllowance).then(function (response) {
 	                if (response.error) {
@@ -10851,7 +10850,7 @@
 	                        message: response.error
 	                    });
 	                } else {
-	                    console.log("response", response);
+	                    // console.log("response", response);
 	                    that.setState({
 	                        message: response.message,
 	                        reportTiming: reportTiming,
@@ -10872,7 +10871,7 @@
 	                if (response.error) {
 	                    console.log("Error", response.error);
 	                } else {
-	                    console.log("response", response);
+	                    // console.log("response", response);
 	                    that.setState({
 	                        reportTiming: response.daily_notification_time,
 	                        emailRecipient: response.report_recipient,
@@ -11023,8 +11022,7 @@
 	            var newEmail = this.refs.newEmail.value;
 	            var dispatch = this.props.dispatch;
 
-
-	            console.log("start update email", newEmail);
+	            // console.log("start update email", newEmail);
 
 	            user = _firebase2.default.auth().currentUser;
 
@@ -11050,7 +11048,7 @@
 	            var newPassword = this.refs.newPassword.value;
 	            var confirmPassword = this.refs.confirmPassword.value;
 
-	            console.log("start update password");
+	            // console.log("start update password");
 
 	            user = _firebase2.default.auth().currentUser;
 
@@ -11099,7 +11097,7 @@
 
 	            var reportTiming = this.refs.reportTiming.value;
 
-	            console.log(emailRecipient, reportTiming, maxDataGap, sensorOfflineAllowance);
+	            // console.log(emailRecipient, reportTiming, maxDataGap, sensorOfflineAllowance);
 
 	            settingsAPI.updateReportSettings(reportTiming, emailRecipient, maxDataGap, sensorOfflineAllowance).then(function (response) {
 	                if (response.error) {
@@ -11108,7 +11106,7 @@
 	                        message: response.error
 	                    });
 	                } else {
-	                    console.log("response", response);
+	                    // console.log("response", response);
 	                    that.setState({
 	                        message: response.message,
 	                        reportTiming: reportTiming
@@ -11141,7 +11139,7 @@
 	                        message: response.error
 	                    });
 	                } else {
-	                    console.log("response", response);
+	                    // console.log("response", response);
 	                    that.setState({
 	                        message: response.message,
 	                        sensorOfflineAllowance: sensorOfflineAllowance
@@ -11167,7 +11165,7 @@
 
 	            var maxDataGap = this.refs.maxDataGap.value;
 
-	            console.log(emailRecipient, reportTiming, maxDataGap, sensorOfflineAllowance);
+	            // console.log(emailRecipient, reportTiming, maxDataGap, sensorOfflineAllowance);
 
 	            settingsAPI.updateReportSettings(reportTiming, emailRecipient, maxDataGap, sensorOfflineAllowance).then(function (response) {
 	                if (response.error) {
@@ -11176,7 +11174,7 @@
 	                        message: response.error
 	                    });
 	                } else {
-	                    console.log("response", response);
+	                    // console.log("response", response);
 	                    that.setState({
 	                        message: response.message,
 	                        maxDataGap: maxDataGap
@@ -11203,7 +11201,7 @@
 
 	            var emailRecipient = this.refs.emailRecipient.value;
 
-	            console.log(emailRecipient, reportTiming, maxDataGap, sensorOfflineAllowance);
+	            // console.log(emailRecipient, reportTiming, maxDataGap, sensorOfflineAllowance);
 
 	            settingsAPI.updateReportSettings(reportTiming, emailRecipient, maxDataGap, sensorOfflineAllowance).then(function (response) {
 	                if (response.error) {
@@ -11212,7 +11210,7 @@
 	                        message: response.error
 	                    });
 	                } else {
-	                    console.log("response", response);
+	                    // console.log("response", response);
 	                    that.setState({
 	                        message: response.message,
 	                        emailRecipient: emailRecipient
@@ -11237,12 +11235,12 @@
 	                $('#settingsAPIMessage').show();
 
 	                if (response.error) {
-	                    console.log("Error1", response.error);
+	                    // console.log("Error1", response.error);
 	                    that.setState({
 	                        message: response.error
 	                    });
 	                } else {
-	                    console.log("response", response);
+	                    // console.log("response", response);
 	                    that.setState({
 	                        message: response.message,
 	                        flappingThreshold: flappingThreshold
@@ -29364,7 +29362,7 @@
 	            },
 	            url: GET_CURRENT_SETTINGS_URL,
 	            success: function success(response) {
-	                console.log("Tres manifique, monsieur", response);
+	                // console.log("Tres manifique, monsieur", response);
 	            }
 	        });
 	    },
@@ -29382,7 +29380,7 @@
 	            url: UDPATE_FLAPPING_URL,
 	            data: data,
 	            success: function success(response) {
-	                console.log("Tres manifique, monsieur", response);
+	                // console.log("Tres manifique, monsieur", response);
 	            }
 	        });
 	    },
@@ -29470,591 +29468,565 @@
 
 
 	var colorMap = {
-	    "ok": "#006600",
-	    "warning": "#ffcc00",
-	    "danger": "#cc7a00",
-	    "down": "#990000",
-	    "no data": "#737373",
-	    "others": "#0A083B"
+	  "ok": "#006600",
+	  "warning": "#ffcc00",
+	  "danger": "#cc7a00",
+	  "down": "#990000",
+	  "no data": "#737373",
+	  "others": "#0A083B"
 	};
 
 	var SimpleBarChart = function (_React$Component) {
-	    _inherits(SimpleBarChart, _React$Component);
+	  _inherits(SimpleBarChart, _React$Component);
 
-	    function SimpleBarChart() {
-	        _classCallCheck(this, SimpleBarChart);
+	  function SimpleBarChart() {
+	    _classCallCheck(this, SimpleBarChart);
 
-	        return _possibleConstructorReturn(this, Object.getPrototypeOf(SimpleBarChart).apply(this, arguments));
+	    return _possibleConstructorReturn(this, Object.getPrototypeOf(SimpleBarChart).apply(this, arguments));
+	  }
+
+	  _createClass(SimpleBarChart, [{
+	    key: 'render',
+	    value: function render() {
+
+	      var width = $('.row').width() * 0.6;
+	      var historicalLink = '/historical/' + this.props.buildingName + '&' + this.props.mac;
+
+	      return React.createElement(
+	        'div',
+	        { key: this.props.id },
+	        React.createElement(
+	          'div',
+	          { className: 'row' },
+	          React.createElement(
+	            'div',
+	            { className: 'columns large-3' },
+	            React.createElement(
+	              'div',
+	              { className: 'margin-top-tiny' },
+	              React.createElement(
+	                IndexLink,
+	                { to: historicalLink },
+	                this.props.id,
+	                ' | ',
+	                this.props.mac
+	              )
+	            )
+	          ),
+	          React.createElement(
+	            'div',
+	            { className: 'columns large-9' },
+	            React.createElement(
+	              BarChart,
+	              { width: width, height: 40, data: this.props.uptimeData,
+	                margin: { top: 5, right: 30, left: 20, bottom: 5 }, barGap: 0, barCategoryGap: 0 },
+	              React.createElement(CartesianGrid, { strokeDasharray: '3 3' }),
+	              React.createElement(Tooltip, { content: React.createElement(CustomTooltip, { external: this.props.uptimeData }) }),
+	              React.createElement(
+	                Bar,
+	                { dataKey: 'value', isAnimationActive: false },
+	                this.props.uptimeData.map(function (entry, index) {
+	                  return React.createElement(Cell, { key: 'cell=' + index, stroke: colorMap[entry['status']], fill: colorMap[entry['status']] });
+	                })
+	              )
+	            )
+	          )
+	        )
+	      );
 	    }
+	  }]);
 
-	    _createClass(SimpleBarChart, [{
-	        key: 'render',
-	        value: function render() {
-
-	            var width = $('.row').width() * 0.6;
-	            var historicalLink = '/historical/' + this.props.buildingName + '&' + this.props.mac;
-
-	            return React.createElement(
-	                'div',
-	                { key: this.props.id },
-	                React.createElement(
-	                    'div',
-	                    { className: 'row' },
-	                    React.createElement(
-	                        'div',
-	                        { className: 'columns large-3' },
-	                        React.createElement(
-	                            'div',
-	                            { className: 'margin-top-tiny' },
-	                            React.createElement(
-	                                IndexLink,
-	                                { to: historicalLink },
-	                                this.props.id,
-	                                ' | ',
-	                                this.props.mac
-	                            )
-	                        )
-	                    ),
-	                    React.createElement(
-	                        'div',
-	                        { className: 'columns large-9' },
-	                        React.createElement(
-	                            BarChart,
-	                            { width: width, height: 40, data: this.props.uptimeData,
-	                                margin: { top: 5, right: 30, left: 20, bottom: 5 }, barGap: 0, barCategoryGap: 0 },
-	                            React.createElement(CartesianGrid, { strokeDasharray: '3 3' }),
-	                            React.createElement(Tooltip, { content: React.createElement(CustomTooltip, { external: this.props.uptimeData }) }),
-	                            React.createElement(
-	                                Bar,
-	                                { dataKey: 'value', isAnimationActive: false },
-	                                this.props.uptimeData.map(function (entry, index) {
-	                                    return React.createElement(Cell, { key: 'cell=' + index, stroke: colorMap[entry['status']], fill: colorMap[entry['status']] });
-	                                })
-	                            )
-	                        )
-	                    )
-	                )
-	            );
-	        }
-	    }]);
-
-	    return SimpleBarChart;
+	  return SimpleBarChart;
 	}(React.Component);
 
 	;
 
 	var Uptime = function (_React$Component2) {
-	    _inherits(Uptime, _React$Component2);
+	  _inherits(Uptime, _React$Component2);
 
-	    function Uptime(props) {
-	        _classCallCheck(this, Uptime);
+	  function Uptime(props) {
+	    _classCallCheck(this, Uptime);
 
-	        var _this2 = _possibleConstructorReturn(this, Object.getPrototypeOf(Uptime).call(this, props));
+	    var _this2 = _possibleConstructorReturn(this, Object.getPrototypeOf(Uptime).call(this, props));
 
-	        var d = new Date();
-	        d.setDate(d.getDate() - 6);
+	    var d = new Date();
+	    d.setDate(d.getDate() - 6);
 
-	        var startDate = d.toISOString().substring(0, 10);
-	        var endDate = new Date().toISOString().substring(0, 10);
+	    var startDate = d.toISOString().substring(0, 10);
+	    var endDate = new Date().toISOString().substring(0, 10);
 
-	        _this2.state = {
-	            buildingName: props.params.buildingName,
-	            data: null,
-	            isLoading: false,
-	            message: '',
-	            startDate: startDate,
-	            endDate: endDate,
-	            interval: 15
-	        };
-	        return _this2;
+	    _this2.state = {
+	      buildingName: props.params.buildingName,
+	      data: null,
+	      isLoading: false,
+	      message: '',
+	      startDate: startDate,
+	      endDate: endDate,
+	      interval: 15
+	    };
+	    return _this2;
+	  }
+
+	  _createClass(Uptime, [{
+	    key: 'componentDidMount',
+	    value: function componentDidMount() {
+
+	      this.setState({
+	        isLoading: true
+	      });
+
+	      window.scrollTo(0, 0);
+
+	      var _state = this.state;
+	      var startDate = _state.startDate;
+	      var endDate = _state.endDate;
+	      var interval = _state.interval;
+
+
+	      this.retrieveData(startDate, endDate, interval);
 	    }
+	  }, {
+	    key: 'onSubmit',
+	    value: function onSubmit() {
 
-	    _createClass(Uptime, [{
-	        key: 'componentDidMount',
-	        value: function componentDidMount() {
+	      var startDate = this.refs.startDate.value;
+	      var endDate = this.refs.endDate.value;
+	      var interval = parseInt(this.refs.interval.value);
 
-	            this.setState({
-	                isLoading: true
-	            });
+	      var diff = (Date.parse(endDate) - Date.parse(startDate)) / 1000 / 3600 / 24;
 
-	            window.scrollTo(0, 0);
+	      if (Date.parse(endDate) < Date.parse(startDate)) {
+	        this.setState({ message: 'End date is before start date. Please try again.' });
+	      } else if (endDate.length == 0 || startDate.length == 0) {
+	        this.setState({ message: 'Please ensure that the date fields are filled.' });
+	      } else if (diff > 21) {
+	        this.setState({ message: 'Date window selected exceeds 21 days.' });
+	      } else {
+	        this.setState({
+	          data: "",
+	          isLoading: true,
+	          message: ''
+	        });
 
-	            var _state = this.state;
-	            var startDate = _state.startDate;
-	            var endDate = _state.endDate;
-	            var interval = _state.interval;
+	        this.retrieveData(startDate, endDate, interval);
+	      }
+	    }
+	  }, {
+	    key: 'retrieveData',
+	    value: function retrieveData(startDate, endDate, interval) {
 
+	      var that = this;
+	      retrievehistoricalDataAPI.retrieveHistoricalData(that.state.buildingName, startDate, endDate, interval).then(function (response) {
 
-	            this.retrieveData(startDate, endDate, interval);
-	        }
-	    }, {
-	        key: 'onSubmit',
-	        value: function onSubmit() {
+	        that.setState({
+	          data: response,
+	          isLoading: false,
+	          startDate: startDate,
+	          endDate: endDate,
+	          interval: interval
+	        });
+	      });
+	    }
+	  }, {
+	    key: 'minimizeAll',
+	    value: function minimizeAll() {
+	      var panels = $('.callout-dark');
 
-	            var startDate = this.refs.startDate.value;
-	            var endDate = this.refs.endDate.value;
-	            var interval = parseInt(this.refs.interval.value);
+	      if (panels.css('display') === 'block') {
+	        panels.slideUp();
+	      } else {
+	        panels.slideDown();
+	      }
+	    }
+	  }, {
+	    key: 'render',
+	    value: function render() {
 
-	            var diff = (Date.parse(endDate) - Date.parse(startDate)) / 1000 / 3600 / 24;
+	      // console.log("data", this.state.data);
+	      var _state2 = this.state;
+	      var isLoading = _state2.isLoading;
+	      var data = _state2.data;
+	      var buildingName = _state2.buildingName;
+	      var startDate = _state2.startDate;
+	      var endDate = _state2.endDate;
+	      var interval = _state2.interval;
+	      var message = _state2.message;
 
-	            if (Date.parse(endDate) < Date.parse(startDate)) {
-	                this.setState({ message: 'End date is before start date. Please try again.' });
-	            } else if (endDate.length == 0 || startDate.length == 0) {
-	                this.setState({ message: 'Please ensure that the date fields are filled.' });
-	            } else if (diff > 21) {
-	                this.setState({ message: 'Date window selected exceeds 21 days.' });
-	            } else {
-	                this.setState({
-	                    data: "",
-	                    isLoading: true,
-	                    message: ''
-	                });
+	      var that = this;
 
-	                this.retrieveData(startDate, endDate, interval);
-	            }
-	        }
-	    }, {
-	        key: 'retrieveData',
-	        value: function retrieveData(startDate, endDate, interval) {
+	      function renderContent() {
+	        if (isLoading) {
 
-	            var that = this;
-	            retrievehistoricalDataAPI.retrieveHistoricalData(that.state.buildingName, startDate, endDate, interval).then(function (response) {
-
-	                that.setState({
-	                    data: response,
-	                    isLoading: false,
-	                    startDate: startDate,
-	                    endDate: endDate,
-	                    interval: interval
-	                });
-	            });
-	        }
-	    }, {
-	        key: 'minimizeAll',
-	        value: function minimizeAll() {
-	            var panels = $('.callout-dark');
-
-	            if (panels.css('display') === 'block') {
-	                panels.slideUp();
-	            } else {
-	                panels.slideDown();
-	            }
-	        }
-	    }, {
-	        key: 'render',
-	        value: function render() {
-
-	            // console.log("data", this.state.data);
-	            var _state2 = this.state;
-	            var isLoading = _state2.isLoading;
-	            var data = _state2.data;
-	            var buildingName = _state2.buildingName;
-	            var startDate = _state2.startDate;
-	            var endDate = _state2.endDate;
-	            var interval = _state2.interval;
-	            var message = _state2.message;
-
-	            var that = this;
-
-	            function renderContent() {
-	                if (isLoading) {
-
-	                    return React.createElement('div', { className: 'loader' });
-	                } else {
-	                    return React.createElement(
-	                        'div',
-	                        null,
-	                        React.createElement(
-	                            'div',
-	                            { className: 'margin-bottom-small' },
-	                            React.createElement(
-	                                'div',
-	                                { style: { float: 'left' }, className: 'page-title' },
-	                                'Uptime Charts: ',
-	                                buildingName
-	                            ),
-	                            React.createElement(
-	                                'button',
-	                                { className: 'margin-left-small', onClick: that.minimizeAll },
-	                                React.createElement(FontAwesome, { name: 'expand', style: {
-	                                        marginRight: '0.5rem'
-	                                    } }),
-	                                'Show/Hide all'
-	                            )
-	                        ),
-	                        React.createElement(
-	                            'form',
-	                            { id: 'uptime-form', style: { display: 'flex' } },
-	                            React.createElement(
-	                                'label',
-	                                { className: 'margin-right-tiny' },
-	                                'Start Date',
-	                                React.createElement('input', { type: 'date', name: 'startDate', defaultValue: startDate, ref: 'startDate' })
-	                            ),
-	                            React.createElement(
-	                                'label',
-	                                { className: 'margin-right-tiny' },
-	                                'End Date',
-	                                React.createElement('input', { type: 'date', name: 'endDate', defaultValue: endDate, ref: 'endDate' })
-	                            ),
-	                            React.createElement(
-	                                'label',
-	                                { className: 'margin-right-tiny' },
-	                                ' Interval',
-	                                React.createElement(
-	                                    'select',
-	                                    { defaultValue: '' + interval, ref: 'interval' },
-	                                    React.createElement(
-	                                        'option',
-	                                        { value: '30' },
-	                                        '30 mins'
-	                                    ),
-	                                    React.createElement(
-	                                        'option',
-	                                        { value: '15' },
-	                                        '15 mins'
-	                                    )
-	                                )
-	                            ),
-	                            React.createElement(
-	                                'a',
-	                                { className: 'button proceed expanded', style: { height: '40px', width: '100px', alignSelf: 'flex-end' }, onClick: function onClick(e) {
-	                                        return that.onSubmit();
-	                                    } },
-	                                'Go'
-	                            )
-	                        ),
-	                        React.createElement(
-	                            'div',
-	                            { id: 'uptimeMessage' },
-	                            React.createElement(UptimeMessage, { message: message })
-	                        ),
-	                        React.createElement(
-	                            'div',
-	                            { className: 'margin-bottom-small' },
-	                            'You are viewing historical data for ',
-	                            buildingName,
-	                            ' between ',
-	                            startDate,
-	                            ' & ',
-	                            endDate,
-	                            ' at an interval of ',
-	                            interval,
-	                            ' minutes.'
-	                        ),
-	                        React.createElement('hr', null)
-	                    );
-	                }
-	            }
-
-	            function renderSticky() {
-
-	                if (!isLoading) {
-	                    return React.createElement(StickyLegend, null);
-	                }
-	            }
-
-	            return React.createElement(
+	          return React.createElement('div', { className: 'loader' });
+	        } else {
+	          return React.createElement(
+	            'div',
+	            { className: 'row' },
+	            React.createElement(
+	              'div',
+	              { className: 'columns small-12' },
+	              React.createElement(
 	                'div',
-	                { id: 'uptime-wrapper', className: 'margin-top-large' },
+	                { className: 'margin-bottom-small' },
 	                React.createElement(
-	                    'div',
-	                    { className: 'row', style: { minHeight: '100vh' } },
+	                  'div',
+	                  { style: { float: 'left' }, className: 'page-title' },
+	                  'Uptime Charts: ',
+	                  buildingName
+	                ),
+	                React.createElement(
+	                  'button',
+	                  { className: 'margin-left-small', onClick: that.minimizeAll },
+	                  React.createElement(FontAwesome, { name: 'expand', style: {
+	                      marginRight: '0.5rem'
+	                    } }),
+	                  'Show/Hide all'
+	                )
+	              ),
+	              React.createElement(
+	                'form',
+	                { id: 'uptime-form', style: { display: 'flex' } },
+	                React.createElement(
+	                  'label',
+	                  { className: 'margin-right-tiny' },
+	                  'Start Date',
+	                  React.createElement('input', { type: 'date', name: 'startDate', defaultValue: startDate, ref: 'startDate' })
+	                ),
+	                React.createElement(
+	                  'label',
+	                  { className: 'margin-right-tiny' },
+	                  'End Date',
+	                  React.createElement('input', { type: 'date', name: 'endDate', defaultValue: endDate, ref: 'endDate' })
+	                ),
+	                React.createElement(
+	                  'label',
+	                  { className: 'margin-right-tiny' },
+	                  ' Interval',
+	                  React.createElement(
+	                    'select',
+	                    { defaultValue: '' + interval, ref: 'interval' },
 	                    React.createElement(
-	                        'div',
-	                        { className: 'columns small-10 large-10' },
-	                        renderContent(),
-	                        React.createElement(UptimeList, { buildingName: buildingName, data: this.state.data })
+	                      'option',
+	                      { value: '30' },
+	                      '30 mins'
 	                    ),
 	                    React.createElement(
-	                        'div',
-	                        { className: 'columns small-2 large-2' },
-	                        renderSticky()
+	                      'option',
+	                      { value: '15' },
+	                      '15 mins'
 	                    )
+	                  )
+	                ),
+	                React.createElement(
+	                  'a',
+	                  { className: 'button proceed expanded', style: { height: '40px', width: '100px', alignSelf: 'flex-end' }, onClick: function onClick(e) {
+	                      return that.onSubmit();
+	                    } },
+	                  'Go'
 	                )
-	            );
+	              ),
+	              React.createElement(
+	                'div',
+	                { id: 'uptimeMessage' },
+	                React.createElement(UptimeMessage, { message: message })
+	              ),
+	              React.createElement(
+	                'div',
+	                { className: 'margin-bottom-small' },
+	                'You are viewing historical data for ',
+	                buildingName,
+	                ' between ',
+	                startDate,
+	                ' & ',
+	                endDate,
+	                ' at an interval of ',
+	                interval,
+	                ' minutes.'
+	              ),
+	              React.createElement('hr', null)
+	            )
+	          );
 	        }
-	    }]);
+	      }
 
-	    return Uptime;
+	      // function renderSticky () {
+	      //
+	      //     if(!isLoading) {
+	      //         return (
+	      //             <StickyLegend/>
+	      //         );
+	      //     }
+	      // }
+
+	      return React.createElement(
+	        'div',
+	        { id: 'uptime-wrapper', className: 'margin-top-large' },
+	        React.createElement(
+	          'div',
+	          { className: 'row', style: { minHeight: '100vh' } },
+	          React.createElement(
+	            'div',
+	            { className: 'columns large-12' },
+	            renderContent(),
+	            React.createElement(UptimeList, { buildingName: buildingName, data: this.state.data })
+	          )
+	        )
+	      );
+	    }
+	  }]);
+
+	  return Uptime;
 	}(React.Component);
 
 	var UptimeMessage = function (_React$Component3) {
-	    _inherits(UptimeMessage, _React$Component3);
+	  _inherits(UptimeMessage, _React$Component3);
 
-	    function UptimeMessage() {
-	        _classCallCheck(this, UptimeMessage);
+	  function UptimeMessage() {
+	    _classCallCheck(this, UptimeMessage);
 
-	        return _possibleConstructorReturn(this, Object.getPrototypeOf(UptimeMessage).apply(this, arguments));
+	    return _possibleConstructorReturn(this, Object.getPrototypeOf(UptimeMessage).apply(this, arguments));
+	  }
+
+	  _createClass(UptimeMessage, [{
+	    key: 'render',
+	    value: function render() {
+	      var message = this.props.message;
+
+	      return React.createElement(
+	        'div',
+	        { className: 'statusText' },
+	        message
+	      );
 	    }
+	  }]);
 
-	    _createClass(UptimeMessage, [{
-	        key: 'render',
-	        value: function render() {
-	            var message = this.props.message;
-
-	            return React.createElement(
-	                'div',
-	                { className: 'statusText' },
-	                message
-	            );
-	        }
-	    }]);
-
-	    return UptimeMessage;
+	  return UptimeMessage;
 	}(React.Component);
 
-	var StickyLegend = function (_React$Component4) {
-	    _inherits(StickyLegend, _React$Component4);
+	// class StickyLegend extends React.Component {
+	//     render() {
+	//
+	//         const LEGEND_VAL = [
+	//             {status: "ok", val: "sensorBlockSquare green sensorList"},
+	//             {status: "warning", val: "sensorBlockSquare yellow sensorList"},
+	//             {status: "danger", val: "sensorBlockSquare orange sensorList"},
+	//             {status: "down", val: "sensorBlockSquare red sensorList"},
+	//             {status: "no data", val: "sensorBlockSquare grey sensorList"},
+	//             {status: "others", val: "sensorBlockSquare blue sensorList"},
+	//             {status: "paused", val: "sensorBlockSquare black sensorList"}
+	//         ];
+	//
+	//         var customStyleObject = {
+	//             top: '30%'
+	//         }
+	//
+	//         var rows = []
+	//
+	//         LEGEND_VAL.forEach(function(item) {
+	//             rows.push(
+	//                 <tr>
+	//                     <td>
+	//                         <div className={item['val']}></div>
+	//                     </td>
+	//                     <td>
+	//                         <div style={{textTransform: 'capitalize'}}>{item['status']}</div>
+	//                     </td>
+	//                 </tr>
+	//             );
+	//         });
+	//
+	//         return (
+	//             <StickyContainer>
+	//                 <Sticky stickyStyle={customStyleObject}>
+	//                     <table style={{margin: '11rem 2rem', width: '75px', float: 'right'}}>
+	//                         <thead>
+	//                             <tr>
+	//                                 <th colSpan={2}>Legend</th>
+	//                             </tr>
+	//                         </thead>
+	//                         <tbody>
+	//                             {rows}
+	//                         </tbody>
+	//                     </table>
+	//                 </Sticky>
+	//             </StickyContainer>
+	//         );
+	//     }
+	// }
 
-	    function StickyLegend() {
-	        _classCallCheck(this, StickyLegend);
+	var UptimeList = function (_React$Component4) {
+	  _inherits(UptimeList, _React$Component4);
 
-	        return _possibleConstructorReturn(this, Object.getPrototypeOf(StickyLegend).apply(this, arguments));
-	    }
+	  function UptimeList() {
+	    _classCallCheck(this, UptimeList);
 
-	    _createClass(StickyLegend, [{
-	        key: 'render',
-	        value: function render() {
+	    return _possibleConstructorReturn(this, Object.getPrototypeOf(UptimeList).apply(this, arguments));
+	  }
 
-	            var LEGEND_VAL = [{ status: "ok", val: "sensorBlockSquare green sensorList" }, { status: "warning", val: "sensorBlockSquare yellow sensorList" }, { status: "danger", val: "sensorBlockSquare orange sensorList" }, { status: "down", val: "sensorBlockSquare red sensorList" }, { status: "no data", val: "sensorBlockSquare grey sensorList" }, { status: "others", val: "sensorBlockSquare blue sensorList" }, { status: "paused", val: "sensorBlockSquare black sensorList" }];
+	  _createClass(UptimeList, [{
+	    key: 'render',
+	    value: function render() {
+	      var dataList = this.props.data;
+	      var rows = [];
 
-	            var customStyleObject = {
-	                top: '30%'
-	            };
+	      for (var level in dataList) {
+	        if (dataList.hasOwnProperty(level)) {
 
-	            var rows = [];
-
-	            LEGEND_VAL.forEach(function (item) {
-	                rows.push(React.createElement(
-	                    'tr',
-	                    null,
-	                    React.createElement(
-	                        'td',
-	                        null,
-	                        React.createElement('div', { className: item['val'] })
-	                    ),
-	                    React.createElement(
-	                        'td',
-	                        null,
-	                        React.createElement(
-	                            'div',
-	                            { style: { textTransform: 'capitalize' } },
-	                            item['status']
-	                        )
-	                    )
-	                ));
-	            });
-
-	            return React.createElement(
-	                _reactSticky.StickyContainer,
-	                null,
-	                React.createElement(
-	                    _reactSticky.Sticky,
-	                    { stickyStyle: customStyleObject },
-	                    React.createElement(
-	                        'table',
-	                        { style: { margin: '11rem 2rem', width: '75px', float: 'right' } },
-	                        React.createElement(
-	                            'thead',
-	                            null,
-	                            React.createElement(
-	                                'tr',
-	                                null,
-	                                React.createElement(
-	                                    'th',
-	                                    { colSpan: 2 },
-	                                    'Legend'
-	                                )
-	                            )
-	                        ),
-	                        React.createElement(
-	                            'tbody',
-	                            null,
-	                            rows
-	                        )
-	                    )
-	                )
-	            );
+	          var sensorsOnLevel = dataList[level];
+	          rows.push(React.createElement(SensorList, { key: level, level: level, buildingName: this.props.buildingName, data: sensorsOnLevel }));
 	        }
-	    }]);
+	      }
 
-	    return StickyLegend;
+	      return React.createElement(
+	        'div',
+	        null,
+	        rows
+	      );
+	    }
+	  }]);
+
+	  return UptimeList;
 	}(React.Component);
 
-	var UptimeList = function (_React$Component5) {
-	    _inherits(UptimeList, _React$Component5);
+	var SensorList = function (_React$Component5) {
+	  _inherits(SensorList, _React$Component5);
 
-	    function UptimeList() {
-	        _classCallCheck(this, UptimeList);
+	  function SensorList() {
+	    _classCallCheck(this, SensorList);
 
-	        return _possibleConstructorReturn(this, Object.getPrototypeOf(UptimeList).apply(this, arguments));
+	    return _possibleConstructorReturn(this, Object.getPrototypeOf(SensorList).apply(this, arguments));
+	  }
+
+	  _createClass(SensorList, [{
+	    key: 'minimize',
+	    value: function minimize(level) {
+	      var pane = $('#' + level);
+
+	      if (pane.css('display') === 'block') {
+	        pane.slideUp();
+	      } else {
+	        pane.slideDown();
+	      }
 	    }
+	  }, {
+	    key: 'render',
+	    value: function render() {
+	      var _this6 = this;
 
-	    _createClass(UptimeList, [{
-	        key: 'render',
-	        value: function render() {
-	            var dataList = this.props.data;
-	            var rows = [];
+	      var sensorsOnLevel = this.props.data;
+	      var rows = [];
+	      var currentLevel = 'Level ' + this.props.level;
 
-	            for (var level in dataList) {
-	                if (dataList.hasOwnProperty(level)) {
+	      for (var sensor in sensorsOnLevel) {
+	        if (sensorsOnLevel.hasOwnProperty(sensor)) {
+	          var sensor = sensorsOnLevel[sensor];
+	          var mac = sensor["mac"];
+	          var building = sensor["building"];
+	          var level = sensor["level"];
+	          var id = sensor["id"];
+	          var data = sensor["data"];
 
-	                    var sensorsOnLevel = dataList[level];
-	                    rows.push(React.createElement(SensorList, { key: level, level: level, buildingName: this.props.buildingName, data: sensorsOnLevel }));
-	                }
-	            }
-
-	            return React.createElement(
-	                'div',
-	                null,
-	                rows
-	            );
+	          rows.push(React.createElement(SimpleBarChart, { key: mac, mac: mac, id: id, buildingName: this.props.buildingName, level: level, uptimeData: data }));
 	        }
-	    }]);
+	      }
 
-	    return UptimeList;
-	}(React.Component);
-
-	var SensorList = function (_React$Component6) {
-	    _inherits(SensorList, _React$Component6);
-
-	    function SensorList() {
-	        _classCallCheck(this, SensorList);
-
-	        return _possibleConstructorReturn(this, Object.getPrototypeOf(SensorList).apply(this, arguments));
+	      return React.createElement(
+	        'div',
+	        { key: this.props.level, className: 'margin-bottom-md' },
+	        React.createElement(
+	          'div',
+	          { className: 'callout callout-dark-header' },
+	          React.createElement(
+	            'div',
+	            { className: 'page-title' },
+	            currentLevel
+	          ),
+	          React.createElement(
+	            'button',
+	            { onClick: function onClick() {
+	                return _this6.minimize(_this6.props.level);
+	              }, className: 'icon-btn-text-small' },
+	            React.createElement(FontAwesome, { name: 'expand' })
+	          )
+	        ),
+	        React.createElement(
+	          'div',
+	          { key: this.props.level, id: this.props.level, className: 'callout callout-dark' },
+	          rows
+	        )
+	      );
 	    }
+	  }]);
 
-	    _createClass(SensorList, [{
-	        key: 'minimize',
-	        value: function minimize(level) {
-	            var pane = $('#' + level);
-
-	            if (pane.css('display') === 'block') {
-	                pane.slideUp();
-	            } else {
-	                pane.slideDown();
-	            }
-	        }
-	    }, {
-	        key: 'render',
-	        value: function render() {
-	            var _this7 = this;
-
-	            var sensorsOnLevel = this.props.data;
-	            var rows = [];
-	            var currentLevel = 'Level ' + this.props.level;
-
-	            for (var sensor in sensorsOnLevel) {
-	                if (sensorsOnLevel.hasOwnProperty(sensor)) {
-	                    var sensor = sensorsOnLevel[sensor];
-	                    var mac = sensor["mac"];
-	                    var building = sensor["building"];
-	                    var level = sensor["level"];
-	                    var id = sensor["id"];
-	                    var data = sensor["data"];
-
-	                    rows.push(React.createElement(SimpleBarChart, { key: mac, mac: mac, id: id, buildingName: this.props.buildingName, level: level, uptimeData: data }));
-	                }
-	            }
-
-	            return React.createElement(
-	                'div',
-	                { key: this.props.level, className: 'margin-bottom-md' },
-	                React.createElement(
-	                    'div',
-	                    { className: 'callout callout-dark-header' },
-	                    React.createElement(
-	                        'div',
-	                        { className: 'page-title' },
-	                        currentLevel
-	                    ),
-	                    React.createElement(
-	                        'button',
-	                        { onClick: function onClick() {
-	                                return _this7.minimize(_this7.props.level);
-	                            }, className: 'icon-btn-text-small' },
-	                        React.createElement(FontAwesome, { name: 'expand' })
-	                    )
-	                ),
-	                React.createElement(
-	                    'div',
-	                    { key: this.props.level, id: this.props.level, className: 'callout callout-dark' },
-	                    rows
-	                )
-	            );
-	        }
-	    }]);
-
-	    return SensorList;
+	  return SensorList;
 	}(React.Component);
 
 	module.exports = Uptime;
 
-	var CustomTooltip = function (_React$Component7) {
-	    _inherits(CustomTooltip, _React$Component7);
+	var CustomTooltip = function (_React$Component6) {
+	  _inherits(CustomTooltip, _React$Component6);
 
-	    function CustomTooltip() {
-	        _classCallCheck(this, CustomTooltip);
+	  function CustomTooltip() {
+	    _classCallCheck(this, CustomTooltip);
 
-	        return _possibleConstructorReturn(this, Object.getPrototypeOf(CustomTooltip).apply(this, arguments));
+	    return _possibleConstructorReturn(this, Object.getPrototypeOf(CustomTooltip).apply(this, arguments));
+	  }
+
+	  _createClass(CustomTooltip, [{
+	    key: 'getDetails',
+	    value: function getDetails(label) {
+	      var external = this.props.external;
+
+	      var timestamp = external[label]['timestamp'];
+	      var status = external[label]['status'];
+
+	      return React.createElement(
+	        'div',
+	        null,
+	        React.createElement(
+	          'p',
+	          { className: 'label' },
+	          status
+	        ),
+	        React.createElement(
+	          'p',
+	          { className: 'desc' },
+	          timestamp
+	        )
+	      );
 	    }
-
-	    _createClass(CustomTooltip, [{
-	        key: 'getDetails',
-	        value: function getDetails(label) {
-	            var external = this.props.external;
-
-	            var timestamp = external[label]['timestamp'];
-	            var status = external[label]['status'];
-
-	            return React.createElement(
-	                'div',
-	                null,
-	                React.createElement(
-	                    'p',
-	                    { className: 'label' },
-	                    status
-	                ),
-	                React.createElement(
-	                    'p',
-	                    { className: 'desc' },
-	                    timestamp
-	                )
-	            );
-	        }
-	    }, {
-	        key: 'render',
-	        value: function render() {
-	            var active = this.props.active;
+	  }, {
+	    key: 'render',
+	    value: function render() {
+	      var active = this.props.active;
 
 
-	            if (active) {
-	                var _props = this.props;
-	                var payload = _props.payload;
-	                var external = _props.external;
-	                var label = _props.label;
+	      if (active) {
+	        var _props = this.props;
+	        var payload = _props.payload;
+	        var external = _props.external;
+	        var label = _props.label;
 
 
-	                return React.createElement(
-	                    'div',
-	                    { className: 'custom-tooltip' },
-	                    this.getDetails(label)
-	                );
-	            }
-	            return null;
-	        }
-	    }]);
+	        return React.createElement(
+	          'div',
+	          { className: 'custom-tooltip' },
+	          this.getDetails(label)
+	        );
+	      }
+	      return null;
+	    }
+	  }]);
 
-	    return CustomTooltip;
+	  return CustomTooltip;
 	}(React.Component);
 
 	;
 
 	CustomTooltip.propTypes = {
-	    type: React.PropTypes.string,
-	    payload: React.PropTypes.array,
-	    label: React.PropTypes.number
+	  type: React.PropTypes.string,
+	  payload: React.PropTypes.array,
+	  label: React.PropTypes.number
 	};
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(9)))
 
@@ -87783,21 +87755,12 @@
 	    }, {
 	        key: 'onLogout',
 	        value: function onLogout() {
-	            console.log("attempting logout");
+	            console.log("Logging out.");
 
 	            _firebase2.default.auth().signOut().then(function () {
 	                console.log('Logged out!');
 	            });
 	        }
-
-	        // componentDidUpdate(prevProps) {
-	        //     console.log(prevProps);
-	        //     // var {currentTime, userId} = props;
-	        //     // // console.log("what this be?",this.props);
-	        //     // console.log("currentTime", currentTime);
-	        //     // console.log("userId", userId);
-	        // }
-
 	    }, {
 	        key: 'render',
 	        value: function render() {
@@ -88130,7 +88093,6 @@
 	    _createClass(ActionLog, [{
 	        key: 'componentDidMount',
 	        value: function componentDidMount() {
-	            // retrieve shit here
 	            var dispatch = this.props.dispatch;
 
 	            dispatch(actions.startRetrieveLogs());
@@ -88138,7 +88100,6 @@
 	    }, {
 	        key: 'componentWillReceiveProps',
 	        value: function componentWillReceiveProps(props) {
-
 	            this.setState({
 	                logs: props.logs
 	            });
@@ -88199,8 +88160,6 @@
 
 	function mapStateToProps(state, ownProps) {
 
-	    // console.log("state", state);
-
 	    return {
 	        sensorData: state.activeSensor,
 	        userEmail: state.syncData.userEmail,
@@ -88257,9 +88216,6 @@
 	    }, {
 	        key: 'render',
 	        value: function render() {
-
-	            var iframeLink = "./offCrepe.html?";
-
 	            return React.createElement(
 	                'div',
 	                null,
@@ -88395,7 +88351,7 @@
 
 	            var SOCKET_URL = "ws://119.81.104.46:9010/SensorStatus";
 
-	            window.addEventListener('tobascoSauce', function (e) {
+	            window.addEventListener('triggerCanvas', function (e) {
 
 	                var macAdd = e.data.macAdd;
 	                console.log("Off-canvas mac address: ", macAdd);
@@ -88415,7 +88371,7 @@
 
 	                        var response = JSON.parse(msg.data);
 
-	                        console.log("response", response);
+	                        // console.log("response", response);
 
 	                        that.setState({
 	                            isLoading: false,
@@ -88517,9 +88473,6 @@
 	    }, {
 	        key: 'render',
 	        value: function render() {
-
-	            // console.log("sensordetails state", this.state);
-
 	            var _state = this.state;
 	            var macAdd = _state.macAdd;
 	            var building = _state.building;
@@ -89053,9 +89006,9 @@
 	                } else {
 	                    that.setState({ message: response.success });
 
-	                    var myCustomEvent = document.createEvent("Event");
+	                    var mytriggerNotification = document.createEvent("Event");
 
-	                    myCustomEvent.data = {
+	                    mytriggerNotification.data = {
 	                        type: 'deleteSensor',
 	                        macAdd: macAdd,
 	                        building: building,
@@ -89066,8 +89019,8 @@
 	                        console.log("Closing canvas");
 	                    });
 
-	                    myCustomEvent.initEvent("customEvent", true, true);
-	                    document.dispatchEvent(myCustomEvent);
+	                    mytriggerNotification.initEvent("triggerNotification", true, true);
+	                    document.dispatchEvent(mytriggerNotification);
 	                    var actionDesc = 'Deleted ' + macAdd + ' from ' + building + ' ' + location;
 
 	                    dispatch(actions.startAddToLog(userEmail, actionDesc));
@@ -89132,7 +89085,7 @@
 	                            React.createElement(
 	                                'a',
 	                                { id: 'deleteClose', className: 'button cancel expanded close-reveal-modal', 'data-close': '', 'aria-label': 'Close' },
-	                                'Slow Down, Cowboy'
+	                                'Cancel'
 	                            )
 	                        )
 	                    )
@@ -89488,15 +89441,15 @@
 	                } else {
 	                    that.setState({ message: response.success });
 
-	                    var myCustomEvent = document.createEvent("Event");
+	                    var mytriggerNotification = document.createEvent("Event");
 
-	                    myCustomEvent.data = {
+	                    mytriggerNotification.data = {
 	                        type: 'pinSensor',
 	                        macAdd: macAdd
 	                    };
 
-	                    myCustomEvent.initEvent("customEvent", true, true);
-	                    document.dispatchEvent(myCustomEvent);
+	                    mytriggerNotification.initEvent("triggerNotification", true, true);
+	                    document.dispatchEvent(mytriggerNotification);
 
 	                    // var actionDesc = `Added ${macAdd} to ${inputBuilding} ${inputLocationLevel}${inputLocationID}`;
 	                    var actionDesc = 'Pinned ' + macAdd + ' to the watch list';
@@ -89553,7 +89506,7 @@
 	                            React.createElement(
 	                                'a',
 	                                { className: 'button cancel expanded close-reveal-modal', 'data-close': '', 'aria-label': 'Close', id: 'closePin' },
-	                                'Slow Down, Cowboy'
+	                                'Cancel'
 	                            )
 	                        )
 	                    )
@@ -89790,17 +89743,17 @@
 	                } else {
 	                    that.setState({ message: response.success });
 
-	                    var myCustomEvent = document.createEvent("Event");
+	                    var mytriggerNotification = document.createEvent("Event");
 
-	                    myCustomEvent.data = {
+	                    mytriggerNotification.data = {
 	                        type: 'editSensor',
 	                        macAdd: inputMac,
 	                        building: inputBuilding,
 	                        location: '' + inputLocationLevel + inputLocationID
 	                    };
 
-	                    myCustomEvent.initEvent("customEvent", true, true);
-	                    document.dispatchEvent(myCustomEvent);
+	                    mytriggerNotification.initEvent("triggerNotification", true, true);
+	                    document.dispatchEvent(mytriggerNotification);
 
 	                    var actionDesc = 'Edited ' + inputMac + ' from ' + inputBuilding + ' ' + inputLocationLevel + inputLocationID;
 	                    dispatch(actions.startAddToLog(userEmail, actionDesc));
@@ -90338,15 +90291,15 @@
 	            message: response.msg
 	          });
 
-	          var myCustomEvent = document.createEvent("Event");
+	          var mytriggerNotification = document.createEvent("Event");
 
-	          myCustomEvent.data = {
+	          mytriggerNotification.data = {
 	            type: 'rebootSensor',
 	            macAdd: inputMac
 	          };
 
-	          myCustomEvent.initEvent("customEvent", true, true);
-	          document.dispatchEvent(myCustomEvent);
+	          mytriggerNotification.initEvent("triggerNotification", true, true);
+	          document.dispatchEvent(mytriggerNotification);
 
 	          var actionDesc = 'Rebooted ' + macAdd;
 	          dispatch(actions.startAddToLog(userEmail, actionDesc));
@@ -90420,7 +90373,7 @@
 	              React.createElement(
 	                'a',
 	                { className: 'button cancel expanded close-reveal-modal', id: 'closeReboot', 'data-close': '', 'aria-label': 'Close' },
-	                'Slow Down, Cowboy'
+	                'Cancel'
 	              )
 	            )
 	          )
@@ -90554,9 +90507,9 @@
 	                } else {
 	                    that.setState({ message: response[0].success });
 
-	                    var myCustomEvent = document.createEvent("Event");
+	                    var mytriggerNotification = document.createEvent("Event");
 
-	                    myCustomEvent.data = {
+	                    mytriggerNotification.data = {
 	                        type: 'pauseSensor',
 	                        macAdd: macAdd,
 	                        building: building,
@@ -90564,8 +90517,8 @@
 	                        pauseStatus: status === "paused" ? "unpausing" : "pausing"
 	                    };
 
-	                    myCustomEvent.initEvent("customEvent", true, true);
-	                    document.dispatchEvent(myCustomEvent);
+	                    mytriggerNotification.initEvent("triggerNotification", true, true);
+	                    document.dispatchEvent(mytriggerNotification);
 	                    var actionDesc = pauseMsg + ' ' + macAdd + ' from ' + building + ' ' + location;
 
 	                    dispatch(actions.startAddToLog(userEmail, actionDesc));
@@ -90635,7 +90588,7 @@
 	                            React.createElement(
 	                                'a',
 	                                { id: 'pauseClose', className: 'button cancel expanded close-reveal-modal', 'data-close': '', 'aria-label': 'Close' },
-	                                'Slow Down, Cowboy'
+	                                'Cancel'
 	                            )
 	                        )
 	                    )
@@ -91664,14 +91617,14 @@
 
 	            console.log("macAddress", macAddress);
 
-	            var tobascoSauce = document.createEvent("Event");
+	            var triggerCanvas = document.createEvent("Event");
 
-	            tobascoSauce.data = {
+	            triggerCanvas.data = {
 	                macAdd: macAddress
 	            };
 
-	            tobascoSauce.initEvent("tobascoSauce", true, true);
-	            document.dispatchEvent(tobascoSauce);
+	            triggerCanvas.initEvent("triggerCanvas", true, true);
+	            document.dispatchEvent(triggerCanvas);
 	        }
 	    }, {
 	        key: 'renderClass',
@@ -92564,9 +92517,9 @@
 	        key: "handleClick",
 	        value: function handleClick(serverData, action) {
 	            var macAdd = serverData["mac"];
-	            var tobascoSauce = document.createEvent("Event");
+	            var triggerCanvas = document.createEvent("Event");
 
-	            tobascoSauce.data = {
+	            triggerCanvas.data = {
 	                macAdd: macAdd
 	            };
 
@@ -92574,8 +92527,8 @@
 	                macAdd: macAdd
 	            });
 
-	            tobascoSauce.initEvent("tobascoSauce", true, true);
-	            document.dispatchEvent(tobascoSauce);
+	            triggerCanvas.initEvent("triggerCanvas", true, true);
+	            document.dispatchEvent(triggerCanvas);
 	        }
 	    }, {
 	        key: "render",
@@ -92660,14 +92613,14 @@
 
 	            var macAdd = sensorData['macAdd'];
 
-	            var tobascoSauce = document.createEvent("Event");
+	            var triggerCanvas = document.createEvent("Event");
 
-	            tobascoSauce.data = {
+	            triggerCanvas.data = {
 	                macAdd: macAdd
 	            };
 
-	            tobascoSauce.initEvent("tobascoSauce", true, true);
-	            document.dispatchEvent(tobascoSauce);
+	            triggerCanvas.initEvent("triggerCanvas", true, true);
+	            document.dispatchEvent(triggerCanvas);
 
 	            dispatch(actions.storeActiveSensor(macAdd));
 	        }
@@ -92920,7 +92873,6 @@
 
 	var React = __webpack_require__(14);
 	var Griddle = __webpack_require__(693);
-	var retrieveSensorDetails = __webpack_require__(917);
 	var ReactDOM = __webpack_require__(598);
 
 
@@ -93098,14 +93050,14 @@
 	            if ($('#unpin-sensor-modal').css('display') === 'none') {
 	                $('#offCanvas').foundation('open', event);
 
-	                var tobascoSauce = document.createEvent("Event");
+	                var triggerCanvas = document.createEvent("Event");
 
-	                tobascoSauce.data = {
+	                triggerCanvas.data = {
 	                    macAdd: macAddress
 	                };
 
-	                tobascoSauce.initEvent("tobascoSauce", true, true);
-	                document.dispatchEvent(tobascoSauce);
+	                triggerCanvas.initEvent("triggerCanvas", true, true);
+	                document.dispatchEvent(triggerCanvas);
 	            }
 	        }
 	    }, {
@@ -93164,31 +93116,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(9)))
 
 /***/ },
-/* 917 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	var axios = __webpack_require__(247);
-
-	var RETRIEVE_SENSOR_DETAILS_URL = 'http://119.81.104.46/backend/restful-apis/get-sensor-info.php';
-
-	module.exports = {
-
-	  retrieveSensorDetails: function retrieveSensorDetails(macAddress) {
-	    console.log(macAddress);
-	    return axios.get(RETRIEVE_SENSOR_DETAILS_URL, macAddress).then(function (response) {
-	      console.log(response);
-	      if (response.status == 200) {
-	        return response;
-	      } else {
-	        throw new Error(response.status + " :" + response.data.error);
-	      }
-	    });
-	  }
-	};
-
-/***/ },
+/* 917 */,
 /* 918 */
 /***/ function(module, exports, __webpack_require__) {
 
@@ -93533,7 +93461,7 @@
 	        key: 'componentDidMount',
 	        value: function componentDidMount() {
 	            var that = this;
-	            window.addEventListener('customEvent', function (e) {
+	            window.addEventListener('triggerNotification', function (e) {
 	                that.addProgressNotification(e.data);
 	            }, false);
 	        }
@@ -93556,15 +93484,15 @@
 	            //   const newCount = count + 1;
 
 	            var msgArr = {
-	                'addSensor': 'Uno momento por favor, adding ' + data.macAdd + ' to ' + data.building + ' ' + data.location,
-	                'editSensor': 'Uno momento por favor, editing ' + data.macAdd + ' at ' + data.building + ' ' + data.location,
-	                'pauseSensor': 'Uno momento por favor, ' + data.pauseStatus + ' ' + data.macAdd + ' at ' + data.building + ' ' + data.location,
-	                'pinSensor': 'Uno momento por favor, adding ' + data.macAdd + ' to the Watch List',
-	                'unpinSensor': 'Uno momento por favor, removing ' + data.macAdd + ' from the Watch List',
-	                'deleteSensor': 'Uno momento por favor, deleting ' + data.macAdd,
-	                'rebootSensor': 'Uno momento por favor, rebooting ' + data.macAdd,
-	                'editSNMPSpeedTest': 'Uno momento por favor, editing SNMP Speed Test ' + data.macAdd,
-	                'downtimeManager': 'Uno momento por favor, (un)pausing the following sensors: ' + data.location
+	                'addSensor': 'Please wait, adding ' + data.macAdd + ' to ' + data.building + ' ' + data.location,
+	                'editSensor': 'Please wait, editing ' + data.macAdd + ' at ' + data.building + ' ' + data.location,
+	                'pauseSensor': 'Please wait, ' + data.pauseStatus + ' ' + data.macAdd + ' at ' + data.building + ' ' + data.location,
+	                'pinSensor': 'Please wait, adding ' + data.macAdd + ' to the Watch List',
+	                'unpinSensor': 'Please wait, removing ' + data.macAdd + ' from the Watch List',
+	                'deleteSensor': 'Please wait, deleting ' + data.macAdd,
+	                'rebootSensor': 'Please wait, rebooting ' + data.macAdd,
+	                'editSNMPSpeedTest': 'Please wait, editing SNMP Speed Test ' + data.macAdd,
+	                'downtimeManager': 'Please wait, (un)pausing the following sensors: ' + data.location
 	            };
 
 	            return this.setState({
@@ -99586,17 +99514,17 @@
 	                } else {
 	                    that.setState({ message: response.success });
 
-	                    var myCustomEvent = document.createEvent("Event");
+	                    var mytriggerNotification = document.createEvent("Event");
 
-	                    myCustomEvent.data = {
+	                    mytriggerNotification.data = {
 	                        type: 'addSensor',
 	                        macAdd: inputMac,
 	                        building: inputBuilding,
 	                        location: '' + inputLocationLevel + inputLocationID
 	                    };
 
-	                    myCustomEvent.initEvent("customEvent", true, true);
-	                    document.dispatchEvent(myCustomEvent);
+	                    mytriggerNotification.initEvent("triggerNotification", true, true);
+	                    document.dispatchEvent(mytriggerNotification);
 
 	                    var actionDesc = 'Added ' + inputMac + ' to ' + inputBuilding + ' ' + inputLocationLevel + inputLocationID;
 	                    dispatch(actions.startAddToLog(userEmail, actionDesc));
@@ -100090,15 +100018,15 @@
 	                    that.setState({ message: response.error });
 	                } else {
 
-	                    var myCustomEvent = document.createEvent("Event");
+	                    var mytriggerNotification = document.createEvent("Event");
 
-	                    myCustomEvent.data = {
+	                    mytriggerNotification.data = {
 	                        type: 'unpinSensor',
 	                        macAdd: macAdd
 	                    };
 
-	                    myCustomEvent.initEvent("customEvent", true, true);
-	                    document.dispatchEvent(myCustomEvent);
+	                    mytriggerNotification.initEvent("triggerNotification", true, true);
+	                    document.dispatchEvent(mytriggerNotification);
 
 	                    var testLog = 'Unpinned ' + macAdd + ' from the watch list';
 	                    dispatch(actions.startAddToLog(userEmail, testLog));
@@ -100160,7 +100088,7 @@
 	                            React.createElement(
 	                                'a',
 	                                { className: 'button cancel expanded close-reveal-modal', 'data-close': '', 'aria-label': 'Close', id: 'closeUnpin' },
-	                                'Slow Down, Cowboy'
+	                                'Cancel'
 	                            )
 	                        )
 	                    )
@@ -100288,15 +100216,15 @@
 	                    that.setState({ message: response.error });
 	                } else {
 
-	                    var myCustomEvent = document.createEvent("Event");
+	                    var mytriggerNotification = document.createEvent("Event");
 
-	                    myCustomEvent.data = {
+	                    mytriggerNotification.data = {
 	                        type: 'editSNMPSpeedTest',
 	                        macAdd: inputMac
 	                    };
 
-	                    myCustomEvent.initEvent("customEvent", true, true);
-	                    document.dispatchEvent(myCustomEvent);
+	                    mytriggerNotification.initEvent("triggerNotification", true, true);
+	                    document.dispatchEvent(mytriggerNotification);
 
 	                    that.setState({
 	                        message: response.message,
@@ -100658,17 +100586,17 @@
 	                } else {
 
 	                    that.setState({ message: 'The following sensors were ' + pauseTxt + ': ' + successMacs.join() });
-	                    var myCustomEvent = document.createEvent("Event");
+	                    var mytriggerNotification = document.createEvent("Event");
 
-	                    myCustomEvent.data = {
+	                    mytriggerNotification.data = {
 	                        type: 'downtimeManager',
 	                        macAdd: macAdds_str,
 	                        building: selectedBuilding,
 	                        location: locations_str
 	                    };
 
-	                    myCustomEvent.initEvent("customEvent", true, true);
-	                    document.dispatchEvent(myCustomEvent);
+	                    mytriggerNotification.initEvent("triggerNotification", true, true);
+	                    document.dispatchEvent(mytriggerNotification);
 
 	                    var actionDesc = pauseTxt + ' ' + macAdds_str + ' from ' + selectedBuilding + ' at the following locations: ' + locations_str;
 	                    dispatch(actions.startAddToLog(userEmail, actionDesc));
@@ -100820,7 +100748,7 @@
 	            url: DOWNTIME_URL,
 	            data: data,
 	            success: function success(response) {
-	                console.log("Tres manifique, monsieur", response);
+	                // console.log("Tres manifique, monsieur", response);
 	            }
 	        });
 	    },
@@ -100833,7 +100761,7 @@
 	            },
 	            url: BUILDING_ENUMS,
 	            success: function success(response) {
-	                console.log("Tres manifique, monsieur", response);
+	                // console.log("Tres manifique, monsieur", response);
 	            }
 	        });
 	    }

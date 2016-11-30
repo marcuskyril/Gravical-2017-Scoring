@@ -26,15 +26,15 @@ class UnpinSensor extends React.Component {
             that.setState({message: response.error});
         } else {
 
-            var myCustomEvent = document.createEvent("Event");
+            var mytriggerNotification = document.createEvent("Event");
 
-            myCustomEvent.data = {
+            mytriggerNotification.data = {
                 type: 'unpinSensor',
                 macAdd: macAdd
             };
 
-            myCustomEvent.initEvent("customEvent", true, true);
-            document.dispatchEvent(myCustomEvent);
+            mytriggerNotification.initEvent("triggerNotification", true, true);
+            document.dispatchEvent(mytriggerNotification);
 
             var testLog = `Unpinned ${macAdd} from the watch list`;
             dispatch(actions.startAddToLog(userEmail, testLog));
@@ -74,7 +74,7 @@ class UnpinSensor extends React.Component {
                       <a className="button proceed expanded" onClick={this.onUnpinSensor.bind(this)}>
                           Yes I do
                       </a>
-                      <a className="button cancel expanded close-reveal-modal" data-close="" aria-label="Close" id="closeUnpin">Slow Down, Cowboy</a>
+                      <a className="button cancel expanded close-reveal-modal" data-close="" aria-label="Close" id="closeUnpin">Cancel</a>
                   </div>
               </div>
           </form>

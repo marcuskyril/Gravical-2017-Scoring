@@ -35,15 +35,15 @@ class PinSensor extends React.Component {
             } else {
                 that.setState({message: response.success});
 
-                var myCustomEvent = document.createEvent("Event");
+                var mytriggerNotification = document.createEvent("Event");
 
-                myCustomEvent.data = {
+                mytriggerNotification.data = {
                     type: 'pinSensor',
                     macAdd: macAdd
                 };
 
-                myCustomEvent.initEvent("customEvent", true, true);
-                document.dispatchEvent(myCustomEvent);
+                mytriggerNotification.initEvent("triggerNotification", true, true);
+                document.dispatchEvent(mytriggerNotification);
 
                 // var actionDesc = `Added ${macAdd} to ${inputBuilding} ${inputLocationLevel}${inputLocationID}`;
                 var actionDesc = `Pinned ${macAdd} to the watch list`;
@@ -77,7 +77,7 @@ class PinSensor extends React.Component {
                             <a className="button proceed expanded" onClick={this.onPinSensor.bind(this)}>
                                 Yes I do
                             </a>
-                            <a className="button cancel expanded close-reveal-modal" data-close="" aria-label="Close" id="closePin">Slow Down, Cowboy</a>
+                            <a className="button cancel expanded close-reveal-modal" data-close="" aria-label="Close" id="closePin">Cancel</a>
                         </div>
                     </div>
                 </form>

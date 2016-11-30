@@ -37,14 +37,11 @@ class ActionLog extends React.Component{
     }
 
     componentDidMount() {
-        // retrieve shit here
         var {dispatch} = this.props;
         dispatch(actions.startRetrieveLogs());
-
     }
 
     componentWillReceiveProps(props) {
-
         this.setState({
             logs: props.logs
         });
@@ -89,8 +86,6 @@ class ActionLog extends React.Component{
 };
 
 function mapStateToProps(state, ownProps) {
-
-    // console.log("state", state);
 
     return {
         sensorData: state.activeSensor,

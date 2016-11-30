@@ -44,15 +44,15 @@ class RebootSensor extends React.Component {
           message: response.msg
         });
 
-        var myCustomEvent = document.createEvent("Event");
+        var mytriggerNotification = document.createEvent("Event");
 
-        myCustomEvent.data = {
+        mytriggerNotification.data = {
             type: 'rebootSensor',
             macAdd: inputMac
         };
 
-        myCustomEvent.initEvent("customEvent", true, true);
-        document.dispatchEvent(myCustomEvent);
+        mytriggerNotification.initEvent("triggerNotification", true, true);
+        document.dispatchEvent(mytriggerNotification);
 
         var actionDesc = `Rebooted ${macAdd}`;
         dispatch(actions.startAddToLog(userEmail, actionDesc));
@@ -97,7 +97,7 @@ class RebootSensor extends React.Component {
                       <a className="button proceed expanded" onClick={this.onRebootSensor.bind(this)}>
                           Yes I do
                       </a>
-                      <a className="button cancel expanded close-reveal-modal" id="closeReboot" data-close="" aria-label="Close">Slow Down, Cowboy</a>
+                      <a className="button cancel expanded close-reveal-modal" id="closeReboot" data-close="" aria-label="Close">Cancel</a>
                   </div>
               </div>
           </form>

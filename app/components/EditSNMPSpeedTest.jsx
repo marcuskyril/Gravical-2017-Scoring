@@ -49,15 +49,15 @@ class EditSNMPSpeedTest extends React.Component {
                 that.setState({message: response.error});
             } else {
 
-                var myCustomEvent = document.createEvent("Event");
+                var mytriggerNotification = document.createEvent("Event");
 
-                myCustomEvent.data = {
+                mytriggerNotification.data = {
                     type: 'editSNMPSpeedTest',
                     macAdd: inputMac
                 };
 
-                myCustomEvent.initEvent("customEvent", true, true);
-                document.dispatchEvent(myCustomEvent);
+                mytriggerNotification.initEvent("triggerNotification", true, true);
+                document.dispatchEvent(mytriggerNotification);
 
                 that.setState({
                     message: response.message,

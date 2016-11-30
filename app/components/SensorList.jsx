@@ -24,14 +24,14 @@ class SensorList extends React.Component {
         var {dispatch} = this.props;
         var macAdd = sensorData['macAdd'];
 
-        var tobascoSauce = document.createEvent("Event");
+        var triggerCanvas = document.createEvent("Event");
 
-        tobascoSauce.data = {
+        triggerCanvas.data = {
             macAdd: macAdd
         };
 
-        tobascoSauce.initEvent("tobascoSauce", true, true);
-        document.dispatchEvent(tobascoSauce);
+        triggerCanvas.initEvent("triggerCanvas", true, true);
+        document.dispatchEvent(triggerCanvas);
 
         dispatch(actions.storeActiveSensor(macAdd));
 

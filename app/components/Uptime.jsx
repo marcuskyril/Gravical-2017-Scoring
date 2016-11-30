@@ -151,60 +151,59 @@ class Uptime extends React.Component {
 
       } else {
         return (
-          <div>
-            <div className="margin-bottom-small">
-                <div style={{float: 'left'}} className="page-title">Uptime Charts: {buildingName}</div>
-                <button className="margin-left-small" onClick={that.minimizeAll}>
-                    <FontAwesome name='expand' style={{
-                        marginRight: '0.5rem'
-                    }}/>
-                  Show/Hide all
-                </button>
-            </div>
-            <form id="uptime-form" style={{display: 'flex'}}>
-                <label className="margin-right-tiny">Start Date
-                  <input type="date" name="startDate" defaultValue={startDate} ref="startDate"/>
-                </label>
-                <label className="margin-right-tiny">End Date
-                    <input type="date" name="endDate" defaultValue={endDate} ref="endDate"/>
-                </label>
+          <div className="row">
+              <div className="columns small-12">
+                <div className="margin-bottom-small">
+                    <div style={{float: 'left'}} className="page-title">Uptime Charts: {buildingName}</div>
+                    <button className="margin-left-small" onClick={that.minimizeAll}>
+                        <FontAwesome name='expand' style={{
+                            marginRight: '0.5rem'
+                        }}/>
+                      Show/Hide all
+                    </button>
+                </div>
+                <form id="uptime-form" style={{display: 'flex'}}>
+                    <label className="margin-right-tiny">Start Date
+                      <input type="date" name="startDate" defaultValue={startDate} ref="startDate"/>
+                    </label>
+                    <label className="margin-right-tiny">End Date
+                        <input type="date" name="endDate" defaultValue={endDate} ref="endDate"/>
+                    </label>
 
-                <label className="margin-right-tiny"> Interval
-                  <select defaultValue={`${interval}`} ref="interval">
-                    <option value="30">30 mins</option>
-                    <option value="15">15 mins</option>
-                  </select>
-              </label>
+                    <label className="margin-right-tiny"> Interval
+                      <select defaultValue={`${interval}`} ref="interval">
+                        <option value="30">30 mins</option>
+                        <option value="15">15 mins</option>
+                      </select>
+                  </label>
 
-              <a className="button proceed expanded" style={{height: '40px', width: '100px', alignSelf: 'flex-end'}} onClick={(e) => that.onSubmit()}>Go</a>
-            </form>
+                  <a className="button proceed expanded" style={{height: '40px', width: '100px', alignSelf: 'flex-end'}} onClick={(e) => that.onSubmit()}>Go</a>
+                </form>
 
-            <div id="uptimeMessage"><UptimeMessage message={message}/></div>
-            <div className="margin-bottom-small">You are viewing historical data for {buildingName} between {startDate} & {endDate} at an interval of {interval} minutes.</div>
-            <hr/>
+                <div id="uptimeMessage"><UptimeMessage message={message}/></div>
+                <div className="margin-bottom-small">You are viewing historical data for {buildingName} between {startDate} & {endDate} at an interval of {interval} minutes.</div>
+                <hr/>
+                </div>
           </div>
         );
       }
     }
 
-    function renderSticky () {
-
-        if(!isLoading) {
-            return (
-                <StickyLegend/>
-            );
-        }
-    }
+    // function renderSticky () {
+    //
+    //     if(!isLoading) {
+    //         return (
+    //             <StickyLegend/>
+    //         );
+    //     }
+    // }
 
     return (
       <div id="uptime-wrapper" className="margin-top-large">
         <div className="row" style={{minHeight: '100vh'}}>
-          <div className="columns small-10 large-10">
+          <div className="columns large-12">
             {renderContent()}
             <UptimeList buildingName={buildingName} data={this.state.data}/>
-          </div>
-          <div className="columns small-2 large-2">
-              {renderSticky()}
           </div>
         </div>
       </div>
@@ -223,56 +222,56 @@ class UptimeMessage extends React.Component {
 }
 
 
-class StickyLegend extends React.Component {
-    render() {
-
-        const LEGEND_VAL = [
-            {status: "ok", val: "sensorBlockSquare green sensorList"},
-            {status: "warning", val: "sensorBlockSquare yellow sensorList"},
-            {status: "danger", val: "sensorBlockSquare orange sensorList"},
-            {status: "down", val: "sensorBlockSquare red sensorList"},
-            {status: "no data", val: "sensorBlockSquare grey sensorList"},
-            {status: "others", val: "sensorBlockSquare blue sensorList"},
-            {status: "paused", val: "sensorBlockSquare black sensorList"}
-        ];
-
-        var customStyleObject = {
-            top: '30%'
-        }
-
-        var rows = []
-
-        LEGEND_VAL.forEach(function(item) {
-            rows.push(
-                <tr>
-                    <td>
-                        <div className={item['val']}></div>
-                    </td>
-                    <td>
-                        <div style={{textTransform: 'capitalize'}}>{item['status']}</div>
-                    </td>
-                </tr>
-            );
-        });
-
-        return (
-            <StickyContainer>
-                <Sticky stickyStyle={customStyleObject}>
-                    <table style={{margin: '11rem 2rem', width: '75px', float: 'right'}}>
-                        <thead>
-                            <tr>
-                                <th colSpan={2}>Legend</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {rows}
-                        </tbody>
-                    </table>
-                </Sticky>
-            </StickyContainer>
-        );
-    }
-}
+// class StickyLegend extends React.Component {
+//     render() {
+//
+//         const LEGEND_VAL = [
+//             {status: "ok", val: "sensorBlockSquare green sensorList"},
+//             {status: "warning", val: "sensorBlockSquare yellow sensorList"},
+//             {status: "danger", val: "sensorBlockSquare orange sensorList"},
+//             {status: "down", val: "sensorBlockSquare red sensorList"},
+//             {status: "no data", val: "sensorBlockSquare grey sensorList"},
+//             {status: "others", val: "sensorBlockSquare blue sensorList"},
+//             {status: "paused", val: "sensorBlockSquare black sensorList"}
+//         ];
+//
+//         var customStyleObject = {
+//             top: '30%'
+//         }
+//
+//         var rows = []
+//
+//         LEGEND_VAL.forEach(function(item) {
+//             rows.push(
+//                 <tr>
+//                     <td>
+//                         <div className={item['val']}></div>
+//                     </td>
+//                     <td>
+//                         <div style={{textTransform: 'capitalize'}}>{item['status']}</div>
+//                     </td>
+//                 </tr>
+//             );
+//         });
+//
+//         return (
+//             <StickyContainer>
+//                 <Sticky stickyStyle={customStyleObject}>
+//                     <table style={{margin: '11rem 2rem', width: '75px', float: 'right'}}>
+//                         <thead>
+//                             <tr>
+//                                 <th colSpan={2}>Legend</th>
+//                             </tr>
+//                         </thead>
+//                         <tbody>
+//                             {rows}
+//                         </tbody>
+//                     </table>
+//                 </Sticky>
+//             </StickyContainer>
+//         );
+//     }
+// }
 
 class UptimeList extends React.Component {
     render() {

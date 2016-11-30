@@ -152,17 +152,17 @@ class EditSensor extends React.Component {
             } else {
                 that.setState({message: response.success});
 
-                var myCustomEvent = document.createEvent("Event");
+                var mytriggerNotification = document.createEvent("Event");
 
-                myCustomEvent.data = {
+                mytriggerNotification.data = {
                     type: 'editSensor',
                     macAdd: inputMac,
                     building: inputBuilding,
                     location: `${inputLocationLevel}${inputLocationID}`
                 };
 
-                myCustomEvent.initEvent("customEvent", true, true);
-                document.dispatchEvent(myCustomEvent);
+                mytriggerNotification.initEvent("triggerNotification", true, true);
+                document.dispatchEvent(mytriggerNotification);
 
                 var actionDesc = `Edited ${inputMac} from ${inputBuilding} ${inputLocationLevel}${inputLocationID}`;
                 dispatch(actions.startAddToLog(userEmail, actionDesc));

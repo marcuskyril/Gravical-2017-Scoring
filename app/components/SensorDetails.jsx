@@ -48,7 +48,7 @@ class SensorDetails extends React.Component {
 
         const SOCKET_URL = "ws://119.81.104.46:9010/SensorStatus";
 
-        window.addEventListener('tobascoSauce', function(e) {
+        window.addEventListener('triggerCanvas', function(e) {
 
             var macAdd = e.data.macAdd;
             console.log("Off-canvas mac address: ", macAdd);
@@ -68,7 +68,7 @@ class SensorDetails extends React.Component {
 
                     var response = JSON.parse(msg.data);
 
-                    console.log("response", response);
+                    // console.log("response", response);
 
                     that.setState({
                         isLoading: false,
@@ -179,8 +179,6 @@ class SensorDetails extends React.Component {
     }
 
     render() {
-
-        // console.log("sensordetails state", this.state);
 
         var {macAdd, building, latency, amIAlive, isLoading, port, status, location, lastReboot, diagnosis, latestTimestamp, stats, top5, thresholds} = this.state;
         var {userId, userEmail, dispatch} = this.props;

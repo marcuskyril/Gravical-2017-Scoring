@@ -16,7 +16,7 @@ class NotificationBar extends React.Component {
 
     componentDidMount() {
         var that = this;
-        window.addEventListener('customEvent', function(e) {
+        window.addEventListener('triggerNotification', function(e) {
             that.addProgressNotification(e.data);
         }, false);
     }
@@ -32,15 +32,15 @@ class NotificationBar extends React.Component {
         //   const newCount = count + 1;
 
         var msgArr = {
-            'addSensor': `Uno momento por favor, adding ${data.macAdd} to ${data.building} ${data.location}`,
-            'editSensor': `Uno momento por favor, editing ${data.macAdd} at ${data.building} ${data.location}`,
-            'pauseSensor': `Uno momento por favor, ${data.pauseStatus} ${data.macAdd} at ${data.building} ${data.location}`,
-            'pinSensor': `Uno momento por favor, adding ${data.macAdd} to the Watch List`,
-            'unpinSensor': `Uno momento por favor, removing ${data.macAdd} from the Watch List`,
-            'deleteSensor': `Uno momento por favor, deleting ${data.macAdd}`,
-            'rebootSensor': `Uno momento por favor, rebooting ${data.macAdd}`,
-            'editSNMPSpeedTest': `Uno momento por favor, editing SNMP Speed Test ${data.macAdd}`,
-            'downtimeManager': `Uno momento por favor, (un)pausing the following sensors: ${data.location}`
+            'addSensor': `Please wait, adding ${data.macAdd} to ${data.building} ${data.location}`,
+            'editSensor': `Please wait, editing ${data.macAdd} at ${data.building} ${data.location}`,
+            'pauseSensor': `Please wait, ${data.pauseStatus} ${data.macAdd} at ${data.building} ${data.location}`,
+            'pinSensor': `Please wait, adding ${data.macAdd} to the Watch List`,
+            'unpinSensor': `Please wait, removing ${data.macAdd} from the Watch List`,
+            'deleteSensor': `Please wait, deleting ${data.macAdd}`,
+            'rebootSensor': `Please wait, rebooting ${data.macAdd}`,
+            'editSNMPSpeedTest': `Please wait, editing SNMP Speed Test ${data.macAdd}`,
+            'downtimeManager': `Please wait, (un)pausing the following sensors: ${data.location}`
         }
 
         return this.setState({
