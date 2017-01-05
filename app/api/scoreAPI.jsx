@@ -1,8 +1,8 @@
-const GET_CATEGORIES_URL = "https://devical-ducktor108.rhcloud.com/backend/api/get_categories.php";
-const SUBMIT_SCORE_URL = "https://devical-ducktor108.rhcloud.com/backend/api/enter_score.php";
-const GET_CURRENT_PARTICIPANTS_URL = "https://devical-ducktor108.rhcloud.com/backend/api/get_current_participants.php";
-const GET_NUM_DETAILS_URL = "https://devical-ducktor108.rhcloud.com/backend/api/get_number_of_details.php";
-const GET_SCORE_URL = "https://devical-ducktor108.rhcloud.com/backend/api/get_score.php";
+const GET_CATEGORIES_URL = "http://office.livestudios.com:41111/backend/api/get_categories.php";
+const SUBMIT_SCORE_URL = "http://office.livestudios.com:41111/backend/api/enter_score.php";
+const GET_CURRENT_PARTICIPANTS_URL = "http://office.livestudios.com:41111/backend/api/get_current_participants.php";
+const GET_NUM_DETAILS_URL = "http://office.livestudios.com:41111/backend/api/get_number_of_details.php";
+const GET_SCORE_URL = "http://office.livestudios.com:41111/backend/api/get_score.php";
 
 module.exports = {
 

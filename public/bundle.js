@@ -154,15 +154,15 @@
 	});
 
 	// Load foundation
-	__webpack_require__(944);
+	__webpack_require__(945);
 	$(document).foundation();
 
-	__webpack_require__(948);
-	__webpack_require__(950);
-	__webpack_require__(952);
-	__webpack_require__(954);
-	__webpack_require__(956);
-	__webpack_require__(958);
+	__webpack_require__(949);
+	__webpack_require__(951);
+	__webpack_require__(953);
+	__webpack_require__(955);
+	__webpack_require__(957);
+	__webpack_require__(959);
 
 	ReactDOM.render(React.createElement(
 	  'div',
@@ -10736,6 +10736,7 @@
 	            categories: [],
 	            selectedCategory: '',
 	            currentDetail: 0,
+	            currentEvent: '-',
 	            numDetails: 0,
 	            hasEventStarted: false
 	        };
@@ -10748,9 +10749,31 @@
 	        key: 'componentDidMount',
 	        value: function componentDidMount() {
 
-	            var that = this;
-
+	            this.retrieveCurrentEvent();
+	            this.retrieveCurrentDetail();
 	            this.retrieveCategories();
+	        }
+	    }, {
+	        key: 'retrieveCurrentEvent',
+	        value: function retrieveCurrentEvent() {
+	            var that = this;
+	            climberManagementAPI.getCurrentEvent().then(function (response) {
+	                console.log("Current event", response);
+	                that.setState({
+	                    currentEvent: response.message
+	                });
+	            });
+	        }
+	    }, {
+	        key: 'retrieveCurrentDetail',
+	        value: function retrieveCurrentDetail() {
+	            var that = this;
+	            climberManagementAPI.getCurrentDetail().then(function (response) {
+	                console.log("Current detail", response);
+	                that.setState({
+	                    currentDetail: response.message
+	                });
+	            });
 	        }
 	    }, {
 	        key: 'retrieveCategories',
@@ -10839,7 +10862,21 @@
 	                console.log("response", response);
 
 	                that.setState({
-	                    hasEventStarted: true
+	                    hasEventStarted: true,
+	                    currentEvent: category
+	                });
+	            });
+
+	            this.setDetail(1);
+	        }
+	    }, {
+	        key: 'setDetail',
+	        value: function setDetail(detail) {
+	            var that = this;
+
+	            climberManagementAPI.setCurrentDetail(detail).then(function (response) {
+	                that.setState({
+	                    currentDetail: detail
 	                });
 	            });
 	        }
@@ -10851,10 +10888,8 @@
 	            var numDetails = _state.numDetails;
 
 
-	            if (currentDetail <= numDetails) {
-	                this.setState({
-	                    currentDetail: currentDetail + 1
-	                });
+	            if (currentDetail < numDetails) {
+	                this.setDetail(currentDetail + 1);
 	            }
 	        }
 	    }, {
@@ -10865,9 +10900,12 @@
 	                console.log("response", response);
 
 	                that.setState({
+	                    currentEvent: '-',
 	                    hasEventStarted: false
 	                });
 	            });
+
+	            this.setDetail(0);
 	        }
 	    }, {
 	        key: 'render',
@@ -10884,6 +10922,7 @@
 	            var flappingThreshold = _state2.flappingThreshold;
 	            var message = _state2.message;
 	            var currentDetail = _state2.currentDetail;
+	            var currentEvent = _state2.currentEvent;
 	            var hasEventStarted = _state2.hasEventStarted;
 
 
@@ -11169,6 +11208,12 @@
 	                                    { className: 'button proceed', onClick: this.launchAddClimber },
 	                                    React.createElement(FontAwesome, { name: 'download' }),
 	                                    ' Download CSV'
+	                                ),
+	                                React.createElement(
+	                                    'p',
+	                                    null,
+	                                    'Current Event: ',
+	                                    currentEvent
 	                                ),
 	                                React.createElement(
 	                                    'p',
@@ -28976,11 +29021,11 @@
 
 	/* WEBPACK VAR INJECTION */(function($) {"use strict";
 
-	var GET_CATEGORIES_URL = "https://devical-ducktor108.rhcloud.com/backend/api/get_categories.php";
-	var SUBMIT_SCORE_URL = "https://devical-ducktor108.rhcloud.com/backend/api/enter_score.php";
-	var GET_CURRENT_PARTICIPANTS_URL = "https://devical-ducktor108.rhcloud.com/backend/api/get_current_participants.php";
-	var GET_NUM_DETAILS_URL = "https://devical-ducktor108.rhcloud.com/backend/api/get_number_of_details.php";
-	var GET_SCORE_URL = "https://devical-ducktor108.rhcloud.com/backend/api/get_score.php";
+	var GET_CATEGORIES_URL = "http://office.livestudios.com:41111/backend/api/get_categories.php";
+	var SUBMIT_SCORE_URL = "http://office.livestudios.com:41111/backend/api/enter_score.php";
+	var GET_CURRENT_PARTICIPANTS_URL = "http://office.livestudios.com:41111/backend/api/get_current_participants.php";
+	var GET_NUM_DETAILS_URL = "http://office.livestudios.com:41111/backend/api/get_number_of_details.php";
+	var GET_SCORE_URL = "http://office.livestudios.com:41111/backend/api/get_score.php";
 
 	module.exports = {
 
@@ -29082,10 +29127,12 @@
 
 	/* WEBPACK VAR INJECTION */(function($) {"use strict";
 
-	var ADD_CLIMBER_URL = "https://devical-ducktor108.rhcloud.com/backend/api/add_climber.php";
-	var START_EVENT_URL = "https://devical-ducktor108.rhcloud.com/backend/api/start_event.php";
-	var STOP_EVENT_URL = "https://devical-ducktor108.rhcloud.com/backend/api/stop_event.php";
-	var SET_CURRENT_DETAIL_URL = "https://devical-ducktor108.rhcloud.com/backend/api/set_current_detail.php";
+	var ADD_CLIMBER_URL = "http://office.livestudios.com:41111/backend/api/add_climber.php";
+	var START_EVENT_URL = "http://office.livestudios.com:41111/backend/api/start_event.php";
+	var STOP_EVENT_URL = "http://office.livestudios.com:41111/backend/api/stop_event.php";
+	var SET_CURRENT_DETAIL_URL = "http://office.livestudios.com:41111/backend/api/set_current_detail.php";
+	var GET_CURRENT_EVENT_URL = "http://office.livestudios.com:41111/backend/api/get_current_event.php";
+	var GET_CURRENT_DETAIL_URL = "http://office.livestudios.com:41111/backend/api/get_current_detail.php";
 
 	module.exports = {
 
@@ -29140,12 +29187,40 @@
 	    },
 
 	    setCurrentDetail: function setCurrentDetail(detail) {
+
 	        return $.ajax({
 	            type: "POST",
 	            beforeSend: function beforeSend(request) {
 	                request.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
 	            },
+	            data: { detail: detail },
 	            url: SET_CURRENT_DETAIL_URL,
+	            success: function success(response) {
+	                // console.log("Tres manifique, monsieur", response);
+	            }
+	        });
+	    },
+
+	    getCurrentEvent: function getCurrentEvent() {
+	        return $.ajax({
+	            type: "POST",
+	            beforeSend: function beforeSend(request) {
+	                request.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+	            },
+	            url: GET_CURRENT_EVENT_URL,
+	            success: function success(response) {
+	                // console.log("Tres manifique, monsieur", response);
+	            }
+	        });
+	    },
+
+	    getCurrentDetail: function getCurrentDetail() {
+	        return $.ajax({
+	            type: "POST",
+	            beforeSend: function beforeSend(request) {
+	                request.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+	            },
+	            url: GET_CURRENT_DETAIL_URL,
 	            success: function success(response) {
 	                // console.log("Tres manifique, monsieur", response);
 	            }
@@ -93460,9 +93535,9 @@
 	var SensorHealthOverview = __webpack_require__(935);
 	var WatchList = __webpack_require__(941);
 	var Tableaux = __webpack_require__(942);
-	var Results = __webpack_require__(960);
+	var Results = __webpack_require__(943);
 	var FontAwesome = __webpack_require__(266);
-	var BuildingOverview = __webpack_require__(943);
+	var BuildingOverview = __webpack_require__(944);
 
 	var _require = __webpack_require__(111);
 
@@ -93473,7 +93548,7 @@
 	var Link = _require2.Link;
 	var IndexLink = _require2.IndexLink;
 
-	var HOST = 'ws://119.81.104.46:9000';
+	var HOST = 'ws://office.livestudios.com:41000';
 
 	var Dashboard = function (_React$Component) {
 	    _inherits(Dashboard, _React$Component);
@@ -93485,11 +93560,15 @@
 
 	        _this.state = {
 	            connection: null,
-	            type: "-",
-	            overall: [],
-	            bfg: [],
-	            notifications: [],
-	            sensorHealthOverviewV2: [],
+	            // type: "-",
+	            // overall: [],
+	            // bfg: [],
+	            results: [],
+	            // notifications: [],
+	            // sensorHealthOverviewV2: [],
+	            currentDetail: '-',
+	            currentEvent: '-',
+	            totalDetails: '-',
 	            currentTime: '-',
 	            userDisplayName: '',
 	            userEmail: '',
@@ -93514,16 +93593,21 @@
 	                connection.subscribe('', function (topic, data) {
 
 	                    timestamp = (0, _moment2.default)().format('YYYY-MM-DD, h:mm:ss a');
-	                    dispatch(actions.storeSyncData(timestamp, userDisplayName, userEmail));
+	                    // dispatch(actions.storeSyncData(timestamp, userDisplayName, userEmail));
 
+	                    console.log("jalapeño", data['total_details']['num_of_details']);
 	                    that.setState({
 	                        connection: connection,
-	                        overall: data.overall,
-	                        sensorHealthOverviewV2: data.overview,
-	                        bfg: data.BFG,
-	                        currentTime: timestamp,
-	                        notifications: data.notifications,
-	                        serverOverview: data.serverOverview
+	                        currentEvent: data['current_event'],
+	                        currentDetail: data['current_detail'],
+	                        totalDetails: data['total_details']['num_of_details'],
+	                        results: data['list']
+
+	                        // sensorHealthOverviewV2: data.overview,
+	                        // bfg: data.BFG,
+	                        // currentTime: timestamp,
+	                        // notifications: data.notifications,
+	                        // serverOverview: data.serverOverview
 	                    });
 	                });
 	            }, function () {
@@ -93539,12 +93623,10 @@
 
 	                        that.setState({
 	                            connection: connection,
-	                            overall: data.overall,
-	                            sensorHealthOverviewV2: data.overview,
-	                            bfg: data.BFG,
-	                            currentTime: timestamp,
-	                            notifications: data.notifications,
-	                            serverOverview: data.serverOverview
+	                            currentEvent: data['current_event'],
+	                            currentDetail: data['current_detail'],
+	                            totalDetails: data['total_details']['num_of_details'],
+	                            results: data['list']
 	                        });
 	                    });
 	                }
@@ -93580,7 +93662,12 @@
 	            var _state = this.state;
 	            var userDisplayName = _state.userDisplayName;
 	            var userEmail = _state.userEmail;
+	            var results = _state.results;
+	            var currentEvent = _state.currentEvent;
+	            var currentDetail = _state.currentDetail;
+	            var totalDetails = _state.totalDetails;
 
+	            console.log("currentEvent", currentEvent);
 
 	            return React.createElement(
 	                'div',
@@ -93613,7 +93700,7 @@
 	                            React.createElement(
 	                                'div',
 	                                { className: 'callout callout-dark', id: 'watchList' },
-	                                React.createElement(WatchList, { data: this.state.bfg })
+	                                React.createElement(WatchList, { data: results })
 	                            )
 	                        )
 	                    ),
@@ -93626,13 +93713,18 @@
 	                            React.createElement(
 	                                'div',
 	                                { className: 'page-title' },
-	                                'Current Event'
+	                                'Current Event: ',
+	                                currentEvent,
+	                                ' ',
+	                                currentDetail,
+	                                '/',
+	                                totalDetails
 	                            )
 	                        ),
 	                        React.createElement(
 	                            'div',
 	                            { className: 'callout callout-dark', id: 'bfg' },
-	                            React.createElement(Tableaux, { filter: this.state.filterParam, data: this.state.bfg })
+	                            React.createElement(Tableaux, { data: results })
 	                        )
 	                    )
 	                ),
@@ -96363,6 +96455,252 @@
 	var axios = __webpack_require__(247);
 	var FontAwesome = __webpack_require__(266);
 
+	var WatchComponent = function (_React$Component) {
+	    _inherits(WatchComponent, _React$Component);
+
+	    function WatchComponent(props) {
+	        _classCallCheck(this, WatchComponent);
+
+	        return _possibleConstructorReturn(this, Object.getPrototypeOf(WatchComponent).call(this, props));
+	    }
+
+	    _createClass(WatchComponent, [{
+	        key: 'handleClick',
+	        value: function handleClick(macAddress) {
+	            // var dispatch = this.props.data.dispatch;
+	            // dispatch(actions.startUpdateWatchList(macAddress));
+	            // $('#unpin-sensor-modal').foundation('open');
+
+	            alert("HOOYAH, MOTHERFUCKERS");
+	        }
+	    }, {
+	        key: 'render',
+	        value: function render() {
+	            var _this2 = this;
+
+	            return React.createElement(
+	                'div',
+	                { id: 'unpin-btn', className: 'sensorBlock remove', onClick: function onClick() {
+	                        return _this2.handleClick(_this2.props.data.ID);
+	                    } },
+	                'Pin'
+	            );
+	        }
+	    }]);
+
+	    return WatchComponent;
+	}(React.Component);
+
+	;
+
+	var tableMetaData = [{
+	    "columnName": "rank",
+	    "order": 1,
+	    "locked": true,
+	    "visible": true,
+	    "displayName": "Rank",
+	    "sortable": true
+	}, {
+	    "columnName": "ID",
+	    "order": 2,
+	    "locked": false,
+	    "visible": true,
+	    "sortable": true,
+	    "displayName": "ID"
+	}, {
+	    "columnName": "name",
+	    "order": 3,
+	    "locked": false,
+	    "visible": true,
+	    "sortable": true,
+	    "displayName": "Name"
+	}, {
+	    "columnName": "actions",
+	    "order": 5,
+	    "locked": false,
+	    "visible": true,
+	    "sortable": true,
+	    "displayName": "Actions",
+	    "customComponent": WatchComponent
+	}, {
+	    "columnName": "score",
+	    "order": 4,
+	    "locked": false,
+	    "visible": true,
+	    "sortable": true,
+	    "displayName": "Score"
+	}];
+
+	var columnDisplayName = {
+	    "Rank": "rank",
+	    "ID": "ID",
+	    "Name": "name",
+	    "Actions": "actions",
+	    "Score": "score"
+	};
+
+	var Tableaux = function (_React$Component2) {
+	    _inherits(Tableaux, _React$Component2);
+
+	    function Tableaux(props) {
+	        _classCallCheck(this, Tableaux);
+
+	        var _this3 = _possibleConstructorReturn(this, Object.getPrototypeOf(Tableaux).call(this, props));
+
+	        _this3.state = {
+	            dataList: [],
+	            results: []
+	        };
+	        return _this3;
+	    }
+
+	    _createClass(Tableaux, [{
+	        key: 'componentWillReceiveProps',
+	        value: function componentWillReceiveProps() {
+
+	            var results = [];
+	            var rawResults = this.props.data;
+	            var rank = 1;
+
+	            for (var result in rawResults) {
+	                if (rawResults.hasOwnProperty(result)) {
+	                    var id = result;
+	                    var row = {
+	                        "rank": rank++,
+	                        "ID": rawResults[result]["ID"],
+	                        "name": rawResults[result]["name"],
+	                        "score": rawResults[result]["score"],
+	                        "actions": rawResults[result]["ID"]
+	                    };
+	                }
+
+	                results.push(row);
+	            }
+
+	            this.setState({
+	                results: results
+	            });
+
+	            console.log("results", results);
+	        }
+	    }, {
+	        key: 'render',
+	        value: function render() {
+
+	            var that = this;
+	            var results = this.state.results;
+
+
+	            var currentlySelected = ["rank", "ID", "name", "score", "actions"];
+	            var findStuff = $('#bfg').find('table > thead > tr > th > span');
+	            // console.log(findStuff);
+	            if (findStuff.length > 0) {
+	                currentlySelected = [];
+	                for (var i = 0; i < findStuff.length; i++) {
+	                    currentlySelected.push(columnDisplayName[findStuff[i].innerHTML]);
+	                }
+	            }
+	            // that.state.colsSelected = currentlySelected;
+
+
+	            // console.log("currentlySelected", currentlySelected);
+
+	            return React.createElement(Griddle, {
+	                results: results,
+	                settingsIconComponent: React.createElement(FontAwesome, { name: 'cog', style: { color: '#232f32', marginLeft: '1rem' }, size: '2x' }),
+	                columnMetadata: tableMetaData,
+	                tableClassName: 'table',
+	                showFilter: true,
+	                columns: currentlySelected,
+	                showSettings: false,
+	                settingsText: 'Settings'
+	            });
+	        }
+	    }]);
+
+	    return Tableaux;
+	}(React.Component);
+
+	module.exports = Tableaux;
+
+	// var allSensorData = this.props.data;
+	//
+	// console.log("data", allSensorData);
+	//
+	// var dataList = [];
+	// for (var sensor in allSensorData) {
+	//     if (allSensorData.hasOwnProperty(sensor)) {
+	//         var mac = sensor;
+	//         var row = {};
+	//
+	//         if (typeof allSensorData[sensor]["error"] == "undefined") {
+	//             row = {
+	//                 "mac_address" : mac,
+	//                 "latest_timestamp" : allSensorData[sensor]["latest_timestamp"],
+	//                 "building" : allSensorData[sensor]["building"],
+	//                 "sensor-level-id" : allSensorData[sensor]["sensor-location-level"] + allSensorData[sensor]["sensor-location-id"],
+	//                 "sensor_type" : allSensorData[sensor]["sensor_type"],
+	//                 "current_status" : allSensorData[sensor]["current_status"],
+	//                 "sensor_status" : allSensorData[sensor]["sensor_status"],
+	//                 "flapping" : allSensorData[sensor]["flapping"],
+	//                 "network_router" : allSensorData[sensor]["network_router"],
+	//                 "temperature" : allSensorData[sensor]["temperature"],
+	//                 "CPU_usage" : allSensorData[sensor]["CPU_Usage"],
+	//                 "RAM_total" : allSensorData[sensor]["RAM_total"],
+	//                 "RAM_free" : allSensorData[sensor]["RAM_free"],
+	//                 "RAM_used" : allSensorData[sensor]["RAM_used"],
+	//                 "RAM_available" : allSensorData[sensor]["RAM_available"],
+	//                 "disk_space_total" : allSensorData[sensor]["Disk_Space_total"],
+	//                 "disk_space_free" : allSensorData[sensor]["Disk_Space_used"],
+	//                 "disk_space_used" : allSensorData[sensor]["Disk_Space_free"]
+	//             };
+	//         } else {
+	//             row = {
+	//                 "mac_address" : mac,
+	//                 "latest_timestamp" : "no data",
+	//                 "building" : allSensorData[sensor]["building"],
+	//                 "sensor-level-id" : allSensorData[sensor]["sensor-location-level"] + allSensorData[sensor]["sensor-location-id"],
+	//                 "sensor_type" : allSensorData[sensor]["sensor_type"],
+	//                 "current_status" : "-",
+	//                 "sensor_status" : "-",
+	//                 "flapping" : "-",
+	//                 "network_router" : "-",
+	//                 "temperature" : "-",
+	//                 "CPU_usage" : "-",
+	//                 "RAM_total" : "-",
+	//                 "RAM_free" : "-",
+	//                 "RAM_used" : "-",
+	//                 "RAM_available" : "-",
+	//                 "disk_space_total" : "-",
+	//                 "disk_space_free" : "-",
+	//                 "disk_space_used" : "-"
+	//             };
+	//         }
+	//
+	//         dataList.push(row);
+	//     }
+	// }
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(9)))
+
+/***/ },
+/* 943 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/* WEBPACK VAR INJECTION */(function($) {'use strict';
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	var React = __webpack_require__(14);
+	var Griddle = __webpack_require__(711);
+	var axios = __webpack_require__(247);
+	var FontAwesome = __webpack_require__(266);
+
 	var dataList = [];
 
 	var LinkComponent2 = function (_React$Component) {
@@ -96412,13 +96750,6 @@
 	    "sortable": true,
 	    "displayName": "Name"
 	}, {
-	    "columnName": "flapping",
-	    "order": 5,
-	    "locked": false,
-	    "visible": true,
-	    "sortable": true,
-	    "displayName": "Actions"
-	}, {
 	    "columnName": "network_router",
 	    "order": 4,
 	    "locked": false,
@@ -96431,17 +96762,16 @@
 	    "Rank": "mac_address",
 	    "ID": "latest_timestamp",
 	    "Name": "sensor_status",
-	    "Actions": "flapping",
 	    "Score": "network_router"
 	};
 
-	var Tableaux = function (_React$Component2) {
-	    _inherits(Tableaux, _React$Component2);
+	var Results = function (_React$Component2) {
+	    _inherits(Results, _React$Component2);
 
-	    function Tableaux(props) {
-	        _classCallCheck(this, Tableaux);
+	    function Results(props) {
+	        _classCallCheck(this, Results);
 
-	        var _this2 = _possibleConstructorReturn(this, Object.getPrototypeOf(Tableaux).call(this, props));
+	        var _this2 = _possibleConstructorReturn(this, Object.getPrototypeOf(Results).call(this, props));
 
 	        _this2.state = {
 	            dataList: []
@@ -96449,13 +96779,13 @@
 	        return _this2;
 	    }
 
-	    _createClass(Tableaux, [{
+	    _createClass(Results, [{
 	        key: 'render',
 	        value: function render() {
 
 	            var that = this;
 
-	            var currentlySelected = ["mac_address", "latest_timestamp", "sensor_status", "network_router", "flapping"];
+	            var currentlySelected = ["mac_address", "latest_timestamp", "sensor_status", "network_router"];
 	            var findStuff = $('#bfg').find('table > thead > tr > th > span');
 	            // console.log(findStuff);
 	            if (findStuff.length > 0) {
@@ -96536,14 +96866,14 @@
 	        }
 	    }]);
 
-	    return Tableaux;
+	    return Results;
 	}(React.Component);
 
-	module.exports = Tableaux;
+	module.exports = Results;
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(9)))
 
 /***/ },
-/* 943 */
+/* 944 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -96928,16 +97258,16 @@
 	module.exports = BuildingOverview;
 
 /***/ },
-/* 944 */
+/* 945 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(945);
+	var content = __webpack_require__(946);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
-	var update = __webpack_require__(947)(content, {});
+	var update = __webpack_require__(948)(content, {});
 	if(content.locals) module.exports = content.locals;
 	// Hot Module Replacement
 	if(false) {
@@ -96954,10 +97284,10 @@
 	}
 
 /***/ },
-/* 945 */
+/* 946 */
 /***/ function(module, exports, __webpack_require__) {
 
-	exports = module.exports = __webpack_require__(946)();
+	exports = module.exports = __webpack_require__(947)();
 	// imports
 
 
@@ -96968,7 +97298,7 @@
 
 
 /***/ },
-/* 946 */
+/* 947 */
 /***/ function(module, exports) {
 
 	/*
@@ -97024,7 +97354,7 @@
 
 
 /***/ },
-/* 947 */
+/* 948 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*
@@ -97276,16 +97606,16 @@
 
 
 /***/ },
-/* 948 */
+/* 949 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(949);
+	var content = __webpack_require__(950);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
-	var update = __webpack_require__(947)(content, {});
+	var update = __webpack_require__(948)(content, {});
 	if(content.locals) module.exports = content.locals;
 	// Hot Module Replacement
 	if(false) {
@@ -97302,10 +97632,10 @@
 	}
 
 /***/ },
-/* 949 */
+/* 950 */
 /***/ function(module, exports, __webpack_require__) {
 
-	exports = module.exports = __webpack_require__(946)();
+	exports = module.exports = __webpack_require__(947)();
 	// imports
 	exports.push([module.id, "@import url(http://fonts.googleapis.com/css?family=Roboto:300,400);", ""]);
 	exports.push([module.id, "@import url(https://fonts.googleapis.com/css?family=Pathway+Gothic+One);", ""]);
@@ -97318,16 +97648,16 @@
 
 
 /***/ },
-/* 950 */
+/* 951 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(951);
+	var content = __webpack_require__(952);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
-	var update = __webpack_require__(947)(content, {});
+	var update = __webpack_require__(948)(content, {});
 	if(content.locals) module.exports = content.locals;
 	// Hot Module Replacement
 	if(false) {
@@ -97344,10 +97674,10 @@
 	}
 
 /***/ },
-/* 951 */
+/* 952 */
 /***/ function(module, exports, __webpack_require__) {
 
-	exports = module.exports = __webpack_require__(946)();
+	exports = module.exports = __webpack_require__(947)();
 	// imports
 	exports.push([module.id, "@import url(http://fonts.googleapis.com/css?family=Roboto:300,400);", ""]);
 	exports.push([module.id, "@import url(https://fonts.googleapis.com/css?family=Pathway+Gothic+One);", ""]);
@@ -97360,16 +97690,16 @@
 
 
 /***/ },
-/* 952 */
+/* 953 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(953);
+	var content = __webpack_require__(954);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
-	var update = __webpack_require__(947)(content, {});
+	var update = __webpack_require__(948)(content, {});
 	if(content.locals) module.exports = content.locals;
 	// Hot Module Replacement
 	if(false) {
@@ -97386,10 +97716,10 @@
 	}
 
 /***/ },
-/* 953 */
+/* 954 */
 /***/ function(module, exports, __webpack_require__) {
 
-	exports = module.exports = __webpack_require__(946)();
+	exports = module.exports = __webpack_require__(947)();
 	// imports
 
 
@@ -97400,16 +97730,16 @@
 
 
 /***/ },
-/* 954 */
+/* 955 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(955);
+	var content = __webpack_require__(956);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
-	var update = __webpack_require__(947)(content, {});
+	var update = __webpack_require__(948)(content, {});
 	if(content.locals) module.exports = content.locals;
 	// Hot Module Replacement
 	if(false) {
@@ -97426,10 +97756,10 @@
 	}
 
 /***/ },
-/* 955 */
+/* 956 */
 /***/ function(module, exports, __webpack_require__) {
 
-	exports = module.exports = __webpack_require__(946)();
+	exports = module.exports = __webpack_require__(947)();
 	// imports
 	exports.push([module.id, "@import url(http://fonts.googleapis.com/css?family=Roboto:300,400);", ""]);
 	exports.push([module.id, "@import url(https://fonts.googleapis.com/css?family=Pathway+Gothic+One);", ""]);
@@ -97442,16 +97772,16 @@
 
 
 /***/ },
-/* 956 */
+/* 957 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(957);
+	var content = __webpack_require__(958);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
-	var update = __webpack_require__(947)(content, {});
+	var update = __webpack_require__(948)(content, {});
 	if(content.locals) module.exports = content.locals;
 	// Hot Module Replacement
 	if(false) {
@@ -97468,10 +97798,10 @@
 	}
 
 /***/ },
-/* 957 */
+/* 958 */
 /***/ function(module, exports, __webpack_require__) {
 
-	exports = module.exports = __webpack_require__(946)();
+	exports = module.exports = __webpack_require__(947)();
 	// imports
 
 
@@ -97482,16 +97812,16 @@
 
 
 /***/ },
-/* 958 */
+/* 959 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(959);
+	var content = __webpack_require__(960);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
-	var update = __webpack_require__(947)(content, {});
+	var update = __webpack_require__(948)(content, {});
 	if(content.locals) module.exports = content.locals;
 	// Hot Module Replacement
 	if(false) {
@@ -97508,10 +97838,10 @@
 	}
 
 /***/ },
-/* 959 */
+/* 960 */
 /***/ function(module, exports, __webpack_require__) {
 
-	exports = module.exports = __webpack_require__(946)();
+	exports = module.exports = __webpack_require__(947)();
 	// imports
 
 
@@ -97520,196 +97850,6 @@
 
 	// exports
 
-
-/***/ },
-/* 960 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/* WEBPACK VAR INJECTION */(function($) {'use strict';
-
-	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-	var React = __webpack_require__(14);
-	var Griddle = __webpack_require__(711);
-	var axios = __webpack_require__(247);
-	var FontAwesome = __webpack_require__(266);
-
-	var dataList = [];
-
-	var LinkComponent2 = function (_React$Component) {
-	    _inherits(LinkComponent2, _React$Component);
-
-	    function LinkComponent2(props) {
-	        _classCallCheck(this, LinkComponent2);
-
-	        return _possibleConstructorReturn(this, Object.getPrototypeOf(LinkComponent2).call(this, props));
-	    }
-
-	    _createClass(LinkComponent2, [{
-	        key: 'render',
-	        value: function render() {
-	            return React.createElement(
-	                'a',
-	                { href: 'google.com', 'data-toggle': 'offCanvas' },
-	                this.props.data
-	            );
-	        }
-	    }]);
-
-	    return LinkComponent2;
-	}(React.Component);
-
-	;
-
-	var tableMetaData = [{
-	    "columnName": "mac_address",
-	    "order": 1,
-	    "locked": true,
-	    "visible": true,
-	    "displayName": "Rank",
-	    "sortable": true
-	}, {
-	    "columnName": "latest_timestamp",
-	    "order": 2,
-	    "locked": false,
-	    "visible": true,
-	    "sortable": true,
-	    "displayName": "ID"
-	}, {
-	    "columnName": "sensor_status",
-	    "order": 3,
-	    "locked": false,
-	    "visible": true,
-	    "sortable": true,
-	    "displayName": "Name"
-	}, {
-	    "columnName": "network_router",
-	    "order": 4,
-	    "locked": false,
-	    "visible": true,
-	    "sortable": true,
-	    "displayName": "Score"
-	}];
-
-	var columnDisplayName = {
-	    "Rank": "mac_address",
-	    "ID": "latest_timestamp",
-	    "Name": "sensor_status",
-	    "Score": "network_router"
-	};
-
-	var Results = function (_React$Component2) {
-	    _inherits(Results, _React$Component2);
-
-	    function Results(props) {
-	        _classCallCheck(this, Results);
-
-	        var _this2 = _possibleConstructorReturn(this, Object.getPrototypeOf(Results).call(this, props));
-
-	        _this2.state = {
-	            dataList: []
-	        };
-	        return _this2;
-	    }
-
-	    _createClass(Results, [{
-	        key: 'render',
-	        value: function render() {
-
-	            var that = this;
-
-	            var currentlySelected = ["mac_address", "latest_timestamp", "sensor_status", "network_router"];
-	            var findStuff = $('#bfg').find('table > thead > tr > th > span');
-	            // console.log(findStuff);
-	            if (findStuff.length > 0) {
-	                currentlySelected = [];
-	                for (var i = 0; i < findStuff.length; i++) {
-	                    currentlySelected.push(columnDisplayName[findStuff[i].innerHTML]);
-	                }
-	            }
-	            // that.state.colsSelected = currentlySelected;
-
-	            var allSensorData = this.props.data;
-	            var dataList = [];
-	            for (var sensor in allSensorData) {
-	                if (allSensorData.hasOwnProperty(sensor)) {
-	                    var mac = sensor;
-	                    var row = {};
-
-	                    if (typeof allSensorData[sensor]["error"] == "undefined") {
-	                        row = {
-	                            "mac_address": mac,
-	                            "latest_timestamp": allSensorData[sensor]["latest_timestamp"],
-	                            "building": allSensorData[sensor]["building"],
-	                            "sensor-level-id": allSensorData[sensor]["sensor-location-level"] + allSensorData[sensor]["sensor-location-id"],
-	                            "sensor_type": allSensorData[sensor]["sensor_type"],
-	                            "current_status": allSensorData[sensor]["current_status"],
-	                            "sensor_status": allSensorData[sensor]["sensor_status"],
-	                            "flapping": allSensorData[sensor]["flapping"],
-	                            "network_router": allSensorData[sensor]["network_router"],
-	                            "temperature": allSensorData[sensor]["temperature"],
-	                            "CPU_usage": allSensorData[sensor]["CPU_Usage"],
-	                            "RAM_total": allSensorData[sensor]["RAM_total"],
-	                            "RAM_free": allSensorData[sensor]["RAM_free"],
-	                            "RAM_used": allSensorData[sensor]["RAM_used"],
-	                            "RAM_available": allSensorData[sensor]["RAM_available"],
-	                            "disk_space_total": allSensorData[sensor]["Disk_Space_total"],
-	                            "disk_space_free": allSensorData[sensor]["Disk_Space_used"],
-	                            "disk_space_used": allSensorData[sensor]["Disk_Space_free"]
-	                        };
-	                    } else {
-	                        row = {
-	                            "mac_address": mac,
-	                            "latest_timestamp": "no data",
-	                            "building": allSensorData[sensor]["building"],
-	                            "sensor-level-id": allSensorData[sensor]["sensor-location-level"] + allSensorData[sensor]["sensor-location-id"],
-	                            "sensor_type": allSensorData[sensor]["sensor_type"],
-	                            "current_status": "-",
-	                            "sensor_status": "-",
-	                            "flapping": "-",
-	                            "network_router": "-",
-	                            "temperature": "-",
-	                            "CPU_usage": "-",
-	                            "RAM_total": "-",
-	                            "RAM_free": "-",
-	                            "RAM_used": "-",
-	                            "RAM_available": "-",
-	                            "disk_space_total": "-",
-	                            "disk_space_free": "-",
-	                            "disk_space_used": "-"
-	                        };
-	                    }
-
-	                    dataList.push(row);
-	                }
-	            }
-
-	            // console.log("currentlySelected", currentlySelected);
-
-	            return React.createElement(Griddle, {
-	                results: dataList,
-	                settingsIconComponent: React.createElement(FontAwesome, { name: 'cog', style: { color: '#232f32', marginLeft: '1rem' }, size: '2x' }),
-	                columnMetadata: tableMetaData,
-	                tableClassName: 'table',
-	                showFilter: true,
-	                columns: currentlySelected,
-	                showSettings: false,
-	                settingsText: 'Settings'
-	            });
-	        }
-	    }]);
-
-	    return Results;
-	}(React.Component);
-
-	module.exports = Results;
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(9)))
 
 /***/ }
 /******/ ]);

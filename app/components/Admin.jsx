@@ -22,6 +22,7 @@ class Admin extends React.Component {
             categories: [],
             selectedCategory: '',
             currentDetail: 0,
+            currentEvent: '-',
             numDetails: 0,
             hasEventStarted: false
         }
@@ -31,9 +32,29 @@ class Admin extends React.Component {
 
     componentDidMount() {
 
-        var that = this;
-
+        this.retrieveCurrentEvent();
+        this.retrieveCurrentDetail();
         this.retrieveCategories();
+    }
+
+    retrieveCurrentEvent() {
+        var that = this;
+        climberManagementAPI.getCurrentEvent().then(function(response){
+            console.log("Current event", response);
+            that.setState({
+                currentEvent: response.message
+            })
+        });
+    }
+
+    retrieveCurrentDetail() {
+        var that = this;
+        climberManagementAPI.getCurrentDetail().then(function(response){
+            console.log("Current detail", response);
+            that.setState({
+                currentDetail: response.message
+            })
+        });
     }
 
     retrieveCategories() {
@@ -114,18 +135,29 @@ class Admin extends React.Component {
             console.log("response", response);
 
             that.setState({
-                hasEventStarted: true
+                hasEventStarted: true,
+                currentEvent: category
             })
+        });
+
+        this.setDetail(1);
+    }
+
+    setDetail(detail) {
+        var that = this;
+
+        climberManagementAPI.setCurrentDetail(detail).then(function(response){
+            that.setState({
+                currentDetail: detail
+            });
         });
     }
 
     nextDetail() {
         var {currentDetail, numDetails} = this.state;
 
-        if(currentDetail <= numDetails) {
-            this.setState({
-                currentDetail: currentDetail + 1
-            });
+        if(currentDetail < numDetails) {
+            this.setDetail(currentDetail + 1);
         }
     }
 
@@ -135,9 +167,12 @@ class Admin extends React.Component {
             console.log("response", response);
 
             that.setState({
+                currentEvent: '-',
                 hasEventStarted: false
             })
         });
+
+        this.setDetail(0);
     }
 
 
@@ -155,6 +190,7 @@ class Admin extends React.Component {
             flappingThreshold,
             message,
             currentDetail,
+            currentEvent,
             hasEventStarted
         } = this.state;
 
@@ -266,6 +302,7 @@ class Admin extends React.Component {
                                         <FontAwesome name='download'/> Download CSV
                                     </a>
 
+                                    <p>Current Event: {currentEvent}</p>
                                     <p>Current detail: {currentDetail}</p>
 
                                     <form>

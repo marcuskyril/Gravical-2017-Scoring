@@ -1,7 +1,9 @@
-const ADD_CLIMBER_URL = "https://devical-ducktor108.rhcloud.com/backend/api/add_climber.php";
-const START_EVENT_URL = "https://devical-ducktor108.rhcloud.com/backend/api/start_event.php";
-const STOP_EVENT_URL = "https://devical-ducktor108.rhcloud.com/backend/api/stop_event.php";
-const SET_CURRENT_DETAIL_URL = "https://devical-ducktor108.rhcloud.com/backend/api/set_current_detail.php";
+const ADD_CLIMBER_URL = "http://office.livestudios.com:41111/backend/api/add_climber.php";
+const START_EVENT_URL = "http://office.livestudios.com:41111/backend/api/start_event.php";
+const STOP_EVENT_URL = "http://office.livestudios.com:41111/backend/api/stop_event.php";
+const SET_CURRENT_DETAIL_URL = "http://office.livestudios.com:41111/backend/api/set_current_detail.php";
+const GET_CURRENT_EVENT_URL = "http://office.livestudios.com:41111/backend/api/get_current_event.php";
+const GET_CURRENT_DETAIL_URL = "http://office.livestudios.com:41111/backend/api/get_current_detail.php"
 
 module.exports = {
 
@@ -56,12 +58,40 @@ module.exports = {
     },
 
     setCurrentDetail: function(detail) {
+
         return $.ajax({
             type: "POST",
             beforeSend: function(request) {
                 request.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
             },
+            data: {detail},
             url: SET_CURRENT_DETAIL_URL,
+            success: function(response) {
+                // console.log("Tres manifique, monsieur", response);
+            }
+        });
+    },
+
+    getCurrentEvent: function() {
+        return $.ajax({
+            type: "POST",
+            beforeSend: function(request) {
+                request.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+            },
+            url: GET_CURRENT_EVENT_URL,
+            success: function(response) {
+                // console.log("Tres manifique, monsieur", response);
+            }
+        });
+    },
+
+    getCurrentDetail: function() {
+        return $.ajax({
+            type: "POST",
+            beforeSend: function(request) {
+                request.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+            },
+            url: GET_CURRENT_DETAIL_URL,
             success: function(response) {
                 // console.log("Tres manifique, monsieur", response);
             }

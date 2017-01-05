@@ -12,7 +12,7 @@ import moment from 'moment';
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
 var {connect} = require('react-redux');
 var {Link, IndexLink} = require('react-router');
-const HOST = 'ws://119.81.104.46:9000';
+const HOST = 'ws://office.livestudios.com:41000';
 
 class Dashboard extends React.Component {
 
@@ -21,11 +21,15 @@ class Dashboard extends React.Component {
 
         this.state = {
             connection: null,
-            type: "-",
-            overall: [],
-            bfg: [],
-            notifications: [],
-            sensorHealthOverviewV2: [],
+            // type: "-",
+            // overall: [],
+            // bfg: [],
+            results: [],
+            // notifications: [],
+            // sensorHealthOverviewV2: [],
+            currentDetail: '-',
+            currentEvent: '-',
+            totalDetails: '-',
             currentTime: '-',
             userDisplayName: '',
             userEmail: '',
@@ -44,20 +48,26 @@ class Dashboard extends React.Component {
         var userDisplayName = '';
         var userEmail = '';
 
+
         var connection = new ab.Session(HOST, function() {
             connection.subscribe('', function(topic, data) {
 
                 timestamp = moment().format('YYYY-MM-DD, h:mm:ss a');
-                dispatch(actions.storeSyncData(timestamp, userDisplayName, userEmail));
+                // dispatch(actions.storeSyncData(timestamp, userDisplayName, userEmail));
 
+                console.log("jalapeño", data['total_details']['num_of_details']);
                 that.setState({
                     connection: connection,
-                    overall: data.overall,
-                    sensorHealthOverviewV2: data.overview,
-                    bfg: data.BFG,
-                    currentTime: timestamp,
-                    notifications: data.notifications,
-                    serverOverview: data.serverOverview
+                    currentEvent: data['current_event'],
+                    currentDetail: data['current_detail'],
+                    totalDetails: data['total_details']['num_of_details'],
+                    results: data['list']
+
+                    // sensorHealthOverviewV2: data.overview,
+                    // bfg: data.BFG,
+                    // currentTime: timestamp,
+                    // notifications: data.notifications,
+                    // serverOverview: data.serverOverview
                 });
             });
 
@@ -74,12 +84,10 @@ class Dashboard extends React.Component {
 
                     that.setState({
                         connection: connection,
-                        overall: data.overall,
-                        sensorHealthOverviewV2: data.overview,
-                        bfg: data.BFG,
-                        currentTime: timestamp,
-                        notifications: data.notifications,
-                        serverOverview: data.serverOverview
+                        currentEvent: data['current_event'],
+                        currentDetail: data['current_detail'],
+                        totalDetails: data['total_details']['num_of_details'],
+                        results: data['list']
                     });
                 });
             }
@@ -109,7 +117,8 @@ class Dashboard extends React.Component {
 
     render() {
 
-        var {userDisplayName, userEmail} = this.state;
+        var {userDisplayName, userEmail, results, currentEvent, currentDetail, totalDetails} = this.state;
+        console.log("currentEvent", currentEvent);
 
         return (
 
@@ -124,7 +133,7 @@ class Dashboard extends React.Component {
                                 </button>
                             </div>
                             <div className="callout callout-dark" id="watchList">
-                                <WatchList data={this.state.bfg}/>
+                                <WatchList data={results}/>
                             </div>
                         </div>
 
@@ -132,10 +141,10 @@ class Dashboard extends React.Component {
 
                     <div className="allSensors columns medium-12 large-7">
                         <div className="callout callout-dark-header">
-                            <div className="page-title">Current Event</div>
+                            <div className="page-title">Current Event: {currentEvent} {currentDetail}/{totalDetails}</div>
                         </div>
                         <div className="callout callout-dark" id="bfg">
-                            <Tableaux filter={this.state.filterParam} data={this.state.bfg}/>
+                            <Tableaux data={results}/>
                         </div>
                     </div>
                 </div>
