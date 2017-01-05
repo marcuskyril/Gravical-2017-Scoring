@@ -44,7 +44,7 @@ module.exports = {
 
     alias: {
       Abnormal: 'app/components/Abnormal.jsx',
-      AccountSettings: 'app/components/AccountSettings.jsx',
+      Admin: 'app/components/Admin.jsx',
       ActionLog: 'app/components/ActionLog.jsx',
       DowntimeManager: 'app/components/DowntimeManager.jsx',
       AddSensor: 'app/components/AddSensor.jsx',
@@ -66,6 +66,8 @@ module.exports = {
       PauseSensor: 'app/components/PauseSensor.jsx',
       PinSensor: 'app/components/PinSensor.jsx',
       RebootSensor: 'app/components/RebootSensor.jsx',
+      Results: 'app/components/Results.jsx',
+      Score: 'app/components/Score.jsx',
       SensorDetails: 'app/components/SensorDetails.jsx',
       SensorHealthOverview: 'app/components/SensorHealthOverview.jsx',
       ServerList: 'app/components/ServerList.jsx',
@@ -76,11 +78,13 @@ module.exports = {
       SensorList: 'app/components/SensorList.jsx',
 
       editSNMPSpeedTestAPI: 'app/api/editSNMPSpeedTestAPI.jsx',
+      climberManagementAPI: 'app/api/climberManagementAPI.jsx',
       downtimeSchedulerAPI: 'app/api/downtimeSchedulerAPI.jsx',
       manageSensorAPI: 'app/api/manageSensorAPI.jsx',
       notificationLogAPI: 'app/api/notificationLogAPI.jsx',
       retrieveSensorDetails: 'app/api/retrieveSensorDetails.jsx',
       retrieveHistoricalDataAPI: 'app/api/retrieveHistoricalDataAPI.jsx',
+      scoreAPI: 'app/api/scoreAPI.jsx',
       settingsAPI: 'app/api/settingsAPI.jsx',
 
       applicationStyles: 'app/styles/app.scss',

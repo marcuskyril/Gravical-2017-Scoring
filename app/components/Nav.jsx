@@ -4,21 +4,11 @@ import * as actions from 'actions';
 var FontAwesome = require('react-fontawesome');
 import firebase, {firebaseRef} from 'app/firebase/';
 var {Link, IndexLink} = require('react-router');
-const HOST = 'http://119.81.104.46:4201/';
 
 class Nav extends React.Component {
 
     constructor(props) {
         super(props);
-    }
-
-    launchTerminal() {
-        document.getElementById('terminalIFrame').src = HOST;
-        $('#terminal').foundation('open');
-    }
-
-    launchDowntimeManager() {
-        $('#downtime-manager-modal').foundation('open');
     }
 
     onLogout() {
@@ -34,42 +24,7 @@ class Nav extends React.Component {
             <div className="top-bar">
                 <IndexLink to="/" className="top-bar-title" activeClassName="active" activeStyle={{
                     color: '#f8f8f8'
-                }}>sence | mitos</IndexLink>
-                <div className="top-bar-right">
-                    <ul className="dropdown menu" data-dropdown-menu>
-                        <li>
-                          <a><FontAwesome name='terminal' onClick={this.launchTerminal.bind(this)}/></a>
-                        </li>
-                        <li>
-                            <Link to="/" activeClassName="active" activeStyle={{
-                                color: 'blue'
-                            }}><FontAwesome name='cog'/></Link>
-                            <ul className="menu vertical">
-                                <li>
-                                    <Link to="/accountSettings" activeClassName="active" activeStyle={{
-                                        color: '#222`'
-                                    }}>Account Settings</Link>
-                                </li>
-                                <li>
-                                    <a onClick={this.launchDowntimeManager}>Downtime Manager</a>
-                                </li>
-                                <li>
-                                    <Link to="/actionLog" activeClassName="active" activeStyle={{
-                                        color: '#222`'
-                                    }}>Action Log</Link>
-                                </li>
-                                <li>
-                                    <Link to="/notificationLog" activeClassName="active" activeStyle={{
-                                        color: '#222`'
-                                    }}>Notification Log</Link>
-                                </li>
-                                <li style={{borderTop: "0.5px solid #f8f8f8"}}>
-                                    <a onClick={this.onLogout}>Log Out</a>
-                                </li>
-                            </ul>
-                        </li>
-                    </ul>
-                </div>
+                }}>Gravical 2017</IndexLink>
             </div>
 
         );
@@ -84,3 +39,21 @@ function mapStateToProps(state, ownProps) {
 }
 
 module.exports = Redux.connect(mapStateToProps)(Nav);
+
+// <div className="top-bar-right">
+//     <ul className="dropdown menu" data-dropdown-menu>
+//         <li>
+//             <Link to="/" activeClassName="active"><FontAwesome name='cog'/></Link>
+//             <ul className="menu vertical">
+//                 <li>
+//                     <Link to="/accountSettings" activeClassName="active" activeStyle={{
+//                         color: '#222`'
+//                     }}>Admin</Link>
+//                 </li>
+//                 <li>
+//                     <a onClick={this.onLogout}>Log Out</a>
+//                 </li>
+//             </ul>
+//         </li>
+//     </ul>
+// </div>

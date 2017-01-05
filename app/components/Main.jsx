@@ -18,27 +18,17 @@ class Main extends React.Component {
     render() {
         return (
             <div>
-                <div className="off-canvas-wrapper">
-                    <div className="off-canvas-wrapper-inner" data-off-canvas-wrapper>
-                        <div className="off-canvas position-right" data-position="right" id="offCanvas" data-off-canvas>
-                            <SensorDetails/>
-                        </div>
-
-                        <div className="off-canvas-content" data-off-canvas-content>
-                            <StickyContainer>
-                              <Sticky>
-                                <Nav/>
-                            </Sticky>
-                            <div>
-                              {this.props.children}
-                            </div>
-                          </StickyContainer>
-                        </div>
+                <StickyContainer>
+                    <Sticky>
+                        <Nav/>
+                    </Sticky>
+                    <div>
+                        {this.props.children}
                     </div>
-                </div>
+                </StickyContainer>
             </div>
-            );
-        }
-    };
+        );
+    }
+};
 
 module.exports = Main;

@@ -2,42 +2,47 @@ import React from 'react';
 import {Route, Router, IndexRoute, hashHistory} from 'react-router';
 var Main = require('Main');
 var Dashboard = require('Dashboard');
-import AccountSettings from 'AccountSettings';
+import Admin from 'Admin';
 import Uptime from 'Uptime';
 import HistoricalChart from 'HistoricalChart';
 import NotificationLog from 'NotificationLog';
 import PageNotFound from 'PageNotFound';
 import Login from 'Login';
+import Score from 'Score';
 import ActionLog from 'ActionLog';
 import firebase from 'app/firebase/';
 
 var requireLogin = (nextState, replace, next) => {
 
     if (!firebase.auth().currentUser) {
-        replace('/');
+        console.log("Current User: ", firebase.auth().currentUser);
+        replace('/login');
     }
-
     next();
 };
 
 var redirectIfLoggedIn = (nextState, replace, next) => {
     if (firebase.auth().currentUser) {
-        replace('/dashboard');
+        replace('/admin');
     }
     next();
 };
 
 export default(
     <Router history={hashHistory}>
-      <Route path="/dashboard(/:buildingName)" component={Main} >
-          <Route path="/accountSettings" component={AccountSettings} onEnter={requireLogin}/>
-          <Route path="/notificationLog" component={NotificationLog} onEnter={requireLogin}/>
-          <Route path="/uptime(/:buildingName)" component={Uptime} onEnter={requireLogin}/>
-          <Route path="/historical(/:macAddress)" component={HistoricalChart} onEnter={requireLogin}/>
-          <Route path="/actionLog" component={ActionLog} onEnter={requireLogin}/>
-          <IndexRoute component={Dashboard}/>
+      <Route path="/" component={Main} >
+            <IndexRoute component={Dashboard}/>
       </Route>
-      <Route path="/" component={Login} onEnter={redirectIfLoggedIn}/>
+
+      <Route path="/admin" component={Main} >
+            <IndexRoute component={Admin} onEnter={requireLogin}/>
+      </Route>
+
+      <Route path="/score" component={Main} >
+            <IndexRoute component={Score} onEnter={requireLogin}/>
+      </Route>
+
+      <Route path="/login" component={Login} onEnter={redirectIfLoggedIn}/>
       <Route path="*" component={PageNotFound}/>
     </Router>
 );
@@ -45,3 +50,7 @@ export default(
 
 // <Route path="/about" component={About} onEnter={requireLogin}/>
 // <Route path="/examples" component={Examples} onEnter={requireLogin}/>
+//   <Route path="/notificationLog" component={NotificationLog} onEnter={requireLogin}/>
+//   <Route path="/uptime(/:buildingName)" component={Uptime} onEnter={requireLogin}/>
+//   <Route path="/historical(/:macAddress)" component={HistoricalChart} onEnter={requireLogin}/>
+//   <Route path="/actionLog" component={ActionLog} onEnter={requireLogin}/>

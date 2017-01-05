@@ -4,95 +4,25 @@ import * as Redux from 'react-redux';
 import * as actions from 'actions';
 var {connect} = require('react-redux');
 
-const DEFAULT_VAL = {
-    danger: {
-        diskUsage: 0.9,
-        cpuUsage: 60,
-        ramUsage: 0.6,
-        downtimePercentage: 0.6,
-        temperature: 65,
-    },
-
-    warning: {
-        diskUsage: 0.6,
-        cpuUsage: 40,
-        ramUsage: 0.4,
-        downtimePercentage: 0.4,
-        temperature: 60,
-    }
-};
-
 class AddSensor extends React.Component {
 
     constructor(props) {
         super(props);
-
-        this.state = {
-            message: '',
-            danger: {
-                diskUsage: 0.9,
-                cpuUsage: 60,
-                ramUsage: 0.6,
-                downtimePercentage: 0.6,
-                temperature: 65,
-            },
-            warning: {
-                diskUsage: 0.6,
-                cpuUsage: 40,
-                ramUsage: 0.4,
-                downtimePercentage: 0.4,
-                temperature: 60,
-            }
-        }
-
-        this.handleChange = this.handleChange.bind(this);
-    }
-
-    handleChange(event) {
-        this.setState({
-            [event.target.name]: event.target.value
-        });
     }
 
     componentDidMount() {
 
         var that = this;
 
-        $('#add-sensor-modal').on('closed.zf.reveal', function() {
+        $('#add-climber-modal').on('closed.zf.reveal', function() {
             that.setState({
-                message: '',
-                danger: {
-                    diskUsage: 0.9,
-                    cpuUsage: 60,
-                    ramUsage: 0.6,
-                    downtimePercentage: 0.6,
-                    temperature: 65,
-                },
-                warning: {
-                    diskUsage: 0.6,
-                    cpuUsage: 40,
-                    ramUsage: 0.4,
-                    downtimePercentage: 0.4,
-                    temperature: 60,
-                }
+                message: ''
             });
         });
     }
 
-    updateRegion() {
-
-        var that = this;
-
-        if ($('#isServer').prop('checked')) {
-            that.refs.region.value = 'virtual';
-        } else {
-            that.refs.region.value = '';
-        }
-    }
-
     onAddSensor(e) {
-        // console.log("test type: ", this.props.type);
-
+        
         e.preventDefault();
 
         var inputMac = this.refs.macAddress.value;
@@ -145,16 +75,6 @@ class AddSensor extends React.Component {
                 that.refs.sensorLocationID.value = '';
                 that.refs.building.value = '';
                 that.refs.isServer.value = false;
-                that.refs.dangerDisk.value = DEFAULT_VAL.danger['diskUsage'];
-                that.refs.dangerCPU.value = DEFAULT_VAL.danger['cpuUsage'];
-                that.refs.dangerRAM.value = DEFAULT_VAL.danger['ramUsage'];
-                that.refs.dangerDTPercentage.value = DEFAULT_VAL.danger['downtimePercentage'];
-                that.refs.dangerTemp.value = DEFAULT_VAL.danger['temperature'];
-                that.refs.warningDisk.value = DEFAULT_VAL.warning['diskUsage'];
-                that.refs.warningCPU.value = DEFAULT_VAL.warning['cpuUsage'];
-                that.refs.warningRAM.value = DEFAULT_VAL.warning['ramUsage'];
-                that.refs.warningDTPercentage.value = DEFAULT_VAL.warning['downtimePercentage'];
-                that.refs.warningTemp.value = DEFAULT_VAL.warning['temperature'];
             }
 
         });
@@ -165,160 +85,11 @@ class AddSensor extends React.Component {
         var that = this;
 
         return (
-            <div id="add-sensor-modal" className="reveal small" data-reveal="">
+            <div id="add-climber-modal" className="reveal small" data-reveal="">
                 <div className="page-title" style={{paddingBottom: '0.8rem'}}>Add Sensor/Server</div>
                 <form onSubmit={this.onAddSensor.bind(this)}>
-                    <div className="row collapse">
-                        <div className="medium-3 columns">
-                            <ul className="tabs vertical" id="vert-tabs" data-tabs>
-                                <li className="tabs-title is-active">
-                                    <a href="#addPanelGeneral"  style={{color: 'black', fontSize: '1rem', fontWeight: '100'}}aria-selected="true">General</a>
-                                </li>
-                                <li className="tabs-title">
-                                    <a href="#addPanelThreshold" style={{color: 'black', fontSize: '1rem', fontWeight: '100'}}>Thresholds</a>
-                                </li>
-                            </ul>
-                        </div>
-                        <div className="medium-9 columns" style={{minHeight: '22rem'}}>
-                            <div className="tabs-content vertical" data-tabs-content="vert-tabs" style={{border: 'none'}}>
-                                <div className="tabs-panel is-active" id="addPanelGeneral" style={{padding: 0}}>
-                                    <table className="addEditSensor">
-                                        <tbody>
-                                            <tr style={{verticalAlign: 'top'}}>
-                                                <td style={{padding: '0.5rem 1.0rem 0 1.5rem'}}>
-                                                    <label>Mac Address
-                                                        <input type="text" name="macAddress" ref="macAddress" placeholder="Mac Address" required/>
-                                                    </label>
 
-                                                    <fieldset>
-                                                        <input id="isServer" ref="isServer" type="checkbox" onClick={this.updateRegion.bind(this)}/>
-                                                        <label>Server?</label>
-
-                                                        <div id="port">
-                                                            <label>Port
-                                                                <input type="text" name="port" id="inputPort" ref="port" placeholder="Port"/>
-                                                            </label>
-                                                        </div>
-                                                    </fieldset>
-                                                </td>
-                                                <td style={{padding: '0.5rem 1.5rem 0 1.0rem'}}>
-                                                    <label>Region
-                                                        <select ref="region" name="region" required>
-                                                            <option value=""></option>
-                                                            <option value="north">North</option>
-                                                            <option value="south">South</option>
-                                                            <option value="east">East</option>
-                                                            <option value="west">West</option>
-                                                            <option value="central">Central</option>
-                                                            <option value="virtual">Virtual</option>
-                                                        </select>
-                                                    </label>
-
-                                                    <label>Building / Cluster
-                                                        <input type="text" name="building" ref="building" placeholder="Building / Cluster Level" required/>
-                                                    </label>
-
-                                                    <label>Building level / Group
-                                                        <input type="text" name="sensorLocationLevel" ref="sensorLocationLevel" placeholder="Building / Group Level" required/>
-                                                    </label>
-
-                                                    <label>Area / Server ID
-                                                        <input type="text" name="sensorLocationID" ref="sensorLocationID" placeholder="Area / Server ID" required/>
-                                                    </label>
-                                                </td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-
-                                </div>
-                                <div className="tabs-panel" id="addPanelThreshold" style={{padding: 0}}>
-
-                                    <table className="addEditSensor">
-                                        <tbody style={{float: "left"}}>
-                                            <tr>
-                                                <td></td>
-                                                <td style={{padding: '0.2rem', width: '23rem'}}>
-                                                    <div style={{margin: 'auto'}}>
-                                                    <label style={{float: 'left', width: '50%', textAlign: 'center', fontWeight: '100'}}>
-                                                        Warning
-                                                    </label>
-                                                    <label style={{float: 'right', width: '50%', textAlign: 'center', fontWeight: '100'}}>
-                                                        Danger
-                                                    </label>
-                                                    </div>
-                                                </td>
-                                            </tr>
-                                            <tr style={{backgroundColor: 'white'}}>
-                                                <td style={{textAlign: 'right'}}><label style={{fontSize: '1rem'}}>CPU Usage (%)</label></td>
-                                                <td>
-                                                    <div style={{margin: 'auto'}}>
-                                                        <label style={{float: 'left', width: '50%'}}>
-                                                            <input type="number" min="0" max="100" step="0.01" ref="warningCPU" placeholder="0" defaultValue={this.state.warning['cpuUsage']} required style={{margin: '0', textAlign: 'center',  borderColor: '#ffcc00'}}/>
-                                                        </label>
-                                                        <label style={{float: 'right', width: '50%'}}>
-                                                            <input type="number" min="0" max="100" step="0.01" ref="dangerCPU" placeholder="0" defaultValue={this.state.danger['cpuUsage']} required style={{margin: '0', textAlign: 'center',  borderColor: '#cc7a00'}}/>
-                                                        </label>
-                                                    </div>
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td style={{textAlign: 'right'}}><label style={{fontSize: '1rem'}}>RAM Usage (%)</label></td>
-                                                <td>
-                                                    <div style={{margin: 'auto'}}>
-                                                        <label style={{float: 'left', width: '50%'}}>
-                                                            <input type="number" min="0" max="1" step="0.01" ref="warningRAM" placeholder="0" defaultValue={this.state.warning['ramUsage']} required style={{margin: '0', textAlign: 'center',  borderColor: '#ffcc00'}}/>
-                                                        </label>
-                                                        <label style={{float: 'right', width: '50%'}}>
-                                                            <input type="number" min="0" max="1" step="0.01" ref="dangerRAM" placeholder="0" defaultValue={this.state.danger['ramUsage']} required style={{margin: '0', textAlign: 'center',  borderColor: '#cc7a00'}}/>
-                                                        </label>
-                                                    </div>
-                                                </td>
-                                            </tr>
-                                            <tr style={{backgroundColor: 'white'}}>
-                                                <td style={{textAlign: 'right'}}><label style={{fontSize: '1rem'}}>Downtime Percentage (%)</label></td>
-                                                <td>
-                                                    <div style={{margin: 'auto'}}>
-                                                        <label style={{float: 'left', width: '50%'}}>
-                                                            <input type="number" min="0" max="1" step="0.01" ref="warningDTPercentage" placeholder="0" defaultValue={this.state.warning['downtimePercentage']} required style={{margin: '0', textAlign: 'center',  borderColor: '#ffcc00'}}/>
-                                                        </label>
-                                                        <label style={{float: 'right', width: '50%'}}>
-                                                            <input type="number" min="0" max="1" step="0.01" ref="dangerDTPercentage" placeholder="0" defaultValue={this.state.danger['downtimePercentage']} required style={{margin: '0', textAlign: 'center',  borderColor: '#cc7a00'}}/>
-                                                        </label>
-                                                    </div>
-                                                </td>
-                                            </tr>
-                                            <tr style={{backgroundColor: 'white'}}>
-                                                <td style={{textAlign: 'right'}}><label style={{fontSize: '1rem'}}>Storage Usage (%)</label></td>
-                                                <td>
-                                                    <div style={{margin: 'auto'}}>
-                                                        <label style={{float: 'left', width: '50%'}}>
-                                                            <input type="number" min="0" max="1" step="0.01" ref="warningDisk" placeholder="0" defaultValue={this.state.warning['diskUsage']} required style={{margin: '0', textAlign: 'center',  borderColor: '#ffcc00'}}/>
-                                                        </label>
-                                                        <label style={{float: 'right', width: '50%'}}>
-                                                            <input type="number" min="0" max="1" step="0.01" ref="dangerDisk" placeholder="0" defaultValue={this.state.danger['diskUsage']} required style={{margin: '0', textAlign: 'center',  borderColor: '#cc7a00'}}/>
-                                                        </label>
-                                                    </div>
-                                                </td>
-                                            </tr>
-                                            <tr style={{backgroundColor: 'white'}}>
-                                                <td style={{textAlign: 'right'}}><label style={{fontSize: '1rem'}}>Temperature (&deg;C)</label></td>
-                                                <td>
-                                                    <div style={{margin: 'auto'}}>
-                                                        <label style={{float: 'left', width: '50%'}}>
-                                                            <input type="number" min="0" max="150" step="0.01" ref="warningTemp" placeholder="0" defaultValue={this.state.warning['temperature']} required style={{margin: '0', textAlign: 'center',  borderColor: '#ffcc00'}}/>
-                                                        </label>
-                                                        <label style={{float: 'right', width: '50%'}}>
-                                                            <input type="number" min="0" max="150" step="0.01" ref="dangerTemp" placeholder="0" defaultValue={this.state.danger['temperature']} required style={{margin: '0', textAlign: 'center',  borderColor: '#cc7a00'}}/>
-                                                        </label>
-                                                    </div>
-                                                </td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                    Test
                     <div>
                         <div id="sensorMessage"><AddSensorMessage message={message}/></div>
                         <input type="submit" value="Add" className="button proceed expanded"/>
@@ -336,7 +107,6 @@ class AddSensor extends React.Component {
 class AddSensorMessage extends React.Component {
     render() {
         var message = this.props.message;
-        // console.log("message from parent: ", message);
 
         return (
             <div className="statusText">{message}</div>
@@ -349,3 +119,54 @@ function mapStateToProps(state, ownProps) {
 }
 
 module.exports = connect(mapStateToProps)(AddSensor);
+
+
+// <div className="medium-9 columns" style={{minHeight: '22rem'}}>
+//     <table className="addEditSensor">
+//         <tbody>
+//             <tr style={{verticalAlign: 'top'}}>
+//                 <td style={{padding: '0.5rem 1.0rem 0 1.5rem'}}>
+//                     <label>Mac Address
+//                         <input type="text" name="macAddress" ref="macAddress" placeholder="Mac Address" required/>
+//                     </label>
+//
+//                     <fieldset>
+//                         <input id="isServer" ref="isServer" type="checkbox" onClick={this.updateRegion.bind(this)}/>
+//                         <label>Server?</label>
+//
+//                         <div id="port">
+//                             <label>Port
+//                                 <input type="text" name="port" id="inputPort" ref="port" placeholder="Port"/>
+//                             </label>
+//                         </div>
+//                     </fieldset>
+//                 </td>
+//                 <td style={{padding: '0.5rem 1.5rem 0 1.0rem'}}>
+//                     <label>Region
+//                         <select ref="region" name="region" required>
+//                             <option value=""></option>
+//                             <option value="north">North</option>
+//                             <option value="south">South</option>
+//                             <option value="east">East</option>
+//                             <option value="west">West</option>
+//                             <option value="central">Central</option>
+//                             <option value="virtual">Virtual</option>
+//                         </select>
+//                     </label>
+//
+//                     <label>Building / Cluster
+//                         <input type="text" name="building" ref="building" placeholder="Building / Cluster Level" required/>
+//                     </label>
+//
+//                     <label>Building level / Group
+//                         <input type="text" name="sensorLocationLevel" ref="sensorLocationLevel" placeholder="Building / Group Level" required/>
+//                     </label>
+//
+//                     <label>Area / Server ID
+//                         <input type="text" name="sensorLocationID" ref="sensorLocationID" placeholder="Area / Server ID" required/>
+//                     </label>
+//                 </td>
+//             </tr>
+//         </tbody>
+//     </table>
+// </div>

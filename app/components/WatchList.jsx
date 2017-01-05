@@ -73,32 +73,32 @@ const tableMetaData = [
         "order": 1,
         "locked": false,
         "visible": true,
-        "displayName": "Mac Address",
+        "displayName": "ID",
         "customComponent": LinkComponent
     }, {
         "columnName": "geo-region",
         "order": 2,
         "locked": false,
         "visible": false,
-        "displayName": "Region"
+        "displayName": "Name"
     }, {
         "columnName": "building",
         "order": 3,
         "locked": true,
         "visible": true,
-        "displayName": "Building"
+        "displayName": "Name"
     }, {
         "columnName": "sensor-level-id",
         "order": 4,
         "locked": true,
         "visible": true,
-        "displayName": "ID"
+        "displayName": "Score"
     }, {
         "columnName": "sensor_status",
         "order": 4,
         "locked": true,
         "visible": true,
-        "displayName": "Sensor Status",
+        "displayName": "Category",
         "customComponent": SensorBlockComponent
     },{
         "columnName": "remove",
@@ -106,7 +106,7 @@ const tableMetaData = [
         "locked": true,
         "visible": true,
         "sortable": false,
-        "displayName": "Actions",
+        "displayName": "Ranking",
         "customComponent": RemoveComponent
     }
 

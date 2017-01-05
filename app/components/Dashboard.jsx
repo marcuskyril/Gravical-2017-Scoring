@@ -1,24 +1,15 @@
 var React = require('react');
-var Abnormal = require('Abnormal');
-var Uptime = require('Uptime');
 var SensorHealthOverview = require('SensorHealthOverview');
 var WatchList = require('WatchList');
 var Tableaux = require('Tableaux');
-var NotificationBar = require('NotificationBar');
+var Results = require('Results');
 var FontAwesome = require('react-fontawesome');
 var BuildingOverview = require('BuildingOverview');
-var AddSensor = require('AddSensor');
-var EditSensor = require('EditSensor');
-var DeleteSensor = require('DeleteSensor');
-var UnpinSensor = require('UnpinSensor');
-var RebootSensor = require('RebootSensor');
-var EditSNMPSpeedTest = require('EditSNMPSpeedTest');
-var DowntimeManager = require('DowntimeManager');
-var PinSensor = require('PinSensor');
-var Terminal = require('Terminal');
+import AddSensor from 'AddSensor';
 import * as Redux from 'react-redux';
 import * as actions from 'actions';
 import moment from 'moment';
+import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
 var {connect} = require('react-redux');
 var {Link, IndexLink} = require('react-router');
 const HOST = 'ws://119.81.104.46:9000';
@@ -39,7 +30,9 @@ class Dashboard extends React.Component {
             userDisplayName: '',
             userEmail: '',
             notificationData: {},
-            filterParam: props.params.buildingName === undefined ? '' : props.params.buildingName
+            filterParam: props.params.buildingName === undefined
+                ? ''
+                : props.params.buildingName
         }
     }
 
@@ -50,17 +43,6 @@ class Dashboard extends React.Component {
         var timestamp = '';
         var userDisplayName = '';
         var userEmail = '';
-
-        firebase.auth().onAuthStateChanged(function(user) {
-            if (user) {
-                userDisplayName = user.displayName;
-                userEmail = user.email;
-
-                that.setState({userDisplayName: userDisplayName, userEmail: userEmail});
-            }
-        }, function(error) {
-            console.warn(error);
-        });
 
         var connection = new ab.Session(HOST, function() {
             connection.subscribe('', function(topic, data) {
@@ -84,12 +66,11 @@ class Dashboard extends React.Component {
             // refresh browser when connection is unavailable
             console.warn('WebSocket connection closed: all data unavailable');
 
-            if(this.state !== undefined) {
+            if (this.state !== undefined) {
                 this.state.connection.subscribe('', function(topic, data) {
 
                     console.warn('Reinitiating connection');
                     timestamp = moment().format('YYYY-MM-DD, h:mm:ss a');
-                    // dispatch(actions.storeSyncData(timestamp, userDisplayName, userEmail));
 
                     that.setState({
                         connection: connection,
@@ -103,24 +84,6 @@ class Dashboard extends React.Component {
                 });
             }
         }, {'skipSubprotocolCheck': true});
-
-        // close dropdowns
-        window.addEventListener('click', function(e) {
-            var pane = e.srcElement;
-            if (!($(e.target).hasClass("pane"))) {
-
-                var dropdowns = document.getElementsByClassName("routerDropdown");
-                var i;
-
-                for (i = 0; i < dropdowns.length; i++) {
-                    var openDropdown = dropdowns[i];
-
-                    if (openDropdown.style.display === "block") {
-                        openDropdown.style.display = "none";
-                    }
-                }
-            }
-        });
     }
 
     componentWillUnmount() {
@@ -128,10 +91,6 @@ class Dashboard extends React.Component {
         if (this.state.connection) {
             this.state.connection.close();
         }
-    }
-
-    launchAddSensor() {
-        $('#add-sensor-modal').foundation('open');
     }
 
     toggleHide(id) {
@@ -156,10 +115,7 @@ class Dashboard extends React.Component {
 
             <div className="dashboard margin-top-md">
                 <div className="row">
-                    <div className="columns small-12 medium-12 large-3 margin-bottom-small">
-                        <BuildingOverview filter={this.state.filterParam} data={this.state.overall}/>
-                    </div>
-                    <div className="columns small-12 medium-12 large-9">
+                    <div className="columns small-12 medium-12 large-5">
                         <div>
                             <div className="callout callout-minimize">
                                 <div className="page-title">Watch List</div>
@@ -172,42 +128,11 @@ class Dashboard extends React.Component {
                             </div>
                         </div>
 
-                        <div>
-                            <div className="callout callout-dark-header">
-                                <div className="page-title">Health Overview</div>
-
-                                <button onClick={this.launchAddSensor} className="icon-btn-text-small" style={{fontSize: '0.9rem'}}>
-                                    <FontAwesome name='plus-circle' style={{
-                                        marginRight: '0.5rem'
-                                    }}/>
-                                    Add Sensor / Server
-                                </button>
-                                <AddSensor userId={userDisplayName} userEmail={userEmail} type={this.state.type}/>
-                                <DowntimeManager userId={userDisplayName} userEmail={userEmail}/>
-                                <UnpinSensor userId={userDisplayName} userEmail={userEmail}/>
-                                <Terminal userId={userDisplayName} userEmail={userEmail}/>
-                                <PinSensor userId={userDisplayName} userEmail={userEmail}/>
-                                <EditSNMPSpeedTest userId={userDisplayName} userEmail={userEmail}/>
-                            </div>
-                            <div className="callout callout-dark">
-                                <SensorHealthOverview filter={this.state.filterParam} data={this.state.sensorHealthOverviewV2} serverData={this.state.serverOverview}/>
-                            </div>
-                        </div>
-
-                        <div>
-                            <div className="callout callout-dark-header">
-                                <div className="page-title">Abnormal Behaviour</div>
-                            </div>
-                            <div className="callout callout-dark">
-                                <Abnormal data={this.state.bfg}/>
-                            </div>
-                        </div>
-
                     </div>
 
-                    <div className="allSensors columns medium-12 large-9">
+                    <div className="allSensors columns medium-12 large-7">
                         <div className="callout callout-dark-header">
-                            <div className="page-title">All Sensors</div>
+                            <div className="page-title">Current Event</div>
                         </div>
                         <div className="callout callout-dark" id="bfg">
                             <Tableaux filter={this.state.filterParam} data={this.state.bfg}/>
@@ -215,12 +140,85 @@ class Dashboard extends React.Component {
                     </div>
                 </div>
 
-                <div className="row textAlignCenter">
-                    <div className="columns small-12 medium-12 large-12 margin-bottom-small">
 
-                        <div className="sub-header">
-                            {this.state.userDisplayName}
-                            | Last sync at {this.state.currentTime}
+                <div className="row textAlignCenter">
+
+                    <div className="columns small-12 medium-12 margin-bottom-small">
+                        <div className="callout callout-dark-header">
+                            <div className="page-title">All Results</div>
+                            <p>This section will only be updated after each event.</p>
+                        </div>
+                        <div className="callout callout-dark">
+                            <Tabs>
+                              <TabList>
+                                <Tab>12th January</Tab>
+                                <Tab>13th January</Tab>
+                                <Tab>14th January</Tab>
+                                <Tab>15th January</Tab>
+                              </TabList>
+                              <TabPanel>
+                                  <div className="header-md margin-bottom-small">U17 Girls - Qualifiers</div>
+                                  <Results filter={this.state.filterParam} data={this.state.bfg}/>
+
+                                  <div className="header-md margin-top-md margin-bottom-small">Novice Women - Qualifiers</div>
+                                  <Results filter={this.state.filterParam} data={this.state.bfg}/>
+
+                                  <div className="header-md margin-top-md margin-bottom-small">U17 Boys - Qualifiers</div>
+                                  <Results filter={this.state.filterParam} data={this.state.bfg}/>
+
+                                  <div className="header-md margin-top-md margin-bottom-small">Novice Men - Qualifiers</div>
+                                  <Results filter={this.state.filterParam} data={this.state.bfg}/>
+                              </TabPanel>
+                              <TabPanel>
+                                  <div className="header-md margin-bottom-small">Intermediate Women - Qualifiers</div>
+                                  <Results filter={this.state.filterParam} data={this.state.bfg}/>
+
+                                  <div className="header-md margin-top-md margin-bottom-small">Intermediate Men - Qualifiers</div>
+                                  <Results filter={this.state.filterParam} data={this.state.bfg}/>
+                              </TabPanel>
+                              <TabPanel>
+                                  <div className="header-md margin-bottom-small">Open Women - Qualifiers</div>
+                                  <Results filter={this.state.filterParam} data={this.state.bfg}/>
+
+                                  <div className="header-md margin-top-md margin-bottom-small">Open Men - Qualifiers</div>
+                                  <Results filter={this.state.filterParam} data={this.state.bfg}/>
+
+                                  <div className="header-md margin-top-md margin-bottom-small">Open Women - Semi-Finals</div>
+                                  <Results filter={this.state.filterParam} data={this.state.bfg}/>
+                              </TabPanel>
+                              <TabPanel>
+                                  <div className="header-md margin-bottom-small">Open Men - Semi-Finals</div>
+                                  <Results filter={this.state.filterParam} data={this.state.bfg}/>
+
+                                  <div className="header-md margin-top-md margin-bottom-small">U17 Girls - Finals</div>
+                                  <Results filter={this.state.filterParam} data={this.state.bfg}/>
+
+                                  <div className="header-md margin-top-md margin-bottom-small">U17 Boys - Finals</div>
+                                  <Results filter={this.state.filterParam} data={this.state.bfg}/>
+
+                                  <div className="header-md margin-top-md margin-bottom-small">Novice Women - Finals</div>
+                                  <Results filter={this.state.filterParam} data={this.state.bfg}/>
+
+                                  <div className="header-md margin-top-md margin-bottom-small">U17 Novice Men - Finals</div>
+                                  <Results filter={this.state.filterParam} data={this.state.bfg}/>
+
+                                  <div className="header-md margin-top-md margin-bottom-small">Intermediate Women - Finals</div>
+                                  <Results filter={this.state.filterParam} data={this.state.bfg}/>
+
+                                  <div className="header-md margin-top-md margin-bottom-small">U17 Intermediate Men - Finals</div>
+                                  <Results filter={this.state.filterParam} data={this.state.bfg}/>
+
+                                  <div className="header-md margin-top-md margin-bottom-small">Open Men - Finals</div>
+                                  <Results filter={this.state.filterParam} data={this.state.bfg}/>
+
+                                  <div className="header-md margin-top-md margin-bottom-small">Open Women - Finals</div>
+                                  <Results filter={this.state.filterParam} data={this.state.bfg}/>
+                              </TabPanel>
+                          </Tabs>
+                        </div>
+
+                        <div className="page-title">
+                            Last sync at {this.state.currentTime}
                             <FontAwesome name='refresh' spin style={{
                                 textShadow: '0 1px 0 rgba(0, 0, 0, 0.1)',
                                 marginLeft: '0.5rem'
@@ -229,8 +227,6 @@ class Dashboard extends React.Component {
 
                     </div>
                 </div>
-
-                <NotificationBar notificationData={this.state.notifications} timestamp={this.state.currentTime}/>
             </div>
         );
     }

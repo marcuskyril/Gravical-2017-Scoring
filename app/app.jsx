@@ -12,7 +12,7 @@ firebase.auth().onAuthStateChanged((user) => {
   if (user) {
     console.log(`${user.email} has successfully logged in at: ${moment().format('YYYY-MM-DD, h:mm:ss a')}`);
     store.dispatch(actions.login(user.uid));
-    hashHistory.push('/dashboard');
+    hashHistory.push('/admin');
   } else {
     store.dispatch(actions.logout());
     hashHistory.push('/');

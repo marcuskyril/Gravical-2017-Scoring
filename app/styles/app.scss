@@ -2,10 +2,15 @@
 @import url( 'https://fonts.googleapis.com/css?family=Pathway+Gothic+One');
 @import url( 'https://fonts.googleapis.com/css?family=Lato:400,900i');
 
+@font-face {
+  font-family: 'PixelSplitter';
+  src: url('/fonts/PixelSplitter-Bold.ttf')
+}
+
 $space-large: 1.5rem;
 $title-color: #555;
 $nav-font: #333;
-$night-ocean: #232f32;
+$night-ocean: #1e1d2b;
 $header-color: #6abedb; //blue
 $body-color: #1a1b1b;
 $dark-grey: #323232;
@@ -173,11 +178,12 @@ ul.header-list {
 .callout-dark {
     padding: 1.5rem;
     background-color: #fff;
-    border: 2px solid #bdbdbd;
+    border: 1px solid;
+    border-color: #e5e6e9 #dfe0e4 #d0d1d5;
     border-top: none;
     margin-top: 0;
-    border-bottom-right-radius: 4px;
-    border-bottom-left-radius: 4px;
+    border-bottom-right-radius: 3px;
+    border-bottom-left-radius: 3px;
 }
 
 .scroll {
@@ -188,24 +194,29 @@ ul.header-list {
 .callout-dark-header {
     padding: 0.5rem;
     background-color: #fff;
-    border: 2px solid #bdbdbd;
-    border-bottom: 1px solid #bdbdbd;
-    border-top-left-radius: 4px;
-    border-top-right-radius: 4px;
+    border: 1px solid;
+    border-color: #e5e6e9 #dfe0e4 #d0d1d5;
+    // border-bottom: 0.5px solid #bdbdbd;
+    border-bottom: none;
+    border-top-left-radius: 3px;
+    border-top-right-radius: 3px;
     margin-bottom: 0;
 }
 
 .callout-top-header {
     padding: 1rem;
     background-color: $crazy-light-grey;
-    border: 2px solid #bdbdbd;
-    border-radius: 4px;
+    border: 1px solid;
+    border-color: #e5e6e9 #dfe0e4 #d0d1d5;
+    border-radius: 3px;
 }
 
 .callout-minimize {
     margin-bottom: 1rem;
-    border-radius: 4px 4px;
+    border-radius: 3px 3px;
     padding: 0.5rem;
+    border: 1px solid;
+    border-color: #e5e6e9 #dfe0e4 #d0d1d5;
 }
 
 .icon-btn-text-small {
@@ -233,9 +244,16 @@ label {
 
 .page-title {
     color: $dark-grey;
-    font-family: 'Roboto', sans-serif;
+    font-family: 'PixelSplitter';
     font-weight: 500;
     font-size: 1.2rem;
+}
+
+.header-md {
+    color: $dark-grey;
+    font-family: 'PixelSplitter';
+    font-weight: 500;
+    // font-size: 1rem;
 }
 
 .header {
@@ -277,6 +295,7 @@ label {
 }
 
 .settings-wrapper {
+  margin-top: 1rem;
     margin-left: 1.8rem;
     color: #000;
 }
@@ -383,11 +402,11 @@ table.sensor-details-table {
 }
 
 .cancel {
-    background: $red;
+    background: $red !important;
 }
 
 .cancel:hover {
-    background: #7a0000;
+    background: #7a0000 !important;
 }
 
 .remove {
@@ -613,6 +632,7 @@ input::-webkit-inner-spin-button {
 
 .tabs {
   border: none;
+  background: #f2f2f2;
 }
 
 .addEditSensor > tbody{
@@ -622,4 +642,28 @@ input::-webkit-inner-spin-button {
 
 span._800 {
   font-weight: 800;
+}
+
+.tabs-content.vertical {
+    border: none;
+}
+
+.btn-score {
+  background: $green;
+  width: 100%;
+  height: 75px;
+  display: flex;
+  justify-content: center;
+  align-content: center;
+  flex-direction: column;
+  font-size: 1.5rem;
+}
+
+.btn-submit {
+  height: 75px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  font-size: 1.5rem;
 }

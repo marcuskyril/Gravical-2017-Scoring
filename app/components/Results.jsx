@@ -43,14 +43,6 @@ const tableMetaData =  [
     "displayName": "Name"
   },
   {
-    "columnName": "flapping",
-    "order":  5,
-    "locked": false,
-    "visible": true,
-    "sortable": true,
-    "displayName": "Actions"
-  },
-  {
     "columnName": "network_router",
     "order":  4,
     "locked": false,
@@ -64,11 +56,10 @@ const columnDisplayName = {
     "Rank" : "mac_address",
     "ID" : "latest_timestamp",
     "Name" : "sensor_status",
-    "Actions" : "flapping",
     "Score" : "network_router"
 };
 
-class Tableaux extends React.Component {
+class Results extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -80,7 +71,7 @@ class Tableaux extends React.Component {
 
     var that = this;
 
-    var currentlySelected = ["mac_address", "latest_timestamp", "sensor_status", "network_router", "flapping"];
+    var currentlySelected = ["mac_address", "latest_timestamp", "sensor_status", "network_router"];
     var findStuff = $('#bfg').find('table > thead > tr > th > span');
     // console.log(findStuff);
     if (findStuff.length > 0) {
@@ -163,4 +154,4 @@ class Tableaux extends React.Component {
   }
 }
 
-module.exports = Tableaux;
+module.exports = Results;
