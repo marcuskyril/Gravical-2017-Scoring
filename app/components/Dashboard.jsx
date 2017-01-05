@@ -58,16 +58,11 @@ class Dashboard extends React.Component {
                 console.log("jalapeño", data['total_details']['num_of_details']);
                 that.setState({
                     connection: connection,
+                    currentTime: timestamp,
                     currentEvent: data['current_event'],
                     currentDetail: data['current_detail'],
                     totalDetails: data['total_details']['num_of_details'],
                     results: data['list']
-
-                    // sensorHealthOverviewV2: data.overview,
-                    // bfg: data.BFG,
-                    // currentTime: timestamp,
-                    // notifications: data.notifications,
-                    // serverOverview: data.serverOverview
                 });
             });
 
@@ -84,6 +79,7 @@ class Dashboard extends React.Component {
 
                     that.setState({
                         connection: connection,
+                        currentTime: timestamp,
                         currentEvent: data['current_event'],
                         currentDetail: data['current_detail'],
                         totalDetails: data['total_details']['num_of_details'],
@@ -117,7 +113,7 @@ class Dashboard extends React.Component {
 
     render() {
 
-        var {userDisplayName, userEmail, results, currentEvent, currentDetail, totalDetails} = this.state;
+        var {userDisplayName, userEmail, results, currentEvent, currentTime, currentDetail, totalDetails} = this.state;
         console.log("currentEvent", currentEvent);
 
         return (
@@ -227,7 +223,7 @@ class Dashboard extends React.Component {
                         </div>
 
                         <div className="page-title">
-                            Last sync at {this.state.currentTime}
+                            Last sync at {currentTime}
                             <FontAwesome name='refresh' spin style={{
                                 textShadow: '0 1px 0 rgba(0, 0, 0, 0.1)',
                                 marginLeft: '0.5rem'

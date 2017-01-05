@@ -93598,16 +93598,11 @@
 	                    console.log("jalapeño", data['total_details']['num_of_details']);
 	                    that.setState({
 	                        connection: connection,
+	                        currentTime: timestamp,
 	                        currentEvent: data['current_event'],
 	                        currentDetail: data['current_detail'],
 	                        totalDetails: data['total_details']['num_of_details'],
 	                        results: data['list']
-
-	                        // sensorHealthOverviewV2: data.overview,
-	                        // bfg: data.BFG,
-	                        // currentTime: timestamp,
-	                        // notifications: data.notifications,
-	                        // serverOverview: data.serverOverview
 	                    });
 	                });
 	            }, function () {
@@ -93623,6 +93618,7 @@
 
 	                        that.setState({
 	                            connection: connection,
+	                            currentTime: timestamp,
 	                            currentEvent: data['current_event'],
 	                            currentDetail: data['current_detail'],
 	                            totalDetails: data['total_details']['num_of_details'],
@@ -93664,6 +93660,7 @@
 	            var userEmail = _state.userEmail;
 	            var results = _state.results;
 	            var currentEvent = _state.currentEvent;
+	            var currentTime = _state.currentTime;
 	            var currentDetail = _state.currentDetail;
 	            var totalDetails = _state.totalDetails;
 
@@ -93908,7 +93905,7 @@
 	                            'div',
 	                            { className: 'page-title' },
 	                            'Last sync at ',
-	                            this.state.currentTime,
+	                            currentTime,
 	                            React.createElement(FontAwesome, { name: 'refresh', spin: true, style: {
 	                                    textShadow: '0 1px 0 rgba(0, 0, 0, 0.1)',
 	                                    marginLeft: '0.5rem'
