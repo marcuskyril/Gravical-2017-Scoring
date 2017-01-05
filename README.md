@@ -1,3 +1,1 @@
-# is480
-# is480-master
-hello# gravical-17
+# Gravical 17 Scoring App
