@@ -1,11 +1,8 @@
 var React = require('react');
-var SensorHealthOverview = require('SensorHealthOverview');
 var WatchList = require('WatchList');
 var Tableaux = require('Tableaux');
 var Results = require('Results');
 var FontAwesome = require('react-fontawesome');
-var BuildingOverview = require('BuildingOverview');
-import AddSensor from 'AddSensor';
 import * as Redux from 'react-redux';
 import * as actions from 'actions';
 import moment from 'moment';
@@ -14,6 +11,19 @@ var {connect} = require('react-redux');
 var {Link, IndexLink} = require('react-router');
 const HOST = 'ws://office.livestudios.com:41000';
 
+const EVENTS = {
+    "NWQ" : "Novice Women Qualifiers",
+    "NMQ" : "Novice Men Qualifiers",
+    "UMQ" : "U17 Boys Qualifiers",
+    "UWQ" : "U17 Girls Qualifiers",
+    "IMQ" : "Intermediate Men Qualifiers",
+    "IWQ" : "Intermediate Women Qualifiers",
+    "OMQ" : "Open Men Qualifiers",
+    "OWQ" : "Open Women Qualifiers",
+    "OMS" : "Open Women Semi-Finals",
+    "OWS" : "Open Women Semi-Finals"
+}
+
 class Dashboard extends React.Component {
 
     constructor(props) {
@@ -21,47 +31,36 @@ class Dashboard extends React.Component {
 
         this.state = {
             connection: null,
-            // type: "-",
-            // overall: [],
-            // bfg: [],
             results: [],
-            // notifications: [],
-            // sensorHealthOverviewV2: [],
             currentDetail: '-',
             currentEvent: '-',
             totalDetails: '-',
             currentTime: '-',
-            userDisplayName: '',
-            userEmail: '',
-            notificationData: {},
-            filterParam: props.params.buildingName === undefined
-                ? ''
-                : props.params.buildingName
+            notificationData: {}
         }
     }
 
     componentDidMount() {
         // initiate websocket
-        var {dispatch} = this.props;
+        this.connect();
+    }
+
+    connect() {
         var that = this;
         var timestamp = '';
-        var userDisplayName = '';
-        var userEmail = '';
-
 
         var connection = new ab.Session(HOST, function() {
             connection.subscribe('', function(topic, data) {
 
                 timestamp = moment().format('YYYY-MM-DD, h:mm:ss a');
-                // dispatch(actions.storeSyncData(timestamp, userDisplayName, userEmail));
+                // console.log("jalapeño", data['total_details']['num_of_details']);
 
-                console.log("jalapeño", data['total_details']['num_of_details']);
                 that.setState({
                     connection: connection,
                     currentTime: timestamp,
                     currentEvent: data['current_event'],
-                    currentDetail: data['current_detail'],
-                    totalDetails: data['total_details']['num_of_details'],
+                    currentDetail: parseInt(data['current_detail']),
+                    totalDetails: parseInt(data['total_details']['num_of_details']),
                     results: data['list']
                 });
             });
@@ -72,27 +71,28 @@ class Dashboard extends React.Component {
             console.warn('WebSocket connection closed: all data unavailable');
 
             if (this.state !== undefined) {
-                this.state.connection.subscribe('', function(topic, data) {
-
-                    console.warn('Reinitiating connection');
-                    timestamp = moment().format('YYYY-MM-DD, h:mm:ss a');
-
-                    that.setState({
-                        connection: connection,
-                        currentTime: timestamp,
-                        currentEvent: data['current_event'],
-                        currentDetail: data['current_detail'],
-                        totalDetails: data['total_details']['num_of_details'],
-                        results: data['list']
-                    });
-                });
+                // this.state.connection.subscribe('', function(topic, data) {
+                //
+                //     console.warn('Reinitiating connection');
+                //     timestamp = moment().format('YYYY-MM-DD, h:mm:ss a');
+                //
+                //     that.setState({
+                //         connection: connection,
+                //         currentTime: timestamp,
+                //         currentEvent: data['current_event'],
+                //         currentDetail: data['current_detail'],
+                //         totalDetails: data['total_details']['num_of_details'],
+                //         results: data['list']
+                //     });
+                // });
+                this.connect();
             }
         }, {'skipSubprotocolCheck': true});
     }
 
     componentWillUnmount() {
         // close websocket
-        if (this.state.connection) {
+        if (this.state.connection !== null) {
             this.state.connection.close();
         }
     }
@@ -113,7 +113,7 @@ class Dashboard extends React.Component {
 
     render() {
 
-        var {userDisplayName, userEmail, results, currentEvent, currentTime, currentDetail, totalDetails} = this.state;
+        var {results, currentEvent, currentTime, currentDetail, totalDetails} = this.state;
         console.log("currentEvent", currentEvent);
 
         return (
@@ -163,66 +163,66 @@ class Dashboard extends React.Component {
                               </TabList>
                               <TabPanel>
                                   <div className="header-md margin-bottom-small">U17 Girls - Qualifiers</div>
-                                  <Results filter={this.state.filterParam} data={this.state.bfg}/>
+                                  <Results data={this.state.bfg}/>
 
                                   <div className="header-md margin-top-md margin-bottom-small">Novice Women - Qualifiers</div>
-                                  <Results filter={this.state.filterParam} data={this.state.bfg}/>
+                                  <Results data={this.state.bfg}/>
 
                                   <div className="header-md margin-top-md margin-bottom-small">U17 Boys - Qualifiers</div>
-                                  <Results filter={this.state.filterParam} data={this.state.bfg}/>
+                                  <Results data={this.state.bfg}/>
 
                                   <div className="header-md margin-top-md margin-bottom-small">Novice Men - Qualifiers</div>
-                                  <Results filter={this.state.filterParam} data={this.state.bfg}/>
+                                  <Results data={this.state.bfg}/>
                               </TabPanel>
                               <TabPanel>
                                   <div className="header-md margin-bottom-small">Intermediate Women - Qualifiers</div>
-                                  <Results filter={this.state.filterParam} data={this.state.bfg}/>
+                                  <Results data={this.state.bfg}/>
 
                                   <div className="header-md margin-top-md margin-bottom-small">Intermediate Men - Qualifiers</div>
-                                  <Results filter={this.state.filterParam} data={this.state.bfg}/>
+                                  <Results data={this.state.bfg}/>
                               </TabPanel>
                               <TabPanel>
                                   <div className="header-md margin-bottom-small">Open Women - Qualifiers</div>
-                                  <Results filter={this.state.filterParam} data={this.state.bfg}/>
+                                  <Results data={this.state.bfg}/>
 
                                   <div className="header-md margin-top-md margin-bottom-small">Open Men - Qualifiers</div>
-                                  <Results filter={this.state.filterParam} data={this.state.bfg}/>
+                                  <Results data={this.state.bfg}/>
 
                                   <div className="header-md margin-top-md margin-bottom-small">Open Women - Semi-Finals</div>
-                                  <Results filter={this.state.filterParam} data={this.state.bfg}/>
+                                  <Results data={this.state.bfg}/>
                               </TabPanel>
                               <TabPanel>
                                   <div className="header-md margin-bottom-small">Open Men - Semi-Finals</div>
-                                  <Results filter={this.state.filterParam} data={this.state.bfg}/>
+                                  <Results data={this.state.bfg}/>
 
                                   <div className="header-md margin-top-md margin-bottom-small">U17 Girls - Finals</div>
-                                  <Results filter={this.state.filterParam} data={this.state.bfg}/>
+                                  <Results data={this.state.bfg}/>
 
                                   <div className="header-md margin-top-md margin-bottom-small">U17 Boys - Finals</div>
-                                  <Results filter={this.state.filterParam} data={this.state.bfg}/>
+                                  <Results data={this.state.bfg}/>
 
                                   <div className="header-md margin-top-md margin-bottom-small">Novice Women - Finals</div>
-                                  <Results filter={this.state.filterParam} data={this.state.bfg}/>
+                                  <Results data={this.state.bfg}/>
 
                                   <div className="header-md margin-top-md margin-bottom-small">U17 Novice Men - Finals</div>
-                                  <Results filter={this.state.filterParam} data={this.state.bfg}/>
+                                  <Results data={this.state.bfg}/>
 
                                   <div className="header-md margin-top-md margin-bottom-small">Intermediate Women - Finals</div>
-                                  <Results filter={this.state.filterParam} data={this.state.bfg}/>
+                                  <Results data={this.state.bfg}/>
 
                                   <div className="header-md margin-top-md margin-bottom-small">U17 Intermediate Men - Finals</div>
-                                  <Results filter={this.state.filterParam} data={this.state.bfg}/>
+                                  <Results data={this.state.bfg}/>
 
                                   <div className="header-md margin-top-md margin-bottom-small">Open Men - Finals</div>
-                                  <Results filter={this.state.filterParam} data={this.state.bfg}/>
+                                  <Results data={this.state.bfg}/>
 
                                   <div className="header-md margin-top-md margin-bottom-small">Open Women - Finals</div>
-                                  <Results filter={this.state.filterParam} data={this.state.bfg}/>
+                                  <Results data={this.state.bfg}/>
                               </TabPanel>
                           </Tabs>
                         </div>
 
-                        <div className="page-title">
+                        <div className="header-md">
                             Last sync at {currentTime}
                             <FontAwesome name='refresh' spin style={{
                                 textShadow: '0 1px 0 rgba(0, 0, 0, 0.1)',

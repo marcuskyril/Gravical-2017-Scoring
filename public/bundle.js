@@ -10732,6 +10732,7 @@
 	            userDisplayName: '-',
 	            email: '-',
 	            message: '',
+	            registerMessage: '',
 	            gender: '',
 	            categories: [],
 	            selectedCategory: '',
@@ -10771,7 +10772,7 @@
 	            climberManagementAPI.getCurrentDetail().then(function (response) {
 	                console.log("Current detail", response);
 	                that.setState({
-	                    currentDetail: response.message
+	                    currentDetail: parseInt(response.message)
 	                });
 	            });
 	        }
@@ -10837,10 +10838,17 @@
 	            var selectedCategory = this.state.selectedCategory;
 	            var participantID = this.refs.participantID.value;
 	            var detail = this.refs.detail.value;
+
+	            console.log(participantID, selectedCategory, detail);
+
+	            // climberManagementAPI.registerClimber(participantID, selectedCategory, detail).then(function(response){
+	            //     console.log("response", response);
+	            // });
 	        }
 	    }, {
 	        key: 'addClimber',
 	        value: function addClimber() {
+	            var that = this;
 	            var first_name = this.refs.firstName.value;
 	            var last_name = this.refs.lastName.value;
 	            var gender = this.state.gender;
@@ -10851,6 +10859,17 @@
 
 	            climberManagementAPI.addClimber(first_name, last_name, gender, date_of_birth, id_number, nationality, organization).then(function (response) {
 	                console.log("response", response);
+	                that.setState({
+	                    registerMessage: response.message
+	                });
+
+	                that.refs.firstName.value = '';
+	                that.refs.lastName.value = '';
+	                that.state.gender = '';
+	                that.refs.dob.value = '';
+	                that.refs.nric.value = '';
+	                that.refs.nationality.value = '';
+	                that.refs.organization.value = '';
 	            });
 	        }
 	    }, {
@@ -10889,7 +10908,7 @@
 
 
 	            if (currentDetail < numDetails) {
-	                this.setDetail(currentDetail + 1);
+	                this.setDetail(parseInt(currentDetail) + 1);
 	            }
 	        }
 	    }, {
@@ -10897,7 +10916,6 @@
 	        value: function endEvent() {
 	            var that = this;
 	            climberManagementAPI.endEvent().then(function (response) {
-	                console.log("response", response);
 
 	                that.setState({
 	                    currentEvent: '-',
@@ -10915,12 +10933,8 @@
 	            var _state2 = this.state;
 	            var categories = _state2.categories;
 	            var selectedCategory = _state2.selectedCategory;
-	            var reportTiming = _state2.reportTiming;
-	            var emailRecipient = _state2.emailRecipient;
-	            var sensorOfflineAllowance = _state2.sensorOfflineAllowance;
-	            var maxDataGap = _state2.maxDataGap;
-	            var flappingThreshold = _state2.flappingThreshold;
 	            var message = _state2.message;
+	            var registerMessage = _state2.registerMessage;
 	            var currentDetail = _state2.currentDetail;
 	            var currentEvent = _state2.currentEvent;
 	            var hasEventStarted = _state2.hasEventStarted;
@@ -10970,7 +10984,7 @@
 	                                            'a',
 	                                            { href: '#panel2v' },
 	                                            React.createElement(FontAwesome, { name: 'plus-circle' }),
-	                                            ' Register Climber'
+	                                            ' Edit Climber Details'
 	                                        )
 	                                    ),
 	                                    React.createElement(
@@ -11064,7 +11078,8 @@
 	                                                'a',
 	                                                { className: 'button proceed expanded', onClick: this.addClimber.bind(this) },
 	                                                'Add Climber'
-	                                            )
+	                                            ),
+	                                            React.createElement(ResponseMessage, { message: registerMessage })
 	                                        )
 	                                    ),
 	                                    React.createElement(
@@ -29128,6 +29143,7 @@
 	/* WEBPACK VAR INJECTION */(function($) {"use strict";
 
 	var ADD_CLIMBER_URL = "http://office.livestudios.com:41111/backend/api/add_climber.php";
+	var REGISTER_PARTICIPANT_URL = "http://office.livestudios.com:41111/backend/api/register_participant.php";
 	var START_EVENT_URL = "http://office.livestudios.com:41111/backend/api/start_event.php";
 	var STOP_EVENT_URL = "http://office.livestudios.com:41111/backend/api/stop_event.php";
 	var SET_CURRENT_DETAIL_URL = "http://office.livestudios.com:41111/backend/api/set_current_detail.php";
@@ -29148,6 +29164,21 @@
 	            },
 	            url: ADD_CLIMBER_URL,
 	            data: data,
+	            success: function success(response) {
+	                // console.log("Tres manifique, monsieur", response);
+	            }
+	        });
+	    },
+
+	    registerClimber: function registerClimber(participantID, categoryID, detail) {
+
+	        return $.ajax({
+	            type: "POST",
+	            beforeSend: function beforeSend(request) {
+	                request.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+	            },
+	            url: REGISTER_PARTICIPANT_URL,
+	            data: { participantID: participantID, categoryID: categoryID, detail: detail },
 	            success: function success(response) {
 	                // console.log("Tres manifique, monsieur", response);
 	            }
@@ -90604,6 +90635,7 @@
 	    }, {
 	        key: 'submitScore',
 	        value: function submitScore() {
+	            var that = this;
 	            var judge = this.refs.routeJudgeName.value;
 	            var selectedCategory = this.state.selectedCategory;
 	            var tagID = this.state.selectedClimber;
@@ -90612,6 +90644,9 @@
 
 	            scoreAPI.submitScore('' + selectedCategory + tagID, parseInt(route), score, judge).then(function (response) {
 	                console.log(response);
+	                that.setState({
+	                    message: "Score submitted"
+	                });
 	            });
 	        }
 	    }, {
@@ -93506,10 +93541,6 @@
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-	var _AddSensor = __webpack_require__(924);
-
-	var _AddSensor2 = _interopRequireDefault(_AddSensor);
-
 	var _reactRedux = __webpack_require__(111);
 
 	var Redux = _interopRequireWildcard(_reactRedux);
@@ -93524,9 +93555,9 @@
 
 	var _reactTabs = __webpack_require__(925);
 
-	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
-
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -93535,12 +93566,10 @@
 	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 	var React = __webpack_require__(14);
-	var SensorHealthOverview = __webpack_require__(935);
 	var WatchList = __webpack_require__(941);
 	var Tableaux = __webpack_require__(942);
 	var Results = __webpack_require__(943);
 	var FontAwesome = __webpack_require__(266);
-	var BuildingOverview = __webpack_require__(944);
 
 	var _require = __webpack_require__(111);
 
@@ -93553,6 +93582,19 @@
 
 	var HOST = 'ws://office.livestudios.com:41000';
 
+	var EVENTS = {
+	    "NWQ": "Novice Women Qualifiers",
+	    "NMQ": "Novice Men Qualifiers",
+	    "UMQ": "U17 Boys Qualifiers",
+	    "UWQ": "U17 Girls Qualifiers",
+	    "IMQ": "Intermediate Men Qualifiers",
+	    "IWQ": "Intermediate Women Qualifiers",
+	    "OMQ": "Open Men Qualifiers",
+	    "OWQ": "Open Women Qualifiers",
+	    "OMS": "Open Women Semi-Finals",
+	    "OWS": "Open Women Semi-Finals"
+	};
+
 	var Dashboard = function (_React$Component) {
 	    _inherits(Dashboard, _React$Component);
 
@@ -93563,20 +93605,12 @@
 
 	        _this.state = {
 	            connection: null,
-	            // type: "-",
-	            // overall: [],
-	            // bfg: [],
 	            results: [],
-	            // notifications: [],
-	            // sensorHealthOverviewV2: [],
 	            currentDetail: '-',
 	            currentEvent: '-',
 	            totalDetails: '-',
 	            currentTime: '-',
-	            userDisplayName: '',
-	            userEmail: '',
-	            notificationData: {},
-	            filterParam: props.params.buildingName === undefined ? '' : props.params.buildingName
+	            notificationData: {}
 	        };
 	        return _this;
 	    }
@@ -93585,26 +93619,26 @@
 	        key: 'componentDidMount',
 	        value: function componentDidMount() {
 	            // initiate websocket
-	            var dispatch = this.props.dispatch;
-
+	            this.connect();
+	        }
+	    }, {
+	        key: 'connect',
+	        value: function connect() {
 	            var that = this;
 	            var timestamp = '';
-	            var userDisplayName = '';
-	            var userEmail = '';
 
 	            var connection = new ab.Session(HOST, function () {
 	                connection.subscribe('', function (topic, data) {
 
 	                    timestamp = (0, _moment2.default)().format('YYYY-MM-DD, h:mm:ss a');
-	                    // dispatch(actions.storeSyncData(timestamp, userDisplayName, userEmail));
+	                    // console.log("jalapeño", data['total_details']['num_of_details']);
 
-	                    console.log("jalapeño", data['total_details']['num_of_details']);
 	                    that.setState({
 	                        connection: connection,
 	                        currentTime: timestamp,
 	                        currentEvent: data['current_event'],
-	                        currentDetail: data['current_detail'],
-	                        totalDetails: data['total_details']['num_of_details'],
+	                        currentDetail: parseInt(data['current_detail']),
+	                        totalDetails: parseInt(data['total_details']['num_of_details']),
 	                        results: data['list']
 	                    });
 	                });
@@ -93614,20 +93648,21 @@
 	                console.warn('WebSocket connection closed: all data unavailable');
 
 	                if (this.state !== undefined) {
-	                    this.state.connection.subscribe('', function (topic, data) {
-
-	                        console.warn('Reinitiating connection');
-	                        timestamp = (0, _moment2.default)().format('YYYY-MM-DD, h:mm:ss a');
-
-	                        that.setState({
-	                            connection: connection,
-	                            currentTime: timestamp,
-	                            currentEvent: data['current_event'],
-	                            currentDetail: data['current_detail'],
-	                            totalDetails: data['total_details']['num_of_details'],
-	                            results: data['list']
-	                        });
-	                    });
+	                    // this.state.connection.subscribe('', function(topic, data) {
+	                    //
+	                    //     console.warn('Reinitiating connection');
+	                    //     timestamp = moment().format('YYYY-MM-DD, h:mm:ss a');
+	                    //
+	                    //     that.setState({
+	                    //         connection: connection,
+	                    //         currentTime: timestamp,
+	                    //         currentEvent: data['current_event'],
+	                    //         currentDetail: data['current_detail'],
+	                    //         totalDetails: data['total_details']['num_of_details'],
+	                    //         results: data['list']
+	                    //     });
+	                    // });
+	                    this.connect();
 	                }
 	            }, { 'skipSubprotocolCheck': true });
 	        }
@@ -93635,7 +93670,7 @@
 	        key: 'componentWillUnmount',
 	        value: function componentWillUnmount() {
 	            // close websocket
-	            if (this.state.connection) {
+	            if (this.state.connection !== null) {
 	                this.state.connection.close();
 	            }
 	        }
@@ -93659,8 +93694,6 @@
 	            var _this2 = this;
 
 	            var _state = this.state;
-	            var userDisplayName = _state.userDisplayName;
-	            var userEmail = _state.userEmail;
 	            var results = _state.results;
 	            var currentEvent = _state.currentEvent;
 	            var currentTime = _state.currentTime;
@@ -93786,25 +93819,25 @@
 	                                        { className: 'header-md margin-bottom-small' },
 	                                        'U17 Girls - Qualifiers'
 	                                    ),
-	                                    React.createElement(Results, { filter: this.state.filterParam, data: this.state.bfg }),
+	                                    React.createElement(Results, { data: this.state.bfg }),
 	                                    React.createElement(
 	                                        'div',
 	                                        { className: 'header-md margin-top-md margin-bottom-small' },
 	                                        'Novice Women - Qualifiers'
 	                                    ),
-	                                    React.createElement(Results, { filter: this.state.filterParam, data: this.state.bfg }),
+	                                    React.createElement(Results, { data: this.state.bfg }),
 	                                    React.createElement(
 	                                        'div',
 	                                        { className: 'header-md margin-top-md margin-bottom-small' },
 	                                        'U17 Boys - Qualifiers'
 	                                    ),
-	                                    React.createElement(Results, { filter: this.state.filterParam, data: this.state.bfg }),
+	                                    React.createElement(Results, { data: this.state.bfg }),
 	                                    React.createElement(
 	                                        'div',
 	                                        { className: 'header-md margin-top-md margin-bottom-small' },
 	                                        'Novice Men - Qualifiers'
 	                                    ),
-	                                    React.createElement(Results, { filter: this.state.filterParam, data: this.state.bfg })
+	                                    React.createElement(Results, { data: this.state.bfg })
 	                                ),
 	                                React.createElement(
 	                                    _reactTabs.TabPanel,
@@ -93814,13 +93847,13 @@
 	                                        { className: 'header-md margin-bottom-small' },
 	                                        'Intermediate Women - Qualifiers'
 	                                    ),
-	                                    React.createElement(Results, { filter: this.state.filterParam, data: this.state.bfg }),
+	                                    React.createElement(Results, { data: this.state.bfg }),
 	                                    React.createElement(
 	                                        'div',
 	                                        { className: 'header-md margin-top-md margin-bottom-small' },
 	                                        'Intermediate Men - Qualifiers'
 	                                    ),
-	                                    React.createElement(Results, { filter: this.state.filterParam, data: this.state.bfg })
+	                                    React.createElement(Results, { data: this.state.bfg })
 	                                ),
 	                                React.createElement(
 	                                    _reactTabs.TabPanel,
@@ -93830,19 +93863,19 @@
 	                                        { className: 'header-md margin-bottom-small' },
 	                                        'Open Women - Qualifiers'
 	                                    ),
-	                                    React.createElement(Results, { filter: this.state.filterParam, data: this.state.bfg }),
+	                                    React.createElement(Results, { data: this.state.bfg }),
 	                                    React.createElement(
 	                                        'div',
 	                                        { className: 'header-md margin-top-md margin-bottom-small' },
 	                                        'Open Men - Qualifiers'
 	                                    ),
-	                                    React.createElement(Results, { filter: this.state.filterParam, data: this.state.bfg }),
+	                                    React.createElement(Results, { data: this.state.bfg }),
 	                                    React.createElement(
 	                                        'div',
 	                                        { className: 'header-md margin-top-md margin-bottom-small' },
 	                                        'Open Women - Semi-Finals'
 	                                    ),
-	                                    React.createElement(Results, { filter: this.state.filterParam, data: this.state.bfg })
+	                                    React.createElement(Results, { data: this.state.bfg })
 	                                ),
 	                                React.createElement(
 	                                    _reactTabs.TabPanel,
@@ -93852,61 +93885,61 @@
 	                                        { className: 'header-md margin-bottom-small' },
 	                                        'Open Men - Semi-Finals'
 	                                    ),
-	                                    React.createElement(Results, { filter: this.state.filterParam, data: this.state.bfg }),
+	                                    React.createElement(Results, { data: this.state.bfg }),
 	                                    React.createElement(
 	                                        'div',
 	                                        { className: 'header-md margin-top-md margin-bottom-small' },
 	                                        'U17 Girls - Finals'
 	                                    ),
-	                                    React.createElement(Results, { filter: this.state.filterParam, data: this.state.bfg }),
+	                                    React.createElement(Results, { data: this.state.bfg }),
 	                                    React.createElement(
 	                                        'div',
 	                                        { className: 'header-md margin-top-md margin-bottom-small' },
 	                                        'U17 Boys - Finals'
 	                                    ),
-	                                    React.createElement(Results, { filter: this.state.filterParam, data: this.state.bfg }),
+	                                    React.createElement(Results, { data: this.state.bfg }),
 	                                    React.createElement(
 	                                        'div',
 	                                        { className: 'header-md margin-top-md margin-bottom-small' },
 	                                        'Novice Women - Finals'
 	                                    ),
-	                                    React.createElement(Results, { filter: this.state.filterParam, data: this.state.bfg }),
+	                                    React.createElement(Results, { data: this.state.bfg }),
 	                                    React.createElement(
 	                                        'div',
 	                                        { className: 'header-md margin-top-md margin-bottom-small' },
 	                                        'U17 Novice Men - Finals'
 	                                    ),
-	                                    React.createElement(Results, { filter: this.state.filterParam, data: this.state.bfg }),
+	                                    React.createElement(Results, { data: this.state.bfg }),
 	                                    React.createElement(
 	                                        'div',
 	                                        { className: 'header-md margin-top-md margin-bottom-small' },
 	                                        'Intermediate Women - Finals'
 	                                    ),
-	                                    React.createElement(Results, { filter: this.state.filterParam, data: this.state.bfg }),
+	                                    React.createElement(Results, { data: this.state.bfg }),
 	                                    React.createElement(
 	                                        'div',
 	                                        { className: 'header-md margin-top-md margin-bottom-small' },
 	                                        'U17 Intermediate Men - Finals'
 	                                    ),
-	                                    React.createElement(Results, { filter: this.state.filterParam, data: this.state.bfg }),
+	                                    React.createElement(Results, { data: this.state.bfg }),
 	                                    React.createElement(
 	                                        'div',
 	                                        { className: 'header-md margin-top-md margin-bottom-small' },
 	                                        'Open Men - Finals'
 	                                    ),
-	                                    React.createElement(Results, { filter: this.state.filterParam, data: this.state.bfg }),
+	                                    React.createElement(Results, { data: this.state.bfg }),
 	                                    React.createElement(
 	                                        'div',
 	                                        { className: 'header-md margin-top-md margin-bottom-small' },
 	                                        'Open Women - Finals'
 	                                    ),
-	                                    React.createElement(Results, { filter: this.state.filterParam, data: this.state.bfg })
+	                                    React.createElement(Results, { data: this.state.bfg })
 	                                )
 	                            )
 	                        ),
 	                        React.createElement(
 	                            'div',
-	                            { className: 'page-title' },
+	                            { className: 'header-md' },
 	                            'Last sync at ',
 	                            currentTime,
 	                            React.createElement(FontAwesome, { name: 'refresh', spin: true, style: {
@@ -93929,243 +93962,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(9)))
 
 /***/ },
-/* 924 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/* WEBPACK VAR INJECTION */(function($) {'use strict';
-
-	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-	var _reactRedux = __webpack_require__(111);
-
-	var Redux = _interopRequireWildcard(_reactRedux);
-
-	var _actions = __webpack_require__(139);
-
-	var actions = _interopRequireWildcard(_actions);
-
-	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
-
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-	var React = __webpack_require__(14);
-	var manageSensorAPI = __webpack_require__(917);
-
-	var _require = __webpack_require__(111);
-
-	var connect = _require.connect;
-
-	var AddSensor = function (_React$Component) {
-	    _inherits(AddSensor, _React$Component);
-
-	    function AddSensor(props) {
-	        _classCallCheck(this, AddSensor);
-
-	        return _possibleConstructorReturn(this, Object.getPrototypeOf(AddSensor).call(this, props));
-	    }
-
-	    _createClass(AddSensor, [{
-	        key: 'componentDidMount',
-	        value: function componentDidMount() {
-
-	            var that = this;
-
-	            $('#add-climber-modal').on('closed.zf.reveal', function () {
-	                that.setState({
-	                    message: ''
-	                });
-	            });
-	        }
-	    }, {
-	        key: 'onAddSensor',
-	        value: function onAddSensor(e) {
-
-	            e.preventDefault();
-
-	            var inputMac = this.refs.macAddress.value;
-	            var inputRegion = this.refs.region.value;
-	            var inputLocationLevel = this.refs.sensorLocationLevel.value;
-	            var inputLocationID = this.refs.sensorLocationID.value;
-	            var inputBuilding = this.refs.building.value;
-	            var inputPort = this.refs.port.value;
-	            // var isServer = this.refs.isServer.value;
-	            var inputDangerDisk = this.refs.dangerDisk.value;
-	            var inputDangerCPU = this.refs.dangerCPU.value;
-	            var inputDangerRAM = this.refs.dangerRAM.value;
-	            var inputDangerDTPercentage = this.refs.dangerDTPercentage.value;
-	            var inputDangerTemp = this.refs.dangerTemp.value;
-	            var inputWarningDisk = this.refs.warningDisk.value;
-	            var inputWarningCPU = this.refs.warningCPU.value;
-	            var inputWarningRAM = this.refs.warningRAM.value;
-	            var inputWarningDTPercentage = this.refs.warningDTPercentage.value;
-	            var inputWarningTemp = this.refs.warningTemp.value;
-
-	            var _props = this.props;
-	            var dispatch = _props.dispatch;
-	            var userEmail = _props.userEmail;
-
-	            var that = this;
-
-	            manageSensorAPI.addSensor(inputMac, inputRegion, inputLocationLevel, inputLocationID, inputBuilding, inputPort, inputDangerDisk, inputDangerCPU, inputDangerRAM, inputDangerDTPercentage, inputDangerTemp, inputWarningDisk, inputWarningCPU, inputWarningRAM, inputWarningDTPercentage, inputWarningTemp).then(function (response) {
-
-	                if (response.error) {
-	                    that.setState({ message: response.error });
-	                } else {
-	                    that.setState({ message: response.success });
-
-	                    var mytriggerNotification = document.createEvent("Event");
-
-	                    mytriggerNotification.data = {
-	                        type: 'addSensor',
-	                        macAdd: inputMac,
-	                        building: inputBuilding,
-	                        location: '' + inputLocationLevel + inputLocationID
-	                    };
-
-	                    mytriggerNotification.initEvent("triggerNotification", true, true);
-	                    document.dispatchEvent(mytriggerNotification);
-
-	                    var actionDesc = 'Added ' + inputMac + ' to ' + inputBuilding + ' ' + inputLocationLevel + inputLocationID;
-	                    dispatch(actions.startAddToLog(userEmail, actionDesc));
-
-	                    that.refs.macAddress.value = '';
-	                    that.refs.port.value = '';
-	                    that.refs.region.value = '';
-	                    that.refs.sensorLocationLevel.value = '';
-	                    that.refs.sensorLocationID.value = '';
-	                    that.refs.building.value = '';
-	                    that.refs.isServer.value = false;
-	                }
-	            });
-	        }
-	    }, {
-	        key: 'render',
-	        value: function render() {
-	            var message = this.state.message;
-	            var that = this;
-
-	            return React.createElement(
-	                'div',
-	                { id: 'add-climber-modal', className: 'reveal small', 'data-reveal': '' },
-	                React.createElement(
-	                    'div',
-	                    { className: 'page-title', style: { paddingBottom: '0.8rem' } },
-	                    'Add Sensor/Server'
-	                ),
-	                React.createElement(
-	                    'form',
-	                    { onSubmit: this.onAddSensor.bind(this) },
-	                    'Test',
-	                    React.createElement(
-	                        'div',
-	                        null,
-	                        React.createElement(
-	                            'div',
-	                            { id: 'sensorMessage' },
-	                            React.createElement(AddSensorMessage, { message: message })
-	                        ),
-	                        React.createElement('input', { type: 'submit', value: 'Add', className: 'button proceed expanded' }),
-	                        React.createElement(
-	                            'a',
-	                            { className: 'button cancel expanded close-reveal-modal', 'data-close': '', 'aria-label': 'Close' },
-	                            'Cancel'
-	                        )
-	                    )
-	                )
-	            );
-	        }
-	    }]);
-
-	    return AddSensor;
-	}(React.Component);
-
-	var AddSensorMessage = function (_React$Component2) {
-	    _inherits(AddSensorMessage, _React$Component2);
-
-	    function AddSensorMessage() {
-	        _classCallCheck(this, AddSensorMessage);
-
-	        return _possibleConstructorReturn(this, Object.getPrototypeOf(AddSensorMessage).apply(this, arguments));
-	    }
-
-	    _createClass(AddSensorMessage, [{
-	        key: 'render',
-	        value: function render() {
-	            var message = this.props.message;
-
-	            return React.createElement(
-	                'div',
-	                { className: 'statusText' },
-	                message
-	            );
-	        }
-	    }]);
-
-	    return AddSensorMessage;
-	}(React.Component);
-
-	function mapStateToProps(state, ownProps) {
-	    return { sensorData: state.activeSensor };
-	}
-
-	module.exports = connect(mapStateToProps)(AddSensor);
-
-	// <div className="medium-9 columns" style={{minHeight: '22rem'}}>
-	//     <table className="addEditSensor">
-	//         <tbody>
-	//             <tr style={{verticalAlign: 'top'}}>
-	//                 <td style={{padding: '0.5rem 1.0rem 0 1.5rem'}}>
-	//                     <label>Mac Address
-	//                         <input type="text" name="macAddress" ref="macAddress" placeholder="Mac Address" required/>
-	//                     </label>
-	//
-	//                     <fieldset>
-	//                         <input id="isServer" ref="isServer" type="checkbox" onClick={this.updateRegion.bind(this)}/>
-	//                         <label>Server?</label>
-	//
-	//                         <div id="port">
-	//                             <label>Port
-	//                                 <input type="text" name="port" id="inputPort" ref="port" placeholder="Port"/>
-	//                             </label>
-	//                         </div>
-	//                     </fieldset>
-	//                 </td>
-	//                 <td style={{padding: '0.5rem 1.5rem 0 1.0rem'}}>
-	//                     <label>Region
-	//                         <select ref="region" name="region" required>
-	//                             <option value=""></option>
-	//                             <option value="north">North</option>
-	//                             <option value="south">South</option>
-	//                             <option value="east">East</option>
-	//                             <option value="west">West</option>
-	//                             <option value="central">Central</option>
-	//                             <option value="virtual">Virtual</option>
-	//                         </select>
-	//                     </label>
-	//
-	//                     <label>Building / Cluster
-	//                         <input type="text" name="building" ref="building" placeholder="Building / Cluster Level" required/>
-	//                     </label>
-	//
-	//                     <label>Building level / Group
-	//                         <input type="text" name="sensorLocationLevel" ref="sensorLocationLevel" placeholder="Building / Group Level" required/>
-	//                     </label>
-	//
-	//                     <label>Area / Server ID
-	//                         <input type="text" name="sensorLocationID" ref="sensorLocationID" placeholder="Area / Server ID" required/>
-	//                     </label>
-	//                 </td>
-	//             </tr>
-	//         </tbody>
-	//     </table>
-	// </div>
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(9)))
-
-/***/ },
+/* 924 */,
 /* 925 */
 /***/ function(module, exports, __webpack_require__) {
 
@@ -95078,901 +94875,9 @@
 	});
 
 /***/ },
-/* 935 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/* WEBPACK VAR INJECTION */(function($) {'use strict';
-
-	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-	var _reactRedux = __webpack_require__(111);
-
-	var Redux = _interopRequireWildcard(_reactRedux);
-
-	var _actions = __webpack_require__(139);
-
-	var actions = _interopRequireWildcard(_actions);
-
-	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
-
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-	var React = __webpack_require__(14);
-	var ServerList = __webpack_require__(936);
-	var FontAwesome = __webpack_require__(266);
-	var SensorList = __webpack_require__(937);
-
-	var _require = __webpack_require__(47);
-
-	var Link = _require.Link;
-	var IndexLink = _require.IndexLink;
-
-
-	var HOST = 'http://119.81.104.46:4201/';
-
-	var dataList = [];
-
-	var Building = function (_React$Component) {
-	    _inherits(Building, _React$Component);
-
-	    function Building() {
-	        _classCallCheck(this, Building);
-
-	        return _possibleConstructorReturn(this, Object.getPrototypeOf(Building).apply(this, arguments));
-	    }
-
-	    _createClass(Building, [{
-	        key: 'render',
-	        value: function render() {
-
-	            return React.createElement(
-	                'div',
-	                { className: 'column row' },
-	                React.createElement(
-	                    'table',
-	                    { className: 'sensorHealthTable' },
-	                    React.createElement(BuildingHeader, { dispatch: this.props.dispatch, buildingName: this.props.buildingName, snmpSpeedTest: this.props.speedTest }),
-	                    React.createElement(LevelList, { totalCount: this.props.sensorCount, snmpSpeedTest: this.props.speedTest, areaArray: this.props.areaNames, levelArray: this.props.levelNames, sensors: this.props.sensors })
-	                )
-	            );
-	        }
-	    }]);
-
-	    return Building;
-	}(React.Component);
-
-	var SearchBar = function (_React$Component2) {
-	    _inherits(SearchBar, _React$Component2);
-
-	    function SearchBar(props) {
-	        _classCallCheck(this, SearchBar);
-
-	        return _possibleConstructorReturn(this, Object.getPrototypeOf(SearchBar).call(this, props));
-	    }
-
-	    _createClass(SearchBar, [{
-	        key: 'handleChange',
-	        value: function handleChange() {
-	            this.props.onUserInput(this.refs.filterTextInput.value);
-	        }
-	    }, {
-	        key: 'render',
-	        value: function render() {
-
-	            return React.createElement(
-	                'form',
-	                { id: 'buildingFilter' },
-	                React.createElement('input', { type: 'text', style: {
-	                        width: "50%"
-	                    }, placeholder: 'Filter Results', value: this.props.filterText, ref: 'filterTextInput', onChange: this.handleChange.bind(this) })
-	            );
-	        }
-	    }]);
-
-	    return SearchBar;
-	}(React.Component);
-
-	var BuildingList = function (_React$Component3) {
-	    _inherits(BuildingList, _React$Component3);
-
-	    function BuildingList() {
-	        _classCallCheck(this, BuildingList);
-
-	        return _possibleConstructorReturn(this, Object.getPrototypeOf(BuildingList).apply(this, arguments));
-	    }
-
-	    _createClass(BuildingList, [{
-	        key: 'render',
-	        value: function render() {
-
-	            var rows = [];
-	            var allBuildings = [];
-
-	            var buildings = this.props.data;
-
-	            for (var property in buildings) {
-	                if (buildings.hasOwnProperty(property)) {
-	                    var buildingName = property;
-
-	                    var temp = {
-	                        buildingName: buildingName,
-	                        areaNames: buildings[property]["area_names"],
-	                        levelNames: buildings[property]["level_names"],
-	                        sensors: buildings[property]["sensors"],
-	                        sensorCount: buildings[property]["sensor_count"],
-	                        speed_test: buildings[property]["snmp_speed_test"]
-	                    };
-
-	                    allBuildings.push(temp);
-	                }
-	            }
-
-	            allBuildings.forEach(function (building) {
-	                var buildingName = building.buildingName;
-	                var areaNames = building.areaNames;
-	                var levelNames = building.levelNames;
-	                var sensors = building.sensors;
-	                var sensorCount = building.sensorCount;
-	                var speedTest = building.speed_test;
-
-	                if (buildingName.toLowerCase().indexOf(this.props.filterText.toLowerCase()) === -1) {
-	                    return React.createElement('div', null);
-	                }
-
-	                rows.push(React.createElement(Building, { key: buildingName, dispatch: this.props.dispatch, buildingName: buildingName, areaNames: areaNames, levelNames: levelNames, sensors: sensors, sensorCount: sensorCount, speedTest: speedTest }));
-	            }.bind(this));
-
-	            return React.createElement(
-	                'div',
-	                null,
-	                rows
-	            );
-	        }
-	    }]);
-
-	    return BuildingList;
-	}(React.Component);
-
-	var BuildingHeader = function (_React$Component4) {
-	    _inherits(BuildingHeader, _React$Component4);
-
-	    function BuildingHeader(props) {
-	        _classCallCheck(this, BuildingHeader);
-
-	        return _possibleConstructorReturn(this, Object.getPrototypeOf(BuildingHeader).call(this, props));
-	    }
-
-	    _createClass(BuildingHeader, [{
-	        key: 'handleClick',
-	        value: function handleClick(sensor) {
-	            var div = document.getElementById('routerDropdown' + sensor);
-	            if (sensor != "-") {
-	                if (div.style.display === 'none') {
-	                    div.style.display = 'block';
-	                } else {
-	                    div.style.display = 'none';
-	                }
-	            }
-	        }
-	    }, {
-	        key: 'launchSpeedTestEdit',
-	        value: function launchSpeedTestEdit() {
-	            var _props = this.props;
-	            var snmpSpeedTest = _props.snmpSpeedTest;
-	            var dispatch = _props.dispatch;
-	            var sensor = snmpSpeedTest.sensor;
-	            var current_interval = snmpSpeedTest.current_interval;
-
-
-	            dispatch(actions.storeActiveSensor(sensor, current_interval));
-	            $('#edit-snmp-speedtest-modal').foundation('open');
-	        }
-	    }, {
-	        key: 'render',
-	        value: function render() {
-	            var _this5 = this;
-
-	            var snmpSpeedTest = this.props.snmpSpeedTest;
-	            var cpu_freq = snmpSpeedTest.cpu_freq;
-	            var cpu_load = snmpSpeedTest.cpu_load;
-	            var current_interval = snmpSpeedTest.current_interval;
-	            var download_speed = snmpSpeedTest.download_speed;
-	            var memory_total = snmpSpeedTest.memory_total;
-	            var memory_used = snmpSpeedTest.memory_used;
-	            var model = snmpSpeedTest.model;
-	            var processor_temp = snmpSpeedTest.processor_temp;
-	            var sensor = snmpSpeedTest.sensor;
-	            var storage_total = snmpSpeedTest.storage_total;
-	            var storage_used = snmpSpeedTest.storage_used;
-	            var system_name = snmpSpeedTest.system_name;
-	            var time = snmpSpeedTest.time;
-	            var upload_speed = snmpSpeedTest.upload_speed;
-	            var uptime = snmpSpeedTest.uptime;
-
-	            var memory = (memory_used / 1000).toFixed(2) + " / " + (memory_total / 1000).toFixed(2) + "MB";
-	            var storage = (storage_used / 1000).toFixed(2) + " / " + (storage_total / 1000).toFixed(2) + "MB";
-	            var temp = (processor_temp - 273.15).toFixed(2) + "C";
-	            var uptimeLink = '/uptime/' + this.props.buildingName;
-	            var id = "routerDropdown" + sensor;
-
-	            return React.createElement(
-	                'thead',
-	                null,
-	                React.createElement(
-	                    'tr',
-	                    null,
-	                    React.createElement(
-	                        'td',
-	                        { className: 'header', style: {
-	                                width: "8rem",
-	                                textAlign: "center"
-	                            } },
-	                        this.props.buildingName
-	                    ),
-	                    React.createElement(
-	                        'td',
-	                        { style: {
-	                                "textAlign": "right",
-	                                "fontSize": "0.8rem",
-	                                fontWeight: '300'
-	                            } },
-	                        React.createElement(
-	                            'a',
-	                            { type: 'button', className: 'pane margin-left-tiny', onClick: function onClick() {
-	                                    return _this5.handleClick(sensor);
-	                                } },
-	                            React.createElement(FontAwesome, { className: 'pane', name: 'cog', size: 'lg' })
-	                        ),
-	                        React.createElement(
-	                            IndexLink,
-	                            { activeClassName: 'active', className: 'margin-left-tiny', to: uptimeLink },
-	                            React.createElement(FontAwesome, { name: 'bar-chart', style: {
-	                                    marginLeft: '5px'
-	                                } })
-	                        ),
-	                        React.createElement(
-	                            'div',
-	                            { id: id, className: 'routerDropdown', style: { display: 'none', position: 'absolute', backgroundColor: '#fff', right: 0, padding: '0.5rem 0.5rem 0 0.5rem', marginRight: '2rem', boxShadow: '3px 3px 3px #888888', borderRadius: '3px' } },
-	                            React.createElement(
-	                                'a',
-	                                { onClick: function onClick() {
-	                                        return _this5.launchSpeedTestEdit();
-	                                    } },
-	                                React.createElement(
-	                                    'div',
-	                                    { style: { float: 'left' } },
-	                                    React.createElement(FontAwesome, { name: 'edit', size: 'lg' })
-	                                )
-	                            ),
-	                            React.createElement(
-	                                'span',
-	                                { style: { fontWeight: '700', fontSize: '1.1rem' } },
-	                                system_name
-	                            ),
-	                            React.createElement('br', null),
-	                            React.createElement(
-	                                'span',
-	                                { style: { fontWeight: '400', fontSize: '0.9rem' } },
-	                                model
-	                            ),
-	                            React.createElement('br', null),
-	                            React.createElement(
-	                                'span',
-	                                { style: { fontWeight: '100', fontSize: '0.75rem' } },
-	                                time
-	                            ),
-	                            React.createElement(
-	                                'table',
-	                                { style: { marginTop: '0.5rem' } },
-	                                React.createElement(
-	                                    'tbody',
-	                                    null,
-	                                    React.createElement(
-	                                        'tr',
-	                                        null,
-	                                        React.createElement(
-	                                            'td',
-	                                            { style: { fontWeight: '500', fontSize: '0.9rem' } },
-	                                            'Memory'
-	                                        ),
-	                                        React.createElement(
-	                                            'td',
-	                                            { style: { fontSize: '0.8rem', fontWeight: '300' } },
-	                                            memory
-	                                        )
-	                                    ),
-	                                    React.createElement(
-	                                        'tr',
-	                                        null,
-	                                        React.createElement(
-	                                            'td',
-	                                            { style: { fontWeight: '500', fontSize: '0.9rem' } },
-	                                            'Storage'
-	                                        ),
-	                                        React.createElement(
-	                                            'td',
-	                                            { style: { fontSize: '0.8rem', fontWeight: '300' } },
-	                                            storage
-	                                        )
-	                                    ),
-	                                    React.createElement(
-	                                        'tr',
-	                                        null,
-	                                        React.createElement(
-	                                            'td',
-	                                            { style: { fontWeight: '500', fontSize: '0.9rem' } },
-	                                            'CPU load'
-	                                        ),
-	                                        React.createElement(
-	                                            'td',
-	                                            { style: { fontSize: '0.8rem', fontWeight: '300' } },
-	                                            cpu_load,
-	                                            ' %'
-	                                        )
-	                                    ),
-	                                    React.createElement(
-	                                        'tr',
-	                                        null,
-	                                        React.createElement(
-	                                            'td',
-	                                            { style: { fontWeight: '500', fontSize: '0.9rem' } },
-	                                            'Temperature'
-	                                        ),
-	                                        React.createElement(
-	                                            'td',
-	                                            { style: { fontSize: '0.8rem', fontWeight: '300' } },
-	                                            temp
-	                                        )
-	                                    )
-	                                )
-	                            )
-	                        )
-	                    )
-	                )
-	            );
-	        }
-	    }]);
-
-	    return BuildingHeader;
-	}(React.Component);
-
-	var LevelList = function (_React$Component5) {
-	    _inherits(LevelList, _React$Component5);
-
-	    function LevelList(props) {
-	        _classCallCheck(this, LevelList);
-
-	        return _possibleConstructorReturn(this, Object.getPrototypeOf(LevelList).call(this, props));
-	    }
-
-	    _createClass(LevelList, [{
-	        key: 'render',
-	        value: function render() {
-
-	            var that = this;
-	            var level;
-	            var port;
-
-	            var tableRows = [];
-	            var _props2 = this.props;
-	            var snmpSpeedTest = _props2.snmpSpeedTest;
-	            var areaArray = _props2.areaArray;
-	            var levelArray = _props2.levelArray;
-	            var sensors = _props2.sensors;
-	            var totalCount = _props2.totalCount;
-	            var download_speed = snmpSpeedTest.download_speed;
-	            var upload_speed = snmpSpeedTest.upload_speed;
-
-
-	            var upload = snmpSpeedTest.upload_speed + ' Mbit/s';
-	            var download = snmpSpeedTest.download_speed + ' Mbit/s';
-
-	            for (var i = 0; i < levelArray.length; i++) {
-	                var sensorsOnThisFloor = sensors[levelArray[i]];
-	                var temp = [];
-	                var superTemp = [];
-
-	                for (var j = 0; j < sensorsOnThisFloor.length; j++) {
-
-	                    var position = areaArray.indexOf(sensorsOnThisFloor[j]['id']);
-
-	                    superTemp[position] = {
-	                        macAdd: sensorsOnThisFloor[j]['mac'],
-	                        status: sensorsOnThisFloor[j]['status'],
-	                        sensorId: sensorsOnThisFloor[j]['id'],
-	                        region: sensorsOnThisFloor[j]['region'],
-	                        building: sensorsOnThisFloor[j]['building'],
-	                        level: sensorsOnThisFloor[j]['level'],
-	                        port: sensorsOnThisFloor[j]['port'],
-	                        reboot: sensorsOnThisFloor[j]['reboot_available'],
-	                        watchlist: sensorsOnThisFloor[j]['watchlist']
-	                    };
-	                }
-
-	                superTemp.forEach(function (sensorData) {
-
-	                    level = sensorData['level'];
-	                    port = sensorData['port'];
-
-	                    temp.push(React.createElement(SensorList, { key: sensorData['macAdd'], macAdd: sensorData['macAdd'], sensorData: sensorData }));
-	                });
-
-	                tableRows.push(React.createElement(
-	                    'tr',
-	                    { key: level },
-	                    React.createElement(
-	                        'th',
-	                        null,
-	                        level.length === 1 ? '0' + level : level
-	                    ),
-	                    React.createElement(
-	                        'td',
-	                        null,
-	                        React.createElement(
-	                            'ul',
-	                            { style: {
-	                                    margin: '0px'
-	                                } },
-	                            temp
-	                        )
-	                    )
-	                ));
-	            }
-
-	            return React.createElement(
-	                'tbody',
-	                null,
-	                tableRows,
-	                React.createElement(
-	                    'tr',
-	                    null,
-	                    React.createElement('td', null),
-	                    React.createElement(
-	                        'td',
-	                        { style: { float: 'right', fontSize: '0.8rem' } },
-	                        React.createElement(
-	                            'span',
-	                            { className: '_800' },
-	                            'Upload'
-	                        ),
-	                        ': ',
-	                        upload,
-	                        React.createElement(
-	                            'span',
-	                            { className: '_800' },
-	                            ' | Download'
-	                        ),
-	                        ': ',
-	                        download,
-	                        React.createElement(
-	                            'span',
-	                            { className: '_800' },
-	                            ' | Sensor Count: '
-	                        ),
-	                        totalCount
-	                    )
-	                )
-	            );
-	        }
-	    }]);
-
-	    return LevelList;
-	}(React.Component);
-
-	var SensorHealthOverview = function (_React$Component6) {
-	    _inherits(SensorHealthOverview, _React$Component6);
-
-	    function SensorHealthOverview(props) {
-	        _classCallCheck(this, SensorHealthOverview);
-
-	        var _this7 = _possibleConstructorReturn(this, Object.getPrototypeOf(SensorHealthOverview).call(this, props));
-
-	        _this7.state = {
-	            filterText: _this7.props.filter
-	        };
-	        return _this7;
-	    }
-
-	    _createClass(SensorHealthOverview, [{
-	        key: 'componentDidMount',
-	        value: function componentDidMount() {
-	            if (this.state.filterText === undefined) {
-	                this.setState({ filterText: '' });
-	            }
-	        }
-	    }, {
-	        key: 'handleUserInput',
-	        value: function handleUserInput(filterText) {
-	            this.setState({ filterText: filterText });
-	        }
-	    }, {
-	        key: 'render',
-	        value: function render() {
-
-	            var overviewData = this.props.data;
-	            var dispatch = this.props.dispatch;
-
-	            var serverData = {};
-
-	            for (var building in overviewData) {
-	                if (overviewData.hasOwnProperty(building) && overviewData[building]['geo_region'] == "VIRTUAL") {
-	                    serverData[building] = overviewData[building];
-	                    delete overviewData[building];
-	                }
-	            }
-
-	            return React.createElement(
-	                'div',
-	                null,
-	                React.createElement(SearchBar, { filterText: this.state.filterText, onUserInput: this.handleUserInput.bind(this) }),
-	                React.createElement(
-	                    'div',
-	                    { className: 'page-title' },
-	                    'Sensors'
-	                ),
-	                React.createElement('hr', { className: 'divider' }),
-	                React.createElement(BuildingList, { dispatch: dispatch, data: this.props.data, filterText: this.state.filterText }),
-	                React.createElement(
-	                    'div',
-	                    { className: 'page-title' },
-	                    'Servers'
-	                ),
-	                React.createElement('hr', { className: 'divider' }),
-	                React.createElement(ServerList, { data: serverData })
-	            );
-	        }
-	    }]);
-
-	    return SensorHealthOverview;
-	}(React.Component);
-
-	module.exports = (0, _reactRedux.connect)()(SensorHealthOverview);
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(9)))
-
-/***/ },
-/* 936 */
-/***/ function(module, exports, __webpack_require__) {
-
-	"use strict";
-
-	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-	var React = __webpack_require__(14);
-
-	var colorMap = {
-	    "ok": "sensorBlockSquare green sensorList",
-	    "warning": "sensorBlockSquare yellow sensorList",
-	    "danger": "sensorBlockSquare orange sensorList",
-	    "down": "sensorBlockSquare red sensorList",
-	    "no data": "sensorBlockSquare grey sensorList"
-	};
-
-	var ServerList = function (_React$Component) {
-	    _inherits(ServerList, _React$Component);
-
-	    function ServerList() {
-	        _classCallCheck(this, ServerList);
-
-	        return _possibleConstructorReturn(this, Object.getPrototypeOf(ServerList).apply(this, arguments));
-	    }
-
-	    _createClass(ServerList, [{
-	        key: "render",
-	        value: function render() {
-	            var serverList = this.props.data;
-
-	            var rows = [];
-
-	            for (var property in serverList) {
-	                if (serverList.hasOwnProperty(property)) {
-	                    var server = serverList[property];
-	                    rows.push(React.createElement(Server, { key: property, serverName: property, serverData: server }));
-	                }
-	            }
-
-	            return React.createElement(
-	                "div",
-	                null,
-	                rows
-	            );
-	        }
-	    }]);
-
-	    return ServerList;
-	}(React.Component);
-
-	var Server = function (_React$Component2) {
-	    _inherits(Server, _React$Component2);
-
-	    function Server() {
-	        _classCallCheck(this, Server);
-
-	        return _possibleConstructorReturn(this, Object.getPrototypeOf(Server).apply(this, arguments));
-	    }
-
-	    _createClass(Server, [{
-	        key: "render",
-	        value: function render() {
-
-	            return React.createElement(
-	                "div",
-	                null,
-	                React.createElement(ServerGroupList, { serverName: this.props.serverName, data: this.props.serverData })
-	            );
-	        }
-	    }]);
-
-	    return Server;
-	}(React.Component);
-
-	var ServerGroupList = function (_React$Component3) {
-	    _inherits(ServerGroupList, _React$Component3);
-
-	    function ServerGroupList() {
-	        _classCallCheck(this, ServerGroupList);
-
-	        return _possibleConstructorReturn(this, Object.getPrototypeOf(ServerGroupList).apply(this, arguments));
-	    }
-
-	    _createClass(ServerGroupList, [{
-	        key: "render",
-	        value: function render() {
-
-	            var groups = this.props.data['sensors'];
-	            var rows = [];
-
-	            for (var property in groups) {
-	                if (groups.hasOwnProperty(property)) {
-	                    rows.push(React.createElement(GroupRow, { key: property, data: groups[property] }));
-	                }
-	            }
-
-	            return React.createElement(
-	                "table",
-	                { className: "sensorHealthTable" },
-	                React.createElement(
-	                    "thead",
-	                    null,
-	                    React.createElement(
-	                        "tr",
-	                        null,
-	                        React.createElement(
-	                            "th",
-	                            { className: "header", style: { textAlign: 'center', width: '20%' } },
-	                            this.props.serverName
-	                        ),
-	                        React.createElement("th", null)
-	                    )
-	                ),
-	                React.createElement(
-	                    "tbody",
-	                    null,
-	                    rows
-	                )
-	            );
-	        }
-	    }]);
-
-	    return ServerGroupList;
-	}(React.Component);
-
-	var GroupRow = function (_React$Component4) {
-	    _inherits(GroupRow, _React$Component4);
-
-	    function GroupRow() {
-	        _classCallCheck(this, GroupRow);
-
-	        return _possibleConstructorReturn(this, Object.getPrototypeOf(GroupRow).apply(this, arguments));
-	    }
-
-	    _createClass(GroupRow, [{
-	        key: "render",
-	        value: function render() {
-
-	            var longAndThin = this.props.data;
-	            var rows = [];
-	            var group;
-
-	            var visitedIds = [];
-
-	            longAndThin.forEach(function (server) {
-	                if (visitedIds.indexOf(server['id']) < 0) {
-
-	                    var cluster = server["building"];
-	                    group = server["level"];
-	                    var id = server["id"];
-	                    var mac = server["mac"];
-	                    var status = server["status"];
-
-	                    rows.push(React.createElement(VerticalMenu, { key: id, macAdd: mac, serverData: server, id: id, "class": colorMap[status] }));
-	                    visitedIds.push(id);
-	                }
-	            });
-
-	            return React.createElement(
-	                "tr",
-	                null,
-	                React.createElement(
-	                    "th",
-	                    null,
-	                    group.length === 1 ? "0" + group : group
-	                ),
-	                React.createElement(
-	                    "td",
-	                    null,
-	                    React.createElement(
-	                        "ul",
-	                        { style: { margin: '0px' } },
-	                        rows
-	                    )
-	                )
-	            );
-	        }
-	    }]);
-
-	    return GroupRow;
-	}(React.Component);
-
-	module.exports = ServerList;
-
-	var VerticalMenu = function (_React$Component5) {
-	    _inherits(VerticalMenu, _React$Component5);
-
-	    function VerticalMenu(props) {
-	        _classCallCheck(this, VerticalMenu);
-
-	        return _possibleConstructorReturn(this, Object.getPrototypeOf(VerticalMenu).call(this, props));
-	    }
-
-	    _createClass(VerticalMenu, [{
-	        key: "handleClick",
-	        value: function handleClick(serverData, action) {
-	            var macAdd = serverData["mac"];
-	            var triggerCanvas = document.createEvent("Event");
-
-	            triggerCanvas.data = {
-	                macAdd: macAdd
-	            };
-
-	            this.setState({
-	                macAdd: macAdd
-	            });
-
-	            triggerCanvas.initEvent("triggerCanvas", true, true);
-	            document.dispatchEvent(triggerCanvas);
-	        }
-	    }, {
-	        key: "render",
-	        value: function render() {
-	            var _this6 = this;
-
-	            var cls = colorMap[this.props.serverData['status']];
-	            var id = this.props.id;
-
-	            return React.createElement(
-	                "li",
-	                { className: "sensorList" },
-	                React.createElement(
-	                    "div",
-	                    { className: cls, "data-toggle": "offCanvas", onClick: function onClick() {
-	                            return _this6.handleClick(_this6.props.serverData);
-	                        } },
-	                    id
-	                )
-	            );
-	        }
-	    }]);
-
-	    return VerticalMenu;
-	}(React.Component);
-
-/***/ },
-/* 937 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-	var _reactRedux = __webpack_require__(111);
-
-	var Redux = _interopRequireWildcard(_reactRedux);
-
-	var _actions = __webpack_require__(139);
-
-	var actions = _interopRequireWildcard(_actions);
-
-	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
-
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-	var React = __webpack_require__(14);
-
-	var _require = __webpack_require__(47);
-
-	var Link = _require.Link;
-	var IndexLink = _require.IndexLink;
-
-	var store = __webpack_require__(938).configure();
-
-	var colorMap = {
-	    "ok": "sensorBlockSquare green sensorList",
-	    "warning": "sensorBlockSquare yellow sensorList",
-	    "danger": "sensorBlockSquare orange sensorList",
-	    "down": "sensorBlockSquare red sensorList",
-	    "no data": "sensorBlockSquare grey sensorList",
-	    "paused": "sensorBlockSquare black sensorList"
-	};
-
-	var SensorList = function (_React$Component) {
-	    _inherits(SensorList, _React$Component);
-
-	    function SensorList(props) {
-	        _classCallCheck(this, SensorList);
-
-	        return _possibleConstructorReturn(this, Object.getPrototypeOf(SensorList).call(this, props));
-	    }
-
-	    _createClass(SensorList, [{
-	        key: 'handleClick',
-	        value: function handleClick(sensorData, action) {
-	            var dispatch = this.props.dispatch;
-
-	            var macAdd = sensorData['macAdd'];
-
-	            var triggerCanvas = document.createEvent("Event");
-
-	            triggerCanvas.data = {
-	                macAdd: macAdd
-	            };
-
-	            triggerCanvas.initEvent("triggerCanvas", true, true);
-	            document.dispatchEvent(triggerCanvas);
-
-	            dispatch(actions.storeActiveSensor(macAdd));
-	        }
-	    }, {
-	        key: 'render',
-	        value: function render() {
-	            var _this2 = this;
-
-	            var cls = colorMap[this.props.sensorData['status']];
-	            var id = this.props.sensorData['sensorId'];
-
-	            return React.createElement(
-	                'li',
-	                { className: 'sensorList' },
-	                React.createElement(
-	                    'div',
-	                    { className: cls, 'data-toggle': 'offCanvas', onClick: function onClick() {
-	                            return _this2.handleClick(_this2.props.sensorData);
-	                        } },
-	                    id
-	                )
-	            );
-	        }
-	    }]);
-
-	    return SensorList;
-	}(React.Component);
-
-	module.exports = (0, _reactRedux.connect)()(SensorList);
-
-/***/ },
+/* 935 */,
+/* 936 */,
+/* 937 */,
 /* 938 */
 /***/ function(module, exports, __webpack_require__) {
 
@@ -96515,26 +95420,34 @@
 	    "sortable": true,
 	    "displayName": "Name"
 	}, {
-	    "columnName": "actions",
+	    "columnName": "detail",
+	    "order": 4,
+	    "locked": false,
+	    "visible": true,
+	    "sortable": true,
+	    "displayName": "Detail"
+	}, {
+	    "columnName": "score",
 	    "order": 5,
+	    "locked": false,
+	    "visible": true,
+	    "sortable": true,
+	    "displayName": "Score"
+	}, {
+	    "columnName": "actions",
+	    "order": 6,
 	    "locked": false,
 	    "visible": true,
 	    "sortable": true,
 	    "displayName": "Actions",
 	    "customComponent": WatchComponent
-	}, {
-	    "columnName": "score",
-	    "order": 4,
-	    "locked": false,
-	    "visible": true,
-	    "sortable": true,
-	    "displayName": "Score"
 	}];
 
 	var columnDisplayName = {
 	    "Rank": "rank",
 	    "ID": "ID",
 	    "Name": "name",
+	    "Detail": "detail",
 	    "Actions": "actions",
 	    "Score": "score"
 	};
@@ -96569,6 +95482,7 @@
 	                        "rank": rank++,
 	                        "ID": rawResults[result]["ID"],
 	                        "name": rawResults[result]["name"],
+	                        "detail": rawResults[result]["detail"],
 	                        "score": rawResults[result]["score"],
 	                        "actions": rawResults[result]["ID"]
 	                    };
@@ -96577,9 +95491,7 @@
 	                results.push(row);
 	            }
 
-	            this.setState({
-	                results: results
-	            });
+	            this.setState({ results: results });
 
 	            console.log("results", results);
 	        }
@@ -96591,7 +95503,7 @@
 	            var results = this.state.results;
 
 
-	            var currentlySelected = ["rank", "ID", "name", "score", "actions"];
+	            var currentlySelected = ["rank", "ID", "name", "score", "detail", "actions"];
 	            var findStuff = $('#bfg').find('table > thead > tr > th > span');
 	            // console.log(findStuff);
 	            if (findStuff.length > 0) {
@@ -96600,21 +95512,8 @@
 	                    currentlySelected.push(columnDisplayName[findStuff[i].innerHTML]);
 	                }
 	            }
-	            // that.state.colsSelected = currentlySelected;
 
-
-	            // console.log("currentlySelected", currentlySelected);
-
-	            return React.createElement(Griddle, {
-	                results: results,
-	                settingsIconComponent: React.createElement(FontAwesome, { name: 'cog', style: { color: '#232f32', marginLeft: '1rem' }, size: '2x' }),
-	                columnMetadata: tableMetaData,
-	                tableClassName: 'table',
-	                showFilter: true,
-	                columns: currentlySelected,
-	                showSettings: false,
-	                settingsText: 'Settings'
-	            });
+	            return React.createElement(Griddle, { results: results, columnMetadata: tableMetaData, tableClassName: 'table', showFilter: true, columns: currentlySelected, showSettings: false });
 	        }
 	    }]);
 
@@ -96622,64 +95521,6 @@
 	}(React.Component);
 
 	module.exports = Tableaux;
-
-	// var allSensorData = this.props.data;
-	//
-	// console.log("data", allSensorData);
-	//
-	// var dataList = [];
-	// for (var sensor in allSensorData) {
-	//     if (allSensorData.hasOwnProperty(sensor)) {
-	//         var mac = sensor;
-	//         var row = {};
-	//
-	//         if (typeof allSensorData[sensor]["error"] == "undefined") {
-	//             row = {
-	//                 "mac_address" : mac,
-	//                 "latest_timestamp" : allSensorData[sensor]["latest_timestamp"],
-	//                 "building" : allSensorData[sensor]["building"],
-	//                 "sensor-level-id" : allSensorData[sensor]["sensor-location-level"] + allSensorData[sensor]["sensor-location-id"],
-	//                 "sensor_type" : allSensorData[sensor]["sensor_type"],
-	//                 "current_status" : allSensorData[sensor]["current_status"],
-	//                 "sensor_status" : allSensorData[sensor]["sensor_status"],
-	//                 "flapping" : allSensorData[sensor]["flapping"],
-	//                 "network_router" : allSensorData[sensor]["network_router"],
-	//                 "temperature" : allSensorData[sensor]["temperature"],
-	//                 "CPU_usage" : allSensorData[sensor]["CPU_Usage"],
-	//                 "RAM_total" : allSensorData[sensor]["RAM_total"],
-	//                 "RAM_free" : allSensorData[sensor]["RAM_free"],
-	//                 "RAM_used" : allSensorData[sensor]["RAM_used"],
-	//                 "RAM_available" : allSensorData[sensor]["RAM_available"],
-	//                 "disk_space_total" : allSensorData[sensor]["Disk_Space_total"],
-	//                 "disk_space_free" : allSensorData[sensor]["Disk_Space_used"],
-	//                 "disk_space_used" : allSensorData[sensor]["Disk_Space_free"]
-	//             };
-	//         } else {
-	//             row = {
-	//                 "mac_address" : mac,
-	//                 "latest_timestamp" : "no data",
-	//                 "building" : allSensorData[sensor]["building"],
-	//                 "sensor-level-id" : allSensorData[sensor]["sensor-location-level"] + allSensorData[sensor]["sensor-location-id"],
-	//                 "sensor_type" : allSensorData[sensor]["sensor_type"],
-	//                 "current_status" : "-",
-	//                 "sensor_status" : "-",
-	//                 "flapping" : "-",
-	//                 "network_router" : "-",
-	//                 "temperature" : "-",
-	//                 "CPU_usage" : "-",
-	//                 "RAM_total" : "-",
-	//                 "RAM_free" : "-",
-	//                 "RAM_used" : "-",
-	//                 "RAM_available" : "-",
-	//                 "disk_space_total" : "-",
-	//                 "disk_space_free" : "-",
-	//                 "disk_space_used" : "-"
-	//             };
-	//         }
-	//
-	//         dataList.push(row);
-	//     }
-	// }
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(9)))
 
 /***/ },
@@ -96873,391 +95714,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(9)))
 
 /***/ },
-/* 944 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-	var React = __webpack_require__(14);
-	var Recharts = __webpack_require__(425);
-	var ResponsiveContainer = Recharts.ResponsiveContainer;
-	var BarChart = Recharts.BarChart;
-	var Bar = Recharts.Bar;
-	var XAxis = Recharts.XAxis;
-	var YAxis = Recharts.YAxis;
-	var CartesianGrid = Recharts.CartesianGrid;
-	var Legend = Recharts.Legend;
-	var Tooltip = Recharts.Tooltip;
-
-	var Building = function (_React$Component) {
-	    _inherits(Building, _React$Component);
-
-	    function Building(props) {
-	        _classCallCheck(this, Building);
-
-	        return _possibleConstructorReturn(this, Object.getPrototypeOf(Building).call(this, props));
-	    }
-
-	    _createClass(Building, [{
-	        key: 'render',
-	        value: function render() {
-
-	            var totalSensors = this.props.ok + this.props.warning + this.props.danger + this.props.down + this.props.noData + this.props.paused;
-
-	            var data = [{
-	                name: this.props.buildingName,
-	                ok: this.props.ok / totalSensors,
-	                warning: this.props.warning / totalSensors,
-	                danger: this.props.danger / totalSensors,
-	                down: this.props.down / totalSensors,
-	                noData: this.props.noData / totalSensors,
-	                paused: this.props.paused / totalSensors
-	            }];
-
-	            return React.createElement(
-	                'div',
-	                { className: 'column row', style: { 'marginBottom': '30px' } },
-	                React.createElement(
-	                    'div',
-	                    { className: 'header' },
-	                    React.createElement(
-	                        'div',
-	                        null,
-	                        this.props.buildingName,
-	                        React.createElement(
-	                            'div',
-	                            { style: { 'float': 'right' } },
-	                            React.createElement(
-	                                'span',
-	                                { style: { 'color': '#008000' } },
-	                                this.props.ok
-	                            ),
-	                            ' | ',
-	                            React.createElement(
-	                                'span',
-	                                { style: { 'color': '#ffcc00' } },
-	                                this.props.warning
-	                            ),
-	                            ' | ',
-	                            React.createElement(
-	                                'span',
-	                                { style: { 'color': '#cc7a00' } },
-	                                this.props.danger
-	                            ),
-	                            ' | ',
-	                            React.createElement(
-	                                'span',
-	                                { style: { 'color': '#990000' } },
-	                                this.props.down
-	                            ),
-	                            ' | ',
-	                            React.createElement(
-	                                'span',
-	                                { style: { 'color': '#1a1b1b' } },
-	                                this.props.paused
-	                            ),
-	                            ' | ',
-	                            React.createElement(
-	                                'span',
-	                                { style: { 'color': '#737373' } },
-	                                this.props.noData
-	                            )
-	                        )
-	                    )
-	                ),
-	                React.createElement(
-	                    'div',
-	                    { className: 'buildingCharts', style: { height: '50px', width: '100%' } },
-	                    React.createElement(
-	                        ResponsiveContainer,
-	                        null,
-	                        React.createElement(
-	                            BarChart,
-	                            { width: 400, height: 10,
-	                                data: data,
-	                                layout: 'vertical',
-	                                margin: { top: 20, right: 30, left: 20, bottom: 5 } },
-	                            React.createElement(XAxis, { hide: true, type: 'number' }),
-	                            React.createElement(YAxis, { hide: true, dataKey: 'name', type: 'category' }),
-	                            React.createElement(CartesianGrid, { strokeDasharray: '3 3' }),
-	                            React.createElement(Tooltip, { coordinate: { x: 1000, y: 100 }, content: React.createElement(
-	                                    'div',
-	                                    { style: { 'backgroundColor': '#fff', 'padding': '10px', 'paddingBottom': '5px' } },
-	                                    React.createElement(
-	                                        'div',
-	                                        null,
-	                                        this.props.buildingName
-	                                    ),
-	                                    React.createElement(
-	                                        'table',
-	                                        { id: 'glance-tooltip', style: { 'minWidth': '100px' } },
-	                                        React.createElement(
-	                                            'tbody',
-	                                            null,
-	                                            React.createElement(
-	                                                'tr',
-	                                                { style: { 'color': '#008000' } },
-	                                                React.createElement(
-	                                                    'td',
-	                                                    null,
-	                                                    'ok'
-	                                                ),
-	                                                React.createElement(
-	                                                    'td',
-	                                                    null,
-	                                                    this.props.ok
-	                                                )
-	                                            ),
-	                                            React.createElement(
-	                                                'tr',
-	                                                { style: { 'color': '#ffcc00' } },
-	                                                React.createElement(
-	                                                    'td',
-	                                                    null,
-	                                                    'warning'
-	                                                ),
-	                                                React.createElement(
-	                                                    'td',
-	                                                    null,
-	                                                    this.props.warning
-	                                                )
-	                                            ),
-	                                            React.createElement(
-	                                                'tr',
-	                                                { style: { 'color': '#cc7a00' } },
-	                                                React.createElement(
-	                                                    'td',
-	                                                    null,
-	                                                    'danger'
-	                                                ),
-	                                                React.createElement(
-	                                                    'td',
-	                                                    null,
-	                                                    this.props.danger
-	                                                )
-	                                            ),
-	                                            React.createElement(
-	                                                'tr',
-	                                                { style: { 'color': '#990000' } },
-	                                                React.createElement(
-	                                                    'td',
-	                                                    null,
-	                                                    'down'
-	                                                ),
-	                                                React.createElement(
-	                                                    'td',
-	                                                    null,
-	                                                    this.props.down
-	                                                )
-	                                            ),
-	                                            React.createElement(
-	                                                'tr',
-	                                                { style: { 'color': '#1a1b1b' } },
-	                                                React.createElement(
-	                                                    'td',
-	                                                    null,
-	                                                    'paused'
-	                                                ),
-	                                                React.createElement(
-	                                                    'td',
-	                                                    null,
-	                                                    this.props.paused
-	                                                )
-	                                            ),
-	                                            React.createElement(
-	                                                'tr',
-	                                                { style: { 'color': '#737373' } },
-	                                                React.createElement(
-	                                                    'td',
-	                                                    null,
-	                                                    'no data'
-	                                                ),
-	                                                React.createElement(
-	                                                    'td',
-	                                                    null,
-	                                                    this.props.noData
-	                                                )
-	                                            )
-	                                        )
-	                                    )
-	                                ) }),
-	                            React.createElement(Bar, { dataKey: 'ok', stackId: 'a', fill: '#008000', isAnimationActive: false }),
-	                            React.createElement(Bar, { dataKey: 'warning', stackId: 'a', fill: '#ffcc00', isAnimationActive: false }),
-	                            React.createElement(Bar, { dataKey: 'danger', stackId: 'a', fill: '#cc7a00', isAnimationActive: false }),
-	                            React.createElement(Bar, { dataKey: 'down', stackId: 'a', fill: '#990000', isAnimationActive: false }),
-	                            React.createElement(Bar, { dataKey: 'paused', stackId: 'a', fill: '#1a1b1b', isAnimationActive: false }),
-	                            React.createElement(Bar, { dataKey: 'noData', stackId: 'a', fill: '#737373', isAnimationActive: false })
-	                        )
-	                    )
-	                )
-	            );
-	        }
-	    }]);
-
-	    return Building;
-	}(React.Component);
-
-	var SearchBar = function (_React$Component2) {
-	    _inherits(SearchBar, _React$Component2);
-
-	    function SearchBar(props) {
-	        _classCallCheck(this, SearchBar);
-
-	        return _possibleConstructorReturn(this, Object.getPrototypeOf(SearchBar).call(this, props));
-	    }
-
-	    _createClass(SearchBar, [{
-	        key: 'handleChange',
-	        value: function handleChange() {
-
-	            this.props.onUserInput(this.refs.filterTextInput.value);
-	        }
-	    }, {
-	        key: 'render',
-	        value: function render() {
-
-	            return React.createElement(
-	                'form',
-	                { id: 'buildingFilter' },
-	                React.createElement('input', { type: 'text', placeholder: 'Filter Results',
-	                    value: this.props.filterText,
-	                    ref: 'filterTextInput',
-	                    id: 'buildingSearch',
-	                    onChange: this.handleChange.bind(this) })
-	            );
-	        }
-	    }]);
-
-	    return SearchBar;
-	}(React.Component);
-
-	;
-
-	var BuildingList = function (_React$Component3) {
-	    _inherits(BuildingList, _React$Component3);
-
-	    function BuildingList(props) {
-	        _classCallCheck(this, BuildingList);
-
-	        return _possibleConstructorReturn(this, Object.getPrototypeOf(BuildingList).call(this, props));
-	    }
-
-	    _createClass(BuildingList, [{
-	        key: 'render',
-	        value: function render() {
-
-	            var rows = [];
-	            var allBuildings = [];
-
-	            var buildings = this.props.data;
-
-	            for (var property in buildings) {
-	                if (buildings.hasOwnProperty(property)) {
-	                    var buildingName = property;
-	                    var temp = {
-	                        buildingName: buildingName,
-	                        danger: buildings[property]["danger"]["count"],
-	                        warning: buildings[property]["warning"]["count"],
-	                        ok: buildings[property]["ok"]["count"],
-	                        down: buildings[property]["down"]["count"],
-	                        noData: buildings[property]["no data"]["count"],
-	                        paused: buildings[property]["paused"]["count"]
-	                    };
-
-	                    allBuildings.push(temp);
-	                }
-	            }
-
-	            // console.log("allBuildings", allBuildings);
-
-	            allBuildings.forEach(function (building) {
-	                var buildingName = building.buildingName;
-	                if (buildingName.toLowerCase().indexOf(this.props.filterText.toLowerCase()) === -1) {
-	                    return React.createElement('div', null);
-	                }
-	                rows.push(React.createElement(Building, { key: buildingName, buildingName: buildingName, ok: building.ok, warning: building.warning, danger: building.danger, down: building.down, noData: building.noData, paused: building.paused }));
-	            }.bind(this));
-
-	            return React.createElement(
-	                'div',
-	                null,
-	                rows
-	            );
-	        }
-	    }]);
-
-	    return BuildingList;
-	}(React.Component);
-
-	var BuildingOverview = function (_React$Component4) {
-	    _inherits(BuildingOverview, _React$Component4);
-
-	    function BuildingOverview(props) {
-	        _classCallCheck(this, BuildingOverview);
-
-	        var _this4 = _possibleConstructorReturn(this, Object.getPrototypeOf(BuildingOverview).call(this, props));
-
-	        _this4.state = {
-	            filterText: _this4.props.filter
-	        };
-	        return _this4;
-	    }
-
-	    _createClass(BuildingOverview, [{
-	        key: 'componentDidMount',
-	        value: function componentDidMount() {
-	            if (this.state.filterText === undefined) {
-	                this.setState({
-	                    filterText: ''
-	                });
-	            }
-	        }
-	    }, {
-	        key: 'handleUserInput',
-	        value: function handleUserInput(filterText) {
-	            this.setState({ filterText: filterText });
-	        }
-	    }, {
-	        key: 'render',
-	        value: function render() {
-	            return React.createElement(
-	                'div',
-	                null,
-	                React.createElement(
-	                    'div',
-	                    { className: 'callout-dark-header' },
-	                    React.createElement(
-	                        'div',
-	                        { className: 'page-title' },
-	                        'At A Glance'
-	                    )
-	                ),
-	                React.createElement(
-	                    'div',
-	                    { className: 'callout-dark' },
-	                    React.createElement(SearchBar, { filterText: this.state.filterText,
-	                        onUserInput: this.handleUserInput.bind(this) }),
-	                    React.createElement(BuildingList, { data: this.props.data,
-	                        filterText: this.state.filterText })
-	                )
-	            );
-	        }
-	    }]);
-
-	    return BuildingOverview;
-	}(React.Component);
-
-	module.exports = BuildingOverview;
-
-/***/ },
+/* 944 */,
 /* 945 */
 /***/ function(module, exports, __webpack_require__) {
 

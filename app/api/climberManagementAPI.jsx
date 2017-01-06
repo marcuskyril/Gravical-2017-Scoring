@@ -1,4 +1,5 @@
 const ADD_CLIMBER_URL = "http://office.livestudios.com:41111/backend/api/add_climber.php";
+const REGISTER_PARTICIPANT_URL = "http://office.livestudios.com:41111/backend/api/register_participant.php";
 const START_EVENT_URL = "http://office.livestudios.com:41111/backend/api/start_event.php";
 const STOP_EVENT_URL = "http://office.livestudios.com:41111/backend/api/stop_event.php";
 const SET_CURRENT_DETAIL_URL = "http://office.livestudios.com:41111/backend/api/set_current_detail.php";
@@ -19,6 +20,21 @@ module.exports = {
             },
             url: ADD_CLIMBER_URL,
             data: data,
+            success: function(response) {
+                // console.log("Tres manifique, monsieur", response);
+            }
+        });
+    },
+
+    registerClimber: function(participantID, categoryID, detail) {
+
+        return $.ajax({
+            type: "POST",
+            beforeSend: function(request) {
+                request.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+            },
+            url: REGISTER_PARTICIPANT_URL,
+            data: {participantID, categoryID, detail},
             success: function(response) {
                 // console.log("Tres manifique, monsieur", response);
             }

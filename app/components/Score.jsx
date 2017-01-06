@@ -177,6 +177,7 @@ class Score extends React.Component {
     }
 
     submitScore() {
+        var that = this;
         var judge = this.refs.routeJudgeName.value;
         var selectedCategory = this.state.selectedCategory;
         var tagID = this.state.selectedClimber;
@@ -185,6 +186,9 @@ class Score extends React.Component {
 
         scoreAPI.submitScore(`${selectedCategory}${tagID}`, parseInt(route), score, judge).then(function(response) {
             console.log(response);
+            that.setState({
+                message: "Score submitted"
+            });
         });
     }
 

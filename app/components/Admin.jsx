@@ -18,6 +18,7 @@ class Admin extends React.Component {
             userDisplayName: '-',
             email: '-',
             message: '',
+            registerMessage: '',
             gender: '',
             categories: [],
             selectedCategory: '',
@@ -52,7 +53,7 @@ class Admin extends React.Component {
         climberManagementAPI.getCurrentDetail().then(function(response){
             console.log("Current detail", response);
             that.setState({
-                currentDetail: response.message
+                currentDetail: parseInt(response.message)
             })
         });
     }
@@ -112,9 +113,16 @@ class Admin extends React.Component {
         var selectedCategory = this.state.selectedCategory;
         var participantID = this.refs.participantID.value;
         var detail = this.refs.detail.value;
+
+        console.log(participantID, selectedCategory, detail);
+
+        // climberManagementAPI.registerClimber(participantID, selectedCategory, detail).then(function(response){
+        //     console.log("response", response);
+        // });
     }
 
     addClimber() {
+        var that = this;
         var first_name = this.refs.firstName.value;
         var last_name = this.refs.lastName.value;
         var gender = this.state.gender;
@@ -125,6 +133,17 @@ class Admin extends React.Component {
 
         climberManagementAPI.addClimber(first_name, last_name, gender, date_of_birth, id_number, nationality, organization).then(function(response) {
             console.log("response", response);
+            that.setState({
+                registerMessage: response.message
+            });
+
+            that.refs.firstName.value = '';
+            that.refs.lastName.value = '';
+            that.state.gender = '';
+            that.refs.dob.value = '';
+            that.refs.nric.value = '';
+            that.refs.nationality.value = '';
+            that.refs.organization.value = '';
         });
     }
 
@@ -157,14 +176,13 @@ class Admin extends React.Component {
         var {currentDetail, numDetails} = this.state;
 
         if(currentDetail < numDetails) {
-            this.setDetail(currentDetail + 1);
+            this.setDetail(parseInt(currentDetail) + 1);
         }
     }
 
     endEvent() {
         var that = this;
         climberManagementAPI.endEvent().then(function(response) {
-            console.log("response", response);
 
             that.setState({
                 currentEvent: '-',
@@ -175,20 +193,14 @@ class Admin extends React.Component {
         this.setDetail(0);
     }
 
-
-
     render() {
 
         var that = this;
         var {
             categories,
             selectedCategory,
-            reportTiming,
-            emailRecipient,
-            sensorOfflineAllowance,
-            maxDataGap,
-            flappingThreshold,
             message,
+            registerMessage,
             currentDetail,
             currentEvent,
             hasEventStarted
@@ -207,7 +219,7 @@ class Admin extends React.Component {
                               <div className="medium-3 columns">
                                 <ul className="tabs vertical" id="example-vert-tabs" data-tabs>
                                   <li className="tabs-title is-active"><a href="#panel1v" aria-selected="true"><FontAwesome name='plus-circle'/> Add Climber</a></li>
-                                  <li className="tabs-title"><a href="#panel2v"><FontAwesome name='plus-circle'/> Register Climber</a></li>
+                                  <li className="tabs-title"><a href="#panel2v"><FontAwesome name='plus-circle'/> Edit Climber Details</a></li>
                                   <li className="tabs-title"><a href="#panel3v"><FontAwesome name='plus-circle'/> Add Score</a></li>
                                   <li className="tabs-title"><a href="#panel4v"><FontAwesome name='edit'/> Edit Score</a></li>
                                 </ul>
@@ -238,6 +250,7 @@ class Admin extends React.Component {
                                             <input type="text" name="organization" ref="organization" placeholder="Organization" required/>
                                         </label>
                                         <a className="button proceed expanded" onClick={this.addClimber.bind(this)}>Add Climber</a>
+                                        <ResponseMessage message={registerMessage}/>
                                     </form>
                                   </div>
                                   <div className="tabs-panel" id="panel2v">
