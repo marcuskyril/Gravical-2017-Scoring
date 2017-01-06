@@ -56,6 +56,7 @@ class Score extends React.Component {
     }
 
     selectCategory(val) {
+        document.activeElement.blur();
         this.setState({selectedCategory: val.value});
         this.retrieveDetails(val.value);
     }
@@ -78,7 +79,7 @@ class Score extends React.Component {
     }
 
     selectDetail(val) {
-        console.log("this.state.selectedCategory", this.state.selectedCategory);
+        document.activeElement.blur();
         this.setState({selectedDetail: val.value});
         this.retrieveClimbers(this.state.selectedCategory, val.value);
     }
@@ -103,10 +104,12 @@ class Score extends React.Component {
     }
 
     selectClimber(val) {
+        document.activeElement.blur();
         this.setState({selectedClimber: val.value});
     }
 
     selectRoute(val) {
+        document.activeElement.blur();
         var that = this;
         var selectedCategory = this.state.selectedCategory;
         var selectedClimber = this.state.selectedClimber;
