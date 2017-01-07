@@ -18,6 +18,7 @@ class Admin extends React.Component {
             userDisplayName: '-',
             email: '-',
             message: '',
+            recommendedID: 0,
             registerMessage: '',
             gender: '',
             categories: [],
@@ -36,6 +37,7 @@ class Admin extends React.Component {
         this.retrieveCurrentEvent();
         this.retrieveCurrentDetail();
         this.retrieveCategories();
+        this.retrieveRecommendedID();
     }
 
     retrieveCurrentEvent() {
@@ -109,20 +111,9 @@ class Admin extends React.Component {
         var tagNum = this.refs.tagNum.value;
     }
 
-    registerClimber() {
-        var selectedCategory = this.state.selectedCategory;
-        var participantID = this.refs.participantID.value;
-        var detail = this.refs.detail.value;
-
-        console.log(participantID, selectedCategory, detail);
-
-        // climberManagementAPI.registerClimber(participantID, selectedCategory, detail).then(function(response){
-        //     console.log("response", response);
-        // });
-    }
-
     addClimber() {
         var that = this;
+        var climberID = this.refs.climberID.value;
         var first_name = this.refs.firstName.value;
         var last_name = this.refs.lastName.value;
         var gender = this.state.gender;
@@ -130,20 +121,70 @@ class Admin extends React.Component {
         var id_number = this.refs.nric.value;
         var nationality = this.refs.nationality.value;
         var organization = this.refs.organization.value;
+        var detail = this.refs.detail.value;
+        var categoryID = this.state.selectedCategory;
 
-        climberManagementAPI.addClimber(first_name, last_name, gender, date_of_birth, id_number, nationality, organization).then(function(response) {
-            console.log("response", response);
+        var addClimberSuccess = false;
+        var registerClimberSuccess = false;
+        var errorMessages = [];
+
+        $.when(climberManagementAPI.addClimber(climberID, first_name, last_name, gender, date_of_birth, id_number, nationality, organization), climberManagementAPI.registerClimber(climberID, categoryID, detail)).then(function(addResponse, registerResponse){
+            console.log(addResponse, registerResponse);
+
+            if(addResponse.hasOwnProperty('error')) {
+                errorMessages.push(addResponse.error);
+            }
+
+            if(registerResponse.hasOwnProperty('error')) {
+                errorMessages.push(registerResponse.error);
+            }
+
+            if(errorMessages.length > 0) {
+                errorMessages.forEach(function(msg) {
+                    that.setState({
+                        registerMessage: `${addResponse.error}, ${registerResponse.error}`
+                    })
+                });
+            } else {
+                that.setState({
+                    registerMessage: "Participant successfully registered."
+                });
+
+                that.refs.climberID.value = '';
+                that.refs.firstName.value = '';
+                that.refs.lastName.value = '';
+                that.state.gender = '';
+                that.refs.dob.value = '';
+                that.refs.nric.value = '';
+                that.refs.nationality.value = '';
+                that.refs.organization.value = '';
+                that.refs.detail.value = '';
+
+                that.retrieveRecommendedID();
+            }
+        });
+    }
+
+    retrieveRecommendedID() {
+        var that = this;
+        climberManagementAPI.getLastCLimberID().then(function(response){
+            console.log("last", response);
+
+            var recommendedID = '';
+
+            var responseStr = response.toString();
+
+            if(responseStr.length == 2) {
+                recommendedID = `0${(response + 1).toString()}`;
+            } else if(responseStr.length == 1) {
+                recommendedID = `00${(response + 1).toString()}`;
+            } else {
+                recommendedID = response
+            }
+
             that.setState({
-                registerMessage: response.message
+                recommendedID: recommendedID
             });
-
-            that.refs.firstName.value = '';
-            that.refs.lastName.value = '';
-            that.state.gender = '';
-            that.refs.dob.value = '';
-            that.refs.nric.value = '';
-            that.refs.nationality.value = '';
-            that.refs.organization.value = '';
         });
     }
 
@@ -200,6 +241,7 @@ class Admin extends React.Component {
             categories,
             selectedCategory,
             message,
+            recommendedID,
             registerMessage,
             currentDetail,
             currentEvent,
@@ -219,8 +261,6 @@ class Admin extends React.Component {
                               <div className="medium-3 columns">
                                 <ul className="tabs vertical" id="example-vert-tabs" data-tabs>
                                   <li className="tabs-title is-active"><a href="#panel1v" aria-selected="true"><FontAwesome name='plus-circle'/> Add Climber</a></li>
-                                  <li className="tabs-title"><a href="#panel2v"><FontAwesome name='plus-circle'/> Edit Climber Details</a></li>
-                                  <li className="tabs-title"><a href="#panel3v"><FontAwesome name='plus-circle'/> Add Score</a></li>
                                   <li className="tabs-title"><a href="#panel4v"><FontAwesome name='edit'/> Edit Score</a></li>
                                 </ul>
                                 </div>
@@ -228,6 +268,10 @@ class Admin extends React.Component {
                                 <div className="tabs-content vertical" data-tabs-content="example-vert-tabs">
                                   <div className="tabs-panel is-active" id="panel1v">
                                     <form>
+                                        <p>Recommended ID: {recommendedID}</p>
+                                        <label>Climber ID
+                                            <input type="text" name="climberID" ref="climberID" placeholder="Climber ID" required/>
+                                        </label>
                                         <label>First Name
                                             <input type="text" name="firstName" ref="firstName" placeholder="First Name" required/>
                                         </label>
@@ -249,33 +293,23 @@ class Admin extends React.Component {
                                         <label>Organization
                                             <input type="text" name="organization" ref="organization" placeholder="Organization" required/>
                                         </label>
+
+                                        <label>Category
+                                            <Select name='selectedCategory'
+                                                    value={selectedCategory}
+                                                    options={categories}
+                                                    onChange={this.selectCategory.bind(this)}/>
+                                        </label>
+
+                                        <label>Detail
+                                            <input type="number" ref="detail" placeholder="1"/>
+                                        </label>
+
                                         <a className="button proceed expanded" onClick={this.addClimber.bind(this)}>Add Climber</a>
                                         <ResponseMessage message={registerMessage}/>
                                     </form>
                                   </div>
-                                  <div className="tabs-panel" id="panel2v">
-                                      <form>
-                                          <label>Category
-                                              <Select name='selectedCategory'
-                                                      value={selectedCategory}
-                                                      options={categories}
-                                                      onChange={this.selectCategory.bind(this)}/>
-                                          </label>
 
-                                          <label>Participant ID
-                                              <input type="text" ref="participantID" placeholder="001"/>
-                                          </label>
-
-                                          <label>Detail
-                                              <input type="number" ref="detail" placeholder="1"/>
-                                          </label>
-
-                                          <a className="button proceed expanded" onClick={this.registerClimber.bind(this)}>Add Climber</a>
-                                      </form>
-                                  </div>
-                                  <div className="tabs-panel" id="panel3v">
-                                    <p>Vivamus hendrerit arcu sed erat molestie vehicula. Sed auctor neque eu tellus rhoncus ut eleifend nibh porttitor. Ut in nulla enim. Phasellus molestie magna non est bibendum non venenatis nisl tempor. Suspendisse dictum feugiat nisl ut dapibus.</p>
-                                  </div>
                                   <div className="tabs-panel" id="panel4v">
                                     <form>
                                       <label>Tag Number
@@ -364,3 +398,24 @@ class ResponseMessage extends React.Component {
         );
     }
 }
+
+// <div className="tabs-panel" id="panel2v">
+//     <form>
+//         <label>Category
+//             <Select name='selectedCategory'
+//                     value={selectedCategory}
+//                     options={categories}
+//                     onChange={this.selectCategory.bind(this)}/>
+//         </label>
+//
+//         <label>Participant ID
+//             <input type="text" ref="participantID" placeholder="001"/>
+//         </label>
+//
+//         <label>Detail
+//             <input type="number" ref="detail" placeholder="1"/>
+//         </label>
+//
+//         <a className="button proceed expanded" onClick={this.registerClimber.bind(this)}>Add Climber</a>
+//     </form>
+// </div>

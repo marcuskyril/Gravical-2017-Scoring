@@ -10685,7 +10685,7 @@
 /* 110 */
 /***/ function(module, exports, __webpack_require__) {
 
-	'use strict';
+	/* WEBPACK VAR INJECTION */(function($) {'use strict';
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
@@ -10732,6 +10732,7 @@
 	            userDisplayName: '-',
 	            email: '-',
 	            message: '',
+	            recommendedID: 0,
 	            registerMessage: '',
 	            gender: '',
 	            categories: [],
@@ -10753,6 +10754,7 @@
 	            this.retrieveCurrentEvent();
 	            this.retrieveCurrentDetail();
 	            this.retrieveCategories();
+	            this.retrieveRecommendedID();
 	        }
 	    }, {
 	        key: 'retrieveCurrentEvent',
@@ -10833,22 +10835,10 @@
 	            var tagNum = this.refs.tagNum.value;
 	        }
 	    }, {
-	        key: 'registerClimber',
-	        value: function registerClimber() {
-	            var selectedCategory = this.state.selectedCategory;
-	            var participantID = this.refs.participantID.value;
-	            var detail = this.refs.detail.value;
-
-	            console.log(participantID, selectedCategory, detail);
-
-	            // climberManagementAPI.registerClimber(participantID, selectedCategory, detail).then(function(response){
-	            //     console.log("response", response);
-	            // });
-	        }
-	    }, {
 	        key: 'addClimber',
 	        value: function addClimber() {
 	            var that = this;
+	            var climberID = this.refs.climberID.value;
 	            var first_name = this.refs.firstName.value;
 	            var last_name = this.refs.lastName.value;
 	            var gender = this.state.gender;
@@ -10856,20 +10846,71 @@
 	            var id_number = this.refs.nric.value;
 	            var nationality = this.refs.nationality.value;
 	            var organization = this.refs.organization.value;
+	            var detail = this.refs.detail.value;
+	            var categoryID = this.state.selectedCategory;
 
-	            climberManagementAPI.addClimber(first_name, last_name, gender, date_of_birth, id_number, nationality, organization).then(function (response) {
-	                console.log("response", response);
+	            var addClimberSuccess = false;
+	            var registerClimberSuccess = false;
+	            var errorMessages = [];
+
+	            $.when(climberManagementAPI.addClimber(climberID, first_name, last_name, gender, date_of_birth, id_number, nationality, organization), climberManagementAPI.registerClimber(climberID, categoryID, detail)).then(function (addResponse, registerResponse) {
+	                console.log(addResponse, registerResponse);
+
+	                if (addResponse.hasOwnProperty('error')) {
+	                    errorMessages.push(addResponse.error);
+	                }
+
+	                if (registerResponse.hasOwnProperty('error')) {
+	                    errorMessages.push(registerResponse.error);
+	                }
+
+	                if (errorMessages.length > 0) {
+	                    errorMessages.forEach(function (msg) {
+	                        that.setState({
+	                            registerMessage: addResponse.error + ', ' + registerResponse.error
+	                        });
+	                    });
+	                } else {
+	                    that.setState({
+	                        registerMessage: "Participant successfully registered."
+	                    });
+
+	                    that.refs.climberID.value = '';
+	                    that.refs.firstName.value = '';
+	                    that.refs.lastName.value = '';
+	                    that.state.gender = '';
+	                    that.refs.dob.value = '';
+	                    that.refs.nric.value = '';
+	                    that.refs.nationality.value = '';
+	                    that.refs.organization.value = '';
+	                    that.refs.detail.value = '';
+
+	                    that.retrieveRecommendedID();
+	                }
+	            });
+	        }
+	    }, {
+	        key: 'retrieveRecommendedID',
+	        value: function retrieveRecommendedID() {
+	            var that = this;
+	            climberManagementAPI.getLastCLimberID().then(function (response) {
+	                console.log("last", response);
+
+	                var recommendedID = '';
+
+	                var responseStr = response.toString();
+
+	                if (responseStr.length == 2) {
+	                    recommendedID = '0' + (response + 1).toString();
+	                } else if (responseStr.length == 1) {
+	                    recommendedID = '00' + (response + 1).toString();
+	                } else {
+	                    recommendedID = response;
+	                }
+
 	                that.setState({
-	                    registerMessage: response.message
+	                    recommendedID: recommendedID
 	                });
-
-	                that.refs.firstName.value = '';
-	                that.refs.lastName.value = '';
-	                that.state.gender = '';
-	                that.refs.dob.value = '';
-	                that.refs.nric.value = '';
-	                that.refs.nationality.value = '';
-	                that.refs.organization.value = '';
 	            });
 	        }
 	    }, {
@@ -10934,6 +10975,7 @@
 	            var categories = _state2.categories;
 	            var selectedCategory = _state2.selectedCategory;
 	            var message = _state2.message;
+	            var recommendedID = _state2.recommendedID;
 	            var registerMessage = _state2.registerMessage;
 	            var currentDetail = _state2.currentDetail;
 	            var currentEvent = _state2.currentEvent;
@@ -10982,26 +11024,6 @@
 	                                        { className: 'tabs-title' },
 	                                        React.createElement(
 	                                            'a',
-	                                            { href: '#panel2v' },
-	                                            React.createElement(FontAwesome, { name: 'plus-circle' }),
-	                                            ' Edit Climber Details'
-	                                        )
-	                                    ),
-	                                    React.createElement(
-	                                        'li',
-	                                        { className: 'tabs-title' },
-	                                        React.createElement(
-	                                            'a',
-	                                            { href: '#panel3v' },
-	                                            React.createElement(FontAwesome, { name: 'plus-circle' }),
-	                                            ' Add Score'
-	                                        )
-	                                    ),
-	                                    React.createElement(
-	                                        'li',
-	                                        { className: 'tabs-title' },
-	                                        React.createElement(
-	                                            'a',
 	                                            { href: '#panel4v' },
 	                                            React.createElement(FontAwesome, { name: 'edit' }),
 	                                            ' Edit Score'
@@ -11021,6 +11043,18 @@
 	                                        React.createElement(
 	                                            'form',
 	                                            null,
+	                                            React.createElement(
+	                                                'p',
+	                                                null,
+	                                                'Recommended ID: ',
+	                                                recommendedID
+	                                            ),
+	                                            React.createElement(
+	                                                'label',
+	                                                null,
+	                                                'Climber ID',
+	                                                React.createElement('input', { type: 'text', name: 'climberID', ref: 'climberID', placeholder: 'Climber ID', required: true })
+	                                            ),
 	                                            React.createElement(
 	                                                'label',
 	                                                null,
@@ -11075,20 +11109,6 @@
 	                                                React.createElement('input', { type: 'text', name: 'organization', ref: 'organization', placeholder: 'Organization', required: true })
 	                                            ),
 	                                            React.createElement(
-	                                                'a',
-	                                                { className: 'button proceed expanded', onClick: this.addClimber.bind(this) },
-	                                                'Add Climber'
-	                                            ),
-	                                            React.createElement(ResponseMessage, { message: registerMessage })
-	                                        )
-	                                    ),
-	                                    React.createElement(
-	                                        'div',
-	                                        { className: 'tabs-panel', id: 'panel2v' },
-	                                        React.createElement(
-	                                            'form',
-	                                            null,
-	                                            React.createElement(
 	                                                'label',
 	                                                null,
 	                                                'Category',
@@ -11100,29 +11120,15 @@
 	                                            React.createElement(
 	                                                'label',
 	                                                null,
-	                                                'Participant ID',
-	                                                React.createElement('input', { type: 'text', ref: 'participantID', placeholder: '001' })
-	                                            ),
-	                                            React.createElement(
-	                                                'label',
-	                                                null,
 	                                                'Detail',
 	                                                React.createElement('input', { type: 'number', ref: 'detail', placeholder: '1' })
 	                                            ),
 	                                            React.createElement(
 	                                                'a',
-	                                                { className: 'button proceed expanded', onClick: this.registerClimber.bind(this) },
+	                                                { className: 'button proceed expanded', onClick: this.addClimber.bind(this) },
 	                                                'Add Climber'
-	                                            )
-	                                        )
-	                                    ),
-	                                    React.createElement(
-	                                        'div',
-	                                        { className: 'tabs-panel', id: 'panel3v' },
-	                                        React.createElement(
-	                                            'p',
-	                                            null,
-	                                            'Vivamus hendrerit arcu sed erat molestie vehicula. Sed auctor neque eu tellus rhoncus ut eleifend nibh porttitor. Ut in nulla enim. Phasellus molestie magna non est bibendum non venenatis nisl tempor. Suspendisse dictum feugiat nisl ut dapibus.'
+	                                            ),
+	                                            React.createElement(ResponseMessage, { message: registerMessage })
 	                                        )
 	                                    ),
 	                                    React.createElement(
@@ -11306,6 +11312,28 @@
 
 	    return ResponseMessage;
 	}(React.Component);
+
+	// <div className="tabs-panel" id="panel2v">
+	//     <form>
+	//         <label>Category
+	//             <Select name='selectedCategory'
+	//                     value={selectedCategory}
+	//                     options={categories}
+	//                     onChange={this.selectCategory.bind(this)}/>
+	//         </label>
+	//
+	//         <label>Participant ID
+	//             <input type="text" ref="participantID" placeholder="001"/>
+	//         </label>
+	//
+	//         <label>Detail
+	//             <input type="number" ref="detail" placeholder="1"/>
+	//         </label>
+	//
+	//         <a className="button proceed expanded" onClick={this.registerClimber.bind(this)}>Add Climber</a>
+	//     </form>
+	// </div>
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(9)))
 
 /***/ },
 /* 111 */
@@ -29149,12 +29177,13 @@
 	var SET_CURRENT_DETAIL_URL = "http://office.livestudios.com:41111/backend/api/set_current_detail.php";
 	var GET_CURRENT_EVENT_URL = "http://office.livestudios.com:41111/backend/api/get_current_event.php";
 	var GET_CURRENT_DETAIL_URL = "http://office.livestudios.com:41111/backend/api/get_current_detail.php";
+	var GET_LAST_CLIMBER_ID_URL = "http://office.livestudios.com:41111/backend/api/get_last_climber_id.php";
 
 	module.exports = {
 
-	    addClimber: function addClimber(first_name, last_name, gender, date_of_birth, id_number, nationality, organization) {
+	    addClimber: function addClimber(climberID, first_name, last_name, gender, date_of_birth, id_number, nationality, organization) {
 	        var data = {
-	            first_name: first_name, last_name: last_name, gender: gender, date_of_birth: date_of_birth, id_number: id_number, nationality: nationality, organization: organization
+	            climberID: climberID, first_name: first_name, last_name: last_name, gender: gender, date_of_birth: date_of_birth, id_number: id_number, nationality: nationality, organization: organization
 	        };
 
 	        return $.ajax({
@@ -29179,6 +29208,19 @@
 	            },
 	            url: REGISTER_PARTICIPANT_URL,
 	            data: { participantID: participantID, categoryID: categoryID, detail: detail },
+	            success: function success(response) {
+	                // console.log("Tres manifique, monsieur", response);
+	            }
+	        });
+	    },
+
+	    getLastCLimberID: function getLastCLimberID() {
+	        return $.ajax({
+	            type: "POST",
+	            beforeSend: function beforeSend(request) {
+	                request.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+	            },
+	            url: GET_LAST_CLIMBER_ID_URL,
 	            success: function success(response) {
 	                // console.log("Tres manifique, monsieur", response);
 	            }
@@ -90701,6 +90743,7 @@
 	                                React.createElement(Select, { name: 'selectedCategory',
 	                                    value: selectedCategory,
 	                                    options: categories,
+	                                    autoBlur: true,
 	                                    onChange: this.selectCategory.bind(this) })
 	                            ),
 	                            React.createElement(
@@ -90710,6 +90753,7 @@
 	                                React.createElement(Select, { name: 'selectedDetail',
 	                                    value: selectedDetail,
 	                                    options: details,
+	                                    autoBlur: true,
 	                                    onChange: this.selectDetail.bind(this) })
 	                            ),
 	                            React.createElement(
@@ -90719,6 +90763,7 @@
 	                                React.createElement(Select, { name: 'selectedClimber',
 	                                    value: selectedClimber,
 	                                    options: climbers,
+	                                    autoBlur: true,
 	                                    onChange: this.selectClimber.bind(this) })
 	                            ),
 	                            React.createElement(
@@ -90728,6 +90773,7 @@
 	                                React.createElement(Select, { name: 'selectedRoute',
 	                                    value: selectedRoute,
 	                                    options: routes,
+	                                    autoBlur: true,
 	                                    onChange: this.selectRoute.bind(this) })
 	                            ),
 	                            React.createElement(

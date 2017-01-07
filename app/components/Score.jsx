@@ -226,24 +226,28 @@ class Score extends React.Component {
                                         <Select name='selectedCategory'
                                                 value={selectedCategory}
                                                 options={categories}
+                                                autoBlur={true}
                                                 onChange={this.selectCategory.bind(this)}/>
                                     </label>
                                     <label>Detail
                                         <Select name='selectedDetail'
                                                 value={selectedDetail}
                                                 options={details}
+                                                autoBlur={true}
                                                 onChange={this.selectDetail.bind(this)}/>
                                     </label>
                                     <label>Climber
                                         <Select name='selectedClimber'
                                                 value={selectedClimber}
                                                 options={climbers}
+                                                autoBlur={true}
                                                 onChange={this.selectClimber.bind(this)}/>
                                     </label>
                                     <label>Route
                                         <Select name='selectedRoute'
                                                 value={selectedRoute}
                                                 options={routes}
+                                                autoBlur={true}
                                                 onChange={this.selectRoute.bind(this)}/>
                                     </label>
 
