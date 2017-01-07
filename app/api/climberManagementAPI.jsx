@@ -81,7 +81,7 @@ module.exports = {
             },
             url: STOP_EVENT_URL,
             success: function(response) {
-                // console.log("Tres manifique, monsieur", response);
+                console.log("response", response);
             }
         });
     },

@@ -43,6 +43,10 @@ class Dashboard extends React.Component {
     componentDidMount() {
         // initiate websocket
         this.connect();
+        window.addEventListener('endEvent', function(e) {
+            // that.addProgressNotification(e.data);
+            alert("HOOYAH");
+        }, false);
     }
 
     connect() {
@@ -71,20 +75,6 @@ class Dashboard extends React.Component {
             console.warn('WebSocket connection closed: all data unavailable');
 
             if (this.state !== undefined) {
-                // this.state.connection.subscribe('', function(topic, data) {
-                //
-                //     console.warn('Reinitiating connection');
-                //     timestamp = moment().format('YYYY-MM-DD, h:mm:ss a');
-                //
-                //     that.setState({
-                //         connection: connection,
-                //         currentTime: timestamp,
-                //         currentEvent: data['current_event'],
-                //         currentDetail: data['current_detail'],
-                //         totalDetails: data['total_details']['num_of_details'],
-                //         results: data['list']
-                //     });
-                // });
                 this.connect();
             }
         }, {'skipSubprotocolCheck': true});
@@ -114,7 +104,6 @@ class Dashboard extends React.Component {
     render() {
 
         var {results, currentEvent, currentTime, currentDetail, totalDetails} = this.state;
-        console.log("currentEvent", currentEvent);
 
         return (
 
@@ -137,7 +126,7 @@ class Dashboard extends React.Component {
 
                     <div className="allSensors columns medium-12 large-7">
                         <div className="callout callout-dark-header">
-                            <div className="page-title">Current Event: {currentEvent} {currentDetail}/{totalDetails}</div>
+                            <div className="page-title">Current Event: {currentEvent === "" ? "-" : currentEvent} {currentDetail === 0 ? "-" : currentDetail}/{totalDetails === 0 ? "-" : totalDetails}</div>
                         </div>
                         <div className="callout callout-dark" id="bfg">
                             <Tableaux data={results}/>

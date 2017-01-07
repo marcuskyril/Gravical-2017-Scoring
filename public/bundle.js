@@ -10737,6 +10737,7 @@
 	            gender: '',
 	            categories: [],
 	            selectedCategory: '',
+	            selectedCategoryUtil: '',
 	            currentDetail: 0,
 	            currentEvent: '-',
 	            numDetails: 0,
@@ -10744,6 +10745,7 @@
 	        };
 
 	        _this.selectCategory = _this.selectCategory.bind(_this);
+	        _this.selectCategoryUtil = _this.selectCategoryUtil.bind(_this);
 	        return _this;
 	    }
 
@@ -10765,6 +10767,10 @@
 	                that.setState({
 	                    currentEvent: response.message
 	                });
+
+	                if (response.message.length > 0) {
+	                    that.retrieveNumDetails(response.message);
+	                }
 	            });
 	        }
 	    }, {
@@ -10803,6 +10809,7 @@
 	        key: 'retrieveNumDetails',
 	        value: function retrieveNumDetails(category) {
 
+	            console.log("cats", category);
 	            var that = this;
 	            scoreAPI.retrieveDetails(category).then(function (response) {
 
@@ -10815,6 +10822,12 @@
 	        key: 'selectCategory',
 	        value: function selectCategory(val) {
 	            this.setState({ selectedCategory: val.value });
+	            this.retrieveNumDetails(val.value);
+	        }
+	    }, {
+	        key: 'selectCategoryUtil',
+	        value: function selectCategoryUtil(val) {
+	            this.setState({ selectedCategoryUtil: val.value });
 	            this.retrieveNumDetails(val.value);
 	        }
 	    }, {
@@ -10851,22 +10864,22 @@
 	            var errorMessages = [];
 
 	            climberManagementAPI.addClimber(climberID, first_name, last_name, gender, date_of_birth, id_number, nationality, organization).then(function (addResponse) {
-	                console.log(addResponse);
-	                console.log("addResponse.hasOwnProperty('error')", addResponse.hasOwnProperty('error'));
+	                // console.log(addResponse);
+	                // console.log("addResponse.hasOwnProperty('error')", addResponse.hasOwnProperty('error'));
 	                if (addResponse.hasOwnProperty('error')) {
 	                    errorMessages.push(addResponse.error);
 	                }
 
 	                climberManagementAPI.registerClimber(climberID, categoryID, detail).then(function (registerResponse) {
 
-	                    console.log(registerResponse);
-	                    console.log("registerResponse.hasOwnProperty('error')", registerResponse.hasOwnProperty('error'));
+	                    // console.log(registerResponse);
+	                    // console.log("registerResponse.hasOwnProperty('error')", registerResponse.hasOwnProperty('error'));
 	                    if (registerResponse.hasOwnProperty('error')) {
 	                        errorMessages.push(registerResponse.error);
 	                    }
 
-	                    console.log("errorMessages length", errorMessages.length);
-	                    console.log("errorMessages", errorMessages);
+	                    // console.log("errorMessages length", errorMessages.length);
+	                    // console.log("errorMessages", errorMessages);
 
 	                    if (errorMessages.length > 0) {
 
@@ -10885,7 +10898,6 @@
 	                        that.refs.climberID.value = '';
 	                        that.refs.firstName.value = '';
 	                        that.refs.lastName.value = '';
-	                        // that.state.gender = '';
 	                        that.refs.dob.value = '';
 	                        that.refs.nric.value = '';
 	                        that.refs.nationality.value = '';
@@ -10924,7 +10936,7 @@
 	        key: 'startEvent',
 	        value: function startEvent() {
 	            var that = this;
-	            var category = this.state.selectedCategory;
+	            var category = this.state.selectedCategoryUtil;
 	            climberManagementAPI.startEvent(category).then(function (response) {
 	                console.log("response", response);
 
@@ -10965,10 +10977,22 @@
 	            var that = this;
 	            climberManagementAPI.endEvent().then(function (response) {
 
+	                console.log('response', response);
+
 	                that.setState({
 	                    currentEvent: '-',
-	                    hasEventStarted: false
+	                    hasEventStarted: false,
+	                    numDetails: 0
 	                });
+
+	                var endEvent = document.createEvent("Event");
+
+	                endEvent.data = {
+	                    message: 'EVENT OCCURRED'
+	                };
+
+	                endEvent.initEvent("endEvent", true, true);
+	                document.dispatchEvent(endEvent);
 	            });
 
 	            this.setDetail(0);
@@ -10981,7 +11005,9 @@
 	            var _state2 = this.state;
 	            var categories = _state2.categories;
 	            var selectedCategory = _state2.selectedCategory;
+	            var selectedCategoryUtil = _state2.selectedCategoryUtil;
 	            var message = _state2.message;
+	            var numDetails = _state2.numDetails;
 	            var recommendedID = _state2.recommendedID;
 	            var registerMessage = _state2.registerMessage;
 	            var currentDetail = _state2.currentDetail;
@@ -11101,7 +11127,7 @@
 	                                                'label',
 	                                                null,
 	                                                'NRIC',
-	                                                React.createElement('input', { type: 'text', name: 'nric', ref: 'nric', placeholder: 'Nric', required: true })
+	                                                React.createElement('input', { type: 'text', name: 'nric', ref: 'nric', placeholder: 'NRIC', required: true })
 	                                            ),
 	                                            React.createElement(
 	                                                'label',
@@ -11122,6 +11148,7 @@
 	                                                React.createElement(Select, { name: 'selectedCategory',
 	                                                    value: selectedCategory,
 	                                                    options: categories,
+	                                                    placeholder: "Category",
 	                                                    onChange: this.selectCategory.bind(this) })
 	                                            ),
 	                                            React.createElement(
@@ -11247,7 +11274,9 @@
 	                                    'p',
 	                                    null,
 	                                    'Current detail: ',
-	                                    currentDetail
+	                                    currentDetail === 0 ? "-" : currentDetail,
+	                                    '/',
+	                                    numDetails === 0 ? "-" : numDetails
 	                                ),
 	                                React.createElement(
 	                                    'form',
@@ -11257,9 +11286,10 @@
 	                                        null,
 	                                        'Category',
 	                                        React.createElement(Select, { name: 'selectedCategory',
-	                                            value: selectedCategory,
+	                                            value: selectedCategoryUtil,
 	                                            options: categories,
-	                                            onChange: this.selectCategory.bind(this) })
+	                                            placeholder: "Category",
+	                                            onChange: this.selectCategoryUtil.bind(this) })
 	                                    ),
 	                                    React.createElement(
 	                                        'div',
@@ -11319,27 +11349,6 @@
 
 	    return ResponseMessage;
 	}(React.Component);
-
-	// <div className="tabs-panel" id="panel2v">
-	//     <form>
-	//         <label>Category
-	//             <Select name='selectedCategory'
-	//                     value={selectedCategory}
-	//                     options={categories}
-	//                     onChange={this.selectCategory.bind(this)}/>
-	//         </label>
-	//
-	//         <label>Participant ID
-	//             <input type="text" ref="participantID" placeholder="001"/>
-	//         </label>
-	//
-	//         <label>Detail
-	//             <input type="number" ref="detail" placeholder="1"/>
-	//         </label>
-	//
-	//         <a className="button proceed expanded" onClick={this.registerClimber.bind(this)}>Add Climber</a>
-	//     </form>
-	// </div>
 
 /***/ },
 /* 111 */
@@ -29259,7 +29268,7 @@
 	            },
 	            url: STOP_EVENT_URL,
 	            success: function success(response) {
-	                // console.log("Tres manifique, monsieur", response);
+	                console.log("response", response);
 	            }
 	        });
 	    },
@@ -93671,6 +93680,10 @@
 	        value: function componentDidMount() {
 	            // initiate websocket
 	            this.connect();
+	            window.addEventListener('endEvent', function (e) {
+	                // that.addProgressNotification(e.data);
+	                alert("HOOYAH");
+	            }, false);
 	        }
 	    }, {
 	        key: 'connect',
@@ -93699,20 +93712,6 @@
 	                console.warn('WebSocket connection closed: all data unavailable');
 
 	                if (this.state !== undefined) {
-	                    // this.state.connection.subscribe('', function(topic, data) {
-	                    //
-	                    //     console.warn('Reinitiating connection');
-	                    //     timestamp = moment().format('YYYY-MM-DD, h:mm:ss a');
-	                    //
-	                    //     that.setState({
-	                    //         connection: connection,
-	                    //         currentTime: timestamp,
-	                    //         currentEvent: data['current_event'],
-	                    //         currentDetail: data['current_detail'],
-	                    //         totalDetails: data['total_details']['num_of_details'],
-	                    //         results: data['list']
-	                    //     });
-	                    // });
 	                    this.connect();
 	                }
 	            }, { 'skipSubprotocolCheck': true });
@@ -93751,7 +93750,6 @@
 	            var currentDetail = _state.currentDetail;
 	            var totalDetails = _state.totalDetails;
 
-	            console.log("currentEvent", currentEvent);
 
 	            return React.createElement(
 	                'div',
@@ -93798,11 +93796,11 @@
 	                                'div',
 	                                { className: 'page-title' },
 	                                'Current Event: ',
-	                                currentEvent,
+	                                currentEvent === "" ? "-" : currentEvent,
 	                                ' ',
-	                                currentDetail,
+	                                currentDetail === 0 ? "-" : currentDetail,
 	                                '/',
-	                                totalDetails
+	                                totalDetails === 0 ? "-" : totalDetails
 	                            )
 	                        ),
 	                        React.createElement(

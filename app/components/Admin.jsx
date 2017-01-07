@@ -23,6 +23,7 @@ class Admin extends React.Component {
             gender: '',
             categories: [],
             selectedCategory: '',
+            selectedCategoryUtil: '',
             currentDetail: 0,
             currentEvent: '-',
             numDetails: 0,
@@ -30,6 +31,7 @@ class Admin extends React.Component {
         }
 
         this.selectCategory = this.selectCategory.bind(this);
+        this.selectCategoryUtil = this.selectCategoryUtil.bind(this);
     }
 
     componentDidMount() {
@@ -47,6 +49,11 @@ class Admin extends React.Component {
             that.setState({
                 currentEvent: response.message
             })
+
+            if(response.message.length > 0) {
+                that.retrieveNumDetails(response.message);
+            }
+
         });
     }
 
@@ -82,6 +89,7 @@ class Admin extends React.Component {
 
     retrieveNumDetails(category) {
 
+        console.log("cats", category);
         var that = this;
         scoreAPI.retrieveDetails(category).then(function(response){
 
@@ -93,6 +101,11 @@ class Admin extends React.Component {
 
     selectCategory(val) {
         this.setState({selectedCategory: val.value});
+        this.retrieveNumDetails(val.value);
+    }
+
+    selectCategoryUtil(val) {
+        this.setState({selectedCategoryUtil: val.value});
         this.retrieveNumDetails(val.value);
     }
 
@@ -126,22 +139,22 @@ class Admin extends React.Component {
         var errorMessages = [];
 
         climberManagementAPI.addClimber(climberID, first_name, last_name, gender, date_of_birth, id_number, nationality, organization).then(function(addResponse){
-            console.log(addResponse);
-            console.log("addResponse.hasOwnProperty('error')", addResponse.hasOwnProperty('error'));
+            // console.log(addResponse);
+            // console.log("addResponse.hasOwnProperty('error')", addResponse.hasOwnProperty('error'));
             if(addResponse.hasOwnProperty('error')) {
                 errorMessages.push(addResponse.error);
             }
 
             climberManagementAPI.registerClimber(climberID, categoryID, detail).then(function(registerResponse) {
 
-                console.log(registerResponse);
-                console.log("registerResponse.hasOwnProperty('error')", registerResponse.hasOwnProperty('error'));
+                // console.log(registerResponse);
+                // console.log("registerResponse.hasOwnProperty('error')", registerResponse.hasOwnProperty('error'));
                 if(registerResponse.hasOwnProperty('error')) {
                     errorMessages.push(registerResponse.error);
                 }
 
-                console.log("errorMessages length", errorMessages.length);
-                console.log("errorMessages", errorMessages);
+                // console.log("errorMessages length", errorMessages.length);
+                // console.log("errorMessages", errorMessages);
 
                 if(errorMessages.length > 0) {
 
@@ -161,7 +174,6 @@ class Admin extends React.Component {
                     that.refs.climberID.value = '';
                     that.refs.firstName.value = '';
                     that.refs.lastName.value = '';
-                    // that.state.gender = '';
                     that.refs.dob.value = '';
                     that.refs.nric.value = '';
                     that.refs.nationality.value = '';
@@ -198,7 +210,7 @@ class Admin extends React.Component {
 
     startEvent() {
         var that = this;
-        var category = this.state.selectedCategory;
+        var category = this.state.selectedCategoryUtil;
         climberManagementAPI.startEvent(category).then(function(response) {
             console.log("response", response);
 
@@ -233,10 +245,23 @@ class Admin extends React.Component {
         var that = this;
         climberManagementAPI.endEvent().then(function(response) {
 
+            console.log('response', response);
+
             that.setState({
                 currentEvent: '-',
-                hasEventStarted: false
+                hasEventStarted: false,
+                numDetails: 0
             })
+
+            var endEvent = document.createEvent("Event");
+
+            endEvent.data = {
+                message: 'EVENT OCCURRED'
+            };
+
+            endEvent.initEvent("endEvent", true, true);
+            document.dispatchEvent(endEvent);
+
         });
 
         this.setDetail(0);
@@ -248,7 +273,9 @@ class Admin extends React.Component {
         var {
             categories,
             selectedCategory,
+            selectedCategoryUtil,
             message,
+            numDetails,
             recommendedID,
             registerMessage,
             currentDetail,
@@ -293,7 +320,7 @@ class Admin extends React.Component {
                                             <input type="date" name="dob" ref="dob" required/>
                                         </label>
                                         <label>NRIC
-                                            <input type="text" name="nric" ref="nric" placeholder="Nric" required/>
+                                            <input type="text" name="nric" ref="nric" placeholder="NRIC" required/>
                                         </label>
                                         <label>Nationality
                                             <input type="text" name="nationality" ref="nationality" placeholder="Nationality" required/>
@@ -306,6 +333,7 @@ class Admin extends React.Component {
                                             <Select name='selectedCategory'
                                                     value={selectedCategory}
                                                     options={categories}
+                                                    placeholder={"Category"}
                                                     onChange={this.selectCategory.bind(this)}/>
                                         </label>
 
@@ -358,14 +386,15 @@ class Admin extends React.Component {
                                     </a>
 
                                     <p>Current Event: {currentEvent}</p>
-                                    <p>Current detail: {currentDetail}</p>
+                                    <p>Current detail: {currentDetail === 0 ? "-" : currentDetail}/{numDetails === 0 ? "-" : numDetails}</p>
 
                                     <form>
                                         <label>Category
                                             <Select name='selectedCategory'
-                                                    value={selectedCategory}
+                                                    value={selectedCategoryUtil}
                                                     options={categories}
-                                                    onChange={this.selectCategory.bind(this)}/>
+                                                    placeholder={"Category"}
+                                                    onChange={this.selectCategoryUtil.bind(this)}/>
                                         </label>
 
                                         <div className="margin-top-small">
@@ -406,24 +435,3 @@ class ResponseMessage extends React.Component {
         );
     }
 }
-
-// <div className="tabs-panel" id="panel2v">
-//     <form>
-//         <label>Category
-//             <Select name='selectedCategory'
-//                     value={selectedCategory}
-//                     options={categories}
-//                     onChange={this.selectCategory.bind(this)}/>
-//         </label>
-//
-//         <label>Participant ID
-//             <input type="text" ref="participantID" placeholder="001"/>
-//         </label>
-//
-//         <label>Detail
-//             <input type="number" ref="detail" placeholder="1"/>
-//         </label>
-//
-//         <a className="button proceed expanded" onClick={this.registerClimber.bind(this)}>Add Climber</a>
-//     </form>
-// </div>
