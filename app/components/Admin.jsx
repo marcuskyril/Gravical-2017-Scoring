@@ -123,56 +123,64 @@ class Admin extends React.Component {
         var organization = this.refs.organization.value;
         var detail = this.refs.detail.value;
         var categoryID = this.state.selectedCategory;
-
-        var addClimberSuccess = false;
-        var registerClimberSuccess = false;
         var errorMessages = [];
 
-        $.when(climberManagementAPI.addClimber(climberID, first_name, last_name, gender, date_of_birth, id_number, nationality, organization), climberManagementAPI.registerClimber(climberID, categoryID, detail)).then(function(addResponse, registerResponse){
-            console.log(addResponse, registerResponse);
-
+        climberManagementAPI.addClimber(climberID, first_name, last_name, gender, date_of_birth, id_number, nationality, organization).then(function(addResponse){
+            console.log(addResponse);
+            console.log("addResponse.hasOwnProperty('error')", addResponse.hasOwnProperty('error'));
             if(addResponse.hasOwnProperty('error')) {
                 errorMessages.push(addResponse.error);
             }
 
-            if(registerResponse.hasOwnProperty('error')) {
-                errorMessages.push(registerResponse.error);
-            }
+            climberManagementAPI.registerClimber(climberID, categoryID, detail).then(function(registerResponse) {
 
-            if(errorMessages.length > 0) {
-                errorMessages.forEach(function(msg) {
+                console.log(registerResponse);
+                console.log("registerResponse.hasOwnProperty('error')", registerResponse.hasOwnProperty('error'));
+                if(registerResponse.hasOwnProperty('error')) {
+                    errorMessages.push(registerResponse.error);
+                }
+
+                console.log("errorMessages length", errorMessages.length);
+                console.log("errorMessages", errorMessages);
+
+                if(errorMessages.length > 0) {
+
+                    var temp = errorMessages.join();
+
+                    console.log("temp", temp);
+
                     that.setState({
-                        registerMessage: `${addResponse.error}, ${registerResponse.error}`
-                    })
-                });
-            } else {
-                that.setState({
-                    registerMessage: "Participant successfully registered."
-                });
+                        registerMessage: temp
+                    });
 
-                that.refs.climberID.value = '';
-                that.refs.firstName.value = '';
-                that.refs.lastName.value = '';
-                that.state.gender = '';
-                that.refs.dob.value = '';
-                that.refs.nric.value = '';
-                that.refs.nationality.value = '';
-                that.refs.organization.value = '';
-                that.refs.detail.value = '';
+                } else {
+                    that.setState({
+                        registerMessage: "Participant successfully registered."
+                    });
 
-                that.retrieveRecommendedID();
-            }
+                    that.refs.climberID.value = '';
+                    that.refs.firstName.value = '';
+                    that.refs.lastName.value = '';
+                    // that.state.gender = '';
+                    that.refs.dob.value = '';
+                    that.refs.nric.value = '';
+                    that.refs.nationality.value = '';
+                    that.refs.organization.value = '';
+                    that.refs.detail.value = '';
+
+                    that.retrieveRecommendedID();
+                }
+            });
         });
     }
 
     retrieveRecommendedID() {
         var that = this;
         climberManagementAPI.getLastCLimberID().then(function(response){
-            console.log("last", response);
 
             var recommendedID = '';
 
-            var responseStr = response.toString();
+            var responseStr = (response + 1).toString();
 
             if(responseStr.length == 2) {
                 recommendedID = `0${(response + 1).toString()}`;

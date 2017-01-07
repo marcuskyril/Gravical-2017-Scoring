@@ -134,7 +134,7 @@
 	var browserHistory = _require2.browserHistory;
 
 	var actions = __webpack_require__(139);
-	var store = __webpack_require__(938).configure();
+	var store = __webpack_require__(937).configure();
 
 	_firebase2.default.auth().onAuthStateChanged(function (user) {
 	  if (user) {
@@ -154,15 +154,15 @@
 	});
 
 	// Load foundation
-	__webpack_require__(945);
+	__webpack_require__(940);
 	$(document).foundation();
 
-	__webpack_require__(949);
-	__webpack_require__(951);
-	__webpack_require__(953);
-	__webpack_require__(955);
-	__webpack_require__(957);
-	__webpack_require__(959);
+	__webpack_require__(944);
+	__webpack_require__(946);
+	__webpack_require__(948);
+	__webpack_require__(950);
+	__webpack_require__(952);
+	__webpack_require__(954);
 
 	ReactDOM.render(React.createElement(
 	  'div',
@@ -10685,7 +10685,7 @@
 /* 110 */
 /***/ function(module, exports, __webpack_require__) {
 
-	/* WEBPACK VAR INJECTION */(function($) {'use strict';
+	'use strict';
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
@@ -10848,45 +10848,53 @@
 	            var organization = this.refs.organization.value;
 	            var detail = this.refs.detail.value;
 	            var categoryID = this.state.selectedCategory;
-
-	            var addClimberSuccess = false;
-	            var registerClimberSuccess = false;
 	            var errorMessages = [];
 
-	            $.when(climberManagementAPI.addClimber(climberID, first_name, last_name, gender, date_of_birth, id_number, nationality, organization), climberManagementAPI.registerClimber(climberID, categoryID, detail)).then(function (addResponse, registerResponse) {
-	                console.log(addResponse, registerResponse);
-
+	            climberManagementAPI.addClimber(climberID, first_name, last_name, gender, date_of_birth, id_number, nationality, organization).then(function (addResponse) {
+	                console.log(addResponse);
+	                console.log("addResponse.hasOwnProperty('error')", addResponse.hasOwnProperty('error'));
 	                if (addResponse.hasOwnProperty('error')) {
 	                    errorMessages.push(addResponse.error);
 	                }
 
-	                if (registerResponse.hasOwnProperty('error')) {
-	                    errorMessages.push(registerResponse.error);
-	                }
+	                climberManagementAPI.registerClimber(climberID, categoryID, detail).then(function (registerResponse) {
 
-	                if (errorMessages.length > 0) {
-	                    errorMessages.forEach(function (msg) {
+	                    console.log(registerResponse);
+	                    console.log("registerResponse.hasOwnProperty('error')", registerResponse.hasOwnProperty('error'));
+	                    if (registerResponse.hasOwnProperty('error')) {
+	                        errorMessages.push(registerResponse.error);
+	                    }
+
+	                    console.log("errorMessages length", errorMessages.length);
+	                    console.log("errorMessages", errorMessages);
+
+	                    if (errorMessages.length > 0) {
+
+	                        var temp = errorMessages.join();
+
+	                        console.log("temp", temp);
+
 	                        that.setState({
-	                            registerMessage: addResponse.error + ', ' + registerResponse.error
+	                            registerMessage: temp
 	                        });
-	                    });
-	                } else {
-	                    that.setState({
-	                        registerMessage: "Participant successfully registered."
-	                    });
+	                    } else {
+	                        that.setState({
+	                            registerMessage: "Participant successfully registered."
+	                        });
 
-	                    that.refs.climberID.value = '';
-	                    that.refs.firstName.value = '';
-	                    that.refs.lastName.value = '';
-	                    that.state.gender = '';
-	                    that.refs.dob.value = '';
-	                    that.refs.nric.value = '';
-	                    that.refs.nationality.value = '';
-	                    that.refs.organization.value = '';
-	                    that.refs.detail.value = '';
+	                        that.refs.climberID.value = '';
+	                        that.refs.firstName.value = '';
+	                        that.refs.lastName.value = '';
+	                        // that.state.gender = '';
+	                        that.refs.dob.value = '';
+	                        that.refs.nric.value = '';
+	                        that.refs.nationality.value = '';
+	                        that.refs.organization.value = '';
+	                        that.refs.detail.value = '';
 
-	                    that.retrieveRecommendedID();
-	                }
+	                        that.retrieveRecommendedID();
+	                    }
+	                });
 	            });
 	        }
 	    }, {
@@ -10894,11 +10902,10 @@
 	        value: function retrieveRecommendedID() {
 	            var that = this;
 	            climberManagementAPI.getLastCLimberID().then(function (response) {
-	                console.log("last", response);
 
 	                var recommendedID = '';
 
-	                var responseStr = response.toString();
+	                var responseStr = (response + 1).toString();
 
 	                if (responseStr.length == 2) {
 	                    recommendedID = '0' + (response + 1).toString();
@@ -11333,7 +11340,6 @@
 	//         <a className="button proceed expanded" onClick={this.registerClimber.bind(this)}>Add Climber</a>
 	//     </form>
 	// </div>
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(9)))
 
 /***/ },
 /* 111 */
@@ -29182,9 +29188,6 @@
 	module.exports = {
 
 	    addClimber: function addClimber(climberID, first_name, last_name, gender, date_of_birth, id_number, nationality, organization) {
-	        var data = {
-	            climberID: climberID, first_name: first_name, last_name: last_name, gender: gender, date_of_birth: date_of_birth, id_number: id_number, nationality: nationality, organization: organization
-	        };
 
 	        return $.ajax({
 	            type: "POST",
@@ -29192,9 +29195,11 @@
 	                request.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
 	            },
 	            url: ADD_CLIMBER_URL,
-	            data: data,
+	            data: {
+	                climberID: climberID, first_name: first_name, last_name: last_name, gender: gender, date_of_birth: date_of_birth, id_number: id_number, nationality: nationality, organization: organization
+	            },
 	            success: function success(response) {
-	                // console.log("Tres manifique, monsieur", response);
+	                console.log("Add API", response);
 	            }
 	        });
 	    },
@@ -29209,7 +29214,7 @@
 	            url: REGISTER_PARTICIPANT_URL,
 	            data: { participantID: participantID, categoryID: categoryID, detail: detail },
 	            success: function success(response) {
-	                // console.log("Tres manifique, monsieur", response);
+	                console.log("Register API", response);
 	            }
 	        });
 	    },
@@ -93599,7 +93604,7 @@
 
 	var _moment2 = _interopRequireDefault(_moment);
 
-	var _reactTabs = __webpack_require__(925);
+	var _reactTabs = __webpack_require__(924);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -93612,9 +93617,9 @@
 	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 	var React = __webpack_require__(14);
-	var WatchList = __webpack_require__(941);
-	var Tableaux = __webpack_require__(942);
-	var Results = __webpack_require__(943);
+	var WatchList = __webpack_require__(934);
+	var Tableaux = __webpack_require__(935);
+	var Results = __webpack_require__(936);
 	var FontAwesome = __webpack_require__(266);
 
 	var _require = __webpack_require__(111);
@@ -94008,8 +94013,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(9)))
 
 /***/ },
-/* 924 */,
-/* 925 */
+/* 924 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -94019,19 +94023,19 @@
 	});
 	exports.TabPanel = exports.Tab = exports.TabList = exports.Tabs = undefined;
 
-	var _Tabs = __webpack_require__(926);
+	var _Tabs = __webpack_require__(925);
 
 	var _Tabs2 = _interopRequireDefault(_Tabs);
 
-	var _TabList = __webpack_require__(932);
+	var _TabList = __webpack_require__(931);
 
 	var _TabList2 = _interopRequireDefault(_TabList);
 
-	var _Tab = __webpack_require__(931);
+	var _Tab = __webpack_require__(930);
 
 	var _Tab2 = _interopRequireDefault(_Tab);
 
-	var _TabPanel = __webpack_require__(934);
+	var _TabPanel = __webpack_require__(933);
 
 	var _TabPanel2 = _interopRequireDefault(_TabPanel);
 
@@ -94052,7 +94056,7 @@
 	};
 
 /***/ },
-/* 926 */
+/* 925 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -94065,23 +94069,23 @@
 
 	var _reactDom = __webpack_require__(271);
 
-	var _classnames = __webpack_require__(927);
+	var _classnames = __webpack_require__(926);
 
 	var _classnames2 = _interopRequireDefault(_classnames);
 
-	var _jsStylesheet = __webpack_require__(928);
+	var _jsStylesheet = __webpack_require__(927);
 
 	var _jsStylesheet2 = _interopRequireDefault(_jsStylesheet);
 
-	var _uuid = __webpack_require__(929);
+	var _uuid = __webpack_require__(928);
 
 	var _uuid2 = _interopRequireDefault(_uuid);
 
-	var _childrenPropType = __webpack_require__(930);
+	var _childrenPropType = __webpack_require__(929);
 
 	var _childrenPropType2 = _interopRequireDefault(_childrenPropType);
 
-	var _Tab = __webpack_require__(931);
+	var _Tab = __webpack_require__(930);
 
 	var _Tab2 = _interopRequireDefault(_Tab);
 
@@ -94140,7 +94144,7 @@
 	  },
 	  componentDidMount: function componentDidMount() {
 	    if (useDefaultStyles) {
-	      (0, _jsStylesheet2.default)(__webpack_require__(933)); // eslint-disable-line global-require
+	      (0, _jsStylesheet2.default)(__webpack_require__(932)); // eslint-disable-line global-require
 	    }
 	  },
 	  componentWillReceiveProps: function componentWillReceiveProps(newProps) {
@@ -94462,7 +94466,7 @@
 	});
 
 /***/ },
-/* 927 */
+/* 926 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!
@@ -94516,7 +94520,7 @@
 
 
 /***/ },
-/* 928 */
+/* 927 */
 /***/ function(module, exports, __webpack_require__) {
 
 	!(function() {
@@ -94560,7 +94564,7 @@
 
 
 /***/ },
-/* 929 */
+/* 928 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -94572,7 +94576,7 @@
 	};
 
 /***/ },
-/* 930 */
+/* 929 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -94581,11 +94585,11 @@
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _Tab = __webpack_require__(931);
+	var _Tab = __webpack_require__(930);
 
 	var _Tab2 = _interopRequireDefault(_Tab);
 
-	var _TabList = __webpack_require__(932);
+	var _TabList = __webpack_require__(931);
 
 	var _TabList2 = _interopRequireDefault(_TabList);
 
@@ -94631,7 +94635,7 @@
 	};
 
 /***/ },
-/* 931 */
+/* 930 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -94644,7 +94648,7 @@
 
 	var _reactDom = __webpack_require__(271);
 
-	var _classnames = __webpack_require__(927);
+	var _classnames = __webpack_require__(926);
 
 	var _classnames2 = _interopRequireDefault(_classnames);
 
@@ -94724,7 +94728,7 @@
 	});
 
 /***/ },
-/* 932 */
+/* 931 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -94735,11 +94739,11 @@
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _classnames = __webpack_require__(927);
+	var _classnames = __webpack_require__(926);
 
 	var _classnames2 = _interopRequireDefault(_classnames);
 
-	var _Tab = __webpack_require__(931);
+	var _Tab = __webpack_require__(930);
 
 	var _Tab2 = _interopRequireDefault(_Tab);
 
@@ -94796,7 +94800,7 @@
 	});
 
 /***/ },
-/* 933 */
+/* 932 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -94851,7 +94855,7 @@
 	};
 
 /***/ },
-/* 934 */
+/* 933 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -94862,7 +94866,7 @@
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _classnames = __webpack_require__(927);
+	var _classnames = __webpack_require__(926);
 
 	var _classnames2 = _interopRequireDefault(_classnames);
 
@@ -94921,206 +94925,7 @@
 	});
 
 /***/ },
-/* 935 */,
-/* 936 */,
-/* 937 */,
-/* 938 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-	exports.configure = undefined;
-
-	var _redux = __webpack_require__(118);
-
-	var redux = _interopRequireWildcard(_redux);
-
-	var _reduxThunk = __webpack_require__(939);
-
-	var _reduxThunk2 = _interopRequireDefault(_reduxThunk);
-
-	var _reducers = __webpack_require__(940);
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
-
-	var configure = exports.configure = function configure() {
-	  var initialState = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
-
-	  var reducer = redux.combineReducers({
-	    auth: _reducers.authReducer,
-	    macAddress: _reducers.deleteSensorReducer,
-	    pin_mac: _reducers.updateWatchListReducer,
-	    syncData: _reducers.syncDataReducer,
-	    activeSensor: _reducers.activeSensorReducer,
-	    auditLog: _reducers.auditLogReducer
-	  });
-
-	  var store = redux.createStore(reducer, initialState, redux.compose(redux.applyMiddleware(_reduxThunk2.default), window.devToolsExtension ? window.devToolsExtension() : function (f) {
-	    return f;
-	  }));
-
-	  return store;
-	};
-
-/***/ },
-/* 939 */
-/***/ function(module, exports) {
-
-	'use strict';
-
-	exports.__esModule = true;
-	function createThunkMiddleware(extraArgument) {
-	  return function (_ref) {
-	    var dispatch = _ref.dispatch;
-	    var getState = _ref.getState;
-	    return function (next) {
-	      return function (action) {
-	        if (typeof action === 'function') {
-	          return action(dispatch, getState, extraArgument);
-	        }
-
-	        return next(action);
-	      };
-	    };
-	  };
-	}
-
-	var thunk = createThunkMiddleware();
-	thunk.withExtraArgument = createThunkMiddleware;
-
-	exports['default'] = thunk;
-
-/***/ },
-/* 940 */
-/***/ function(module, exports) {
-
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-	var auditLogReducer = exports.auditLogReducer = function auditLogReducer() {
-	  var state = arguments.length <= 0 || arguments[0] === undefined ? { logs: [] } : arguments[0];
-	  var action = arguments[1];
-
-	  switch (action.type) {
-	    case 'RETRIEVE_LOGS':
-	      return {
-	        logs: action.logs
-	      };
-	    default:
-	      return state;
-	  }
-	};
-
-	var syncDataReducer = exports.syncDataReducer = function syncDataReducer() {
-	  var state = arguments.length <= 0 || arguments[0] === undefined ? { currentTime: '-', userId: '-', userEmail: '-' } : arguments[0];
-	  var action = arguments[1];
-
-	  switch (action.type) {
-	    case 'STORE_SYNC_DATA':
-
-	      return {
-	        currentTime: action.currentTime,
-	        userId: action.userId,
-	        userEmail: action.userEmail
-	      };
-	    default:
-	      return state;
-	  }
-	};
-
-	var deleteSensorReducer = exports.deleteSensorReducer = function deleteSensorReducer() {
-	  var state = arguments.length <= 0 || arguments[0] === undefined ? { macAddress: '' } : arguments[0];
-	  var action = arguments[1];
-
-
-	  switch (action.type) {
-	    case 'COMPLETE_DELETE_SENSOR':
-	      return {
-	        macAddress: action.macAddress
-	      };
-	    default:
-	      return state;
-	  }
-	};
-
-	var updateWatchListReducer = exports.updateWatchListReducer = function updateWatchListReducer() {
-	  var state = arguments.length <= 0 || arguments[0] === undefined ? { pin_mac: '' } : arguments[0];
-	  var action = arguments[1];
-
-	  switch (action.type) {
-	    case 'COMPLETE_UPDATE_WATCHLIST':
-	      return {
-	        pin_mac: action.pin_mac
-	      };
-	    default:
-	      return state;
-	  }
-	};
-
-	var sensorDataReducer = exports.sensorDataReducer = function sensorDataReducer() {
-	  var state = arguments.length <= 0 || arguments[0] === undefined ? { isFetching: false, data: undefined } : arguments[0];
-	  var action = arguments[1];
-
-
-	  switch (action.type) {
-	    case 'START_SENSOR_DATA_FETCH':
-	      return {
-	        isFetching: true,
-	        data: undefined
-	      };
-
-	    case 'COMPLETE_SENSOR_DATA_FETCH':
-	      return {
-	        isFetching: false,
-	        data: action.data
-	      };
-
-	    default:
-	      return state;
-	  }
-	};
-
-	var authReducer = exports.authReducer = function authReducer() {
-	  var state = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
-	  var action = arguments[1];
-
-	  switch (action.type) {
-	    case 'LOGIN':
-	      return {
-	        uid: action.uid
-	      };
-	    case 'LOGOUT':
-	      return {};
-	    default:
-	      return state;
-	  }
-	};
-
-	var activeSensorReducer = exports.activeSensorReducer = function activeSensorReducer() {
-	  var state = arguments.length <= 0 || arguments[0] === undefined ? { macAdd: '', currentInterval: '' } : arguments[0];
-	  var action = arguments[1];
-
-
-	  switch (action.type) {
-	    case 'STORE_ACTIVE_SENSOR':
-	      return {
-	        sensorData: action.macAdd,
-	        currentInterval: action.currentInterval
-	      };
-	    default:
-	      return state;
-	  }
-	};
-
-/***/ },
-/* 941 */
+/* 934 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function($) {'use strict';
@@ -95388,7 +95193,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(9)))
 
 /***/ },
-/* 942 */
+/* 935 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function($) {'use strict';
@@ -95570,7 +95375,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(9)))
 
 /***/ },
-/* 943 */
+/* 936 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function($) {'use strict';
@@ -95760,17 +95565,212 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(9)))
 
 /***/ },
-/* 944 */,
-/* 945 */
+/* 937 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.configure = undefined;
+
+	var _redux = __webpack_require__(118);
+
+	var redux = _interopRequireWildcard(_redux);
+
+	var _reduxThunk = __webpack_require__(938);
+
+	var _reduxThunk2 = _interopRequireDefault(_reduxThunk);
+
+	var _reducers = __webpack_require__(939);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+
+	var configure = exports.configure = function configure() {
+	  var initialState = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
+
+	  var reducer = redux.combineReducers({
+	    auth: _reducers.authReducer,
+	    macAddress: _reducers.deleteSensorReducer,
+	    pin_mac: _reducers.updateWatchListReducer,
+	    syncData: _reducers.syncDataReducer,
+	    activeSensor: _reducers.activeSensorReducer,
+	    auditLog: _reducers.auditLogReducer
+	  });
+
+	  var store = redux.createStore(reducer, initialState, redux.compose(redux.applyMiddleware(_reduxThunk2.default), window.devToolsExtension ? window.devToolsExtension() : function (f) {
+	    return f;
+	  }));
+
+	  return store;
+	};
+
+/***/ },
+/* 938 */
+/***/ function(module, exports) {
+
+	'use strict';
+
+	exports.__esModule = true;
+	function createThunkMiddleware(extraArgument) {
+	  return function (_ref) {
+	    var dispatch = _ref.dispatch;
+	    var getState = _ref.getState;
+	    return function (next) {
+	      return function (action) {
+	        if (typeof action === 'function') {
+	          return action(dispatch, getState, extraArgument);
+	        }
+
+	        return next(action);
+	      };
+	    };
+	  };
+	}
+
+	var thunk = createThunkMiddleware();
+	thunk.withExtraArgument = createThunkMiddleware;
+
+	exports['default'] = thunk;
+
+/***/ },
+/* 939 */
+/***/ function(module, exports) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	var auditLogReducer = exports.auditLogReducer = function auditLogReducer() {
+	  var state = arguments.length <= 0 || arguments[0] === undefined ? { logs: [] } : arguments[0];
+	  var action = arguments[1];
+
+	  switch (action.type) {
+	    case 'RETRIEVE_LOGS':
+	      return {
+	        logs: action.logs
+	      };
+	    default:
+	      return state;
+	  }
+	};
+
+	var syncDataReducer = exports.syncDataReducer = function syncDataReducer() {
+	  var state = arguments.length <= 0 || arguments[0] === undefined ? { currentTime: '-', userId: '-', userEmail: '-' } : arguments[0];
+	  var action = arguments[1];
+
+	  switch (action.type) {
+	    case 'STORE_SYNC_DATA':
+
+	      return {
+	        currentTime: action.currentTime,
+	        userId: action.userId,
+	        userEmail: action.userEmail
+	      };
+	    default:
+	      return state;
+	  }
+	};
+
+	var deleteSensorReducer = exports.deleteSensorReducer = function deleteSensorReducer() {
+	  var state = arguments.length <= 0 || arguments[0] === undefined ? { macAddress: '' } : arguments[0];
+	  var action = arguments[1];
+
+
+	  switch (action.type) {
+	    case 'COMPLETE_DELETE_SENSOR':
+	      return {
+	        macAddress: action.macAddress
+	      };
+	    default:
+	      return state;
+	  }
+	};
+
+	var updateWatchListReducer = exports.updateWatchListReducer = function updateWatchListReducer() {
+	  var state = arguments.length <= 0 || arguments[0] === undefined ? { pin_mac: '' } : arguments[0];
+	  var action = arguments[1];
+
+	  switch (action.type) {
+	    case 'COMPLETE_UPDATE_WATCHLIST':
+	      return {
+	        pin_mac: action.pin_mac
+	      };
+	    default:
+	      return state;
+	  }
+	};
+
+	var sensorDataReducer = exports.sensorDataReducer = function sensorDataReducer() {
+	  var state = arguments.length <= 0 || arguments[0] === undefined ? { isFetching: false, data: undefined } : arguments[0];
+	  var action = arguments[1];
+
+
+	  switch (action.type) {
+	    case 'START_SENSOR_DATA_FETCH':
+	      return {
+	        isFetching: true,
+	        data: undefined
+	      };
+
+	    case 'COMPLETE_SENSOR_DATA_FETCH':
+	      return {
+	        isFetching: false,
+	        data: action.data
+	      };
+
+	    default:
+	      return state;
+	  }
+	};
+
+	var authReducer = exports.authReducer = function authReducer() {
+	  var state = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
+	  var action = arguments[1];
+
+	  switch (action.type) {
+	    case 'LOGIN':
+	      return {
+	        uid: action.uid
+	      };
+	    case 'LOGOUT':
+	      return {};
+	    default:
+	      return state;
+	  }
+	};
+
+	var activeSensorReducer = exports.activeSensorReducer = function activeSensorReducer() {
+	  var state = arguments.length <= 0 || arguments[0] === undefined ? { macAdd: '', currentInterval: '' } : arguments[0];
+	  var action = arguments[1];
+
+
+	  switch (action.type) {
+	    case 'STORE_ACTIVE_SENSOR':
+	      return {
+	        sensorData: action.macAdd,
+	        currentInterval: action.currentInterval
+	      };
+	    default:
+	      return state;
+	  }
+	};
+
+/***/ },
+/* 940 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(946);
+	var content = __webpack_require__(941);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
-	var update = __webpack_require__(948)(content, {});
+	var update = __webpack_require__(943)(content, {});
 	if(content.locals) module.exports = content.locals;
 	// Hot Module Replacement
 	if(false) {
@@ -95787,10 +95787,10 @@
 	}
 
 /***/ },
-/* 946 */
+/* 941 */
 /***/ function(module, exports, __webpack_require__) {
 
-	exports = module.exports = __webpack_require__(947)();
+	exports = module.exports = __webpack_require__(942)();
 	// imports
 
 
@@ -95801,7 +95801,7 @@
 
 
 /***/ },
-/* 947 */
+/* 942 */
 /***/ function(module, exports) {
 
 	/*
@@ -95857,7 +95857,7 @@
 
 
 /***/ },
-/* 948 */
+/* 943 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*
@@ -96109,16 +96109,16 @@
 
 
 /***/ },
-/* 949 */
+/* 944 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(950);
+	var content = __webpack_require__(945);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
-	var update = __webpack_require__(948)(content, {});
+	var update = __webpack_require__(943)(content, {});
 	if(content.locals) module.exports = content.locals;
 	// Hot Module Replacement
 	if(false) {
@@ -96135,10 +96135,10 @@
 	}
 
 /***/ },
-/* 950 */
+/* 945 */
 /***/ function(module, exports, __webpack_require__) {
 
-	exports = module.exports = __webpack_require__(947)();
+	exports = module.exports = __webpack_require__(942)();
 	// imports
 	exports.push([module.id, "@import url(http://fonts.googleapis.com/css?family=Roboto:300,400);", ""]);
 	exports.push([module.id, "@import url(https://fonts.googleapis.com/css?family=Pathway+Gothic+One);", ""]);
@@ -96151,16 +96151,16 @@
 
 
 /***/ },
-/* 951 */
+/* 946 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(952);
+	var content = __webpack_require__(947);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
-	var update = __webpack_require__(948)(content, {});
+	var update = __webpack_require__(943)(content, {});
 	if(content.locals) module.exports = content.locals;
 	// Hot Module Replacement
 	if(false) {
@@ -96177,10 +96177,10 @@
 	}
 
 /***/ },
-/* 952 */
+/* 947 */
 /***/ function(module, exports, __webpack_require__) {
 
-	exports = module.exports = __webpack_require__(947)();
+	exports = module.exports = __webpack_require__(942)();
 	// imports
 	exports.push([module.id, "@import url(http://fonts.googleapis.com/css?family=Roboto:300,400);", ""]);
 	exports.push([module.id, "@import url(https://fonts.googleapis.com/css?family=Pathway+Gothic+One);", ""]);
@@ -96193,16 +96193,16 @@
 
 
 /***/ },
-/* 953 */
+/* 948 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(954);
+	var content = __webpack_require__(949);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
-	var update = __webpack_require__(948)(content, {});
+	var update = __webpack_require__(943)(content, {});
 	if(content.locals) module.exports = content.locals;
 	// Hot Module Replacement
 	if(false) {
@@ -96219,10 +96219,10 @@
 	}
 
 /***/ },
-/* 954 */
+/* 949 */
 /***/ function(module, exports, __webpack_require__) {
 
-	exports = module.exports = __webpack_require__(947)();
+	exports = module.exports = __webpack_require__(942)();
 	// imports
 
 
@@ -96233,16 +96233,16 @@
 
 
 /***/ },
-/* 955 */
+/* 950 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(956);
+	var content = __webpack_require__(951);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
-	var update = __webpack_require__(948)(content, {});
+	var update = __webpack_require__(943)(content, {});
 	if(content.locals) module.exports = content.locals;
 	// Hot Module Replacement
 	if(false) {
@@ -96259,10 +96259,10 @@
 	}
 
 /***/ },
-/* 956 */
+/* 951 */
 /***/ function(module, exports, __webpack_require__) {
 
-	exports = module.exports = __webpack_require__(947)();
+	exports = module.exports = __webpack_require__(942)();
 	// imports
 	exports.push([module.id, "@import url(http://fonts.googleapis.com/css?family=Roboto:300,400);", ""]);
 	exports.push([module.id, "@import url(https://fonts.googleapis.com/css?family=Pathway+Gothic+One);", ""]);
@@ -96275,16 +96275,16 @@
 
 
 /***/ },
-/* 957 */
+/* 952 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(958);
+	var content = __webpack_require__(953);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
-	var update = __webpack_require__(948)(content, {});
+	var update = __webpack_require__(943)(content, {});
 	if(content.locals) module.exports = content.locals;
 	// Hot Module Replacement
 	if(false) {
@@ -96301,10 +96301,10 @@
 	}
 
 /***/ },
-/* 958 */
+/* 953 */
 /***/ function(module, exports, __webpack_require__) {
 
-	exports = module.exports = __webpack_require__(947)();
+	exports = module.exports = __webpack_require__(942)();
 	// imports
 
 
@@ -96315,16 +96315,16 @@
 
 
 /***/ },
-/* 959 */
+/* 954 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(960);
+	var content = __webpack_require__(955);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
-	var update = __webpack_require__(948)(content, {});
+	var update = __webpack_require__(943)(content, {});
 	if(content.locals) module.exports = content.locals;
 	// Hot Module Replacement
 	if(false) {
@@ -96341,10 +96341,10 @@
 	}
 
 /***/ },
-/* 960 */
+/* 955 */
 /***/ function(module, exports, __webpack_require__) {
 
-	exports = module.exports = __webpack_require__(947)();
+	exports = module.exports = __webpack_require__(942)();
 	// imports
 
 

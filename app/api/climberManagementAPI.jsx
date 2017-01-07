@@ -10,9 +10,6 @@ const GET_LAST_CLIMBER_ID_URL = "http://office.livestudios.com:41111/backend/api
 module.exports = {
 
     addClimber: function(climberID,first_name, last_name, gender, date_of_birth, id_number, nationality, organization) {
-        var data = {
-            climberID, first_name, last_name, gender, date_of_birth, id_number, nationality, organization
-        }
 
         return $.ajax({
             type: "POST",
@@ -20,9 +17,11 @@ module.exports = {
                 request.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
             },
             url: ADD_CLIMBER_URL,
-            data: data,
+            data: {
+                climberID, first_name, last_name, gender, date_of_birth, id_number, nationality, organization
+            },
             success: function(response) {
-                // console.log("Tres manifique, monsieur", response);
+                console.log("Add API", response);
             }
         });
     },
@@ -37,7 +36,7 @@ module.exports = {
             url: REGISTER_PARTICIPANT_URL,
             data: {participantID, categoryID, detail},
             success: function(response) {
-                // console.log("Tres manifique, monsieur", response);
+                console.log("Register API", response);
             }
         });
     },
