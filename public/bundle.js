@@ -10763,7 +10763,7 @@
 	        value: function retrieveCurrentEvent() {
 	            var that = this;
 	            climberManagementAPI.getCurrentEvent().then(function (response) {
-	                console.log("Current event", response);
+	                // console.log("Current event", response);
 	                that.setState({
 	                    currentEvent: response.message
 	                });
@@ -10778,7 +10778,7 @@
 	        value: function retrieveCurrentDetail() {
 	            var that = this;
 	            climberManagementAPI.getCurrentDetail().then(function (response) {
-	                console.log("Current detail", response);
+	                // console.log("Current detail", response);
 	                that.setState({
 	                    currentDetail: parseInt(response.message)
 	                });
@@ -10809,7 +10809,6 @@
 	        key: 'retrieveNumDetails',
 	        value: function retrieveNumDetails(category) {
 
-	            console.log("cats", category);
 	            var that = this;
 	            scoreAPI.retrieveDetails(category).then(function (response) {
 
@@ -10872,20 +10871,13 @@
 
 	                climberManagementAPI.registerClimber(climberID, categoryID, detail).then(function (registerResponse) {
 
-	                    // console.log(registerResponse);
-	                    // console.log("registerResponse.hasOwnProperty('error')", registerResponse.hasOwnProperty('error'));
 	                    if (registerResponse.hasOwnProperty('error')) {
 	                        errorMessages.push(registerResponse.error);
 	                    }
 
-	                    // console.log("errorMessages length", errorMessages.length);
-	                    // console.log("errorMessages", errorMessages);
-
 	                    if (errorMessages.length > 0) {
 
 	                        var temp = errorMessages.join();
-
-	                        console.log("temp", temp);
 
 	                        that.setState({
 	                            registerMessage: temp
@@ -10938,7 +10930,7 @@
 	            var that = this;
 	            var category = this.state.selectedCategoryUtil;
 	            climberManagementAPI.startEvent(category).then(function (response) {
-	                console.log("response", response);
+	                // console.log("response", response);
 
 	                that.setState({
 	                    hasEventStarted: true,
@@ -10977,22 +10969,13 @@
 	            var that = this;
 	            climberManagementAPI.endEvent().then(function (response) {
 
-	                console.log('response', response);
+	                // console.log('response', response);
 
 	                that.setState({
 	                    currentEvent: '-',
 	                    hasEventStarted: false,
 	                    numDetails: 0
 	                });
-
-	                var endEvent = document.createEvent("Event");
-
-	                endEvent.data = {
-	                    message: 'EVENT OCCURRED'
-	                };
-
-	                endEvent.initEvent("endEvent", true, true);
-	                document.dispatchEvent(endEvent);
 	            });
 
 	            this.setDetail(0);
@@ -29193,6 +29176,7 @@
 	var GET_CURRENT_EVENT_URL = "http://office.livestudios.com:41111/backend/api/get_current_event.php";
 	var GET_CURRENT_DETAIL_URL = "http://office.livestudios.com:41111/backend/api/get_current_detail.php";
 	var GET_LAST_CLIMBER_ID_URL = "http://office.livestudios.com:41111/backend/api/get_last_climber_id.php";
+	var GET_ALL_RESULTS_URL = "http://office.livestudios.com:41111/backend/api/get_past_results.php";
 
 	module.exports = {
 
@@ -29308,6 +29292,19 @@
 	                request.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
 	            },
 	            url: GET_CURRENT_DETAIL_URL,
+	            success: function success(response) {
+	                // console.log("Tres manifique, monsieur", response);
+	            }
+	        });
+	    },
+
+	    getAllResults: function getAllResults() {
+	        return $.ajax({
+	            type: "POST",
+	            beforeSend: function beforeSend(request) {
+	                request.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+	            },
+	            url: GET_ALL_RESULTS_URL,
 	            success: function success(response) {
 	                // console.log("Tres manifique, monsieur", response);
 	            }
@@ -90191,7 +90188,7 @@
 	            ),
 	            React.createElement(
 	              Link,
-	              { to: '/dashboard' },
+	              { to: '/' },
 	              'Back to dashboard'
 	            )
 	          )
@@ -93630,6 +93627,7 @@
 	var Tableaux = __webpack_require__(935);
 	var Results = __webpack_require__(936);
 	var FontAwesome = __webpack_require__(266);
+	var climberManagementAPI = __webpack_require__(269);
 
 	var _require = __webpack_require__(111);
 
@@ -93670,7 +93668,7 @@
 	            currentEvent: '-',
 	            totalDetails: '-',
 	            currentTime: '-',
-	            notificationData: {}
+	            allResults: {}
 	        };
 	        return _this;
 	    }
@@ -93680,10 +93678,18 @@
 	        value: function componentDidMount() {
 	            // initiate websocket
 	            this.connect();
-	            window.addEventListener('endEvent', function (e) {
-	                // that.addProgressNotification(e.data);
-	                alert("HOOYAH");
-	            }, false);
+	            this.getAllResults();
+	        }
+	    }, {
+	        key: 'getAllResults',
+	        value: function getAllResults() {
+	            var that = this;
+	            climberManagementAPI.getAllResults().then(function (response) {
+	                console.log("response", response);
+	                that.setState({
+	                    allResults: response
+	                });
+	            });
 	        }
 	    }, {
 	        key: 'connect',
@@ -93695,7 +93701,7 @@
 	                connection.subscribe('', function (topic, data) {
 
 	                    timestamp = (0, _moment2.default)().format('YYYY-MM-DD, h:mm:ss a');
-	                    // console.log("jalapeño", data['total_details']['num_of_details']);
+	                    console.log("jalapeño", connection);
 
 	                    that.setState({
 	                        connection: connection,
@@ -93721,6 +93727,7 @@
 	        value: function componentWillUnmount() {
 	            // close websocket
 	            if (this.state.connection !== null) {
+	                // console.log("this.state.connection", this.state.connection);
 	                this.state.connection.close();
 	            }
 	        }
@@ -93749,6 +93756,7 @@
 	            var currentTime = _state.currentTime;
 	            var currentDetail = _state.currentDetail;
 	            var totalDetails = _state.totalDetails;
+	            var allResults = _state.allResults;
 
 
 	            return React.createElement(
@@ -93868,25 +93876,25 @@
 	                                        { className: 'header-md margin-bottom-small' },
 	                                        'U17 Girls - Qualifiers'
 	                                    ),
-	                                    React.createElement(Results, { data: this.state.bfg }),
+	                                    React.createElement(Results, { data: allResults['UWQ'] }),
 	                                    React.createElement(
 	                                        'div',
 	                                        { className: 'header-md margin-top-md margin-bottom-small' },
 	                                        'Novice Women - Qualifiers'
 	                                    ),
-	                                    React.createElement(Results, { data: this.state.bfg }),
+	                                    React.createElement(Results, { data: allResults['NWQ'] }),
 	                                    React.createElement(
 	                                        'div',
 	                                        { className: 'header-md margin-top-md margin-bottom-small' },
 	                                        'U17 Boys - Qualifiers'
 	                                    ),
-	                                    React.createElement(Results, { data: this.state.bfg }),
+	                                    React.createElement(Results, { data: allResults['UMQ'] }),
 	                                    React.createElement(
 	                                        'div',
 	                                        { className: 'header-md margin-top-md margin-bottom-small' },
 	                                        'Novice Men - Qualifiers'
 	                                    ),
-	                                    React.createElement(Results, { data: this.state.bfg })
+	                                    React.createElement(Results, { data: allResults['NMQ'] })
 	                                ),
 	                                React.createElement(
 	                                    _reactTabs.TabPanel,
@@ -93896,13 +93904,13 @@
 	                                        { className: 'header-md margin-bottom-small' },
 	                                        'Intermediate Women - Qualifiers'
 	                                    ),
-	                                    React.createElement(Results, { data: this.state.bfg }),
+	                                    React.createElement(Results, { data: allResults['IWQ'] }),
 	                                    React.createElement(
 	                                        'div',
 	                                        { className: 'header-md margin-top-md margin-bottom-small' },
 	                                        'Intermediate Men - Qualifiers'
 	                                    ),
-	                                    React.createElement(Results, { data: this.state.bfg })
+	                                    React.createElement(Results, { data: allResults['IMQ'] })
 	                                ),
 	                                React.createElement(
 	                                    _reactTabs.TabPanel,
@@ -93912,19 +93920,19 @@
 	                                        { className: 'header-md margin-bottom-small' },
 	                                        'Open Women - Qualifiers'
 	                                    ),
-	                                    React.createElement(Results, { data: this.state.bfg }),
+	                                    React.createElement(Results, { data: allResults['OWQ'] }),
 	                                    React.createElement(
 	                                        'div',
 	                                        { className: 'header-md margin-top-md margin-bottom-small' },
 	                                        'Open Men - Qualifiers'
 	                                    ),
-	                                    React.createElement(Results, { data: this.state.bfg }),
+	                                    React.createElement(Results, { data: allResults['OMQ'] }),
 	                                    React.createElement(
 	                                        'div',
 	                                        { className: 'header-md margin-top-md margin-bottom-small' },
 	                                        'Open Women - Semi-Finals'
 	                                    ),
-	                                    React.createElement(Results, { data: this.state.bfg })
+	                                    React.createElement(Results, { data: allResults['OWS'] })
 	                                ),
 	                                React.createElement(
 	                                    _reactTabs.TabPanel,
@@ -93934,55 +93942,55 @@
 	                                        { className: 'header-md margin-bottom-small' },
 	                                        'Open Men - Semi-Finals'
 	                                    ),
-	                                    React.createElement(Results, { data: this.state.bfg }),
+	                                    React.createElement(Results, { data: allResults['OMS'] }),
 	                                    React.createElement(
 	                                        'div',
 	                                        { className: 'header-md margin-top-md margin-bottom-small' },
 	                                        'U17 Girls - Finals'
 	                                    ),
-	                                    React.createElement(Results, { data: this.state.bfg }),
+	                                    React.createElement(Results, { data: allResults['UWF'] }),
 	                                    React.createElement(
 	                                        'div',
 	                                        { className: 'header-md margin-top-md margin-bottom-small' },
 	                                        'U17 Boys - Finals'
 	                                    ),
-	                                    React.createElement(Results, { data: this.state.bfg }),
+	                                    React.createElement(Results, { data: allResults['UMF'] }),
 	                                    React.createElement(
 	                                        'div',
 	                                        { className: 'header-md margin-top-md margin-bottom-small' },
 	                                        'Novice Women - Finals'
 	                                    ),
-	                                    React.createElement(Results, { data: this.state.bfg }),
+	                                    React.createElement(Results, { data: allResults['NWF'] }),
 	                                    React.createElement(
 	                                        'div',
 	                                        { className: 'header-md margin-top-md margin-bottom-small' },
 	                                        'U17 Novice Men - Finals'
 	                                    ),
-	                                    React.createElement(Results, { data: this.state.bfg }),
+	                                    React.createElement(Results, { data: allResults['UWF'] }),
 	                                    React.createElement(
 	                                        'div',
 	                                        { className: 'header-md margin-top-md margin-bottom-small' },
 	                                        'Intermediate Women - Finals'
 	                                    ),
-	                                    React.createElement(Results, { data: this.state.bfg }),
+	                                    React.createElement(Results, { data: allResults['IWF'] }),
 	                                    React.createElement(
 	                                        'div',
 	                                        { className: 'header-md margin-top-md margin-bottom-small' },
 	                                        'U17 Intermediate Men - Finals'
 	                                    ),
-	                                    React.createElement(Results, { data: this.state.bfg }),
+	                                    React.createElement(Results, { data: allResults['IMF'] }),
 	                                    React.createElement(
 	                                        'div',
 	                                        { className: 'header-md margin-top-md margin-bottom-small' },
 	                                        'Open Men - Finals'
 	                                    ),
-	                                    React.createElement(Results, { data: this.state.bfg }),
+	                                    React.createElement(Results, { data: allResults['OMF'] }),
 	                                    React.createElement(
 	                                        'div',
 	                                        { className: 'header-md margin-top-md margin-bottom-small' },
 	                                        'Open Women - Finals'
 	                                    ),
-	                                    React.createElement(Results, { data: this.state.bfg })
+	                                    React.createElement(Results, { data: allResults['OWF'] })
 	                                )
 	                            )
 	                        ),
@@ -95061,44 +95069,43 @@
 	;
 
 	var tableMetaData = [{
-	    "columnName": "mac_address",
+	    "columnName": "ID",
 	    "order": 1,
 	    "locked": false,
 	    "visible": true,
 	    "displayName": "ID",
 	    "customComponent": LinkComponent
 	}, {
-	    "columnName": "geo-region",
+	    "columnName": "name",
 	    "order": 2,
-	    "locked": false,
-	    "visible": false,
-	    "displayName": "Name"
-	}, {
-	    "columnName": "building",
-	    "order": 3,
 	    "locked": true,
 	    "visible": true,
 	    "displayName": "Name"
 	}, {
-	    "columnName": "sensor-level-id",
-	    "order": 4,
+	    "columnName": "score",
+	    "order": 3,
 	    "locked": true,
 	    "visible": true,
 	    "displayName": "Score"
 	}, {
-	    "columnName": "sensor_status",
+	    "columnName": "category",
 	    "order": 4,
 	    "locked": true,
 	    "visible": true,
-	    "displayName": "Category",
-	    "customComponent": SensorBlockComponent
+	    "displayName": "Category"
 	}, {
-	    "columnName": "remove",
+	    "columnName": "ranking",
 	    "order": 5,
 	    "locked": true,
 	    "visible": true,
+	    "displayName": "Ranking"
+	}, {
+	    "columnName": "remove",
+	    "order": 6,
+	    "locked": true,
+	    "visible": true,
 	    "sortable": false,
-	    "displayName": "Ranking",
+	    "displayName": "Remove",
 	    "customComponent": RemoveComponent
 	}];
 
@@ -95115,59 +95122,57 @@
 	        return _possibleConstructorReturn(this, Object.getPrototypeOf(WatchList).call(this, props));
 	    }
 
+	    // tableClickHandler(gridRow) {
+	    //
+	    //     var macAddress = gridRow.props.data.mac_address;
+	    //     console.log("macAddress", macAddress);
+	    //
+	    //     if($('#unpin-sensor-modal').css('display') === 'none') {
+	    //         $('#offCanvas').foundation('open', event);
+	    //
+	    //         var triggerCanvas = document.createEvent("Event");
+	    //
+	    //         triggerCanvas.data = {
+	    //             macAdd: macAddress
+	    //         };
+	    //
+	    //         triggerCanvas.initEvent("triggerCanvas", true, true);
+	    //         document.dispatchEvent(triggerCanvas);
+	    //     }
+	    // }
+
 	    _createClass(WatchList, [{
-	        key: 'tableClickHandler',
-	        value: function tableClickHandler(gridRow) {
-
-	            var macAddress = gridRow.props.data.mac_address;
-	            console.log("macAddress", macAddress);
-
-	            if ($('#unpin-sensor-modal').css('display') === 'none') {
-	                $('#offCanvas').foundation('open', event);
-
-	                var triggerCanvas = document.createEvent("Event");
-
-	                triggerCanvas.data = {
-	                    macAdd: macAddress
-	                };
-
-	                triggerCanvas.initEvent("triggerCanvas", true, true);
-	                document.dispatchEvent(triggerCanvas);
-	            }
-	        }
-	    }, {
 	        key: 'render',
 	        value: function render() {
 	            var allSensorData = this.props.data;
 	            var dataList = [];
-	            var dispatch = this.props.dispatch;
+	            // var {dispatch} = this.props;
 
-
-	            for (var sensor in allSensorData) {
-	                if (allSensorData.hasOwnProperty(sensor)) {
-
-	                    var coolStuff = {
-	                        dispatch: dispatch,
-	                        mac: sensor
-	                    };
-
-	                    if (allSensorData[sensor]["watchlist"]) {
-	                        var row = {
-	                            "mac_address": sensor,
-	                            "building": allSensorData[sensor]["building"],
-	                            "sensor-level-id": allSensorData[sensor]["sensor-location-level"] + allSensorData[sensor]["sensor-location-id"],
-	                            "sensor_status": allSensorData[sensor]["sensor_status"],
-	                            "remove": coolStuff
-	                        };
-
-	                        if (typeof allSensorData[sensor]["error"] !== "undefined") {
-	                            row["sensor_status"] = "-";
-	                        }
-
-	                        dataList.push(row);
-	                    }
-	                }
-	            }
+	            // for (var sensor in allSensorData) {
+	            //     if (allSensorData.hasOwnProperty(sensor)) {
+	            //
+	            //         var coolStuff = {
+	            //             dispatch: dispatch,
+	            //             mac: sensor
+	            //         };
+	            //
+	            //         if(allSensorData[sensor]["watchlist"]){
+	            //             var row = {
+	            //                 "mac_address": sensor,
+	            //                 "building": allSensorData[sensor]["building"],
+	            //                 "sensor-level-id": allSensorData[sensor]["sensor-location-level"] + allSensorData[sensor]["sensor-location-id"],
+	            //                 "sensor_status": allSensorData[sensor]["sensor_status"],
+	            //                 "remove" : coolStuff
+	            //             };
+	            //
+	            //             if (typeof allSensorData[sensor]["error"] !== "undefined") {
+	            //                 row["sensor_status"] = "-";
+	            //             }
+	            //
+	            //         dataList.push(row);
+	            //       }
+	            //     }
+	            // }
 
 	            return React.createElement(
 	                'div',
@@ -95176,9 +95181,8 @@
 	                    showFilter: true,
 	                    initialSort: 'building_name',
 	                    tableClassName: 'piOverviewTable',
-	                    columns: ["mac_address", "building", "sensor-level-id", "sensor_status", "remove"],
+	                    columns: ["ID", "name", "score", "category", "ranking", "remove"],
 	                    columnMetadata: tableMetaData,
-	                    onRowClick: this.tableClickHandler.bind(this),
 	                    rowMetaData: rowMetaData })
 	            );
 	        }
@@ -95220,22 +95224,23 @@
 
 	    _createClass(WatchComponent, [{
 	        key: 'handleClick',
-	        value: function handleClick(macAddress) {
+	        value: function handleClick(data) {
 	            // var dispatch = this.props.data.dispatch;
 	            // dispatch(actions.startUpdateWatchList(macAddress));
 	            // $('#unpin-sensor-modal').foundation('open');
 
-	            alert("HOOYAH, MOTHERFUCKERS");
+	            alert("HOOYAH, MOTHERFUCKERS!" + data);
 	        }
 	    }, {
 	        key: 'render',
 	        value: function render() {
 	            var _this2 = this;
 
+	            console.log("this.props.data", this.props);
 	            return React.createElement(
 	                'div',
 	                { id: 'unpin-btn', className: 'sensorBlock remove', onClick: function onClick() {
-	                        return _this2.handleClick(_this2.props.data.ID);
+	                        return _this2.handleClick(_this2.props.rowData);
 	                    } },
 	                'Pin'
 	            );
@@ -95341,8 +95346,6 @@
 	            }
 
 	            this.setState({ results: results });
-
-	            console.log("results", results);
 	        }
 	    }, {
 	        key: 'render',
@@ -95391,57 +95394,72 @@
 	var axios = __webpack_require__(247);
 	var FontAwesome = __webpack_require__(266);
 
-	var dataList = [];
+	var WatchComponent = function (_React$Component) {
+	    _inherits(WatchComponent, _React$Component);
 
-	var LinkComponent2 = function (_React$Component) {
-	    _inherits(LinkComponent2, _React$Component);
+	    function WatchComponent(props) {
+	        _classCallCheck(this, WatchComponent);
 
-	    function LinkComponent2(props) {
-	        _classCallCheck(this, LinkComponent2);
-
-	        return _possibleConstructorReturn(this, Object.getPrototypeOf(LinkComponent2).call(this, props));
+	        return _possibleConstructorReturn(this, Object.getPrototypeOf(WatchComponent).call(this, props));
 	    }
 
-	    _createClass(LinkComponent2, [{
+	    _createClass(WatchComponent, [{
+	        key: 'handleClick',
+	        value: function handleClick(macAddress) {
+
+	            alert("HOOYAH, MOTHERFUCKERS");
+	        }
+	    }, {
 	        key: 'render',
 	        value: function render() {
+	            var _this2 = this;
+
 	            return React.createElement(
-	                'a',
-	                { href: 'google.com', 'data-toggle': 'offCanvas' },
-	                this.props.data
+	                'div',
+	                { id: 'unpin-btn', className: 'sensorBlock remove', onClick: function onClick() {
+	                        return _this2.handleClick(_this2.props.data.ID);
+	                    } },
+	                'Pin'
 	            );
 	        }
 	    }]);
 
-	    return LinkComponent2;
+	    return WatchComponent;
 	}(React.Component);
 
 	;
 
 	var tableMetaData = [{
-	    "columnName": "mac_address",
+	    "columnName": "rank",
 	    "order": 1,
 	    "locked": true,
 	    "visible": true,
 	    "displayName": "Rank",
 	    "sortable": true
 	}, {
-	    "columnName": "latest_timestamp",
+	    "columnName": "ID",
 	    "order": 2,
 	    "locked": false,
 	    "visible": true,
 	    "sortable": true,
 	    "displayName": "ID"
 	}, {
-	    "columnName": "sensor_status",
+	    "columnName": "name",
 	    "order": 3,
 	    "locked": false,
 	    "visible": true,
 	    "sortable": true,
 	    "displayName": "Name"
-	}, {
-	    "columnName": "network_router",
+	}, {}, {
+	    "columnName": "detail",
 	    "order": 4,
+	    "locked": false,
+	    "visible": true,
+	    "sortable": true,
+	    "displayName": "Detail"
+	}, {
+	    "columnName": "score",
+	    "order": 5,
 	    "locked": false,
 	    "visible": true,
 	    "sortable": true,
@@ -95449,10 +95467,11 @@
 	}];
 
 	var columnDisplayName = {
-	    "Rank": "mac_address",
-	    "ID": "latest_timestamp",
-	    "Name": "sensor_status",
-	    "Score": "network_router"
+	    "Rank": "rank",
+	    "ID": "ID",
+	    "Name": "name",
+	    "Detail": "detail",
+	    "Score": "score"
 	};
 
 	var Results = function (_React$Component2) {
@@ -95461,98 +95480,55 @@
 	    function Results(props) {
 	        _classCallCheck(this, Results);
 
-	        var _this2 = _possibleConstructorReturn(this, Object.getPrototypeOf(Results).call(this, props));
+	        var _this3 = _possibleConstructorReturn(this, Object.getPrototypeOf(Results).call(this, props));
 
-	        _this2.state = {
-	            dataList: []
+	        _this3.state = {
+	            dataList: [],
+	            results: []
 	        };
-	        return _this2;
+	        return _this3;
 	    }
 
 	    _createClass(Results, [{
+	        key: 'componentWillReceiveProps',
+	        value: function componentWillReceiveProps() {
+
+	            var results = [];
+	            var rawResults = this.props.data;
+	            var rank = 1;
+
+	            if (rawResults) {
+	                for (var i = 0; i < rawResults.length; i++) {
+	                    var row = {
+	                        "rank": rank++,
+	                        "ID": rawResults[i]["ID"],
+	                        "name": rawResults[i]["name"],
+	                        "detail": rawResults[i]["detail"],
+	                        "score": rawResults[i]["score"]
+	                    };
+
+	                    results.push(row);
+	                }
+	            }
+	            this.setState({ results: results });
+	        }
+	    }, {
 	        key: 'render',
 	        value: function render() {
+	            var results = this.state.results;
 
-	            var that = this;
 
-	            var currentlySelected = ["mac_address", "latest_timestamp", "sensor_status", "network_router"];
+	            var currentlySelected = ["rank", "ID", "name", "detail", "score"];
 	            var findStuff = $('#bfg').find('table > thead > tr > th > span');
 	            // console.log(findStuff);
-	            if (findStuff.length > 0) {
-	                currentlySelected = [];
-	                for (var i = 0; i < findStuff.length; i++) {
-	                    currentlySelected.push(columnDisplayName[findStuff[i].innerHTML]);
-	                }
-	            }
-	            // that.state.colsSelected = currentlySelected;
+	            // if (findStuff.length > 0) {
+	            //     currentlySelected = [];
+	            //     for (var i = 0; i < findStuff.length; i++) {
+	            //         currentlySelected.push(columnDisplayName[findStuff[i].innerHTML]);
+	            //     }
+	            // }
 
-	            var allSensorData = this.props.data;
-	            var dataList = [];
-	            for (var sensor in allSensorData) {
-	                if (allSensorData.hasOwnProperty(sensor)) {
-	                    var mac = sensor;
-	                    var row = {};
-
-	                    if (typeof allSensorData[sensor]["error"] == "undefined") {
-	                        row = {
-	                            "mac_address": mac,
-	                            "latest_timestamp": allSensorData[sensor]["latest_timestamp"],
-	                            "building": allSensorData[sensor]["building"],
-	                            "sensor-level-id": allSensorData[sensor]["sensor-location-level"] + allSensorData[sensor]["sensor-location-id"],
-	                            "sensor_type": allSensorData[sensor]["sensor_type"],
-	                            "current_status": allSensorData[sensor]["current_status"],
-	                            "sensor_status": allSensorData[sensor]["sensor_status"],
-	                            "flapping": allSensorData[sensor]["flapping"],
-	                            "network_router": allSensorData[sensor]["network_router"],
-	                            "temperature": allSensorData[sensor]["temperature"],
-	                            "CPU_usage": allSensorData[sensor]["CPU_Usage"],
-	                            "RAM_total": allSensorData[sensor]["RAM_total"],
-	                            "RAM_free": allSensorData[sensor]["RAM_free"],
-	                            "RAM_used": allSensorData[sensor]["RAM_used"],
-	                            "RAM_available": allSensorData[sensor]["RAM_available"],
-	                            "disk_space_total": allSensorData[sensor]["Disk_Space_total"],
-	                            "disk_space_free": allSensorData[sensor]["Disk_Space_used"],
-	                            "disk_space_used": allSensorData[sensor]["Disk_Space_free"]
-	                        };
-	                    } else {
-	                        row = {
-	                            "mac_address": mac,
-	                            "latest_timestamp": "no data",
-	                            "building": allSensorData[sensor]["building"],
-	                            "sensor-level-id": allSensorData[sensor]["sensor-location-level"] + allSensorData[sensor]["sensor-location-id"],
-	                            "sensor_type": allSensorData[sensor]["sensor_type"],
-	                            "current_status": "-",
-	                            "sensor_status": "-",
-	                            "flapping": "-",
-	                            "network_router": "-",
-	                            "temperature": "-",
-	                            "CPU_usage": "-",
-	                            "RAM_total": "-",
-	                            "RAM_free": "-",
-	                            "RAM_used": "-",
-	                            "RAM_available": "-",
-	                            "disk_space_total": "-",
-	                            "disk_space_free": "-",
-	                            "disk_space_used": "-"
-	                        };
-	                    }
-
-	                    dataList.push(row);
-	                }
-	            }
-
-	            // console.log("currentlySelected", currentlySelected);
-
-	            return React.createElement(Griddle, {
-	                results: dataList,
-	                settingsIconComponent: React.createElement(FontAwesome, { name: 'cog', style: { color: '#232f32', marginLeft: '1rem' }, size: '2x' }),
-	                columnMetadata: tableMetaData,
-	                tableClassName: 'table',
-	                showFilter: true,
-	                columns: currentlySelected,
-	                showSettings: false,
-	                settingsText: 'Settings'
-	            });
+	            return React.createElement(Griddle, { results: results, columnMetadata: tableMetaData, tableClassName: 'table', showFilter: true, columns: currentlySelected, showSettings: false });
 	        }
 	    }]);
 

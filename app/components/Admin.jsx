@@ -45,7 +45,7 @@ class Admin extends React.Component {
     retrieveCurrentEvent() {
         var that = this;
         climberManagementAPI.getCurrentEvent().then(function(response){
-            console.log("Current event", response);
+            // console.log("Current event", response);
             that.setState({
                 currentEvent: response.message
             })
@@ -60,7 +60,7 @@ class Admin extends React.Component {
     retrieveCurrentDetail() {
         var that = this;
         climberManagementAPI.getCurrentDetail().then(function(response){
-            console.log("Current detail", response);
+            // console.log("Current detail", response);
             that.setState({
                 currentDetail: parseInt(response.message)
             })
@@ -89,7 +89,6 @@ class Admin extends React.Component {
 
     retrieveNumDetails(category) {
 
-        console.log("cats", category);
         var that = this;
         scoreAPI.retrieveDetails(category).then(function(response){
 
@@ -147,20 +146,13 @@ class Admin extends React.Component {
 
             climberManagementAPI.registerClimber(climberID, categoryID, detail).then(function(registerResponse) {
 
-                // console.log(registerResponse);
-                // console.log("registerResponse.hasOwnProperty('error')", registerResponse.hasOwnProperty('error'));
                 if(registerResponse.hasOwnProperty('error')) {
                     errorMessages.push(registerResponse.error);
                 }
 
-                // console.log("errorMessages length", errorMessages.length);
-                // console.log("errorMessages", errorMessages);
-
                 if(errorMessages.length > 0) {
 
                     var temp = errorMessages.join();
-
-                    console.log("temp", temp);
 
                     that.setState({
                         registerMessage: temp
@@ -212,7 +204,7 @@ class Admin extends React.Component {
         var that = this;
         var category = this.state.selectedCategoryUtil;
         climberManagementAPI.startEvent(category).then(function(response) {
-            console.log("response", response);
+            // console.log("response", response);
 
             that.setState({
                 hasEventStarted: true,
@@ -245,23 +237,13 @@ class Admin extends React.Component {
         var that = this;
         climberManagementAPI.endEvent().then(function(response) {
 
-            console.log('response', response);
+            // console.log('response', response);
 
             that.setState({
                 currentEvent: '-',
                 hasEventStarted: false,
                 numDetails: 0
-            })
-
-            var endEvent = document.createEvent("Event");
-
-            endEvent.data = {
-                message: 'EVENT OCCURRED'
-            };
-
-            endEvent.initEvent("endEvent", true, true);
-            document.dispatchEvent(endEvent);
-
+            });
         });
 
         this.setDetail(0);

@@ -13,7 +13,7 @@ class PageNotFound extends React.Component{
         <div className="row textAlignCenter">
           <div className="columns large-12 margin-top-md">
               <h1>Are you lost?</h1>
-              <Link to='/dashboard'>Back to dashboard</Link>
+              <Link to='/'>Back to dashboard</Link>
           </div>
         </div>
       </div>

@@ -3,6 +3,7 @@ var WatchList = require('WatchList');
 var Tableaux = require('Tableaux');
 var Results = require('Results');
 var FontAwesome = require('react-fontawesome');
+var climberManagementAPI = require('climberManagementAPI');
 import * as Redux from 'react-redux';
 import * as actions from 'actions';
 import moment from 'moment';
@@ -36,17 +37,24 @@ class Dashboard extends React.Component {
             currentEvent: '-',
             totalDetails: '-',
             currentTime: '-',
-            notificationData: {}
+            allResults: {}
         }
     }
 
     componentDidMount() {
         // initiate websocket
         this.connect();
-        window.addEventListener('endEvent', function(e) {
-            // that.addProgressNotification(e.data);
-            alert("HOOYAH");
-        }, false);
+        this.getAllResults();
+    }
+
+    getAllResults() {
+        var that = this;
+        climberManagementAPI.getAllResults().then(function(response) {
+            console.log("response", response);
+            that.setState({
+                allResults: response
+            });
+        });
     }
 
     connect() {
@@ -57,7 +65,7 @@ class Dashboard extends React.Component {
             connection.subscribe('', function(topic, data) {
 
                 timestamp = moment().format('YYYY-MM-DD, h:mm:ss a');
-                // console.log("jalapeño", data['total_details']['num_of_details']);
+                console.log("jalapeño", connection);
 
                 that.setState({
                     connection: connection,
@@ -83,6 +91,7 @@ class Dashboard extends React.Component {
     componentWillUnmount() {
         // close websocket
         if (this.state.connection !== null) {
+            // console.log("this.state.connection", this.state.connection);
             this.state.connection.close();
         }
     }
@@ -103,7 +112,7 @@ class Dashboard extends React.Component {
 
     render() {
 
-        var {results, currentEvent, currentTime, currentDetail, totalDetails} = this.state;
+        var {results, currentEvent, currentTime, currentDetail, totalDetails, allResults} = this.state;
 
         return (
 
@@ -152,61 +161,61 @@ class Dashboard extends React.Component {
                               </TabList>
                               <TabPanel>
                                   <div className="header-md margin-bottom-small">U17 Girls - Qualifiers</div>
-                                  <Results data={this.state.bfg}/>
+                                  <Results data={allResults['UWQ']}/>
 
                                   <div className="header-md margin-top-md margin-bottom-small">Novice Women - Qualifiers</div>
-                                  <Results data={this.state.bfg}/>
+                                  <Results data={allResults['NWQ']}/>
 
                                   <div className="header-md margin-top-md margin-bottom-small">U17 Boys - Qualifiers</div>
-                                  <Results data={this.state.bfg}/>
+                                  <Results data={allResults['UMQ']}/>
 
                                   <div className="header-md margin-top-md margin-bottom-small">Novice Men - Qualifiers</div>
-                                  <Results data={this.state.bfg}/>
+                                  <Results data={allResults['NMQ']}/>
                               </TabPanel>
                               <TabPanel>
                                   <div className="header-md margin-bottom-small">Intermediate Women - Qualifiers</div>
-                                  <Results data={this.state.bfg}/>
+                                  <Results data={allResults['IWQ']}/>
 
                                   <div className="header-md margin-top-md margin-bottom-small">Intermediate Men - Qualifiers</div>
-                                  <Results data={this.state.bfg}/>
+                                  <Results data={allResults['IMQ']}/>
                               </TabPanel>
                               <TabPanel>
                                   <div className="header-md margin-bottom-small">Open Women - Qualifiers</div>
-                                  <Results data={this.state.bfg}/>
+                                  <Results data={allResults['OWQ']}/>
 
                                   <div className="header-md margin-top-md margin-bottom-small">Open Men - Qualifiers</div>
-                                  <Results data={this.state.bfg}/>
+                                  <Results data={allResults['OMQ']}/>
 
                                   <div className="header-md margin-top-md margin-bottom-small">Open Women - Semi-Finals</div>
-                                  <Results data={this.state.bfg}/>
+                                  <Results data={allResults['OWS']}/>
                               </TabPanel>
                               <TabPanel>
                                   <div className="header-md margin-bottom-small">Open Men - Semi-Finals</div>
-                                  <Results data={this.state.bfg}/>
+                                  <Results data={allResults['OMS']}/>
 
                                   <div className="header-md margin-top-md margin-bottom-small">U17 Girls - Finals</div>
-                                  <Results data={this.state.bfg}/>
+                                  <Results data={allResults['UWF']}/>
 
                                   <div className="header-md margin-top-md margin-bottom-small">U17 Boys - Finals</div>
-                                  <Results data={this.state.bfg}/>
+                                  <Results data={allResults['UMF']}/>
 
                                   <div className="header-md margin-top-md margin-bottom-small">Novice Women - Finals</div>
-                                  <Results data={this.state.bfg}/>
+                                  <Results data={allResults['NWF']}/>
 
                                   <div className="header-md margin-top-md margin-bottom-small">U17 Novice Men - Finals</div>
-                                  <Results data={this.state.bfg}/>
+                                  <Results data={allResults['UWF']}/>
 
                                   <div className="header-md margin-top-md margin-bottom-small">Intermediate Women - Finals</div>
-                                  <Results data={this.state.bfg}/>
+                                  <Results data={allResults['IWF']}/>
 
                                   <div className="header-md margin-top-md margin-bottom-small">U17 Intermediate Men - Finals</div>
-                                  <Results data={this.state.bfg}/>
+                                  <Results data={allResults['IMF']}/>
 
                                   <div className="header-md margin-top-md margin-bottom-small">Open Men - Finals</div>
-                                  <Results data={this.state.bfg}/>
+                                  <Results data={allResults['OMF']}/>
 
                                   <div className="header-md margin-top-md margin-bottom-small">Open Women - Finals</div>
-                                  <Results data={this.state.bfg}/>
+                                  <Results data={allResults['OWF']}/>
                               </TabPanel>
                           </Tabs>
                         </div>

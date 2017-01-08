@@ -6,6 +6,7 @@ const SET_CURRENT_DETAIL_URL = "http://office.livestudios.com:41111/backend/api/
 const GET_CURRENT_EVENT_URL = "http://office.livestudios.com:41111/backend/api/get_current_event.php";
 const GET_CURRENT_DETAIL_URL = "http://office.livestudios.com:41111/backend/api/get_current_detail.php"
 const GET_LAST_CLIMBER_ID_URL = "http://office.livestudios.com:41111/backend/api/get_last_climber_id.php";
+const GET_ALL_RESULTS_URL = "http://office.livestudios.com:41111/backend/api/get_past_results.php";
 
 module.exports = {
 
@@ -121,6 +122,19 @@ module.exports = {
                 request.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
             },
             url: GET_CURRENT_DETAIL_URL,
+            success: function(response) {
+                // console.log("Tres manifique, monsieur", response);
+            }
+        });
+    },
+
+    getAllResults: function() {
+        return $.ajax({
+            type: "POST",
+            beforeSend: function(request) {
+                request.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+            },
+            url: GET_ALL_RESULTS_URL,
             success: function(response) {
                 // console.log("Tres manifique, monsieur", response);
             }

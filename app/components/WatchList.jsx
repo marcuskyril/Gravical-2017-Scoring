@@ -69,44 +69,43 @@ class LinkComponent extends React.Component {
 
 const tableMetaData = [
     {
-        "columnName": "mac_address",
+        "columnName": "ID",
         "order": 1,
         "locked": false,
         "visible": true,
         "displayName": "ID",
         "customComponent": LinkComponent
     }, {
-        "columnName": "geo-region",
+        "columnName": "name",
         "order": 2,
-        "locked": false,
-        "visible": false,
-        "displayName": "Name"
-    }, {
-        "columnName": "building",
-        "order": 3,
         "locked": true,
         "visible": true,
         "displayName": "Name"
     }, {
-        "columnName": "sensor-level-id",
-        "order": 4,
+        "columnName": "score",
+        "order": 3,
         "locked": true,
         "visible": true,
         "displayName": "Score"
     }, {
-        "columnName": "sensor_status",
+        "columnName": "category",
         "order": 4,
         "locked": true,
         "visible": true,
-        "displayName": "Category",
-        "customComponent": SensorBlockComponent
-    },{
-        "columnName": "remove",
+        "displayName": "Category"
+    }, {
+        "columnName": "ranking",
         "order": 5,
         "locked": true,
         "visible": true,
+        "displayName": "Ranking"
+    },{
+        "columnName": "remove",
+        "order": 6,
+        "locked": true,
+        "visible": true,
         "sortable": false,
-        "displayName": "Ranking",
+        "displayName": "Remove",
         "customComponent": RemoveComponent
     }
 
@@ -122,55 +121,55 @@ class WatchList extends React.Component {
         super(props);
     }
 
-    tableClickHandler(gridRow) {
-
-        var macAddress = gridRow.props.data.mac_address;
-        console.log("macAddress", macAddress);
-
-        if($('#unpin-sensor-modal').css('display') === 'none') {
-            $('#offCanvas').foundation('open', event);
-
-            var triggerCanvas = document.createEvent("Event");
-
-            triggerCanvas.data = {
-                macAdd: macAddress
-            };
-
-            triggerCanvas.initEvent("triggerCanvas", true, true);
-            document.dispatchEvent(triggerCanvas);
-        }
-    }
+    // tableClickHandler(gridRow) {
+    //
+    //     var macAddress = gridRow.props.data.mac_address;
+    //     console.log("macAddress", macAddress);
+    //
+    //     if($('#unpin-sensor-modal').css('display') === 'none') {
+    //         $('#offCanvas').foundation('open', event);
+    //
+    //         var triggerCanvas = document.createEvent("Event");
+    //
+    //         triggerCanvas.data = {
+    //             macAdd: macAddress
+    //         };
+    //
+    //         triggerCanvas.initEvent("triggerCanvas", true, true);
+    //         document.dispatchEvent(triggerCanvas);
+    //     }
+    // }
 
     render() {
         var allSensorData = this.props.data;
         var dataList = [];
-        var {dispatch} = this.props;
+        // var {dispatch} = this.props;
 
-        for (var sensor in allSensorData) {
-            if (allSensorData.hasOwnProperty(sensor)) {
-
-                var coolStuff = {
-                    dispatch: dispatch,
-                    mac: sensor
-                };
-
-                if(allSensorData[sensor]["watchlist"]){
-                    var row = {
-                        "mac_address": sensor,
-                        "building": allSensorData[sensor]["building"],
-                        "sensor-level-id": allSensorData[sensor]["sensor-location-level"] + allSensorData[sensor]["sensor-location-id"],
-                        "sensor_status": allSensorData[sensor]["sensor_status"],
-                        "remove" : coolStuff
-                    };
-
-                    if (typeof allSensorData[sensor]["error"] !== "undefined") {
-                        row["sensor_status"] = "-";
-                    }
-
-                dataList.push(row);
-              }
-            }
-        }
+        // for (var sensor in allSensorData) {
+        //     if (allSensorData.hasOwnProperty(sensor)) {
+        //
+        //         var coolStuff = {
+        //             dispatch: dispatch,
+        //             mac: sensor
+        //         };
+        //
+        //         if(allSensorData[sensor]["watchlist"]){
+        //             var row = {
+        //                 "mac_address": sensor,
+        //                 "building": allSensorData[sensor]["building"],
+        //                 "sensor-level-id": allSensorData[sensor]["sensor-location-level"] + allSensorData[sensor]["sensor-location-id"],
+        //                 "sensor_status": allSensorData[sensor]["sensor_status"],
+        //                 "remove" : coolStuff
+        //             };
+        //
+        //             if (typeof allSensorData[sensor]["error"] !== "undefined") {
+        //                 row["sensor_status"] = "-";
+        //             }
+        //
+        //         dataList.push(row);
+        //       }
+        //     }
+        // }
 
         return (
             <div>
@@ -178,9 +177,8 @@ class WatchList extends React.Component {
                           showFilter={true}
                           initialSort="building_name"
                           tableClassName="piOverviewTable"
-                          columns={["mac_address", "building", "sensor-level-id", "sensor_status", "remove"]}
+                          columns={["ID", "name", "score", "category", "ranking", "remove"]}
                           columnMetadata={tableMetaData}
-                          onRowClick={this.tableClickHandler.bind(this)}
                           rowMetaData={rowMetaData}/>
             </div>
         );

@@ -3,155 +3,129 @@ var Griddle = require('griddle-react');
 var axios = require('axios');
 var FontAwesome = require('react-fontawesome');
 
-var dataList = [];
+class WatchComponent extends React.Component {
 
-class LinkComponent2 extends React.Component{
-  constructor(props) {
-    super(props);
-  }
+    constructor(props) {
+        super(props);
+    }
 
-  render() {
-    return (
-        <a href="google.com" data-toggle="offCanvas">{this.props.data}</a>
-    );
-  }
+    handleClick(macAddress) {
+
+        alert("HOOYAH, MOTHERFUCKERS");
+    }
+
+    render() {
+        return (
+            <div id="unpin-btn" className="sensorBlock remove" onClick={() => this.handleClick(this.props.data.ID)}>Pin</div>
+        );
+
+    }
 };
 
-const tableMetaData =  [
-  {
-    "columnName": "mac_address",
-    "order": 1,
-    "locked": true,
-    "visible": true,
-    "displayName": "Rank",
-    "sortable": true
-  },
-  {
-    "columnName": "latest_timestamp",
-    "order": 2,
-    "locked": false,
-    "visible": true,
-    "sortable": true,
-    "displayName": "ID"
-  },
-  {
-    "columnName": "sensor_status",
-    "order":  3,
-    "locked": false,
-    "visible": true,
-    "sortable": true,
-    "displayName": "Name"
-  },
-  {
-    "columnName": "network_router",
-    "order":  4,
-    "locked": false,
-    "visible": true,
-    "sortable": true,
-    "displayName": "Score"
-  }
+const tableMetaData = [
+    {
+        "columnName": "rank",
+        "order": 1,
+        "locked": true,
+        "visible": true,
+        "displayName": "Rank",
+        "sortable": true
+    }, {
+        "columnName": "ID",
+        "order": 2,
+        "locked": false,
+        "visible": true,
+        "sortable": true,
+        "displayName": "ID"
+    }, {
+        "columnName": "name",
+        "order": 3,
+        "locked": false,
+        "visible": true,
+        "sortable": true,
+        "displayName": "Name"
+    }, {
+    }, {
+        "columnName": "detail",
+        "order": 4,
+        "locked": false,
+        "visible": true,
+        "sortable": true,
+        "displayName": "Detail"
+    }, {
+        "columnName": "score",
+        "order": 5,
+        "locked": false,
+        "visible": true,
+        "sortable": true,
+        "displayName": "Score"
+    }
 ];
 
 const columnDisplayName = {
-    "Rank" : "mac_address",
-    "ID" : "latest_timestamp",
-    "Name" : "sensor_status",
-    "Score" : "network_router"
+    "Rank": "rank",
+    "ID": "ID",
+    "Name": "name",
+    "Detail": "detail",
+    "Score": "score"
 };
 
 class Results extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-        dataList: []
-    };
-  }
+    constructor(props) {
+        super(props);
 
-  render() {
-
-    var that = this;
-
-    var currentlySelected = ["mac_address", "latest_timestamp", "sensor_status", "network_router"];
-    var findStuff = $('#bfg').find('table > thead > tr > th > span');
-    // console.log(findStuff);
-    if (findStuff.length > 0) {
-        currentlySelected = [];
-        for (var i = 0; i < findStuff.length; i++) {
-            currentlySelected.push(columnDisplayName[findStuff[i].innerHTML]);
-        }
+        this.state = {
+            dataList: [],
+            results: []
+        };
     }
-    // that.state.colsSelected = currentlySelected;
 
-    var allSensorData = this.props.data;
-    var dataList = [];
-    for (var sensor in allSensorData) {
-        if (allSensorData.hasOwnProperty(sensor)) {
-            var mac = sensor;
-            var row = {};
+    componentWillReceiveProps() {
 
-            if (typeof allSensorData[sensor]["error"] == "undefined") {
-                row = {
-                    "mac_address" : mac,
-                    "latest_timestamp" : allSensorData[sensor]["latest_timestamp"],
-                    "building" : allSensorData[sensor]["building"],
-                    "sensor-level-id" : allSensorData[sensor]["sensor-location-level"] + allSensorData[sensor]["sensor-location-id"],
-                    "sensor_type" : allSensorData[sensor]["sensor_type"],
-                    "current_status" : allSensorData[sensor]["current_status"],
-                    "sensor_status" : allSensorData[sensor]["sensor_status"],
-                    "flapping" : allSensorData[sensor]["flapping"],
-                    "network_router" : allSensorData[sensor]["network_router"],
-                    "temperature" : allSensorData[sensor]["temperature"],
-                    "CPU_usage" : allSensorData[sensor]["CPU_Usage"],
-                    "RAM_total" : allSensorData[sensor]["RAM_total"],
-                    "RAM_free" : allSensorData[sensor]["RAM_free"],
-                    "RAM_used" : allSensorData[sensor]["RAM_used"],
-                    "RAM_available" : allSensorData[sensor]["RAM_available"],
-                    "disk_space_total" : allSensorData[sensor]["Disk_Space_total"],
-                    "disk_space_free" : allSensorData[sensor]["Disk_Space_used"],
-                    "disk_space_used" : allSensorData[sensor]["Disk_Space_free"]
-                };
-            } else {
-                row = {
-                    "mac_address" : mac,
-                    "latest_timestamp" : "no data",
-                    "building" : allSensorData[sensor]["building"],
-                    "sensor-level-id" : allSensorData[sensor]["sensor-location-level"] + allSensorData[sensor]["sensor-location-id"],
-                    "sensor_type" : allSensorData[sensor]["sensor_type"],
-                    "current_status" : "-",
-                    "sensor_status" : "-",
-                    "flapping" : "-",
-                    "network_router" : "-",
-                    "temperature" : "-",
-                    "CPU_usage" : "-",
-                    "RAM_total" : "-",
-                    "RAM_free" : "-",
-                    "RAM_used" : "-",
-                    "RAM_available" : "-",
-                    "disk_space_total" : "-",
-                    "disk_space_free" : "-",
-                    "disk_space_used" : "-"
-                };
+        var results = [];
+        var rawResults = this.props.data;
+        var rank = 1;
+
+        if(rawResults) {
+            for(var i = 0; i < rawResults.length; i++) {
+                var row = {
+                    "rank" : rank++,
+                    "ID": rawResults[i]["ID"],
+                    "name": rawResults[i]["name"],
+                    "detail": rawResults[i]["detail"],
+                    "score": rawResults[i]["score"]
+                }
+
+                results.push(row);
             }
-
-            dataList.push(row);
         }
+        this.setState({results: results});
+
     }
+    render() {
 
-    // console.log("currentlySelected", currentlySelected);
+        var {results} = this.state;
 
-    return (
-        <Griddle
-            results={dataList}
-            settingsIconComponent={<FontAwesome name='cog' style={{color: '#232f32', marginLeft: '1rem'}} size="2x"/>}
-            columnMetadata={tableMetaData}
-            tableClassName="table"
-            showFilter={true}
-            columns={currentlySelected}
-            showSettings={false}
-            settingsText="Settings"
-        />
-    );
-  }
+        var currentlySelected = [
+            "rank",
+            "ID",
+            "name",
+            "detail",
+            "score",
+        ];
+        var findStuff = $('#bfg').find('table > thead > tr > th > span');
+        // console.log(findStuff);
+        // if (findStuff.length > 0) {
+        //     currentlySelected = [];
+        //     for (var i = 0; i < findStuff.length; i++) {
+        //         currentlySelected.push(columnDisplayName[findStuff[i].innerHTML]);
+        //     }
+        // }
+
+        return (
+            <Griddle results={results} columnMetadata={tableMetaData} tableClassName="table" showFilter={true} columns={currentlySelected} showSettings={false} />
+        );
+    }
 }
 
 module.exports = Results;

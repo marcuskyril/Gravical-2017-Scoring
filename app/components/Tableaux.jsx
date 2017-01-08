@@ -9,17 +9,18 @@ class WatchComponent extends React.Component {
         super(props);
     }
 
-    handleClick(macAddress) {
+    handleClick(data) {
         // var dispatch = this.props.data.dispatch;
         // dispatch(actions.startUpdateWatchList(macAddress));
         // $('#unpin-sensor-modal').foundation('open');
 
-        alert("HOOYAH, MOTHERFUCKERS");
+        alert("HOOYAH, MOTHERFUCKERS!" +data);
     }
 
     render() {
+        console.log("this.props.data" ,this.props);
         return (
-            <div id="unpin-btn" className="sensorBlock remove" onClick={() => this.handleClick(this.props.data.ID)}>Pin</div>
+            <div id="unpin-btn" className="sensorBlock remove" onClick={() => this.handleClick(this.props.rowData)}>Pin</div>
         );
 
     }
@@ -114,8 +115,6 @@ class Tableaux extends React.Component {
         }
 
         this.setState({results: results});
-
-        console.log("results", results);
     }
     render() {
 
