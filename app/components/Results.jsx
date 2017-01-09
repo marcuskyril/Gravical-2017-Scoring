@@ -84,17 +84,24 @@ class Results extends React.Component {
 
         var results = [];
         var rawResults = this.props.data;
-        var rank = 1;
+        var rank = 0;
+
+        var prev_score = "0";
 
         if(rawResults) {
+            // console.log(rawResults);
             for(var i = 0; i < rawResults.length; i++) {
+                if (rawResults[i]["score"] != prev_score) {
+                    rank++;
+                }
                 var row = {
-                    "rank" : rank++,
+                    "rank" : rank,
                     "ID": rawResults[i]["ID"],
                     "name": rawResults[i]["name"],
                     "detail": rawResults[i]["detail"],
                     "score": rawResults[i]["score"]
                 }
+                prev_score = rawResults[i]["score"];
 
                 results.push(row);
             }
@@ -113,14 +120,6 @@ class Results extends React.Component {
             "detail",
             "score",
         ];
-        var findStuff = $('#bfg').find('table > thead > tr > th > span');
-        // console.log(findStuff);
-        // if (findStuff.length > 0) {
-        //     currentlySelected = [];
-        //     for (var i = 0; i < findStuff.length; i++) {
-        //         currentlySelected.push(columnDisplayName[findStuff[i].innerHTML]);
-        //     }
-        // }
 
         return (
             <Griddle results={results} columnMetadata={tableMetaData} tableClassName="table" showFilter={true} columns={currentlySelected} showSettings={false} />

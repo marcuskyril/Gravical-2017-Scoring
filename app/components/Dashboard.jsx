@@ -50,7 +50,7 @@ class Dashboard extends React.Component {
     getAllResults() {
         var that = this;
         climberManagementAPI.getAllResults().then(function(response) {
-            console.log("response", response);
+            // console.log("response", response);
             that.setState({
                 allResults: response
             });
@@ -65,7 +65,31 @@ class Dashboard extends React.Component {
             connection.subscribe('', function(topic, data) {
 
                 timestamp = moment().format('YYYY-MM-DD, h:mm:ss a');
-                console.log("jalapeño", connection);
+                // console.log("jalapeño", connection);
+
+                var results = [];
+                var rawResults = data['list'];
+                var rank = 0;
+                var prev_score = "0";
+
+                for(var i = 0; i < rawResults.length; i++) {
+                    if (rawResults[i]["score"] != prev_score) {
+                        rank++;
+                    }
+                    var row = {
+                        "rank" : rank,
+                        "category": that.state.currentEvent,
+                        "ID": rawResults[i]["ID"],
+                        "name": rawResults[i]["name"],
+                        "detail": rawResults[i]["detail"],
+                        "score": rawResults[i]["score"]
+                    }
+                    prev_score = rawResults[i]["score"];
+
+                    results.push(row);
+                }
+
+                console.log("results", results);
 
                 that.setState({
                     connection: connection,
@@ -73,7 +97,7 @@ class Dashboard extends React.Component {
                     currentEvent: data['current_event'],
                     currentDetail: parseInt(data['current_detail']),
                     totalDetails: parseInt(data['total_details']['num_of_details']),
-                    results: data['list']
+                    results: results
                 });
             });
 
@@ -96,37 +120,40 @@ class Dashboard extends React.Component {
         }
     }
 
-    toggleHide(id) {
-        var panel = $('#' + id);
-
-        if ((panel).css('display') === 'block') {
-            panel.slideUp();
-            panel.siblings().addClass('callout-minimize');
-
-        } else {
-            panel.slideDown();
-            panel.siblings().removeClass('callout-minimize');
-            panel.siblings().addClass('callout-dark-header');
-        }
-    }
+    // toggleHide(id) {
+    //     var panel = $('#' + id);
+    //
+    //     if ((panel).css('display') === 'block') {
+    //         panel.slideUp();
+    //         panel.siblings().addClass('callout-minimize');
+    //
+    //     } else {
+    //         panel.slideDown();
+    //         panel.siblings().removeClass('callout-minimize');
+    //         panel.siblings().addClass('callout-dark-header');
+    //     }
+    //
+    //     // FOR MINIMIZING, IF NECESSARY
+    //
+    //     // <button onClick={() => this.toggleHide('watchList')} className="icon-btn-text-small">
+    //     //     <FontAwesome name='expand'/>
+    //     // </button>
+    // }
 
     render() {
 
         var {results, currentEvent, currentTime, currentDetail, totalDetails, allResults} = this.state;
-
+        // console.log("results", results);
         return (
 
             <div className="dashboard margin-top-md">
                 <div className="row">
                     <div className="columns small-12 medium-12 large-5">
                         <div>
-                            <div className="callout callout-minimize">
+                            <div className="callout callout-dark-header">
                                 <div className="page-title">Watch List</div>
-                                <button onClick={() => this.toggleHide('watchList')} className="icon-btn-text-small">
-                                    <FontAwesome name='expand'/>
-                                </button>
                             </div>
-                            <div className="callout callout-dark" id="watchList">
+                            <div className="callout callout-dark" id="watchList2">
                                 <WatchList data={results}/>
                             </div>
                         </div>
@@ -142,7 +169,6 @@ class Dashboard extends React.Component {
                         </div>
                     </div>
                 </div>
-
 
                 <div className="row textAlignCenter">
 

@@ -93594,7 +93594,7 @@
 /* 923 */
 /***/ function(module, exports, __webpack_require__) {
 
-	/* WEBPACK VAR INJECTION */(function($) {'use strict';
+	'use strict';
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
@@ -93685,7 +93685,7 @@
 	        value: function getAllResults() {
 	            var that = this;
 	            climberManagementAPI.getAllResults().then(function (response) {
-	                console.log("response", response);
+	                // console.log("response", response);
 	                that.setState({
 	                    allResults: response
 	                });
@@ -93701,7 +93701,31 @@
 	                connection.subscribe('', function (topic, data) {
 
 	                    timestamp = (0, _moment2.default)().format('YYYY-MM-DD, h:mm:ss a');
-	                    console.log("jalapeño", connection);
+	                    // console.log("jalapeño", connection);
+
+	                    var results = [];
+	                    var rawResults = data['list'];
+	                    var rank = 0;
+	                    var prev_score = "0";
+
+	                    for (var i = 0; i < rawResults.length; i++) {
+	                        if (rawResults[i]["score"] != prev_score) {
+	                            rank++;
+	                        }
+	                        var row = {
+	                            "rank": rank,
+	                            "category": that.state.currentEvent,
+	                            "ID": rawResults[i]["ID"],
+	                            "name": rawResults[i]["name"],
+	                            "detail": rawResults[i]["detail"],
+	                            "score": rawResults[i]["score"]
+	                        };
+	                        prev_score = rawResults[i]["score"];
+
+	                        results.push(row);
+	                    }
+
+	                    console.log("results", results);
 
 	                    that.setState({
 	                        connection: connection,
@@ -93709,7 +93733,7 @@
 	                        currentEvent: data['current_event'],
 	                        currentDetail: parseInt(data['current_detail']),
 	                        totalDetails: parseInt(data['total_details']['num_of_details']),
-	                        results: data['list']
+	                        results: results
 	                    });
 	                });
 	            }, function () {
@@ -93731,25 +93755,30 @@
 	                this.state.connection.close();
 	            }
 	        }
-	    }, {
-	        key: 'toggleHide',
-	        value: function toggleHide(id) {
-	            var panel = $('#' + id);
 
-	            if (panel.css('display') === 'block') {
-	                panel.slideUp();
-	                panel.siblings().addClass('callout-minimize');
-	            } else {
-	                panel.slideDown();
-	                panel.siblings().removeClass('callout-minimize');
-	                panel.siblings().addClass('callout-dark-header');
-	            }
-	        }
+	        // toggleHide(id) {
+	        //     var panel = $('#' + id);
+	        //
+	        //     if ((panel).css('display') === 'block') {
+	        //         panel.slideUp();
+	        //         panel.siblings().addClass('callout-minimize');
+	        //
+	        //     } else {
+	        //         panel.slideDown();
+	        //         panel.siblings().removeClass('callout-minimize');
+	        //         panel.siblings().addClass('callout-dark-header');
+	        //     }
+	        //
+	        //     // FOR MINIMIZING, IF NECESSARY
+	        //
+	        //     // <button onClick={() => this.toggleHide('watchList')} className="icon-btn-text-small">
+	        //     //     <FontAwesome name='expand'/>
+	        //     // </button>
+	        // }
+
 	    }, {
 	        key: 'render',
 	        value: function render() {
-	            var _this2 = this;
-
 	            var _state = this.state;
 	            var results = _state.results;
 	            var currentEvent = _state.currentEvent;
@@ -93757,7 +93786,7 @@
 	            var currentDetail = _state.currentDetail;
 	            var totalDetails = _state.totalDetails;
 	            var allResults = _state.allResults;
-
+	            // console.log("results", results);
 
 	            return React.createElement(
 	                'div',
@@ -93773,23 +93802,16 @@
 	                            null,
 	                            React.createElement(
 	                                'div',
-	                                { className: 'callout callout-minimize' },
+	                                { className: 'callout callout-dark-header' },
 	                                React.createElement(
 	                                    'div',
 	                                    { className: 'page-title' },
 	                                    'Watch List'
-	                                ),
-	                                React.createElement(
-	                                    'button',
-	                                    { onClick: function onClick() {
-	                                            return _this2.toggleHide('watchList');
-	                                        }, className: 'icon-btn-text-small' },
-	                                    React.createElement(FontAwesome, { name: 'expand' })
 	                                )
 	                            ),
 	                            React.createElement(
 	                                'div',
-	                                { className: 'callout callout-dark', id: 'watchList' },
+	                                { className: 'callout callout-dark', id: 'watchList2' },
 	                                React.createElement(WatchList, { data: results })
 	                            )
 	                        )
@@ -94016,7 +94038,6 @@
 	;
 
 	module.exports = connect()(Dashboard);
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(9)))
 
 /***/ },
 /* 924 */
@@ -94934,7 +94955,7 @@
 /* 934 */
 /***/ function(module, exports, __webpack_require__) {
 
-	/* WEBPACK VAR INJECTION */(function($) {'use strict';
+	'use strict';
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
@@ -94961,43 +94982,8 @@
 
 	var dataList = [];
 
-	var SensorBlockComponent = function (_React$Component) {
-	    _inherits(SensorBlockComponent, _React$Component);
-
-	    function SensorBlockComponent() {
-	        _classCallCheck(this, SensorBlockComponent);
-
-	        return _possibleConstructorReturn(this, Object.getPrototypeOf(SensorBlockComponent).apply(this, arguments));
-	    }
-
-	    _createClass(SensorBlockComponent, [{
-	        key: 'render',
-	        value: function render() {
-
-	            var colorMap = {
-	                "ok": "sensorBlock green",
-	                "warning": "sensorBlock yellow",
-	                "danger": "sensorBlock orange",
-	                "down": "sensorBlock red",
-	                "-": "sensorBlock grey",
-	                "paused": "sensorBlock black"
-	            };
-
-	            return React.createElement(
-	                'div',
-	                { className: colorMap[this.props.data] },
-	                this.props.data
-	            );
-	        }
-	    }]);
-
-	    return SensorBlockComponent;
-	}(React.Component);
-
-	;
-
-	var RemoveComponent = function (_React$Component2) {
-	    _inherits(RemoveComponent, _React$Component2);
+	var RemoveComponent = function (_React$Component) {
+	    _inherits(RemoveComponent, _React$Component);
 
 	    function RemoveComponent(props) {
 	        _classCallCheck(this, RemoveComponent);
@@ -95007,20 +94993,23 @@
 
 	    _createClass(RemoveComponent, [{
 	        key: 'handleClick',
-	        value: function handleClick(macAddress) {
-	            var dispatch = this.props.data.dispatch;
-	            dispatch(actions.startUpdateWatchList(macAddress));
-	            $('#unpin-sensor-modal').foundation('open');
+	        value: function handleClick(data) {
+	            var cookieData = document.cookie;
+	            var cookieDataArr = cookieData.split(',');
+	            var index = cookieDataArr.indexOf(data);
+	            var temp = cookieDataArr.splice(index, 1);
+
+	            document.cookie = cookieDataArr.join();
 	        }
 	    }, {
 	        key: 'render',
 	        value: function render() {
-	            var _this3 = this;
+	            var _this2 = this;
 
 	            return React.createElement(
 	                'div',
 	                { id: 'unpin-btn', className: 'sensorBlock remove', onClick: function onClick() {
-	                        return _this3.handleClick(_this3.props.data.mac);
+	                        return _this2.handleClick(_this2.props.data);
 	                    } },
 	                'Un-Pin'
 	            );
@@ -95032,49 +95021,12 @@
 
 	;
 
-	var LinkComponent = function (_React$Component3) {
-	    _inherits(LinkComponent, _React$Component3);
-
-	    function LinkComponent(props) {
-	        _classCallCheck(this, LinkComponent);
-
-	        return _possibleConstructorReturn(this, Object.getPrototypeOf(LinkComponent).call(this, props));
-	    }
-
-	    _createClass(LinkComponent, [{
-	        key: 'handleClick',
-	        value: function handleClick(macAddress) {
-	            document.getElementById("sensorDetailsIFrame").src = "./offCrepe.html?offCanMac=" + macAddress;
-	        }
-	    }, {
-	        key: 'render',
-	        value: function render() {
-	            var _this5 = this;
-
-	            var macAddress = this.props.data;
-
-	            return React.createElement(
-	                'a',
-	                { onClick: function onClick() {
-	                        return _this5.handleClick(macAddress);
-	                    }, 'data-toggle': 'offCanvas' },
-	                macAddress
-	            );
-	        }
-	    }]);
-
-	    return LinkComponent;
-	}(React.Component);
-
-	;
-
 	var tableMetaData = [{
 	    "columnName": "ID",
 	    "order": 1,
 	    "locked": false,
 	    "visible": true,
-	    "displayName": "ID",
-	    "customComponent": LinkComponent
+	    "displayName": "ID"
 	}, {
 	    "columnName": "name",
 	    "order": 2,
@@ -95113,71 +95065,81 @@
 	    "bodyCssClassName": "customTableRow"
 	};
 
-	var WatchList = function (_React$Component4) {
-	    _inherits(WatchList, _React$Component4);
+	var WatchList = function (_React$Component2) {
+	    _inherits(WatchList, _React$Component2);
 
 	    function WatchList(props) {
 	        _classCallCheck(this, WatchList);
 
-	        return _possibleConstructorReturn(this, Object.getPrototypeOf(WatchList).call(this, props));
+	        var _this3 = _possibleConstructorReturn(this, Object.getPrototypeOf(WatchList).call(this, props));
+
+	        _this3.state = {
+	            pinned: [],
+	            watchlist: []
+	        };
+	        return _this3;
 	    }
 
-	    // tableClickHandler(gridRow) {
-	    //
-	    //     var macAddress = gridRow.props.data.mac_address;
-	    //     console.log("macAddress", macAddress);
-	    //
-	    //     if($('#unpin-sensor-modal').css('display') === 'none') {
-	    //         $('#offCanvas').foundation('open', event);
-	    //
-	    //         var triggerCanvas = document.createEvent("Event");
-	    //
-	    //         triggerCanvas.data = {
-	    //             macAdd: macAddress
-	    //         };
-	    //
-	    //         triggerCanvas.initEvent("triggerCanvas", true, true);
-	    //         document.dispatchEvent(triggerCanvas);
-	    //     }
-	    // }
-
 	    _createClass(WatchList, [{
+	        key: 'componentWillReceiveProps',
+	        value: function componentWillReceiveProps(props) {
+	            var pinned = this.state.pinned;
+
+	            var results = props.data;
+	            var that = this;
+	            var r = [];
+
+	            console.log("document.cookie", document.cookie);
+
+	            var pinnedStr = document.cookie;
+
+	            if (pinnedStr.length > 0) {
+	                that.setState({
+	                    pinned: pinnedStr.split(',')
+	                });
+	            } else {
+	                that.setState({
+	                    pinned: [],
+	                    watchlist: []
+	                });
+	            }
+
+	            if (pinned.length > 0 && results.length > 0) {
+
+	                results.forEach(function (climber) {
+	                    var climberID = climber.ID;
+
+	                    pinned.forEach(function (pinnedClimber) {
+	                        if (climberID === pinnedClimber) {
+	                            var row = {
+	                                ID: climber.ID,
+	                                detail: climber.detail,
+	                                name: climber.name,
+	                                score: climber.score,
+	                                category: climber.category,
+	                                ranking: climber.rank,
+	                                remove: climber.ID
+	                            };
+	                            r.push(row);
+	                        }
+	                    });
+	                });
+
+	                this.setState({
+	                    watchlist: r
+	                });
+	            }
+	        }
+	    }, {
 	        key: 'render',
 	        value: function render() {
-	            var allSensorData = this.props.data;
-	            var dataList = [];
-	            // var {dispatch} = this.props;
+	            var watchlist = this.state.watchlist;
 
-	            // for (var sensor in allSensorData) {
-	            //     if (allSensorData.hasOwnProperty(sensor)) {
-	            //
-	            //         var coolStuff = {
-	            //             dispatch: dispatch,
-	            //             mac: sensor
-	            //         };
-	            //
-	            //         if(allSensorData[sensor]["watchlist"]){
-	            //             var row = {
-	            //                 "mac_address": sensor,
-	            //                 "building": allSensorData[sensor]["building"],
-	            //                 "sensor-level-id": allSensorData[sensor]["sensor-location-level"] + allSensorData[sensor]["sensor-location-id"],
-	            //                 "sensor_status": allSensorData[sensor]["sensor_status"],
-	            //                 "remove" : coolStuff
-	            //             };
-	            //
-	            //             if (typeof allSensorData[sensor]["error"] !== "undefined") {
-	            //                 row["sensor_status"] = "-";
-	            //             }
-	            //
-	            //         dataList.push(row);
-	            //       }
-	            //     }
-	            // }
 
 	            return React.createElement(
 	                'div',
 	                null,
-	                React.createElement(Griddle, { results: dataList,
+	                React.createElement(Griddle, { results: watchlist,
 	                    showFilter: true,
 	                    initialSort: 'building_name',
 	                    tableClassName: 'piOverviewTable',
@@ -95192,7 +95154,6 @@
 	}(React.Component);
 
 	module.exports = (0, _reactRedux.connect)()(WatchList);
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(9)))
 
 /***/ },
 /* 935 */
@@ -95223,20 +95184,43 @@
 	    }
 
 	    _createClass(WatchComponent, [{
+	        key: 'arrNoDupe',
+	        value: function arrNoDupe(a) {
+	            var temp = {};
+	            for (var i = 0; i < a.length; i++) {
+	                temp[a[i]] = true;
+	                var r = [];
+	                for (var k in temp) {
+	                    r.push(k);
+	                }
+	            }
+
+	            console.log(r.join());
+
+	            return r.join();
+	        }
+	    }, {
 	        key: 'handleClick',
 	        value: function handleClick(data) {
-	            // var dispatch = this.props.data.dispatch;
-	            // dispatch(actions.startUpdateWatchList(macAddress));
-	            // $('#unpin-sensor-modal').foundation('open');
 
-	            alert("HOOYAH, MOTHERFUCKERS!" + data);
+	            var originalShizz = document.cookie;
+	            var temp = '';
+
+	            if (originalShizz.length > 0) {
+	                var pinned = originalShizz + ',' + data.ID;
+	                temp = this.arrNoDupe(pinned.split(','));
+	            } else {
+	                temp = data.ID;
+	            }
+
+	            document.cookie = temp;
 	        }
 	    }, {
 	        key: 'render',
 	        value: function render() {
 	            var _this2 = this;
 
-	            console.log("this.props.data", this.props);
+	            // console.log("this.props.data" ,this.props);
 	            return React.createElement(
 	                'div',
 	                { id: 'unpin-btn', className: 'sensorBlock remove', onClick: function onClick() {
@@ -95328,7 +95312,8 @@
 	            var results = [];
 	            var rawResults = this.props.data;
 	            var rank = 1;
-
+	            // to do
+	            // check for last result;
 	            for (var result in rawResults) {
 	                if (rawResults.hasOwnProperty(result)) {
 	                    var id = result;
@@ -95379,7 +95364,7 @@
 /* 936 */
 /***/ function(module, exports, __webpack_require__) {
 
-	/* WEBPACK VAR INJECTION */(function($) {'use strict';
+	'use strict';
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
@@ -95495,17 +95480,24 @@
 
 	            var results = [];
 	            var rawResults = this.props.data;
-	            var rank = 1;
+	            var rank = 0;
+
+	            var prev_score = "0";
 
 	            if (rawResults) {
+	                // console.log(rawResults);
 	                for (var i = 0; i < rawResults.length; i++) {
+	                    if (rawResults[i]["score"] != prev_score) {
+	                        rank++;
+	                    }
 	                    var row = {
-	                        "rank": rank++,
+	                        "rank": rank,
 	                        "ID": rawResults[i]["ID"],
 	                        "name": rawResults[i]["name"],
 	                        "detail": rawResults[i]["detail"],
 	                        "score": rawResults[i]["score"]
 	                    };
+	                    prev_score = rawResults[i]["score"];
 
 	                    results.push(row);
 	                }
@@ -95519,14 +95511,6 @@
 
 
 	            var currentlySelected = ["rank", "ID", "name", "detail", "score"];
-	            var findStuff = $('#bfg').find('table > thead > tr > th > span');
-	            // console.log(findStuff);
-	            // if (findStuff.length > 0) {
-	            //     currentlySelected = [];
-	            //     for (var i = 0; i < findStuff.length; i++) {
-	            //         currentlySelected.push(columnDisplayName[findStuff[i].innerHTML]);
-	            //     }
-	            // }
 
 	            return React.createElement(Griddle, { results: results, columnMetadata: tableMetaData, tableClassName: 'table', showFilter: true, columns: currentlySelected, showSettings: false });
 	        }
@@ -95536,7 +95520,6 @@
 	}(React.Component);
 
 	module.exports = Results;
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(9)))
 
 /***/ },
 /* 937 */
@@ -95617,121 +95600,135 @@
 	'use strict';
 
 	Object.defineProperty(exports, "__esModule", {
-	  value: true
+	    value: true
 	});
 	var auditLogReducer = exports.auditLogReducer = function auditLogReducer() {
-	  var state = arguments.length <= 0 || arguments[0] === undefined ? { logs: [] } : arguments[0];
-	  var action = arguments[1];
+	    var state = arguments.length <= 0 || arguments[0] === undefined ? { logs: [] } : arguments[0];
+	    var action = arguments[1];
 
-	  switch (action.type) {
-	    case 'RETRIEVE_LOGS':
-	      return {
-	        logs: action.logs
-	      };
-	    default:
-	      return state;
-	  }
+	    switch (action.type) {
+	        case 'RETRIEVE_LOGS':
+	            return {
+	                logs: action.logs
+	            };
+	        default:
+	            return state;
+	    }
+	};
+
+	var watchlistReducer = exports.watchlistReducer = function watchlistReducer() {
+	    var state = arguments.length <= 0 || arguments[0] === undefined ? { results: [] } : arguments[0];
+	    var action = arguments[1];
+
+	    switch (action.type) {
+	        case 'RETRIEVE_RESULTS':
+	            return {
+	                logs: action.results
+	            };
+	        default:
+	            return state;
+	    }
 	};
 
 	var syncDataReducer = exports.syncDataReducer = function syncDataReducer() {
-	  var state = arguments.length <= 0 || arguments[0] === undefined ? { currentTime: '-', userId: '-', userEmail: '-' } : arguments[0];
-	  var action = arguments[1];
+	    var state = arguments.length <= 0 || arguments[0] === undefined ? { currentTime: '-', userId: '-', userEmail: '-' } : arguments[0];
+	    var action = arguments[1];
 
-	  switch (action.type) {
-	    case 'STORE_SYNC_DATA':
+	    switch (action.type) {
+	        case 'STORE_SYNC_DATA':
 
-	      return {
-	        currentTime: action.currentTime,
-	        userId: action.userId,
-	        userEmail: action.userEmail
-	      };
-	    default:
-	      return state;
-	  }
+	            return {
+	                currentTime: action.currentTime,
+	                userId: action.userId,
+	                userEmail: action.userEmail
+	            };
+	        default:
+	            return state;
+	    }
 	};
 
 	var deleteSensorReducer = exports.deleteSensorReducer = function deleteSensorReducer() {
-	  var state = arguments.length <= 0 || arguments[0] === undefined ? { macAddress: '' } : arguments[0];
-	  var action = arguments[1];
+	    var state = arguments.length <= 0 || arguments[0] === undefined ? { macAddress: '' } : arguments[0];
+	    var action = arguments[1];
 
 
-	  switch (action.type) {
-	    case 'COMPLETE_DELETE_SENSOR':
-	      return {
-	        macAddress: action.macAddress
-	      };
-	    default:
-	      return state;
-	  }
+	    switch (action.type) {
+	        case 'COMPLETE_DELETE_SENSOR':
+	            return {
+	                macAddress: action.macAddress
+	            };
+	        default:
+	            return state;
+	    }
 	};
 
 	var updateWatchListReducer = exports.updateWatchListReducer = function updateWatchListReducer() {
-	  var state = arguments.length <= 0 || arguments[0] === undefined ? { pin_mac: '' } : arguments[0];
-	  var action = arguments[1];
+	    var state = arguments.length <= 0 || arguments[0] === undefined ? { pin_mac: '' } : arguments[0];
+	    var action = arguments[1];
 
-	  switch (action.type) {
-	    case 'COMPLETE_UPDATE_WATCHLIST':
-	      return {
-	        pin_mac: action.pin_mac
-	      };
-	    default:
-	      return state;
-	  }
+	    switch (action.type) {
+	        case 'COMPLETE_UPDATE_WATCHLIST':
+	            return {
+	                pin_mac: action.pin_mac
+	            };
+	        default:
+	            return state;
+	    }
 	};
 
 	var sensorDataReducer = exports.sensorDataReducer = function sensorDataReducer() {
-	  var state = arguments.length <= 0 || arguments[0] === undefined ? { isFetching: false, data: undefined } : arguments[0];
-	  var action = arguments[1];
+	    var state = arguments.length <= 0 || arguments[0] === undefined ? { isFetching: false, data: undefined } : arguments[0];
+	    var action = arguments[1];
 
 
-	  switch (action.type) {
-	    case 'START_SENSOR_DATA_FETCH':
-	      return {
-	        isFetching: true,
-	        data: undefined
-	      };
+	    switch (action.type) {
+	        case 'START_SENSOR_DATA_FETCH':
+	            return {
+	                isFetching: true,
+	                data: undefined
+	            };
 
-	    case 'COMPLETE_SENSOR_DATA_FETCH':
-	      return {
-	        isFetching: false,
-	        data: action.data
-	      };
+	        case 'COMPLETE_SENSOR_DATA_FETCH':
+	            return {
+	                isFetching: false,
+	                data: action.data
+	            };
 
-	    default:
-	      return state;
-	  }
+	        default:
+	            return state;
+	    }
 	};
 
 	var authReducer = exports.authReducer = function authReducer() {
-	  var state = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
-	  var action = arguments[1];
+	    var state = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
+	    var action = arguments[1];
 
-	  switch (action.type) {
-	    case 'LOGIN':
-	      return {
-	        uid: action.uid
-	      };
-	    case 'LOGOUT':
-	      return {};
-	    default:
-	      return state;
-	  }
+	    switch (action.type) {
+	        case 'LOGIN':
+	            return {
+	                uid: action.uid
+	            };
+	        case 'LOGOUT':
+	            return {};
+	        default:
+	            return state;
+	    }
 	};
 
 	var activeSensorReducer = exports.activeSensorReducer = function activeSensorReducer() {
-	  var state = arguments.length <= 0 || arguments[0] === undefined ? { macAdd: '', currentInterval: '' } : arguments[0];
-	  var action = arguments[1];
+	    var state = arguments.length <= 0 || arguments[0] === undefined ? { macAdd: '', currentInterval: '' } : arguments[0];
+	    var action = arguments[1];
 
 
-	  switch (action.type) {
-	    case 'STORE_ACTIVE_SENSOR':
-	      return {
-	        sensorData: action.macAdd,
-	        currentInterval: action.currentInterval
-	      };
-	    default:
-	      return state;
-	  }
+	    switch (action.type) {
+	        case 'STORE_ACTIVE_SENSOR':
+	            return {
+	                sensorData: action.macAdd,
+	                currentInterval: action.currentInterval
+	            };
+	        default:
+	            return state;
+	    }
 	};
 
 /***/ },

@@ -9,6 +9,17 @@ export var auditLogReducer = (state = {logs: []}, action) => {
     }
 }
 
+export var watchlistReducer = (state = {results: []}, action) => {
+    switch(action.type) {
+        case 'RETRIEVE_RESULTS':
+            return {
+                logs: action.results
+            }
+        default:
+            return state;
+    }
+}
+
 export var syncDataReducer = (state = {currentTime: '-', userId: '-', userEmail: '-'}, action) => {
     switch(action.type) {
         case 'STORE_SYNC_DATA':

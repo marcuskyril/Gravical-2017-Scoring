@@ -7,65 +7,28 @@ import {connect} from 'react-redux';
 
 var dataList = [];
 
-class SensorBlockComponent extends React.Component {
-
-    render() {
-
-        var colorMap = {
-          "ok" : "sensorBlock green",
-          "warning" : "sensorBlock yellow",
-          "danger" : "sensorBlock orange",
-          "down" : "sensorBlock red",
-          "-" : "sensorBlock grey",
-          "paused" : "sensorBlock black"
-        }
-
-        return (
-            <div className={colorMap[this.props.data]}>{this.props.data}</div>
-        );
-    }
-};
-
 class RemoveComponent extends React.Component {
 
     constructor(props) {
         super(props);
     }
 
-    handleClick(macAddress) {
-        var dispatch = this.props.data.dispatch;
-        dispatch(actions.startUpdateWatchList(macAddress));
-        $('#unpin-sensor-modal').foundation('open');
+    handleClick(data) {
+        var cookieData = document.cookie;
+        var cookieDataArr = cookieData.split(',');
+        var index = cookieDataArr.indexOf(data);
+        var temp = cookieDataArr.splice(index, 1);
+
+        document.cookie = cookieDataArr.join();
     }
 
     render() {
       return (
-        <div id="unpin-btn" className="sensorBlock remove" onClick={() => this.handleClick(this.props.data.mac)}>Un-Pin</div>
+        <div id="unpin-btn" className="sensorBlock remove" onClick={() => this.handleClick(this.props.data)}>Un-Pin</div>
       );
 
     }
 };
-
-class LinkComponent extends React.Component {
-    constructor(props) {
-        super(props);
-    }
-
-    handleClick(macAddress) {
-        document.getElementById("sensorDetailsIFrame").src = "./offCrepe.html?offCanMac=" + macAddress;
-    }
-
-    render() {
-
-      var macAddress = this.props.data;
-
-        return (
-            <a onClick={() => this.handleClick(macAddress)} data-toggle="offCanvas">{macAddress}</a>
-        );
-    }
-};
-
-
 
 const tableMetaData = [
     {
@@ -73,8 +36,7 @@ const tableMetaData = [
         "order": 1,
         "locked": false,
         "visible": true,
-        "displayName": "ID",
-        "customComponent": LinkComponent
+        "displayName": "ID"
     }, {
         "columnName": "name",
         "order": 2,
@@ -119,61 +81,67 @@ class WatchList extends React.Component {
 
     constructor(props) {
         super(props);
+        this.state = {
+            pinned: [],
+            watchlist: []
+        }
     }
 
-    // tableClickHandler(gridRow) {
-    //
-    //     var macAddress = gridRow.props.data.mac_address;
-    //     console.log("macAddress", macAddress);
-    //
-    //     if($('#unpin-sensor-modal').css('display') === 'none') {
-    //         $('#offCanvas').foundation('open', event);
-    //
-    //         var triggerCanvas = document.createEvent("Event");
-    //
-    //         triggerCanvas.data = {
-    //             macAdd: macAddress
-    //         };
-    //
-    //         triggerCanvas.initEvent("triggerCanvas", true, true);
-    //         document.dispatchEvent(triggerCanvas);
-    //     }
-    // }
+    componentWillReceiveProps(props) {
+        var {pinned} = this.state;
+        var results = props.data;
+        var that = this;
+        var r = [];
+
+        console.log("document.cookie", document.cookie);
+
+        var pinnedStr = document.cookie;
+
+        if(pinnedStr.length > 0) {
+            that.setState({
+                pinned: pinnedStr.split(',')
+            });
+        } else {
+            that.setState({
+                pinned: [],
+                watchlist: []
+            });
+        }
+
+        if(pinned.length > 0 && results.length > 0) {
+
+            results.forEach(function(climber){
+                var climberID = climber.ID;
+
+                pinned.forEach(function(pinnedClimber){
+                    if(climberID === pinnedClimber) {
+                        var row = {
+                            ID: climber.ID,
+                            detail: climber.detail,
+                            name: climber.name,
+                            score: climber.score,
+                            category: climber.category,
+                            ranking: climber.rank,
+                            remove: climber.ID
+                        }
+                        r.push(row);
+                    }
+                })
+
+            });
+
+            this.setState({
+                watchlist: r
+            });
+        }
+    }
 
     render() {
-        var allSensorData = this.props.data;
-        var dataList = [];
-        // var {dispatch} = this.props;
-
-        // for (var sensor in allSensorData) {
-        //     if (allSensorData.hasOwnProperty(sensor)) {
-        //
-        //         var coolStuff = {
-        //             dispatch: dispatch,
-        //             mac: sensor
-        //         };
-        //
-        //         if(allSensorData[sensor]["watchlist"]){
-        //             var row = {
-        //                 "mac_address": sensor,
-        //                 "building": allSensorData[sensor]["building"],
-        //                 "sensor-level-id": allSensorData[sensor]["sensor-location-level"] + allSensorData[sensor]["sensor-location-id"],
-        //                 "sensor_status": allSensorData[sensor]["sensor_status"],
-        //                 "remove" : coolStuff
-        //             };
-        //
-        //             if (typeof allSensorData[sensor]["error"] !== "undefined") {
-        //                 row["sensor_status"] = "-";
-        //             }
-        //
-        //         dataList.push(row);
-        //       }
-        //     }
-        // }
+        var {watchlist} = this.state;
 
         return (
             <div>
-                <Griddle results={dataList}
+                <Griddle results={watchlist}
                           showFilter={true}
                           initialSort="building_name"
                           tableClassName="piOverviewTable"
