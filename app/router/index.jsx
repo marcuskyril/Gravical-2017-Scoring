@@ -37,11 +37,7 @@ export default(
       <Route path="/admin" component={Main} >
             <IndexRoute component={Admin} onEnter={requireLogin}/>
       </Route>
-
-      <Route path="/score" component={Main} >
-            <IndexRoute component={Score} onEnter={requireLogin}/>
-      </Route>
-
+      
       <Route path="/login" component={Login} />
       <Route path="*" component={PageNotFound}/>
     </Router>

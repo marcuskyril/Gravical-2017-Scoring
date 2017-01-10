@@ -7,6 +7,8 @@ const GET_CURRENT_EVENT_URL = "http://office.livestudios.com:41111/backend/api/g
 const GET_CURRENT_DETAIL_URL = "http://office.livestudios.com:41111/backend/api/get_current_detail.php"
 const GET_LAST_CLIMBER_ID_URL = "http://office.livestudios.com:41111/backend/api/get_last_climber_id.php";
 const GET_ALL_RESULTS_URL = "http://office.livestudios.com:41111/backend/api/get_past_results.php";
+const CLEAR_RESULTS_URL = "http://office.livestudios.com:41111/backend/api/clear_results_database.php";
+const CLEAR_RESULTS_BY_CAT_URL = "http://office.livestudios.com:41111/backend/api/clear_completed_event_results.php";
 
 module.exports = {
 
@@ -27,6 +29,8 @@ module.exports = {
         });
     },
 
+
+
     registerClimber: function(participantID, categoryID, detail) {
 
         return $.ajax({
@@ -38,6 +42,33 @@ module.exports = {
             data: {participantID, categoryID, detail},
             success: function(response) {
                 console.log("Register API", response);
+            }
+        });
+    },
+
+    clearResults: function() {
+        return $.ajax({
+            type: "POST",
+            beforeSend: function(request) {
+                request.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+            },
+            url: CLEAR_RESULTS_URL,
+            success: function(response) {
+                console.log(response);
+            }
+        });
+    },
+
+    clearResultsByCat: function(categoryID) {
+        return $.ajax({
+            type: "POST",
+            beforeSend: function(request) {
+                request.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+            },
+            data: {categoryID},
+            url: CLEAR_RESULTS_BY_CAT_URL,
+            success: function(response) {
+                console.log(response);
             }
         });
     },

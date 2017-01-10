@@ -9,32 +9,7 @@
     src: url('http://office.livestudios.com:41111/fonts/PixelSplitter-Bold.ttf');
 
 }
-@keyframes munch {
-    0% {
-        transform: rotate(90deg);
-    }
 
-    50% {
-        transform: rotate(0deg);
-    }
-
-    100% {
-        transform: rotate(90deg);
-    }
-}
-@keyframes bite {
-    0% {
-        transform: rotate(45deg);
-    }
-
-    50% {
-        transform: rotate(90deg);
-    }
-
-    100% {
-        transform: rotate(45deg);
-    }
-}
 $space-large: 1.5rem;
 $title-color: #555;
 $nav-font: #333;
@@ -68,6 +43,124 @@ body {
     -webkit-animation-iteration-count: 1;
     -webkit-animation-timing-function: linear;
 }
+// 
+// @keyframes munch {
+//     0% {
+//         transform: rotate(90deg);
+//     }
+//
+//     50% {
+//         transform: rotate(0deg);
+//     }
+//
+//     100% {
+//         transform: rotate(90deg);
+//     }
+// }
+// @keyframes bite {
+//     0% {
+//         transform: rotate(45deg);
+//     }
+//
+//     50% {
+//         transform: rotate(90deg);
+//     }
+//
+//     100% {
+//         transform: rotate(45deg);
+//     }
+// }
+//
+// .pacman-holder.moving {
+//     width: 100px;
+//     animation: move 2.7s linear infinite;
+//     -moz-animation: move 2.7s linear infinite;
+//     -webkit-animation: move 2.7s linear infinite;
+// }
+//
+// .pacman-holder {
+//     position: relative;
+//     width: 200px;
+//     margin: 100px auto;
+// }
+//
+// .pacman-container {
+//     display: block;
+//     width: 100px;
+//     height: 100px;
+//     -webkit-transform: rotate(45deg);
+//     -moz-transform: rotate(45deg);
+//     -o-transform: rotate(45deg);
+//     transform: rotate(45deg);
+//     animation: bite 0.5s linear infinite;
+//     -moz-animation: bite 0.5s linear infinite;
+//     -webkit-animation: bite 0.5s linear infinite;
+// }
+//
+// .pacman-holder.moving .dot {
+//     animation: movedot 1s linear infinite;
+//     -moz-animation: movedot 1s linear infinite;
+//     -webkit-animation: movedot 1s linear infinite;
+//     animation-delay: 0.2s;
+//     -moz-animation-delay: 0.2s;
+//     -webkit-animation-delay: 0.2s;
+// }
+//
+// .dot {
+//     background-color: #fff;
+//     position: absolute;
+//     z-index: 0;
+//     top: 40px;
+//     left: 200px;
+//     width: 20px;
+//     height: 20px;
+//     -moz-border-radius: 50px;
+//     -webkit-border-radius: 50px;
+//     -o-border-radius: 50px;
+//     border-radius: 50px;
+//     animation: movedot 0.5s linear infinite;
+//     -moz-animation: movedot 0.5s linear infinite;
+//     -webkit-animation: movedot 0.5s linear infinite;
+//     animation-delay: 0.2s;
+//     -moz-animation-delay: 0.2s;
+//     -webkit-animation-delay: 0.2s;
+// }
+//
+// .pacman-body {
+//     background-color: #ff0;
+//     position: absolute;
+//     width: 100px;
+//     height: 100px;
+//     -moz-border-radius: 50px;
+//     -webkit-border-radius: 50px;
+//     -o-border-radius: 50px;
+//     border-radius: 50px;
+// }
+//
+// .pacman-mouth {
+//     position: absolute;
+//     left: 2px;
+//     width: 102px;
+//     height: 102px;
+//     -moz-border-radius: 50px;
+//     -webkit-border-radius: 50px;
+//     -o-border-radius: 50px;
+//     border-radius: 50px;
+//     clip: rect(0px, 100px, 100px, 52px);
+// }
+//
+// .pacman-mouth .pacman {
+//     background-color: $crazy-light-grey;
+//     -webkit-transform: rotate(90deg);
+//     -moz-transform: rotate(90deg);
+//     -o-transform: rotate(90deg);
+//     transform: rotate(90deg);
+//     animation: munch 0.5s linear infinite;
+//     -moz-animation: munch 0.5s linear infinite;
+//     -webkit-animation: munch 0.5s linear infinite;
+// }
+
+
 @-webkit-keyframes fontfix {
     from {
         opacity: 1;

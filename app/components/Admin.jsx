@@ -2,11 +2,13 @@ var React = require('react');
 import * as Redux from 'react-redux';
 import * as actions from 'actions';
 import firebase, {firebaseRef} from 'app/firebase/';
+import Popup from 'react-popup';
 var FontAwesome = require('react-fontawesome');
 var settingsAPI = require('settingsAPI');
 var scoreAPI = require('scoreAPI');
 var climberManagementAPI = require('climberManagementAPI');
 var Select = require('react-select');
+var AddSensor = require('AddSensor');
 var user = null;
 
 class Admin extends React.Component {
@@ -27,6 +29,7 @@ class Admin extends React.Component {
             currentDetail: 0,
             currentEvent: '-',
             numDetails: 0,
+            editMessage: '',
             hasEventStarted: false
         }
 
@@ -117,10 +120,20 @@ class Admin extends React.Component {
         });
     }
 
-    addRecord() {
+    editRecord() {
         var route = this.refs.route.value;
         var attempts = this.refs.attempts.value;
-        var tagNum = this.refs.tagNum.value;
+        var tagID = this.refs.tagNum.value;
+        var that = this;
+
+        //tagID, route, attempts, judge
+
+        climberManagementAPI.submitScore(tagID, route, attempts, "admin").then(function(response) {
+            console.log("response", response);
+            that.setState({
+                editMessage: response
+            });
+        });
     }
 
     addClimber() {
@@ -202,15 +215,24 @@ class Admin extends React.Component {
 
     startEvent() {
         var that = this;
-        var category = this.state.selectedCategoryUtil;
-        climberManagementAPI.startEvent(category).then(function(response) {
-            // console.log("response", response);
+        var {hasEventStarted, selectedCategoryUtil} = this.state;
 
-            that.setState({
-                hasEventStarted: true,
-                currentEvent: category
-            })
-        });
+        if(hasEventStarted) {
+            alert("Please end event yo.");
+        } else {
+
+            if(selectedCategoryUtil === "") {
+                alert("Niggaaaaaa, select an event.");
+            } else {
+                climberManagementAPI.startEvent(selectedCategoryUtil).then(function(response) {
+
+                    that.setState({
+                        hasEventStarted: true,
+                        currentEvent: category
+                    })
+                });
+            }
+        }
 
         this.setDetail(1);
     }
@@ -233,11 +255,44 @@ class Admin extends React.Component {
         }
     }
 
+    previousDetail() {
+        var {currentDetail, numDetails} = this.state;
+
+        if(currentDetail < numDetails) {
+            this.setDetail(parseInt(currentDetail) - 1);
+        }
+    }
+
+    launchStartEventDialog() {
+        var {hasEventStarted} = this.state;
+        if(!hasEventStarted) {
+            if (confirm("Nigga, you wanna start this event?") == true) {
+               this.startEvent();
+            } else {
+               console.log("Start event cancelled");
+            }
+        } else {
+            alert("There's an ongoing event bruh.");
+        }
+    }
+
+    launchEndEventDialog() {
+        var {hasEventStarted} = this.state;
+        if(hasEventStarted) {
+            if (confirm("Nigga, you wanna end this event?") == true) {
+               this.endEvent();
+            } else {
+               console.log("End event cancelled");
+            }
+        } else {
+            alert("No ongoing event bruh.");
+        }
+    }
+
     endEvent() {
+
         var that = this;
         climberManagementAPI.endEvent().then(function(response) {
-
-            // console.log('response', response);
 
             that.setState({
                 currentEvent: '-',
@@ -247,6 +302,51 @@ class Admin extends React.Component {
         });
 
         this.setDetail(0);
+    }
+
+    launchClearTableDialog() {
+        if (confirm("Nigga, you wanna clear all results?") == true) {
+           climberManagementAPI.clearResults().then(function(response) {
+               alert(response);
+           });
+        } else {
+           console.log("End event cancelled");
+        }
+    }
+
+    clearTable() {
+        var {hasEventStarted} = this.state;
+
+        if(!hasEventStarted) {
+            this.launchClearTableDialog();
+        } else {
+            alert('End current event pl0x');
+        }
+    }
+
+    launchClearTableByCatDialog() {
+        var {selectedCategoryUtil} = this.state;
+        if(selectedCategoryUtil.length > 0) {
+            if (confirm(`Nigga, you wanna clear results from ${selectedCategoryUtil}?`) == true) {
+                climberManagementAPI.clearResultsByCat(selectedCategoryUtil).then(function(response) {
+                    alert(response);
+                });
+            } else {
+               console.log("End event cancelled");
+            }
+        } else {
+            alert("Select a category bruh.")
+        }
+    }
+
+    clearTableByCat() {
+        var {hasEventStarted, selectedCategoryUtil} = this.state;
+
+        if(!hasEventStarted) {
+            this.launchClearTableByCatDialog();
+        } else {
+            alert('Please end current event pl0x');
+        }
     }
 
     render() {
@@ -262,7 +362,8 @@ class Admin extends React.Component {
             registerMessage,
             currentDetail,
             currentEvent,
-            hasEventStarted
+            hasEventStarted,
+            editMessage
         } = this.state;
 
         return (
@@ -296,7 +397,7 @@ class Admin extends React.Component {
                                             <input type="text" name="lastName" ref="lastName" placeholder="Last Name" required/>
                                         </label>
                                         <legend>Gender</legend>
-                                        <input type="radio" onChange={this.handleChange.bind(this)} name="gender" value="male"/><label htmlFor="male">Male</label>
+                                        <input type="radio" onChange={this.handleChange.bind(this)} name="gender" defaultChecked value="male"/><label htmlFor="male">Male</label>
                                         <input type="radio" onChange={this.handleChange.bind(this)} name="gender" value="female"/><label htmlFor="female">female</label>
                                         <label>Date of Birth
                                             <input type="date" name="dob" ref="dob" required/>
@@ -331,7 +432,7 @@ class Admin extends React.Component {
                                   <div className="tabs-panel" id="panel4v">
                                     <form>
                                       <label>Tag Number
-                                            <input type="text" name="tagNum" ref="tagNum" placeholder="Tag Number" required/>
+                                            <input type="text" name="tagNum" ref="tagNum" placeholder="OMQ001" required/>
                                       </label>
                                       <label>Route Number
                                         <select ref="route">
@@ -344,10 +445,11 @@ class Admin extends React.Component {
                                         </select>
                                       </label>
                                       <label>Attempts
-                                          <input type="text" name="attempts" ref="attempts" placeholder="Attempts" required/>
-                                          <p>Separate each attempt with a period. E.g. A.A.A.B.B.T</p>
+                                          <input type="text" name="attempts" ref="attempts" placeholder="ABBBT" required/>
                                       </label>
-                                      <button onClick={this.addRecord.bind(this)} className="button proceed expanded">Add Record</button>
+                                      <button onClick={this.editRecord.bind(this)} className="button proceed expanded">Edit Record</button>
+                                    <ResponseMessage message={editMessage}/>
+
                                   </form>
                                   </div>
                                 </div>
@@ -359,29 +461,30 @@ class Admin extends React.Component {
                     <div style={{
                         marginBottom: '1.2rem'
                     }}>
-                        <div className="page-title">Utilities</div>
+                        <div className="page-title">Event Management</div>
                         <div className="profile wrapper settings-wrapper">
                             <div className="row dailyReportTimeHeader settings-subheader-container">
                                 <div className="row columns">
-                                    <a className="button proceed" onClick={this.launchAddClimber}>
-                                        <FontAwesome name='download'/> Download CSV
-                                    </a>
 
-                                    <p>Current Event: {currentEvent}</p>
-                                    <p>Current detail: {currentDetail === 0 ? "-" : currentDetail}/{numDetails === 0 ? "-" : numDetails}</p>
+                                    <p><b>Current Event</b>: {currentEvent}</p>
+                                    <p><b>Current detail</b>: {currentDetail === 0 ? "-" : currentDetail}/{numDetails === 0 ? "-" : numDetails}</p>
 
                                     <form>
-                                        <label>Category
-                                            <Select name='selectedCategory'
-                                                    value={selectedCategoryUtil}
-                                                    options={categories}
-                                                    placeholder={"Category"}
-                                                    onChange={this.selectCategoryUtil.bind(this)}/>
-                                        </label>
+                                        <div className="row">
+                                        <div className="columns large-6">
+                                            <label>Category
+                                                <Select name='selectedCategory'
+                                                        value={selectedCategoryUtil}
+                                                        options={categories}
+                                                        placeholder={"Category"}
+                                                        onChange={this.selectCategoryUtil.bind(this)}/>
+                                            </label>
+                                        </div>
+                                        </div>
 
                                         <div className="margin-top-small">
 
-                                            <a className="button proceed margin-left-tiny" onClick={this.startEvent.bind(this)}>
+                                            <a className="button proceed margin-left-tiny" onClick={this.launchStartEventDialog.bind(this)}>
                                                 Start Event
                                             </a>
 
@@ -389,21 +492,44 @@ class Admin extends React.Component {
                                                 Start Next Detail
                                             </a>
 
-                                            <a className="button proceed margin-left-tiny" onClick={this.endEvent.bind(this)}>
+                                            <a className="button proceed margin-left-tiny" onClick={this.previousDetail.bind(this)}>
+                                                Previous Detail
+                                            </a>
+
+                                            <a className="button cancel margin-left-tiny" onClick={this.launchEndEventDialog.bind(this)}>
                                                 End Event
+                                            </a>
+
+                                            <a className="button cancel margin-left-tiny" onClick={this.clearTable.bind(this)}>
+                                                Clear Results
+                                            </a>
+
+                                            <a className="button cancel margin-left-tiny" onClick={this.clearTableByCat.bind(this)}>
+                                                Clear Results by Category
                                             </a>
                                         </div>
                                     </form>
-
-
                                 </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <div style={{
+                        marginBottom: '1.2rem'
+                    }}>
+                        <div className="page-title">Utilities</div>
+                        <div className="profile wrapper settings-wrapper">
+                            <div className="row columns">
+                                <a className="button proceed" onClick={this.launchAddClimber}>
+                                    <FontAwesome name='download'/> Download CSV
+                                </a>
                             </div>
                         </div>
                     </div>
 
                     <ResponseMessage message={message}/>
                 </div>
-
         );
     }
 };
