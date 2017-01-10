@@ -228,7 +228,7 @@ class Admin extends React.Component {
 
                     that.setState({
                         hasEventStarted: true,
-                        currentEvent: category
+                        currentEvent: selectedCategoryUtil
                     })
                 });
             }
@@ -521,7 +521,7 @@ class Admin extends React.Component {
                         <div className="page-title">Utilities</div>
                         <div className="profile wrapper settings-wrapper">
                             <div className="row columns">
-                                <a className="button proceed" onClick={this.launchAddClimber}>
+                                <a className="button proceed" onClick={this.launchAddClimber} href="http://office.livestudios.com:41111/backend/completed-events/">
                                     <FontAwesome name='download'/> Download CSV
                                 </a>
                             </div>

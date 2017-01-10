@@ -10959,7 +10959,7 @@
 
 	                        that.setState({
 	                            hasEventStarted: true,
-	                            currentEvent: category
+	                            currentEvent: selectedCategoryUtil
 	                        });
 	                    });
 	                }
@@ -11462,7 +11462,7 @@
 	                            { className: 'row columns' },
 	                            React.createElement(
 	                                'a',
-	                                { className: 'button proceed', onClick: this.launchAddClimber },
+	                                { className: 'button proceed', onClick: this.launchAddClimber, href: 'http://office.livestudios.com:41111/backend/completed-events/' },
 	                                React.createElement(FontAwesome, { name: 'download' }),
 	                                ' Download CSV'
 	                            )
