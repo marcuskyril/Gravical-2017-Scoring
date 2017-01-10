@@ -19,8 +19,6 @@ class WatchComponent extends React.Component {
             }
         }
 
-        console.log(r.join());
-
         return r.join();
     }
 
@@ -118,23 +116,30 @@ class Tableaux extends React.Component {
 
         var results = [];
         var rawResults = this.props.data;
-        var rank = 1;
+
+        var rank = 0;
+        var prev_score = "0";
         // to do
         // check for last result;
-        for (var result in rawResults) {
-            if (rawResults.hasOwnProperty(result)) {
-                var id = result;
-                var row = {
-                    "rank": rank++,
-                    "ID": rawResults[result]["ID"],
-                    "name": rawResults[result]["name"],
-                    "detail": rawResults[result]["detail"],
-                    "score": rawResults[result]["score"],
-                    "actions": rawResults[result]["ID"]
-                };
-            }
 
-            results.push(row);
+        if(rawResults) {
+            // console.log(rawResults);
+            for(var i = 0; i < rawResults.length; i++) {
+                if (rawResults[i]["score"] != prev_score) {
+                    rank++;
+                }
+                var row = {
+                    "rank" : rank,
+                    "ID": rawResults[i]["ID"],
+                    "name": rawResults[i]["name"],
+                    "detail": rawResults[i]["detail"],
+                    "score": rawResults[i]["score"],
+                    "actions": rawResults[i]["ID"]
+                }
+                prev_score = rawResults[i]["score"];
+
+                results.push(row);
+            }
         }
 
         this.setState({results: results});
@@ -162,7 +167,7 @@ class Tableaux extends React.Component {
         }
 
         return (
-            <Griddle results={results} columnMetadata={tableMetaData} tableClassName="table" showFilter={true} columns={currentlySelected} showSettings={false} />
+            <Griddle results={results} columnMetadata={tableMetaData} tableClassName="table" showFilter={true} columns={currentlySelected} resultsPerPage={10} showSettings={false} />
         );
     }
 }

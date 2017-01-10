@@ -1,12 +1,38 @@
 @import url( 'http://fonts.googleapis.com/css?family=Roboto:300,400');
 @import url( 'https://fonts.googleapis.com/css?family=Pathway+Gothic+One');
 @import url( 'https://fonts.googleapis.com/css?family=Lato:400,900i');
-
 @font-face {
-  font-family: 'PixelSplitter';
-  src: url('/fonts/PixelSplitter-Bold.ttf')
+    font-family: 'PixelSplitter';
+    // src: url('/app/fonts/PixelSplitter-Bold.ttf')
+    // FOR IAN
+    src: url('/fonts/PixelSplitter-Bold.ttf');
 }
+@keyframes munch {
+    0% {
+        transform: rotate(90deg);
+    }
 
+    50% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(90deg);
+    }
+}
+@keyframes bite {
+    0% {
+        transform: rotate(45deg);
+    }
+
+    50% {
+        transform: rotate(90deg);
+    }
+
+    100% {
+        transform: rotate(45deg);
+    }
+}
 $space-large: 1.5rem;
 $title-color: #555;
 $nav-font: #333;
@@ -16,8 +42,7 @@ $body-color: #1a1b1b;
 $dark-grey: #323232;
 $light-grey: #373837;
 $not-so-dark-grey: #e8e8e8;
-$crazy-light-grey: #f2f2f2;
-// Chart colors
+$crazy-light-grey: #f2f2f2; // Chart colors
 $green: #008000;
 $orange: #cc7a00;
 $red: #990000;
@@ -35,16 +60,20 @@ html {
 }
 
 body {
-  -webkit-animation-delay: 0.1s;
+    -webkit-animation-delay: 0.1s;
     -webkit-animation-name: fontfix;
     -webkit-animation-duration: 0.1s;
     -webkit-animation-iteration-count: 1;
     -webkit-animation-timing-function: linear;
 }
-
 @-webkit-keyframes fontfix {
-    from { opacity: 1; }
-    to   { opacity: 1; }
+    from {
+        opacity: 1;
+    }
+
+    to {
+        opacity: 1;
+    }
 }
 
 .row {
@@ -82,7 +111,7 @@ a {
     color: $black;
 
     a:hover {
-      color: $header-color;
+        color: $header-color;
     }
 }
 
@@ -275,7 +304,7 @@ label {
 }
 
 #watchList {
-  display: none;
+    display: none;
 }
 
 .settings-page-title {
@@ -295,7 +324,7 @@ label {
 }
 
 .settings-wrapper {
-  margin-top: 1rem;
+    margin-top: 1rem;
     margin-left: 1.8rem;
     color: #000;
 }
@@ -481,14 +510,14 @@ table.sensor-details-table {
     // padding-top: 1rem;
 }
 
+#considerationPeriodPanel,
+#dailyReportTimePanel,
 #emailPanel,
+#emailRecipientPanel,
+#flappingDownsPanel,
+#maxDataGapPanel,
 #namePanel,
 #passwordPanel,
-#dailyReportTimePanel,
-#flappingDownsPanel,
-#considerationPeriodPanel,
-#emailRecipientPanel,
-#maxDataGapPanel,
 #sensorOfflineAllowancePanel {
     display: none;
     padding: 1rem;
@@ -504,7 +533,7 @@ input[type=checkbox]:checked ~ #port {
 }
 
 .inactive-link {
-  display: none;
+    display: none;
 }
 
 .button-cancel {
@@ -513,7 +542,7 @@ input[type=checkbox]:checked ~ #port {
 }
 
 .font-white {
-  color: #fff;
+    color: #fff;
 }
 
 .green {
@@ -545,22 +574,22 @@ input[type=checkbox]:checked ~ #port {
 }
 
 .loader {
-  height: 4px;
-  width: 100%;
-  position: relative;
-  overflow: hidden;
-  background-color: #ddd;
+    height: 4px;
+    width: 100%;
+    position: relative;
+    overflow: hidden;
+    background-color: #ddd;
 }
 
-.loader:before{
-  display: block;
-  position: absolute;
-  content: "";
-  left: -200px;
-  width: 200px;
-  height: 4px;
-  background-color: #2980b9;
-  animation: loading 2s linear infinite;
+.loader:before {
+    display: block;
+    position: absolute;
+    content: "";
+    left: -200px;
+    width: 200px;
+    height: 4px;
+    background-color: #2980b9;
+    animation: loading 2s linear infinite;
 }
 
 .no-border {
@@ -568,14 +597,31 @@ input[type=checkbox]:checked ~ #port {
     width: inherit;
     background-color: transparent;
 }
-
 @keyframes loading {
-    from {left: -200px; width: 30%;}
-    50% {width: 30%;}
-    70% {width: 70%;}
-    80% { left: 50%;}
-    95% {left: 120%;}
-    to {left: 100%;}
+    from {
+        left: -200px;
+        width: 30%;
+    }
+
+    50% {
+        width: 30%;
+    }
+
+    70% {
+        width: 70%;
+    }
+
+    80% {
+        left: 50%;
+    }
+
+    95% {
+        left: 120%;
+    }
+
+    to {
+        left: 100%;
+    }
 }
 
 table.sensor-details-table td:nth-child(1) {
@@ -583,24 +629,25 @@ table.sensor-details-table td:nth-child(1) {
 }
 
 table.sensorHealthTable tbody tr:nth-last-child(1) {
-  background-color: #fafafa;
-  border-top: 0.25px solid #e4e4e4;
+    background-color: #fafafa;
+    border-top: 0.25px solid #e4e4e4;
 }
 
 table.sensorHealthTable tbody th:nth-child(1) {
-  font-weight: normal;
+    font-weight: normal;
 }
 
 table.sensor-details-table tbody {
     text-align: left;
 }
 
-table.sensor-details-table td:nth-child(2), table.sensor-details-table th:nth-child(2) {
+table.sensor-details-table td:nth-child(2),
+table.sensor-details-table th:nth-child(2) {
     word-break: break-all;
     text-align: center;
 }
 
-table.actionLog tr>td:nth-child(2) {
+table.actionLog tr > td:nth-child(2) {
     font-weight: bold;
 }
 
@@ -619,29 +666,32 @@ table.actionLog tr>td:nth-child(2) {
     color: #000 !important;
 }
 
-#top-bar-pin:hover, #top-bar-delete:hover, #top-bar-edit:hover {
+#top-bar-delete:hover,
+#top-bar-edit:hover,
+#top-bar-pin:hover {
     color: $header-color;
 }
 
-input::-webkit-outer-spin-button,
-input::-webkit-inner-spin-button {
+input::-webkit-inner-spin-button,
+input::-webkit-outer-spin-button {
     /* display: none; <- Crashes Chrome on hover */
     -webkit-appearance: none;
-    margin: 0; /* <— Apparently some margin are still there even though it's hidden */
+    margin: 0;
+    /* <— Apparently some margin are still there even though it's hidden */
 }
 
 .tabs {
-  border: none;
-  background: #f2f2f2;
+    border: none;
+    background: #f2f2f2;
 }
 
-.addEditSensor > tbody{
-  //border-left: 2px solid #e4e4e4;
-  border: none;
+.addEditSensor > tbody {
+    //border-left: 2px solid #e4e4e4;
+    border: none;
 }
 
 span._800 {
-  font-weight: 800;
+    font-weight: 800;
 }
 
 .tabs-content.vertical {
@@ -649,21 +699,21 @@ span._800 {
 }
 
 .btn-score {
-  background: $green;
-  width: 100%;
-  height: 75px;
-  display: flex;
-  justify-content: center;
-  align-content: center;
-  flex-direction: column;
-  font-size: 1.5rem;
+    background: $green;
+    width: 100%;
+    height: 75px;
+    display: flex;
+    justify-content: center;
+    align-content: center;
+    flex-direction: column;
+    font-size: 1.5rem;
 }
 
 .btn-submit {
-  height: 75px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
-  font-size: 1.5rem;
+    height: 75px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    font-size: 1.5rem;
 }

@@ -68,28 +68,34 @@ class Dashboard extends React.Component {
                 // console.log("jalapeño", connection);
 
                 var results = [];
-                var rawResults = data['list'];
-                var rank = 0;
-                var prev_score = "0";
+                console.log("data", data);
 
-                for(var i = 0; i < rawResults.length; i++) {
-                    if (rawResults[i]["score"] != prev_score) {
-                        rank++;
-                    }
-                    var row = {
-                        "rank" : rank,
-                        "category": that.state.currentEvent,
-                        "ID": rawResults[i]["ID"],
-                        "name": rawResults[i]["name"],
-                        "detail": rawResults[i]["detail"],
-                        "score": rawResults[i]["score"]
-                    }
-                    prev_score = rawResults[i]["score"];
+                if(data !== null) {
+                    var rawResults = data['list'];
+                    var rank = 0;
+                    var prev_score = "0";
 
-                    results.push(row);
+                    for(var i = 0; i < rawResults.length; i++) {
+                        if (rawResults[i]["score"] != prev_score) {
+                            rank++;
+                        }
+                        var row = {
+                            "rank" : rank,
+                            "category": that.state.currentEvent,
+                            "ID": rawResults[i]["ID"],
+                            "name": rawResults[i]["name"],
+                            "detail": rawResults[i]["detail"],
+                            "score": rawResults[i]["score"]
+                        }
+                        prev_score = rawResults[i]["score"];
+
+                        results.push(row);
+                    }
+                } else {
+                    console.warn('problem siol');
                 }
 
-                console.log("results", results);
+                // console.log("results", results);
 
                 that.setState({
                     connection: connection,
@@ -148,7 +154,7 @@ class Dashboard extends React.Component {
 
             <div className="dashboard margin-top-md">
                 <div className="row">
-                    <div className="columns small-12 medium-12 large-5">
+                    <div className="columns small-12 medium-12 large-6">
                         <div>
                             <div className="callout callout-dark-header">
                                 <div className="page-title">Watch List</div>
@@ -160,7 +166,7 @@ class Dashboard extends React.Component {
 
                     </div>
 
-                    <div className="allSensors columns medium-12 large-7">
+                    <div className="allSensors columns medium-12 large-6">
                         <div className="callout callout-dark-header">
                             <div className="page-title">Current Event: {currentEvent === "" ? "-" : currentEvent} {currentDetail === 0 ? "-" : currentDetail}/{totalDetails === 0 ? "-" : totalDetails}</div>
                         </div>
@@ -252,6 +258,15 @@ class Dashboard extends React.Component {
                                 textShadow: '0 1px 0 rgba(0, 0, 0, 0.1)',
                                 marginLeft: '0.5rem'
                             }}/>
+
+                        </div>
+
+                        <div class="pacman-holder moving">
+                            <div class="pacman-container">
+                                <div class="pacman-body"></div>
+                                <div class="pacman-mouth"><div class="pacman"></div></div>
+                            </div>
+                            <div class="dot"></div>
                         </div>
 
                     </div>

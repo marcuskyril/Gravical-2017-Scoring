@@ -22,10 +22,10 @@ var requireLogin = (nextState, replace, next) => {
 };
 
 var redirectIfLoggedIn = (nextState, replace, next) => {
-    if (firebase.auth().currentUser) {
-        replace('/admin');
-    }
-    next();
+    // if (firebase.auth().currentUser) {
+    //     replace('/admin');
+    // }
+    // next();
 };
 
 export default(
@@ -42,7 +42,7 @@ export default(
             <IndexRoute component={Score} onEnter={requireLogin}/>
       </Route>
 
-      <Route path="/login" component={Login} onEnter={redirectIfLoggedIn}/>
+      <Route path="/login" component={Login} />
       <Route path="*" component={PageNotFound}/>
     </Router>
 );
