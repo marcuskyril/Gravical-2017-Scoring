@@ -122,7 +122,7 @@ class Results extends React.Component {
         ];
 
         return (
-            <Griddle results={results} columnMetadata={tableMetaData} tableClassName="table" showFilter={true} columns={currentlySelected} showSettings={false} />
+            <Griddle results={results} columnMetadata={tableMetaData} tableClassName="table" showFilter={true} resultsPerPage={25} columns={currentlySelected} showSettings={false} />
         );
     }
 }

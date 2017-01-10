@@ -3,9 +3,11 @@
 @import url( 'https://fonts.googleapis.com/css?family=Lato:400,900i');
 @font-face {
     font-family: 'PixelSplitter';
-    // src: url('/app/fonts/PixelSplitter-Bold.ttf')
+    src: url('/app/fonts/PixelSplitter-Bold.ttf');
     // FOR IAN
     src: url('/fonts/PixelSplitter-Bold.ttf');
+    src: url('http://office.livestudios.com:41111/fonts/PixelSplitter-Bold.ttf');
+
 }
 @keyframes munch {
     0% {

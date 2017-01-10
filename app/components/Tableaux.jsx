@@ -167,7 +167,7 @@ class Tableaux extends React.Component {
         }
 
         return (
-            <Griddle results={results} columnMetadata={tableMetaData} tableClassName="table" showFilter={true} columns={currentlySelected} resultsPerPage={10} showSettings={false} />
+            <Griddle results={results} columnMetadata={tableMetaData} tableClassName="table" showFilter={true} columns={currentlySelected} resultsPerPage={20} showSettings={false} />
         );
     }
 }
