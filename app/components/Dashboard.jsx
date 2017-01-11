@@ -126,26 +126,6 @@ class Dashboard extends React.Component {
         }
     }
 
-    // toggleHide(id) {
-    //     var panel = $('#' + id);
-    //
-    //     if ((panel).css('display') === 'block') {
-    //         panel.slideUp();
-    //         panel.siblings().addClass('callout-minimize');
-    //
-    //     } else {
-    //         panel.slideDown();
-    //         panel.siblings().removeClass('callout-minimize');
-    //         panel.siblings().addClass('callout-dark-header');
-    //     }
-    //
-    //     // FOR MINIMIZING, IF NECESSARY
-    //
-    //     // <button onClick={() => this.toggleHide('watchList')} className="icon-btn-text-small">
-    //     //     <FontAwesome name='expand'/>
-    //     // </button>
-    // }
-
     render() {
 
         var {results, currentEvent, currentTime, currentDetail, totalDetails, allResults} = this.state;

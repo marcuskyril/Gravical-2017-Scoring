@@ -9,6 +9,7 @@ var scoreAPI = require('scoreAPI');
 var climberManagementAPI = require('climberManagementAPI');
 var Select = require('react-select');
 var AddSensor = require('AddSensor');
+import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
 var user = null;
 
 class Admin extends React.Component {
@@ -130,11 +131,15 @@ class Admin extends React.Component {
 
         //tagID, route, attempts, judge
 
-        climberManagementAPI.submitScore(tagID, route, attempts, "admin").then(function(response) {
+        scoreAPI.submitScore(tagID, route, attempts, "admin").then(function(response) {
             console.log("response", response);
             that.setState({
-                editMessage: response
+                editMessage: response.message
             });
+
+            that.refs.route.value = '';
+            that.refs.attempts.value = '';
+            that.refs.tagNum.value = '';
         });
     }
 
@@ -401,93 +406,86 @@ class Admin extends React.Component {
 
         return (
                 <div className="large-10 columns large-centered margin-top-md">
-                    <div style={{
-                        marginBottom: '1.2rem'
-                    }}>
-                        <div className="page-title">Climber Management</div>
-                            <div className="profile wrapper settings-wrapper" style={{
-                                'color': '#000'
-                            }}>
-                            <div className="row collapse">
-                              <div className="medium-3 columns">
-                                <ul className="tabs vertical" id="example-vert-tabs" data-tabs>
-                                  <li className="tabs-title is-active"><a href="#panel1v" aria-selected="true"><FontAwesome name='plus-circle'/> Add Climber</a></li>
-                                  <li className="tabs-title"><a href="#panel4v"><FontAwesome name='edit'/> Edit Score</a></li>
-                                  <li className="tabs-title"><a href="#panel5v"><FontAwesome name='edit'/> Edit Category</a></li>
-                                </ul>
-                                </div>
-                                <div className="medium-9 columns">
-                                <div className="tabs-content vertical" data-tabs-content="example-vert-tabs">
-                                  <div className="tabs-panel is-active" id="panel1v">
-                                    <form>
-                                        <p>Recommended ID: {recommendedID}</p>
-                                        <label>Climber ID
-                                            <input type="text" name="climberID" ref="climberID" placeholder="Climber ID" required/>
-                                        </label>
-                                        <label>First Name
-                                            <input type="text" name="firstName" ref="firstName" placeholder="First Name" required/>
-                                        </label>
-                                        <label>Last Name
-                                            <input type="text" name="lastName" ref="lastName" placeholder="Last Name" required/>
-                                        </label>
-                                        <legend>Gender</legend>
-                                        <input type="radio" onChange={this.handleChange.bind(this)} name="gender" defaultChecked value="male"/><label htmlFor="male">Male</label>
-                                        <input type="radio" onChange={this.handleChange.bind(this)} name="gender" value="female"/><label htmlFor="female">female</label>
-                                        <label>Date of Birth
-                                            <input type="date" name="dob" ref="dob" required/>
-                                        </label>
-                                        <label>NRIC
-                                            <input type="text" name="nric" ref="nric" placeholder="NRIC" required/>
-                                        </label>
-                                        <label>Nationality
-                                            <input type="text" name="nationality" ref="nationality" placeholder="Nationality" required/>
-                                        </label>
-                                        <label>Organization
-                                            <input type="text" name="organization" ref="organization" placeholder="Organization" required/>
-                                        </label>
+                    <div style={{marginBottom: '1.2rem'}}>
+                        <div className="callout callout-dark-header">
+                            <div className="page-title">Climber Management</div>
+                        </div>
+                        <div className="callout callout-dark">
 
-                                        <label>Category
-                                            <Select name='selectedCategory'
-                                                    value={selectedCategory}
-                                                    options={categories}
-                                                    placeholder={"Category"}
-                                                    onChange={this.selectCategory.bind(this)}/>
-                                        </label>
+                                <Tabs>
+                                  <TabList>
+                                    <Tab><FontAwesome name='plus-circle'/> Add Climber</Tab>
+                                    <Tab><FontAwesome name='edit'/> Edit Score</Tab>
+                                    <Tab><FontAwesome name='edit'/> Edit Category</Tab>
+                                  </TabList>
+                                  <TabPanel>
+                                          <form>
+                                            <label>Climber ID ({recommendedID})
+                                                <input type="text" name="climberID" ref="climberID" placeholder="Climber ID" required/>
+                                            </label>
+                                            <label>First Name
+                                                <input type="text" name="firstName" ref="firstName" placeholder="First Name" required/>
+                                            </label>
+                                            <label>Last Name
+                                                <input type="text" name="lastName" ref="lastName" placeholder="Last Name" required/>
+                                            </label>
+                                            <legend>Gender</legend>
+                                            <input type="radio" onChange={this.handleChange.bind(this)} name="gender" defaultChecked value="male"/><label htmlFor="male">Male</label>
+                                            <input type="radio" onChange={this.handleChange.bind(this)} name="gender" value="female"/><label htmlFor="female">female</label>
+                                            <label>Date of Birth
+                                                <input type="date" name="dob" ref="dob" required/>
+                                            </label>
+                                            <label>NRIC
+                                                <input type="text" name="nric" ref="nric" placeholder="NRIC" required/>
+                                            </label>
+                                            <label>Nationality
+                                                <input type="text" name="nationality" ref="nationality" placeholder="Nationality" required/>
+                                            </label>
+                                            <label>Organization
+                                                <input type="text" name="organization" ref="organization" placeholder="Organization" required/>
+                                            </label>
 
-                                        <label>Detail
-                                            <input type="number" ref="detail" placeholder="1"/>
-                                        </label>
+                                            <label>Category
+                                                <Select name='selectedCategory'
+                                                        value={selectedCategory}
+                                                        options={categories}
+                                                        placeholder={"Category"}
+                                                        onChange={this.selectCategory.bind(this)}/>
+                                            </label>
 
-                                        <a className="button proceed expanded" onClick={this.addClimber.bind(this)}>Add Climber</a>
-                                        <ResponseMessage message={registerMessage}/>
-                                    </form>
-                                  </div>
+                                            <label>Detail
+                                                <input type="number" ref="detail" placeholder="1"/>
+                                            </label>
 
-                                  <div className="tabs-panel" id="panel4v">
-                                    <form>
-                                      <label>Tag Number
-                                            <input type="text" name="tagNum" ref="tagNum" placeholder="OMQ001" required/>
-                                      </label>
-                                      <label>Route Number
-                                        <select ref="route">
-                                            <option value="1">1</option>
-                                            <option value="2">2</option>
-                                            <option value="3">3</option>
-                                            <option value="4">4</option>
-                                            <option value="5">5</option>
-                                            <option value="6">6</option>
-                                        </select>
-                                      </label>
-                                      <label>Attempts
-                                          <input type="text" name="attempts" ref="attempts" placeholder="ABBBT" required/>
-                                      </label>
-                                      <button onClick={this.editRecord.bind(this)} className="button proceed expanded">Edit Record</button>
-                                    <ResponseMessage message={editMessage}/>
+                                            <a className="button proceed expanded" onClick={this.addClimber.bind(this)}>Add Climber</a>
+                                            <ResponseMessage message={registerMessage}/>
+                                        </form>
+                                  </TabPanel>
+                                  <TabPanel>
+                                      <form>
+                                       <label>Tag Number
+                                             <input type="text" name="tagNum" ref="tagNum" placeholder="001" required/>
+                                       </label>
+                                       <label>Route Number
+                                         <select ref="route">
+                                             <option value="1">1</option>
+                                             <option value="2">2</option>
+                                             <option value="3">3</option>
+                                             <option value="4">4</option>
+                                             <option value="5">5</option>
+                                             <option value="6">6</option>
+                                         </select>
+                                       </label>
+                                       <label>Attempts
+                                           <input type="text" name="attempts" ref="attempts" placeholder="ABBBT" required/>
+                                       </label>
+                                       <a onClick={this.editRecord.bind(this)} className="button proceed expanded">Edit Record</a>
+                                     <ResponseMessage message={editMessage}/>
 
-                                  </form>
-                                  </div>
-                                  <div className="tabs-panel is-active" id="panel5v">
-                                    <form>
+                                   </form>
+                                  </TabPanel>
+                                  <TabPanel>
+                                      <form>
                                         <p>Use this form to facilitate transition from semi-finals to finals</p>
                                         <label>Climber ID
                                             <input type="text" name="climberID" ref="climberID" placeholder="Climber ID" required/>
@@ -507,18 +505,15 @@ class Admin extends React.Component {
                                         <a className="button proceed expanded" onClick={this.editCategory.bind(this)}>Add Climber</a>
                                         <ResponseMessage message={registerMessage}/>
                                     </form>
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-
+                                  </TabPanel>
+                              </Tabs>
                         </div>
                     </div>
-                    <div style={{
-                        marginBottom: '1.2rem'
-                    }}>
-                        <div className="page-title">Event Management</div>
-                        <div className="profile wrapper settings-wrapper">
+                    <div style={{marginBottom: '1.2rem'}}>
+                        <div className="callout callout-dark-header">
+                            <div className="page-title">Event Management</div>
+                        </div>
+                        <div className="callout callout-dark">
                             <div className="row dailyReportTimeHeader settings-subheader-container">
                                 <div className="row columns">
 
@@ -571,11 +566,11 @@ class Admin extends React.Component {
                     </div>
 
 
-                    <div style={{
-                        marginBottom: '1.2rem'
-                    }}>
-                        <div className="page-title">Utilities</div>
-                        <div className="profile wrapper settings-wrapper">
+                    <div style={{marginBottom: '1.2rem'}}>
+                        <div className="callout callout-dark-header">
+                            <div className="page-title">Utilities</div>
+                        </div>
+                        <div className="callout callout-dark">
                             <div className="row columns">
                                 <a className="button proceed" onClick={this.launchAddClimber} href="http://office.livestudios.com:41111/backend/completed-events/">
                                     <FontAwesome name='download'/> Download CSV
@@ -583,7 +578,6 @@ class Admin extends React.Component {
                             </div>
                         </div>
                     </div>
-
                     <ResponseMessage message={message}/>
                 </div>
         );

@@ -10704,6 +10704,8 @@
 
 	var _reactPopup2 = _interopRequireDefault(_reactPopup);
 
+	var _reactTabs = __webpack_require__(925);
+
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
@@ -10722,6 +10724,7 @@
 	var climberManagementAPI = __webpack_require__(269);
 	var Select = __webpack_require__(270);
 	var AddSensor = __webpack_require__(420);
+
 	var user = null;
 
 	var Admin = function (_React$Component) {
@@ -10856,11 +10859,15 @@
 
 	            //tagID, route, attempts, judge
 
-	            climberManagementAPI.submitScore(tagID, route, attempts, "admin").then(function (response) {
+	            scoreAPI.submitScore(tagID, route, attempts, "admin").then(function (response) {
 	                console.log("response", response);
 	                that.setState({
-	                    editMessage: response
+	                    editMessage: response.message
 	                });
+
+	                that.refs.route.value = '';
+	                that.refs.attempts.value = '';
+	                that.refs.tagNum.value = '';
 	            });
 	        }
 	    }, {
@@ -11162,267 +11169,239 @@
 	                { className: 'large-10 columns large-centered margin-top-md' },
 	                React.createElement(
 	                    'div',
-	                    { style: {
-	                            marginBottom: '1.2rem'
-	                        } },
+	                    { style: { marginBottom: '1.2rem' } },
 	                    React.createElement(
 	                        'div',
-	                        { className: 'page-title' },
-	                        'Climber Management'
+	                        { className: 'callout callout-dark-header' },
+	                        React.createElement(
+	                            'div',
+	                            { className: 'page-title' },
+	                            'Climber Management'
+	                        )
 	                    ),
 	                    React.createElement(
 	                        'div',
-	                        { className: 'profile wrapper settings-wrapper', style: {
-	                                'color': '#000'
-	                            } },
+	                        { className: 'callout callout-dark' },
 	                        React.createElement(
-	                            'div',
-	                            { className: 'row collapse' },
+	                            _reactTabs.Tabs,
+	                            null,
 	                            React.createElement(
-	                                'div',
-	                                { className: 'medium-3 columns' },
+	                                _reactTabs.TabList,
+	                                null,
 	                                React.createElement(
-	                                    'ul',
-	                                    { className: 'tabs vertical', id: 'example-vert-tabs', 'data-tabs': true },
-	                                    React.createElement(
-	                                        'li',
-	                                        { className: 'tabs-title is-active' },
-	                                        React.createElement(
-	                                            'a',
-	                                            { href: '#panel1v', 'aria-selected': 'true' },
-	                                            React.createElement(FontAwesome, { name: 'plus-circle' }),
-	                                            ' Add Climber'
-	                                        )
-	                                    ),
-	                                    React.createElement(
-	                                        'li',
-	                                        { className: 'tabs-title' },
-	                                        React.createElement(
-	                                            'a',
-	                                            { href: '#panel4v' },
-	                                            React.createElement(FontAwesome, { name: 'edit' }),
-	                                            ' Edit Score'
-	                                        )
-	                                    ),
-	                                    React.createElement(
-	                                        'li',
-	                                        { className: 'tabs-title' },
-	                                        React.createElement(
-	                                            'a',
-	                                            { href: '#panel5v' },
-	                                            React.createElement(FontAwesome, { name: 'edit' }),
-	                                            ' Edit Category'
-	                                        )
-	                                    )
+	                                    _reactTabs.Tab,
+	                                    null,
+	                                    React.createElement(FontAwesome, { name: 'plus-circle' }),
+	                                    ' Add Climber'
+	                                ),
+	                                React.createElement(
+	                                    _reactTabs.Tab,
+	                                    null,
+	                                    React.createElement(FontAwesome, { name: 'edit' }),
+	                                    ' Edit Score'
+	                                ),
+	                                React.createElement(
+	                                    _reactTabs.Tab,
+	                                    null,
+	                                    React.createElement(FontAwesome, { name: 'edit' }),
+	                                    ' Edit Category'
 	                                )
 	                            ),
 	                            React.createElement(
-	                                'div',
-	                                { className: 'medium-9 columns' },
+	                                _reactTabs.TabPanel,
+	                                null,
 	                                React.createElement(
-	                                    'div',
-	                                    { className: 'tabs-content vertical', 'data-tabs-content': 'example-vert-tabs' },
+	                                    'form',
+	                                    null,
 	                                    React.createElement(
-	                                        'div',
-	                                        { className: 'tabs-panel is-active', id: 'panel1v' },
+	                                        'label',
+	                                        null,
+	                                        'Climber ID (',
+	                                        recommendedID,
+	                                        ')',
+	                                        React.createElement('input', { type: 'text', name: 'climberID', ref: 'climberID', placeholder: 'Climber ID', required: true })
+	                                    ),
+	                                    React.createElement(
+	                                        'label',
+	                                        null,
+	                                        'First Name',
+	                                        React.createElement('input', { type: 'text', name: 'firstName', ref: 'firstName', placeholder: 'First Name', required: true })
+	                                    ),
+	                                    React.createElement(
+	                                        'label',
+	                                        null,
+	                                        'Last Name',
+	                                        React.createElement('input', { type: 'text', name: 'lastName', ref: 'lastName', placeholder: 'Last Name', required: true })
+	                                    ),
+	                                    React.createElement(
+	                                        'legend',
+	                                        null,
+	                                        'Gender'
+	                                    ),
+	                                    React.createElement('input', { type: 'radio', onChange: this.handleChange.bind(this), name: 'gender', defaultChecked: true, value: 'male' }),
+	                                    React.createElement(
+	                                        'label',
+	                                        { htmlFor: 'male' },
+	                                        'Male'
+	                                    ),
+	                                    React.createElement('input', { type: 'radio', onChange: this.handleChange.bind(this), name: 'gender', value: 'female' }),
+	                                    React.createElement(
+	                                        'label',
+	                                        { htmlFor: 'female' },
+	                                        'female'
+	                                    ),
+	                                    React.createElement(
+	                                        'label',
+	                                        null,
+	                                        'Date of Birth',
+	                                        React.createElement('input', { type: 'date', name: 'dob', ref: 'dob', required: true })
+	                                    ),
+	                                    React.createElement(
+	                                        'label',
+	                                        null,
+	                                        'NRIC',
+	                                        React.createElement('input', { type: 'text', name: 'nric', ref: 'nric', placeholder: 'NRIC', required: true })
+	                                    ),
+	                                    React.createElement(
+	                                        'label',
+	                                        null,
+	                                        'Nationality',
+	                                        React.createElement('input', { type: 'text', name: 'nationality', ref: 'nationality', placeholder: 'Nationality', required: true })
+	                                    ),
+	                                    React.createElement(
+	                                        'label',
+	                                        null,
+	                                        'Organization',
+	                                        React.createElement('input', { type: 'text', name: 'organization', ref: 'organization', placeholder: 'Organization', required: true })
+	                                    ),
+	                                    React.createElement(
+	                                        'label',
+	                                        null,
+	                                        'Category',
+	                                        React.createElement(Select, { name: 'selectedCategory',
+	                                            value: selectedCategory,
+	                                            options: categories,
+	                                            placeholder: "Category",
+	                                            onChange: this.selectCategory.bind(this) })
+	                                    ),
+	                                    React.createElement(
+	                                        'label',
+	                                        null,
+	                                        'Detail',
+	                                        React.createElement('input', { type: 'number', ref: 'detail', placeholder: '1' })
+	                                    ),
+	                                    React.createElement(
+	                                        'a',
+	                                        { className: 'button proceed expanded', onClick: this.addClimber.bind(this) },
+	                                        'Add Climber'
+	                                    ),
+	                                    React.createElement(ResponseMessage, { message: registerMessage })
+	                                )
+	                            ),
+	                            React.createElement(
+	                                _reactTabs.TabPanel,
+	                                null,
+	                                React.createElement(
+	                                    'form',
+	                                    null,
+	                                    React.createElement(
+	                                        'label',
+	                                        null,
+	                                        'Tag Number',
+	                                        React.createElement('input', { type: 'text', name: 'tagNum', ref: 'tagNum', placeholder: '001', required: true })
+	                                    ),
+	                                    React.createElement(
+	                                        'label',
+	                                        null,
+	                                        'Route Number',
 	                                        React.createElement(
-	                                            'form',
-	                                            null,
+	                                            'select',
+	                                            { ref: 'route' },
 	                                            React.createElement(
-	                                                'p',
-	                                                null,
-	                                                'Recommended ID: ',
-	                                                recommendedID
+	                                                'option',
+	                                                { value: '1' },
+	                                                '1'
 	                                            ),
 	                                            React.createElement(
-	                                                'label',
-	                                                null,
-	                                                'Climber ID',
-	                                                React.createElement('input', { type: 'text', name: 'climberID', ref: 'climberID', placeholder: 'Climber ID', required: true })
+	                                                'option',
+	                                                { value: '2' },
+	                                                '2'
 	                                            ),
 	                                            React.createElement(
-	                                                'label',
-	                                                null,
-	                                                'First Name',
-	                                                React.createElement('input', { type: 'text', name: 'firstName', ref: 'firstName', placeholder: 'First Name', required: true })
+	                                                'option',
+	                                                { value: '3' },
+	                                                '3'
 	                                            ),
 	                                            React.createElement(
-	                                                'label',
-	                                                null,
-	                                                'Last Name',
-	                                                React.createElement('input', { type: 'text', name: 'lastName', ref: 'lastName', placeholder: 'Last Name', required: true })
+	                                                'option',
+	                                                { value: '4' },
+	                                                '4'
 	                                            ),
 	                                            React.createElement(
-	                                                'legend',
-	                                                null,
-	                                                'Gender'
-	                                            ),
-	                                            React.createElement('input', { type: 'radio', onChange: this.handleChange.bind(this), name: 'gender', defaultChecked: true, value: 'male' }),
-	                                            React.createElement(
-	                                                'label',
-	                                                { htmlFor: 'male' },
-	                                                'Male'
-	                                            ),
-	                                            React.createElement('input', { type: 'radio', onChange: this.handleChange.bind(this), name: 'gender', value: 'female' }),
-	                                            React.createElement(
-	                                                'label',
-	                                                { htmlFor: 'female' },
-	                                                'female'
+	                                                'option',
+	                                                { value: '5' },
+	                                                '5'
 	                                            ),
 	                                            React.createElement(
-	                                                'label',
-	                                                null,
-	                                                'Date of Birth',
-	                                                React.createElement('input', { type: 'date', name: 'dob', ref: 'dob', required: true })
-	                                            ),
-	                                            React.createElement(
-	                                                'label',
-	                                                null,
-	                                                'NRIC',
-	                                                React.createElement('input', { type: 'text', name: 'nric', ref: 'nric', placeholder: 'NRIC', required: true })
-	                                            ),
-	                                            React.createElement(
-	                                                'label',
-	                                                null,
-	                                                'Nationality',
-	                                                React.createElement('input', { type: 'text', name: 'nationality', ref: 'nationality', placeholder: 'Nationality', required: true })
-	                                            ),
-	                                            React.createElement(
-	                                                'label',
-	                                                null,
-	                                                'Organization',
-	                                                React.createElement('input', { type: 'text', name: 'organization', ref: 'organization', placeholder: 'Organization', required: true })
-	                                            ),
-	                                            React.createElement(
-	                                                'label',
-	                                                null,
-	                                                'Category',
-	                                                React.createElement(Select, { name: 'selectedCategory',
-	                                                    value: selectedCategory,
-	                                                    options: categories,
-	                                                    placeholder: "Category",
-	                                                    onChange: this.selectCategory.bind(this) })
-	                                            ),
-	                                            React.createElement(
-	                                                'label',
-	                                                null,
-	                                                'Detail',
-	                                                React.createElement('input', { type: 'number', ref: 'detail', placeholder: '1' })
-	                                            ),
-	                                            React.createElement(
-	                                                'a',
-	                                                { className: 'button proceed expanded', onClick: this.addClimber.bind(this) },
-	                                                'Add Climber'
-	                                            ),
-	                                            React.createElement(ResponseMessage, { message: registerMessage })
+	                                                'option',
+	                                                { value: '6' },
+	                                                '6'
+	                                            )
 	                                        )
 	                                    ),
 	                                    React.createElement(
-	                                        'div',
-	                                        { className: 'tabs-panel', id: 'panel4v' },
-	                                        React.createElement(
-	                                            'form',
-	                                            null,
-	                                            React.createElement(
-	                                                'label',
-	                                                null,
-	                                                'Tag Number',
-	                                                React.createElement('input', { type: 'text', name: 'tagNum', ref: 'tagNum', placeholder: 'OMQ001', required: true })
-	                                            ),
-	                                            React.createElement(
-	                                                'label',
-	                                                null,
-	                                                'Route Number',
-	                                                React.createElement(
-	                                                    'select',
-	                                                    { ref: 'route' },
-	                                                    React.createElement(
-	                                                        'option',
-	                                                        { value: '1' },
-	                                                        '1'
-	                                                    ),
-	                                                    React.createElement(
-	                                                        'option',
-	                                                        { value: '2' },
-	                                                        '2'
-	                                                    ),
-	                                                    React.createElement(
-	                                                        'option',
-	                                                        { value: '3' },
-	                                                        '3'
-	                                                    ),
-	                                                    React.createElement(
-	                                                        'option',
-	                                                        { value: '4' },
-	                                                        '4'
-	                                                    ),
-	                                                    React.createElement(
-	                                                        'option',
-	                                                        { value: '5' },
-	                                                        '5'
-	                                                    ),
-	                                                    React.createElement(
-	                                                        'option',
-	                                                        { value: '6' },
-	                                                        '6'
-	                                                    )
-	                                                )
-	                                            ),
-	                                            React.createElement(
-	                                                'label',
-	                                                null,
-	                                                'Attempts',
-	                                                React.createElement('input', { type: 'text', name: 'attempts', ref: 'attempts', placeholder: 'ABBBT', required: true })
-	                                            ),
-	                                            React.createElement(
-	                                                'button',
-	                                                { onClick: this.editRecord.bind(this), className: 'button proceed expanded' },
-	                                                'Edit Record'
-	                                            ),
-	                                            React.createElement(ResponseMessage, { message: editMessage })
-	                                        )
+	                                        'label',
+	                                        null,
+	                                        'Attempts',
+	                                        React.createElement('input', { type: 'text', name: 'attempts', ref: 'attempts', placeholder: 'ABBBT', required: true })
 	                                    ),
 	                                    React.createElement(
-	                                        'div',
-	                                        { className: 'tabs-panel is-active', id: 'panel5v' },
-	                                        React.createElement(
-	                                            'form',
-	                                            null,
-	                                            React.createElement(
-	                                                'p',
-	                                                null,
-	                                                'Use this form to facilitate transition from semi-finals to finals'
-	                                            ),
-	                                            React.createElement(
-	                                                'label',
-	                                                null,
-	                                                'Climber ID',
-	                                                React.createElement('input', { type: 'text', name: 'climberID', ref: 'climberID', placeholder: 'Climber ID', required: true })
-	                                            ),
-	                                            React.createElement(
-	                                                'label',
-	                                                null,
-	                                                'Category',
-	                                                React.createElement(Select, { name: 'selectedCategory',
-	                                                    value: selectedCategory,
-	                                                    options: categories,
-	                                                    placeholder: "Category",
-	                                                    onChange: this.selectCategory.bind(this) })
-	                                            ),
-	                                            React.createElement(
-	                                                'label',
-	                                                null,
-	                                                'Detail',
-	                                                React.createElement('input', { type: 'number', ref: 'detail', placeholder: '1' })
-	                                            ),
-	                                            React.createElement(
-	                                                'a',
-	                                                { className: 'button proceed expanded', onClick: this.editCategory.bind(this) },
-	                                                'Add Climber'
-	                                            ),
-	                                            React.createElement(ResponseMessage, { message: registerMessage })
-	                                        )
-	                                    )
+	                                        'a',
+	                                        { onClick: this.editRecord.bind(this), className: 'button proceed expanded' },
+	                                        'Edit Record'
+	                                    ),
+	                                    React.createElement(ResponseMessage, { message: editMessage })
+	                                )
+	                            ),
+	                            React.createElement(
+	                                _reactTabs.TabPanel,
+	                                null,
+	                                React.createElement(
+	                                    'form',
+	                                    null,
+	                                    React.createElement(
+	                                        'p',
+	                                        null,
+	                                        'Use this form to facilitate transition from semi-finals to finals'
+	                                    ),
+	                                    React.createElement(
+	                                        'label',
+	                                        null,
+	                                        'Climber ID',
+	                                        React.createElement('input', { type: 'text', name: 'climberID', ref: 'climberID', placeholder: 'Climber ID', required: true })
+	                                    ),
+	                                    React.createElement(
+	                                        'label',
+	                                        null,
+	                                        'Category',
+	                                        React.createElement(Select, { name: 'selectedCategory',
+	                                            value: selectedCategory,
+	                                            options: categories,
+	                                            placeholder: "Category",
+	                                            onChange: this.selectCategory.bind(this) })
+	                                    ),
+	                                    React.createElement(
+	                                        'label',
+	                                        null,
+	                                        'Detail',
+	                                        React.createElement('input', { type: 'number', ref: 'detail', placeholder: '1' })
+	                                    ),
+	                                    React.createElement(
+	                                        'a',
+	                                        { className: 'button proceed expanded', onClick: this.editCategory.bind(this) },
+	                                        'Add Climber'
+	                                    ),
+	                                    React.createElement(ResponseMessage, { message: registerMessage })
 	                                )
 	                            )
 	                        )
@@ -11430,17 +11409,19 @@
 	                ),
 	                React.createElement(
 	                    'div',
-	                    { style: {
-	                            marginBottom: '1.2rem'
-	                        } },
+	                    { style: { marginBottom: '1.2rem' } },
 	                    React.createElement(
 	                        'div',
-	                        { className: 'page-title' },
-	                        'Event Management'
+	                        { className: 'callout callout-dark-header' },
+	                        React.createElement(
+	                            'div',
+	                            { className: 'page-title' },
+	                            'Event Management'
+	                        )
 	                    ),
 	                    React.createElement(
 	                        'div',
-	                        { className: 'profile wrapper settings-wrapper' },
+	                        { className: 'callout callout-dark' },
 	                        React.createElement(
 	                            'div',
 	                            { className: 'row dailyReportTimeHeader settings-subheader-container' },
@@ -11533,17 +11514,19 @@
 	                ),
 	                React.createElement(
 	                    'div',
-	                    { style: {
-	                            marginBottom: '1.2rem'
-	                        } },
+	                    { style: { marginBottom: '1.2rem' } },
 	                    React.createElement(
 	                        'div',
-	                        { className: 'page-title' },
-	                        'Utilities'
+	                        { className: 'callout callout-dark-header' },
+	                        React.createElement(
+	                            'div',
+	                            { className: 'page-title' },
+	                            'Utilities'
+	                        )
 	                    ),
 	                    React.createElement(
 	                        'div',
-	                        { className: 'profile wrapper settings-wrapper' },
+	                        { className: 'callout callout-dark' },
 	                        React.createElement(
 	                            'div',
 	                            { className: 'row columns' },
@@ -94285,27 +94268,6 @@
 	                this.state.connection.close();
 	            }
 	        }
-
-	        // toggleHide(id) {
-	        //     var panel = $('#' + id);
-	        //
-	        //     if ((panel).css('display') === 'block') {
-	        //         panel.slideUp();
-	        //         panel.siblings().addClass('callout-minimize');
-	        //
-	        //     } else {
-	        //         panel.slideDown();
-	        //         panel.siblings().removeClass('callout-minimize');
-	        //         panel.siblings().addClass('callout-dark-header');
-	        //     }
-	        //
-	        //     // FOR MINIMIZING, IF NECESSARY
-	        //
-	        //     // <button onClick={() => this.toggleHide('watchList')} className="icon-btn-text-small">
-	        //     //     <FontAwesome name='expand'/>
-	        //     // </button>
-	        // }
-
 	    }, {
 	        key: 'render',
 	        value: function render() {
