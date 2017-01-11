@@ -10816,7 +10816,7 @@
 
 	            var that = this;
 	            scoreAPI.retrieveDetails(category).then(function (response) {
-
+	                console.log("response", response);
 	                that.setState({
 	                    numDetails: response['num_of_details']
 	                });
@@ -10831,6 +10831,7 @@
 	    }, {
 	        key: 'selectCategoryUtil',
 	        value: function selectCategoryUtil(val) {
+	            console.log("val", val);
 	            this.setState({ selectedCategoryUtil: val.value });
 	            this.retrieveNumDetails(val.value);
 	        }
@@ -10957,6 +10958,8 @@
 	                } else {
 	                    climberManagementAPI.startEvent(selectedCategoryUtil).then(function (response) {
 
+	                        that.retrieveNumDetails(selectedCategoryUtil);
+
 	                        that.setState({
 	                            hasEventStarted: true,
 	                            currentEvent: selectedCategoryUtil
@@ -11020,9 +11023,12 @@
 	    }, {
 	        key: 'launchEndEventDialog',
 	        value: function launchEndEventDialog() {
-	            var hasEventStarted = this.state.hasEventStarted;
+	            var _state4 = this.state;
+	            var hasEventStarted = _state4.hasEventStarted;
+	            var currentEvent = _state4.currentEvent;
 
-	            if (hasEventStarted) {
+	            console.log("hasEventStarted", currentEvent);
+	            if (currentEvent.length > 1) {
 	                if (confirm("Nigga, you wanna end this event?") == true) {
 	                    this.endEvent();
 	                } else {
@@ -11091,9 +11097,9 @@
 	    }, {
 	        key: 'clearTableByCat',
 	        value: function clearTableByCat() {
-	            var _state4 = this.state;
-	            var hasEventStarted = _state4.hasEventStarted;
-	            var selectedCategoryUtil = _state4.selectedCategoryUtil;
+	            var _state5 = this.state;
+	            var hasEventStarted = _state5.hasEventStarted;
+	            var selectedCategoryUtil = _state5.selectedCategoryUtil;
 
 
 	            if (!hasEventStarted) {
@@ -11107,18 +11113,18 @@
 	        value: function render() {
 
 	            var that = this;
-	            var _state5 = this.state;
-	            var categories = _state5.categories;
-	            var selectedCategory = _state5.selectedCategory;
-	            var selectedCategoryUtil = _state5.selectedCategoryUtil;
-	            var message = _state5.message;
-	            var numDetails = _state5.numDetails;
-	            var recommendedID = _state5.recommendedID;
-	            var registerMessage = _state5.registerMessage;
-	            var currentDetail = _state5.currentDetail;
-	            var currentEvent = _state5.currentEvent;
-	            var hasEventStarted = _state5.hasEventStarted;
-	            var editMessage = _state5.editMessage;
+	            var _state6 = this.state;
+	            var categories = _state6.categories;
+	            var selectedCategory = _state6.selectedCategory;
+	            var selectedCategoryUtil = _state6.selectedCategoryUtil;
+	            var message = _state6.message;
+	            var numDetails = _state6.numDetails;
+	            var recommendedID = _state6.recommendedID;
+	            var registerMessage = _state6.registerMessage;
+	            var currentDetail = _state6.currentDetail;
+	            var currentEvent = _state6.currentEvent;
+	            var hasEventStarted = _state6.hasEventStarted;
+	            var editMessage = _state6.editMessage;
 
 
 	            return React.createElement(

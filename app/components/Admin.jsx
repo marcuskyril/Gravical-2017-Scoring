@@ -94,7 +94,7 @@ class Admin extends React.Component {
 
         var that = this;
         scoreAPI.retrieveDetails(category).then(function(response){
-
+            console.log("response", response);
             that.setState({
                 numDetails: response['num_of_details']
             })
@@ -107,6 +107,7 @@ class Admin extends React.Component {
     }
 
     selectCategoryUtil(val) {
+        console.log("val", val);
         this.setState({selectedCategoryUtil: val.value});
         this.retrieveNumDetails(val.value);
     }
@@ -226,12 +227,14 @@ class Admin extends React.Component {
             } else {
                 climberManagementAPI.startEvent(selectedCategoryUtil).then(function(response) {
 
+                    that.retrieveNumDetails(selectedCategoryUtil);
+
                     that.setState({
                         hasEventStarted: true,
                         currentEvent: selectedCategoryUtil
                     })
 
-                        that.setDetail(1);
+                    that.setDetail(1);
                 });
             }
         }
@@ -277,8 +280,9 @@ class Admin extends React.Component {
     }
 
     launchEndEventDialog() {
-        var {hasEventStarted} = this.state;
-        if(hasEventStarted) {
+        var {hasEventStarted, currentEvent} = this.state;
+        console.log("hasEventStarted", currentEvent);
+        if(currentEvent.length > 1) {
             if (confirm("Nigga, you wanna end this event?") == true) {
                this.endEvent();
             } else {
