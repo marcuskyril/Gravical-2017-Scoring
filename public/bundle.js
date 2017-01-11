@@ -10738,7 +10738,7 @@
 	            message: '',
 	            recommendedID: 0,
 	            registerMessage: '',
-	            gender: '',
+	            gender: 'male',
 	            categories: [],
 	            selectedCategory: '',
 	            selectedCategoryUtil: '',
@@ -10840,6 +10840,7 @@
 	        value: function handleChange(e) {
 
 	            var val = e.target.value;
+	            console.log("val");
 
 	            this.setState({
 	                gender: val
@@ -10863,6 +10864,34 @@
 	            });
 	        }
 	    }, {
+	        key: 'editCategory',
+	        value: function editCategory() {
+	            var climberID = this.refs.climberID.value;
+	            var categoryID = this.state.selectedCategory;
+	            var detail = this.refs.detail.value;
+	            var errorMsg = '';
+	            var that = this;
+
+	            climberManagementAPI.registerClimber(climberID, categoryID, detail).then(function (registerResponse) {
+
+	                if (registerResponse.hasOwnProperty('error')) {
+	                    that.setState({
+	                        registerMessage: errorMsg
+	                    });
+	                } else {
+	                    that.setState({
+	                        registerMessage: "Participant successfully registered."
+	                    });
+
+	                    that.refs.climberID.value = '';
+	                    that.refs.detail.value = '';
+	                    that.setState({
+	                        selectedCategory: ''
+	                    });
+	                }
+	            });
+	        }
+	    }, {
 	        key: 'addClimber',
 	        value: function addClimber() {
 	            var that = this;
@@ -10880,6 +10909,7 @@
 
 	            climberManagementAPI.addClimber(climberID, first_name, last_name, gender, date_of_birth, id_number, nationality, organization).then(function (addResponse) {
 	                // console.log(addResponse);
+	                console.log(climberID, first_name, last_name, gender, date_of_birth, id_number, nationality, organization);
 	                // console.log("addResponse.hasOwnProperty('error')", addResponse.hasOwnProperty('error'));
 	                if (addResponse.hasOwnProperty('error')) {
 	                    errorMessages.push(addResponse.error);
@@ -11173,6 +11203,16 @@
 	                                            React.createElement(FontAwesome, { name: 'edit' }),
 	                                            ' Edit Score'
 	                                        )
+	                                    ),
+	                                    React.createElement(
+	                                        'li',
+	                                        { className: 'tabs-title' },
+	                                        React.createElement(
+	                                            'a',
+	                                            { href: '#panel5v' },
+	                                            React.createElement(FontAwesome, { name: 'edit' }),
+	                                            ' Edit Category'
+	                                        )
 	                                    )
 	                                )
 	                            ),
@@ -11340,6 +11380,47 @@
 	                                                'Edit Record'
 	                                            ),
 	                                            React.createElement(ResponseMessage, { message: editMessage })
+	                                        )
+	                                    ),
+	                                    React.createElement(
+	                                        'div',
+	                                        { className: 'tabs-panel is-active', id: 'panel5v' },
+	                                        React.createElement(
+	                                            'form',
+	                                            null,
+	                                            React.createElement(
+	                                                'p',
+	                                                null,
+	                                                'Use this form to facilitate transition from semi-finals to finals'
+	                                            ),
+	                                            React.createElement(
+	                                                'label',
+	                                                null,
+	                                                'Climber ID',
+	                                                React.createElement('input', { type: 'text', name: 'climberID', ref: 'climberID', placeholder: 'Climber ID', required: true })
+	                                            ),
+	                                            React.createElement(
+	                                                'label',
+	                                                null,
+	                                                'Category',
+	                                                React.createElement(Select, { name: 'selectedCategory',
+	                                                    value: selectedCategory,
+	                                                    options: categories,
+	                                                    placeholder: "Category",
+	                                                    onChange: this.selectCategory.bind(this) })
+	                                            ),
+	                                            React.createElement(
+	                                                'label',
+	                                                null,
+	                                                'Detail',
+	                                                React.createElement('input', { type: 'number', ref: 'detail', placeholder: '1' })
+	                                            ),
+	                                            React.createElement(
+	                                                'a',
+	                                                { className: 'button proceed expanded', onClick: this.editCategory.bind(this) },
+	                                                'Add Climber'
+	                                            ),
+	                                            React.createElement(ResponseMessage, { message: registerMessage })
 	                                        )
 	                                    )
 	                                )

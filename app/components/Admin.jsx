@@ -22,7 +22,7 @@ class Admin extends React.Component {
             message: '',
             recommendedID: 0,
             registerMessage: '',
-            gender: '',
+            gender: 'male',
             categories: [],
             selectedCategory: '',
             selectedCategoryUtil: '',
@@ -115,6 +115,7 @@ class Admin extends React.Component {
     handleChange(e) {
 
         var val = e.target.value;
+        console.log("val");
 
         this.setState({
             gender: val
@@ -137,6 +138,33 @@ class Admin extends React.Component {
         });
     }
 
+    editCategory() {
+        var climberID = this.refs.climberID.value;
+        var categoryID = this.state.selectedCategory;
+        var detail = this.refs.detail.value;
+        var errorMsg = '';
+        var that = this;
+
+        climberManagementAPI.registerClimber(climberID, categoryID, detail).then(function(registerResponse) {
+
+            if(registerResponse.hasOwnProperty('error')) {
+                that.setState({
+                    registerMessage: errorMsg
+                });
+            } else {
+                that.setState({
+                    registerMessage: "Participant successfully registered."
+                });
+
+                that.refs.climberID.value = '';
+                that.refs.detail.value = '';
+                that.setState({
+                    selectedCategory: ''
+                });
+            }
+        });
+    }
+
     addClimber() {
         var that = this;
         var climberID = this.refs.climberID.value;
@@ -153,6 +181,7 @@ class Admin extends React.Component {
 
         climberManagementAPI.addClimber(climberID, first_name, last_name, gender, date_of_birth, id_number, nationality, organization).then(function(addResponse){
             // console.log(addResponse);
+            console.log(climberID, first_name, last_name, gender, date_of_birth, id_number, nationality, organization);
             // console.log("addResponse.hasOwnProperty('error')", addResponse.hasOwnProperty('error'));
             if(addResponse.hasOwnProperty('error')) {
                 errorMessages.push(addResponse.error);
@@ -384,6 +413,7 @@ class Admin extends React.Component {
                                 <ul className="tabs vertical" id="example-vert-tabs" data-tabs>
                                   <li className="tabs-title is-active"><a href="#panel1v" aria-selected="true"><FontAwesome name='plus-circle'/> Add Climber</a></li>
                                   <li className="tabs-title"><a href="#panel4v"><FontAwesome name='edit'/> Edit Score</a></li>
+                                  <li className="tabs-title"><a href="#panel5v"><FontAwesome name='edit'/> Edit Category</a></li>
                                 </ul>
                                 </div>
                                 <div className="medium-9 columns">
@@ -455,6 +485,28 @@ class Admin extends React.Component {
                                     <ResponseMessage message={editMessage}/>
 
                                   </form>
+                                  </div>
+                                  <div className="tabs-panel is-active" id="panel5v">
+                                    <form>
+                                        <p>Use this form to facilitate transition from semi-finals to finals</p>
+                                        <label>Climber ID
+                                            <input type="text" name="climberID" ref="climberID" placeholder="Climber ID" required/>
+                                        </label>
+                                        <label>Category
+                                            <Select name='selectedCategory'
+                                                    value={selectedCategory}
+                                                    options={categories}
+                                                    placeholder={"Category"}
+                                                    onChange={this.selectCategory.bind(this)}/>
+                                        </label>
+
+                                        <label>Detail
+                                            <input type="number" ref="detail" placeholder="1"/>
+                                        </label>
+
+                                        <a className="button proceed expanded" onClick={this.editCategory.bind(this)}>Add Climber</a>
+                                        <ResponseMessage message={registerMessage}/>
+                                    </form>
                                   </div>
                                 </div>
                               </div>
