@@ -10961,11 +10961,11 @@
 	                            hasEventStarted: true,
 	                            currentEvent: selectedCategoryUtil
 	                        });
+
+	                        that.setDetail(1);
 	                    });
 	                }
 	            }
-
-	            this.setDetail(1);
 	        }
 	    }, {
 	        key: 'setDetail',

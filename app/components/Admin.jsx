@@ -230,11 +230,11 @@ class Admin extends React.Component {
                         hasEventStarted: true,
                         currentEvent: selectedCategoryUtil
                     })
+
+                        that.setDetail(1);
                 });
             }
         }
-
-        this.setDetail(1);
     }
 
     setDetail(detail) {
