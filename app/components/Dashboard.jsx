@@ -166,10 +166,10 @@ class Dashboard extends React.Component {
                         <div className="callout callout-dark">
                             <Tabs>
                               <TabList>
-                                <Tab>12th January</Tab>
-                                <Tab>13th January</Tab>
-                                <Tab>14th January</Tab>
-                                <Tab>15th January</Tab>
+                                <Tab>12th Jan</Tab>
+                                <Tab>13th Jan</Tab>
+                                <Tab>14th Jan</Tab>
+                                <Tab>15th Jan</Tab>
                               </TabList>
                               <TabPanel>
                                   <div className="header-md margin-bottom-small">U17 Girls - Qualifiers</div>
@@ -239,6 +239,17 @@ class Dashboard extends React.Component {
                                 marginLeft: '0.5rem'
                             }}/>
 
+                        </div>
+
+                        <div className="header-md" style={{
+                            paddingTop: "1em",
+                            fontSize: "small",
+                            fontWeight: "100",
+                            fontFamily: "'Roboto', sans-serif"
+                        }}>
+                            Copyright © 2016 <img src="images/monochrome.png" style={{height:"2em"}}/> MONOCHROME
+                            <br/>
+                            All Rights Reserved
                         </div>
 
                     </div>

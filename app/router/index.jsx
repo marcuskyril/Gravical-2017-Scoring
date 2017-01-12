@@ -3,13 +3,9 @@ import {Route, Router, IndexRoute, hashHistory} from 'react-router';
 var Main = require('Main');
 var Dashboard = require('Dashboard');
 import Admin from 'Admin';
-import Uptime from 'Uptime';
-import HistoricalChart from 'HistoricalChart';
-import NotificationLog from 'NotificationLog';
 import PageNotFound from 'PageNotFound';
 import Login from 'Login';
 import Score from 'Score';
-import ActionLog from 'ActionLog';
 import firebase from 'app/firebase/';
 
 var requireLogin = (nextState, replace, next) => {
@@ -21,12 +17,12 @@ var requireLogin = (nextState, replace, next) => {
     next();
 };
 
-var redirectIfLoggedIn = (nextState, replace, next) => {
-    // if (firebase.auth().currentUser) {
-    //     replace('/admin');
-    // }
-    // next();
-};
+// var redirectIfLoggedIn = (nextState, replace, next) => {
+//     // if (firebase.auth().currentUser) {
+//     //     replace('/admin');
+//     // }
+//     // next();
+// };
 
 export default(
     <Router history={hashHistory}>
@@ -37,7 +33,7 @@ export default(
       <Route path="/admin" component={Main} >
             <IndexRoute component={Admin} onEnter={requireLogin}/>
       </Route>
-      
+
       <Route path="/login" component={Login} />
       <Route path="*" component={PageNotFound}/>
     </Router>

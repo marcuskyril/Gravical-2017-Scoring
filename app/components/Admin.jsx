@@ -8,7 +8,7 @@ var settingsAPI = require('settingsAPI');
 var scoreAPI = require('scoreAPI');
 var climberManagementAPI = require('climberManagementAPI');
 var Select = require('react-select');
-var AddSensor = require('AddSensor');
+// var AddSensor = require('AddSensor');
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
 var user = null;
 
@@ -408,6 +408,73 @@ class Admin extends React.Component {
                 <div className="large-10 columns large-centered margin-top-md">
                     <div style={{marginBottom: '1.2rem'}}>
                         <div className="callout callout-dark-header">
+                            <div className="page-title">Event Management</div>
+                        </div>
+                        <div className="callout callout-dark">
+                            <div className="row dailyReportTimeHeader settings-subheader-container">
+                                <div className="row columns">
+
+                                    <p><b>Current Event</b>: {currentEvent}</p>
+                                    <p><b>Current detail</b>: {currentDetail === 0 ? "-" : currentDetail}/{numDetails === 0 ? "-" : numDetails}</p>
+
+                                    <form>
+                                        <div className="row">
+                                        <div className="columns large-6">
+                                            <label>Category
+                                                <Select name='selectedCategory'
+                                                        value={selectedCategoryUtil}
+                                                        options={categories}
+                                                        placeholder={"Category"}
+                                                        onChange={this.selectCategoryUtil.bind(this)}/>
+                                            </label>
+                                        </div>
+                                        </div>
+
+                                        <div className="margin-top-small">
+
+                                            <a className="button proceed margin-left-tiny" onClick={this.launchStartEventDialog.bind(this)}>
+                                                Start Event
+                                            </a>
+
+                                            <a className="button proceed margin-left-tiny" onClick={this.nextDetail.bind(this)}>
+                                                Start Next Detail
+                                            </a>
+
+                                            <a className="button proceed margin-left-tiny" onClick={this.previousDetail.bind(this)}>
+                                                Previous Detail
+                                            </a>
+
+                                            <a className="button cancel margin-left-tiny" onClick={this.launchEndEventDialog.bind(this)}>
+                                                End Event
+                                            </a>
+
+                                            <a className="button cancel margin-left-tiny" onClick={this.clearTable.bind(this)}>
+                                                Clear Results
+                                            </a>
+
+                                            <a className="button cancel margin-left-tiny" onClick={this.clearTableByCat.bind(this)}>
+                                                Clear Results by Category
+                                            </a>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div style={{marginBottom: '1.2rem'}}>
+                        <div className="callout callout-dark-header">
+                            <div className="page-title">Utilities</div>
+                        </div>
+                        <div className="callout callout-dark">
+                            <div className="row columns">
+                                <a className="button proceed" onClick={this.launchAddClimber} href="http://office.livestudios.com:41111/backend/completed-events/">
+                                    <FontAwesome name='download'/> Download CSV
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div style={{marginBottom: '1.2rem'}}>
+                        <div className="callout callout-dark-header">
                             <div className="page-title">Climber Management</div>
                         </div>
                         <div className="callout callout-dark">
@@ -464,7 +531,7 @@ class Admin extends React.Component {
                                   <TabPanel>
                                       <form>
                                        <label>Tag Number
-                                             <input type="text" name="tagNum" ref="tagNum" placeholder="001" required/>
+                                             <input type="text" name="tagNum" ref="tagNum" placeholder="OMQ001" required/>
                                        </label>
                                        <label>Route Number
                                          <select ref="route">
@@ -486,7 +553,7 @@ class Admin extends React.Component {
                                   </TabPanel>
                                   <TabPanel>
                                       <form>
-                                        <p>Use this form to facilitate transition from semi-finals to finals</p>
+                                        <p>Use this form to facilitate transition from qualifiers/semi-finals to finals</p>
                                         <label>Climber ID
                                             <input type="text" name="climberID" ref="climberID" placeholder="Climber ID" required/>
                                         </label>
@@ -509,76 +576,6 @@ class Admin extends React.Component {
                               </Tabs>
                         </div>
                     </div>
-                    <div style={{marginBottom: '1.2rem'}}>
-                        <div className="callout callout-dark-header">
-                            <div className="page-title">Event Management</div>
-                        </div>
-                        <div className="callout callout-dark">
-                            <div className="row dailyReportTimeHeader settings-subheader-container">
-                                <div className="row columns">
-
-                                    <p><b>Current Event</b>: {currentEvent}</p>
-                                    <p><b>Current detail</b>: {currentDetail === 0 ? "-" : currentDetail}/{numDetails === 0 ? "-" : numDetails}</p>
-
-                                    <form>
-                                        <div className="row">
-                                        <div className="columns large-6">
-                                            <label>Category
-                                                <Select name='selectedCategory'
-                                                        value={selectedCategoryUtil}
-                                                        options={categories}
-                                                        placeholder={"Category"}
-                                                        onChange={this.selectCategoryUtil.bind(this)}/>
-                                            </label>
-                                        </div>
-                                        </div>
-
-                                        <div className="margin-top-small">
-
-                                            <a className="button proceed margin-left-tiny" onClick={this.launchStartEventDialog.bind(this)}>
-                                                Start Event
-                                            </a>
-
-                                            <a className="button proceed margin-left-tiny" onClick={this.nextDetail.bind(this)}>
-                                                Start Next Detail
-                                            </a>
-
-                                            <a className="button proceed margin-left-tiny" onClick={this.previousDetail.bind(this)}>
-                                                Previous Detail
-                                            </a>
-
-                                            <a className="button cancel margin-left-tiny" onClick={this.launchEndEventDialog.bind(this)}>
-                                                End Event
-                                            </a>
-
-                                            <a className="button cancel margin-left-tiny" onClick={this.clearTable.bind(this)}>
-                                                Clear Results
-                                            </a>
-
-                                            <a className="button cancel margin-left-tiny" onClick={this.clearTableByCat.bind(this)}>
-                                                Clear Results by Category
-                                            </a>
-                                        </div>
-                                    </form>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-
-                    <div style={{marginBottom: '1.2rem'}}>
-                        <div className="callout callout-dark-header">
-                            <div className="page-title">Utilities</div>
-                        </div>
-                        <div className="callout callout-dark">
-                            <div className="row columns">
-                                <a className="button proceed" onClick={this.launchAddClimber} href="http://office.livestudios.com:41111/backend/completed-events/">
-                                    <FontAwesome name='download'/> Download CSV
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                    <ResponseMessage message={message}/>
                 </div>
         );
     }

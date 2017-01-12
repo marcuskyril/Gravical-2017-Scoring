@@ -1,7 +1,7 @@
 var React = require('react');
 var Nav = require('Nav');
 var Dashboard = require('Dashboard');
-import SensorDetails from 'SensorDetails';
+// import SensorDetails from 'SensorDetails';
 import {StickyContainer, Sticky} from 'react-sticky';
 import firebase from 'app/firebase/';
 
