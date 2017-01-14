@@ -9,6 +9,14 @@ const GET_LAST_CLIMBER_ID_URL = "http://office.livestudios.com:41111/backend/api
 const GET_ALL_RESULTS_URL = "http://office.livestudios.com:41111/backend/api/get_past_results.php";
 const CLEAR_RESULTS_URL = "http://office.livestudios.com:41111/backend/api/clear_results_database.php";
 const CLEAR_RESULTS_BY_CAT_URL = "http://office.livestudios.com:41111/backend/api/clear_completed_event_results.php";
+const SET_MALE_URL = "http://office.livestudios.com:41111/backend/api/set_finals_male_climber.php";
+const SET_FEMALE_URL = "http://office.livestudios.com:41111/backend/api/set_finals_female_climber.php";
+const GET_FINALISTS_URL = "http://office.livestudios.com:41111/backend/api/getFinalists.php";
+const GET_CURRENT_CLIMBERS_URL = "http://office.livestudios.com:41111/backend/api/get_finals_climbers.php";
+const GET_CURRENT_FINAL_EVENT_URL = "http://office.livestudios.com:41111/backend/api/get_current_final_event.php";
+const START_FINAL_EVENT_URL = "http://office.livestudios.com:41111/backend/api/start_final_event.php";
+const STOP_FINAL_EVENT_URL = "http://office.livestudios.com:41111/backend/api/stop_final_event.php";
+
 
 module.exports = {
 
@@ -29,7 +37,50 @@ module.exports = {
         });
     },
 
+    retrieveClimbers: function(categoryID) {
+        return $.ajax({
+            type: "POST",
+            beforeSend: function(request) {
+                request.setRequestHeader("Content-Type", "application/x-www-form-urlencoded")   ;
+            },
+            data: {categoryID},
+            url: GET_FINALISTS_URL,
+            data: {categoryID},
+            success: function(response) {
+                // console.log("name", response);
+            }
+        });
+    },
 
+    setMaleClimber: function(name) {
+
+        return $.ajax({
+            type: "POST",
+            beforeSend: function(request) {
+                request.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+            },
+            url: SET_MALE_URL,
+            data: {name},
+            success: function(response) {
+                console.log("name", response);
+            }
+        });
+    },
+
+    setFemaleClimber: function(name) {
+        console.log("name", name);
+        return $.ajax({
+            type: "POST",
+            beforeSend: function(request) {
+                request.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+            },
+            url: SET_FEMALE_URL,
+            data: {name},
+            success: function(response) {
+                console.log("name", response);
+            }
+        });
+    },
 
     registerClimber: function(participantID, categoryID, detail) {
 
@@ -86,6 +137,20 @@ module.exports = {
         });
     },
 
+    startFinalEvent: function(categoryID) {
+        return $.ajax({
+            type: "POST",
+            beforeSend: function(request) {
+                request.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+            },
+            url: START_FINAL_EVENT_URL,
+            data: {categoryID},
+            success: function(response) {
+                // console.log("Tres manifique, monsieur", response);
+            }
+        });
+    },
+
     startEvent: function(categoryID) {
         var data = {
             categoryID
@@ -112,6 +177,20 @@ module.exports = {
                 request.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
             },
             url: STOP_EVENT_URL,
+            success: function(response) {
+                console.log("response", response);
+            }
+        });
+    },
+
+    endFinalEvent: function() {
+
+        return $.ajax({
+            type: "POST",
+            beforeSend: function(request) {
+                request.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+            },
+            url: STOP_FINAL_EVENT_URL,
             success: function(response) {
                 console.log("response", response);
             }
@@ -146,6 +225,19 @@ module.exports = {
         });
     },
 
+    getCurrentFinalEvent: function() {
+        return $.ajax({
+            type: "POST",
+            beforeSend: function(request) {
+                request.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+            },
+            url: GET_CURRENT_FINAL_EVENT_URL,
+            success: function(response) {
+                // console.log("Tres manifique, monsieur", response);
+            }
+        });
+    },
+
     getCurrentDetail: function() {
         return $.ajax({
             type: "POST",
@@ -153,6 +245,19 @@ module.exports = {
                 request.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
             },
             url: GET_CURRENT_DETAIL_URL,
+            success: function(response) {
+                // console.log("Tres manifique, monsieur", response);
+            }
+        });
+    },
+
+    getCurrentClimbers: function() {
+        return $.ajax({
+            type: "POST",
+            beforeSend: function(request) {
+                request.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+            },
+            url: GET_CURRENT_CLIMBERS_URL,
             success: function(response) {
                 // console.log("Tres manifique, monsieur", response);
             }

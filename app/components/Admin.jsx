@@ -8,7 +8,6 @@ var settingsAPI = require('settingsAPI');
 var scoreAPI = require('scoreAPI');
 var climberManagementAPI = require('climberManagementAPI');
 var Select = require('react-select');
-// var AddSensor = require('AddSensor');
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
 var user = null;
 
@@ -29,9 +28,15 @@ class Admin extends React.Component {
             selectedCategoryUtil: '',
             currentDetail: 0,
             currentEvent: '-',
+            selectedFemaleClimber: '',
+            selectedMaleClimber: '',
+            currentFemaleClimber: '-',
+            currentMaleClimber: '-',
             numDetails: 0,
             editMessage: '',
-            hasEventStarted: false
+            hasEventStarted: false,
+            maleClimbers: [],
+            femaleClimbers: []
         }
 
         this.selectCategory = this.selectCategory.bind(this);
@@ -39,25 +44,77 @@ class Admin extends React.Component {
     }
 
     componentDidMount() {
-
         this.retrieveCurrentEvent();
+        this.retrieveCurrentClimbers();
         this.retrieveCurrentDetail();
         this.retrieveCategories();
         this.retrieveRecommendedID();
     }
 
+    retrieveClimbers() {
+        var that = this;
+        var {currentEvent} = this.state;
+
+        // console.log("currentEvent", currentEvent);
+
+        var femaleEvent = "";
+
+        if(currentEvent === "UF") {
+            femaleEvent = "UFF";
+        } else {
+            femaleEvent = `${currentEvent.charAt(0)}WF`
+        }
+
+        climberManagementAPI.retrieveClimbers(femaleEvent).then(function(response) {
+            // console.log("female event", femaleEvent);
+            var fTemp = [];
+            response.forEach(function(climber) {
+                fTemp.push({value: climber, label: climber});
+            });
+
+            that.setState({
+                femaleClimbers: fTemp
+            });
+        });
+
+        climberManagementAPI.retrieveClimbers(`${currentEvent.charAt(0)}MF`).then(function(response) {
+            // console.log(` soooo, ${currentEvent.charAt(0)}MF`);
+            var mTemp = [];
+            response.forEach(function(climber) {
+                mTemp.push({value: climber, label: climber});
+            });
+
+            that.setState({
+                maleClimbers: mTemp
+            });
+        });
+    }
+
     retrieveCurrentEvent() {
         var that = this;
-        climberManagementAPI.getCurrentEvent().then(function(response){
+        climberManagementAPI.getCurrentFinalEvent().then(function(response){
             // console.log("Current event", response);
             that.setState({
                 currentEvent: response.message
-            })
+            });
+
+            that.retrieveClimbers();
 
             if(response.message.length > 0) {
                 that.retrieveNumDetails(response.message);
             }
 
+        });
+    }
+
+    retrieveCurrentClimbers() {
+        var that = this;
+        climberManagementAPI.getCurrentClimbers().then(function(response) {
+            // console.log("currentClimbers", response);
+            that.setState({
+                currentMaleClimber: response['male'],
+                currentFemaleClimber: response['female']
+            });
         });
     }
 
@@ -95,7 +152,7 @@ class Admin extends React.Component {
 
         var that = this;
         scoreAPI.retrieveDetails(category).then(function(response){
-            console.log("response", response);
+            // console.log("response", response);
             that.setState({
                 numDetails: response['num_of_details']
             })
@@ -107,20 +164,22 @@ class Admin extends React.Component {
         this.retrieveNumDetails(val.value);
     }
 
-    selectCategoryUtil(val) {
-        console.log("val", val);
-        this.setState({selectedCategoryUtil: val.value});
-        this.retrieveNumDetails(val.value);
+    selectMale(val) {
+        this.setState({selectedMaleClimber: val.value});
+    }
+    selectFemale(val) {
+        this.setState({selectedFemaleClimber: val.value});
+    }
+
+    selectCategoryUtil(event) {
+        var selectedCategoryUtil = event.target.value;
+        console.log("selectedCategoryUtil", selectedCategoryUtil);
+        this.setState({selectedCategoryUtil: selectedCategoryUtil});
     }
 
     handleChange(e) {
-
         var val = e.target.value;
-        console.log("val");
-
-        this.setState({
-            gender: val
-        });
+        this.setState({gender: val});
     }
 
     editRecord() {
@@ -259,14 +318,16 @@ class Admin extends React.Component {
             if(selectedCategoryUtil === "") {
                 alert("Niggaaaaaa, select an event.");
             } else {
-                climberManagementAPI.startEvent(selectedCategoryUtil).then(function(response) {
-
-                    that.retrieveNumDetails(selectedCategoryUtil);
-
+                climberManagementAPI.startFinalEvent(selectedCategoryUtil).then(function(response) {
+                    // that.retrieveNumDetails(selectedCategoryUtil);
                     that.setState({
                         hasEventStarted: true,
-                        currentEvent: selectedCategoryUtil
-                    })
+                        currentEvent: selectedCategoryUtil,
+                        currentMaleClimber: "-",
+                        currentFemaleClimber: "-"
+                    });
+
+                    that.retrieveClimbers();
 
                     that.setDetail(1);
                 });
@@ -330,7 +391,7 @@ class Admin extends React.Component {
     endEvent() {
 
         var that = this;
-        climberManagementAPI.endEvent().then(function(response) {
+        climberManagementAPI.endFinalEvent().then(function(response) {
 
             that.setState({
                 currentEvent: '-',
@@ -387,8 +448,59 @@ class Admin extends React.Component {
         }
     }
 
-    render() {
+    resetClimber(gender) {
+        var that = this;
+        switch(gender) {
+            case 'm':
+                climberManagementAPI.setMaleClimber("-").then(function(response) {
+                    that.setState({
+                        currentMaleClimber: "-",
+                        selectedMaleClimber: ""
+                    })
+                });
+                break;
+            case 'f':
+                climberManagementAPI.setFemaleClimber("-").then(function(response) {
+                    that.setState({
+                        currentFemaleClimber: "-",
+                        selectedFemaleClimber: ""
+                    })
+                });
+                break;
+            default:
+                console.log("nothing here");
+                break;
+        }
+    }
 
+    setClimber(gender) {
+        var that = this;
+        switch(gender) {
+            case 'm':
+                var {selectedMaleClimber} = this.state;
+                climberManagementAPI.setMaleClimber(selectedMaleClimber).then(function(response) {
+                    console.log(response);
+                    that.setState({
+                        currentMaleClimber: selectedMaleClimber
+                    });
+                });
+                break;
+            case 'f':
+                var {selectedFemaleClimber} = this.state;
+                climberManagementAPI.setFemaleClimber(selectedFemaleClimber).then(function(response) {
+                    console.log(response);
+                    that.setState({
+                        currentFemaleClimber: selectedFemaleClimber
+                    });
+                });
+                break;
+            default:
+                console.log("nothing here");
+                break;
+        }
+    }
+
+    render() {
         var that = this;
         var {
             categories,
@@ -401,7 +513,13 @@ class Admin extends React.Component {
             currentDetail,
             currentEvent,
             hasEventStarted,
-            editMessage
+            editMessage,
+            currentFemaleClimber,
+            currentMaleClimber,
+            selectedFemaleClimber,
+            selectedMaleClimber,
+            maleClimbers,
+            femaleClimbers
         } = this.state;
 
         return (
@@ -415,33 +533,28 @@ class Admin extends React.Component {
                                 <div className="row columns">
 
                                     <p><b>Current Event</b>: {currentEvent}</p>
-                                    <p><b>Current detail</b>: {currentDetail === 0 ? "-" : currentDetail}/{numDetails === 0 ? "-" : numDetails}</p>
+                                    <p><b>Current Male Climber</b>: {currentMaleClimber}</p>
+                                    <p><b>Current Female Climber</b>: {currentFemaleClimber}</p>
 
                                     <form>
                                         <div className="row">
-                                        <div className="columns large-6">
-                                            <label>Category
-                                                <Select name='selectedCategory'
-                                                        value={selectedCategoryUtil}
-                                                        options={categories}
-                                                        placeholder={"Category"}
-                                                        onChange={this.selectCategoryUtil.bind(this)}/>
-                                            </label>
-                                        </div>
+                                            <div className="columns large-6">
+                                                <label>Event
+                                                    <select ref="selectedCategoryUtil" onChange={this.selectCategoryUtil.bind(this)}>
+                                                        <option value="">Event</option>
+                                                        <option value="UF">U17 Finals</option>
+                                                        <option value="NF">Novice Finals</option>
+                                                        <option value="IF">Intermediate Finals</option>
+                                                        <option value="OF">Open Finals</option>
+                                                    </select>
+                                                </label>
+                                            </div>
                                         </div>
 
                                         <div className="margin-top-small">
 
                                             <a className="button proceed margin-left-tiny" onClick={this.launchStartEventDialog.bind(this)}>
                                                 Start Event
-                                            </a>
-
-                                            <a className="button proceed margin-left-tiny" onClick={this.nextDetail.bind(this)}>
-                                                Start Next Detail
-                                            </a>
-
-                                            <a className="button proceed margin-left-tiny" onClick={this.previousDetail.bind(this)}>
-                                                Previous Detail
                                             </a>
 
                                             <a className="button cancel margin-left-tiny" onClick={this.launchEndEventDialog.bind(this)}>
@@ -455,6 +568,50 @@ class Admin extends React.Component {
                                             <a className="button cancel margin-left-tiny" onClick={this.clearTableByCat.bind(this)}>
                                                 Clear Results by Category
                                             </a>
+                                        </div>
+                                    </form>
+
+                                    <form>
+                                        <div className="row">
+                                            <div className="columns large-6">
+                                                <label>Current Male Climber
+                                                    <Select name='selectedCategory'
+                                                            value={selectedMaleClimber}
+                                                            options={maleClimbers}
+                                                            placeholder={"Current Male Climber"}
+                                                            onChange={this.selectMale.bind(this)}/>
+                                                </label>
+                                            </div>
+
+                                            <div className="margin-top-small">
+                                                <a className="button proceed margin-left-tiny" onClick={() => this.setClimber('m')}>
+                                                    Set Climber
+                                                </a>
+                                                <a className="button cancel margin-left-tiny" onClick={() => this.resetClimber('m')}>
+                                                    Reset
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </form>
+                                    <form>
+                                        <div className="row">
+                                            <div className="columns large-6">
+                                                <label>Current Female Climber
+                                                    <Select name='selectedCategory'
+                                                            value={selectedFemaleClimber}
+                                                            options={femaleClimbers}
+                                                            placeholder={"Current Female Climber"}
+                                                            onChange={this.selectFemale.bind(this)}/>
+                                                </label>
+                                            </div>
+                                            <div className="margin-top-small">
+                                                <a className="button proceed margin-left-tiny" onClick={() => this.setClimber('f')}>
+                                                    Set Climber
+                                                </a>
+                                                <a className="button cancel margin-left-tiny" onClick={() => this.resetClimber('f')}>
+                                                    Reset
+                                                </a>
+                                            </div>
                                         </div>
                                     </form>
                                 </div>

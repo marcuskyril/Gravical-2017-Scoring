@@ -1,5 +1,4 @@
 var React = require('react');
-var WatchList = require('WatchList');
 var Tableaux = require('Tableaux');
 var Results = require('Results');
 var FontAwesome = require('react-fontawesome');
@@ -10,19 +9,17 @@ import moment from 'moment';
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
 var {connect} = require('react-redux');
 var {Link, IndexLink} = require('react-router');
-const HOST = 'ws://office.livestudios.com:41000';
+const HOST = 'ws://office.livestudios.com:41001';
 
 const EVENTS = {
-    "NWQ" : "Novice Women Qualifiers",
-    "NMQ" : "Novice Men Qualifiers",
-    "UMQ" : "U17 Boys Qualifiers",
-    "UWQ" : "U17 Girls Qualifiers",
-    "IMQ" : "Intermediate Men Qualifiers",
-    "IWQ" : "Intermediate Women Qualifiers",
-    "OMQ" : "Open Men Qualifiers",
-    "OWQ" : "Open Women Qualifiers",
-    "OMS" : "Open Women Semi-Finals",
-    "OWS" : "Open Women Semi-Finals"
+    "NWF" : "Novice Women Finals",
+    "NMF" : "Novice Men Finals",
+    "UMF" : "U17 Boys Finals",
+    "UFF" : "U17 Girls Finals",
+    "IMF" : "Intermediate Men Finals",
+    "IWF" : "Intermediate Women Finals",
+    "OMF" : "Open Men Finals",
+    "OWF" : "Open Women Finals"
 }
 
 class Dashboard extends React.Component {
@@ -32,11 +29,13 @@ class Dashboard extends React.Component {
 
         this.state = {
             connection: null,
-            results: [],
-            currentDetail: '-',
-            currentEvent: '-',
-            totalDetails: '-',
+            maleResults: [],
+            femaleResults: [],
+            currentMaleEvent: '-',
+            currentFemaleEvent: '-',
             currentTime: '-',
+            currentMaleClimber: '-',
+            currentFemaleClimber: '-',
             allResults: {}
         }
     }
@@ -50,7 +49,6 @@ class Dashboard extends React.Component {
     getAllResults() {
         var that = this;
         climberManagementAPI.getAllResults().then(function(response) {
-            // console.log("response", response);
             that.setState({
                 allResults: response
             });
@@ -65,46 +63,31 @@ class Dashboard extends React.Component {
             connection.subscribe('', function(topic, data) {
 
                 timestamp = moment().format('YYYY-MM-DD, h:mm:ss a');
-                // console.log("jalapeño", connection);
 
-                var results = [];
-                console.log("data", data);
+                var maleResults = [];
+                var femaleResults = [];
 
-                if(data !== null) {
-                    var rawResults = data['list'];
-                    var rank = 0;
-                    var prev_score = "0";
+                if(data !== null && data.hasOwnProperty('M') && data.hasOwnProperty('W')) {
 
-                    for(var i = 0; i < rawResults.length; i++) {
-                        if (rawResults[i]["score"] != prev_score) {
-                            rank++;
-                        }
-                        var row = {
-                            "rank" : rank,
-                            "category": that.state.currentEvent,
-                            "ID": rawResults[i]["ID"],
-                            "name": rawResults[i]["name"],
-                            "detail": rawResults[i]["detail"],
-                            "score": rawResults[i]["score"]
-                        }
-                        prev_score = rawResults[i]["score"];
+                    if(data['M'].hasOwnProperty('list') && data['W'].hasOwnProperty('list')) {
+                        maleResults = that.churnOutResults(data['M']['list']);
+                        femaleResults = that.churnOutResults(data['W']['list']);
 
-                        results.push(row);
+                        that.setState({
+                            maleResults: maleResults,
+                            femaleResults: femaleResults,
+                            connection: connection,
+                            currentTime: timestamp,
+                            currentMaleClimber: data['M']['current_climber'],
+                            currentFemaleClimber: data['W']['current_climber'],
+                            currentMaleEvent: data['M']['current_event'],
+                            currentFemaleEvent: data['W']['current_event']
+                        });
                     }
+
                 } else {
-                    console.warn('problem siol');
+                    console.warn('Problem siol - connection error');
                 }
-
-                // console.log("results", results);
-
-                that.setState({
-                    connection: connection,
-                    currentTime: timestamp,
-                    currentEvent: data['current_event'],
-                    currentDetail: parseInt(data['current_detail']),
-                    totalDetails: parseInt(data['total_details']['num_of_details']),
-                    results: results
-                });
             });
 
         }, function() {
@@ -118,6 +101,33 @@ class Dashboard extends React.Component {
         }, {'skipSubprotocolCheck': true});
     }
 
+    churnOutResults(rawResults) {
+
+        var rank = 0;
+        var prev_score = "0";
+        var results = [];
+        // console.log("raw Results", rawResults);
+        if(rawResults !== undefined) {
+            for(var i = 0; i < rawResults.length; i++) {
+                if (rawResults[i]["score"] != prev_score) {
+                    rank++;
+                }
+                var row = {
+                    "rank" : rank,
+                    "ID": rawResults[i]["ID"],
+                    "name": rawResults[i]["name"],
+                    "detail": rawResults[i]["detail"],
+                    "score": rawResults[i]["score"]
+                }
+                prev_score = rawResults[i]["score"];
+
+                results.push(row);
+            }
+        }
+
+        return results;
+    }
+
     componentWillUnmount() {
         // close websocket
         if (this.state.connection !== null) {
@@ -128,19 +138,23 @@ class Dashboard extends React.Component {
 
     render() {
 
-        var {results, currentEvent, currentTime, currentDetail, totalDetails, allResults} = this.state;
+        var {maleResults, femaleResults, currentMaleClimber, currentFemaleClimber, currentMaleEvent, currentFemaleEvent, currentTime, currentDetail, totalDetails, allResults} = this.state;
         // console.log("results", results);
         return (
 
             <div className="dashboard margin-top-md">
                 <div className="row">
+                    <div>
+                        <img src="images/banner2.jpg" style={{marginBottom:'1.5rem', padding: "0rem 1rem"}}/>
+                    </div>
                     <div className="columns small-12 medium-12 large-6">
                         <div>
                             <div className="callout callout-dark-header">
-                                <div className="page-title">Watch List</div>
+                                <div className="page-title">Current Event: {currentMaleEvent === "-" ? "-" : EVENTS[currentMaleEvent]} </div>
+                                <div className="header-md">Current Climber: {currentMaleClimber === "-" ? "-" : currentMaleClimber} </div>
                             </div>
                             <div className="callout callout-dark" id="watchList2">
-                                <WatchList data={results}/>
+                                <Tableaux data={maleResults}/>
                             </div>
                         </div>
 
@@ -148,10 +162,11 @@ class Dashboard extends React.Component {
 
                     <div className="allSensors columns medium-12 large-6">
                         <div className="callout callout-dark-header">
-                            <div className="page-title">Current Event: {currentEvent === "" ? "-" : currentEvent} {currentDetail === 0 ? "-" : currentDetail}/{totalDetails === 0 ? "-" : totalDetails}</div>
+                            <div className="page-title">Current Event: {currentFemaleEvent === "-" ? "-" : EVENTS[currentFemaleEvent]} </div>
+                            <div className="header-md">Current Climber: {currentFemaleClimber === "-" ? "-" : currentFemaleClimber} </div>
                         </div>
                         <div className="callout callout-dark" id="bfg">
-                            <Tableaux data={results}/>
+                            <Tableaux data={femaleResults}/>
                         </div>
                     </div>
                 </div>
@@ -173,7 +188,7 @@ class Dashboard extends React.Component {
                               </TabList>
                               <TabPanel>
                                   <div className="header-md margin-bottom-small">U17 Girls - Qualifiers</div>
-                                  <Results data={allResults['UWQ']}/>
+                                  <Results data={allResults['UFQ']}/>
 
                                   <div className="header-md margin-top-md margin-bottom-small">Novice Women - Qualifiers</div>
                                   <Results data={allResults['NWQ']}/>
@@ -245,7 +260,8 @@ class Dashboard extends React.Component {
                             paddingTop: "1em",
                             fontSize: "small",
                             fontWeight: "100",
-                            fontFamily: "'Roboto', sans-serif"
+                            fontFamily: "'Roboto', sans-serif",
+                            marginBottom: "1.5rem"
                         }}>
                             Copyright © 2016 <img src="images/monochrome.png" style={{height:"2em"}}/> MONOCHROME
                             <br/>

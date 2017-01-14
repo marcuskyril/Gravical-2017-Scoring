@@ -17,13 +17,6 @@ var requireLogin = (nextState, replace, next) => {
     next();
 };
 
-// var redirectIfLoggedIn = (nextState, replace, next) => {
-//     // if (firebase.auth().currentUser) {
-//     //     replace('/admin');
-//     // }
-//     // next();
-// };
-
 export default(
     <Router history={hashHistory}>
       <Route path="/" component={Main} >

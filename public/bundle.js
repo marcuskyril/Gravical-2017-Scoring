@@ -134,7 +134,7 @@
 	var browserHistory = _require2.browserHistory;
 
 	var actions = __webpack_require__(139);
-	var store = __webpack_require__(646).configure();
+	var store = __webpack_require__(645).configure();
 
 	_firebase2.default.auth().onAuthStateChanged(function (user) {
 	  if (user) {
@@ -158,15 +158,15 @@
 	});
 
 	// Load foundation
-	__webpack_require__(649);
+	__webpack_require__(648);
 	$(document).foundation();
 
-	__webpack_require__(653);
-	__webpack_require__(655);
-	__webpack_require__(657);
-	__webpack_require__(659);
-	__webpack_require__(661);
-	__webpack_require__(663);
+	__webpack_require__(652);
+	__webpack_require__(654);
+	__webpack_require__(656);
+	__webpack_require__(658);
+	__webpack_require__(660);
+	__webpack_require__(662);
 
 	ReactDOM.render(React.createElement(
 	  'div',
@@ -865,13 +865,6 @@
 	    }
 	    next();
 	};
-
-	// var redirectIfLoggedIn = (nextState, replace, next) => {
-	//     // if (firebase.auth().currentUser) {
-	//     //     replace('/admin');
-	//     // }
-	//     // next();
-	// };
 
 	exports.default = _react2.default.createElement(
 	    _reactRouter.Router,
@@ -10707,7 +10700,6 @@
 	var scoreAPI = __webpack_require__(422);
 	var climberManagementAPI = __webpack_require__(423);
 	var Select = __webpack_require__(424);
-	// var AddSensor = require('AddSensor');
 
 	var user = null;
 
@@ -10731,9 +10723,15 @@
 	            selectedCategoryUtil: '',
 	            currentDetail: 0,
 	            currentEvent: '-',
+	            selectedFemaleClimber: '',
+	            selectedMaleClimber: '',
+	            currentFemaleClimber: '-',
+	            currentMaleClimber: '-',
 	            numDetails: 0,
 	            editMessage: '',
-	            hasEventStarted: false
+	            hasEventStarted: false,
+	            maleClimbers: [],
+	            femaleClimbers: []
 	        };
 
 	        _this.selectCategory = _this.selectCategory.bind(_this);
@@ -10744,25 +10742,79 @@
 	    _createClass(Admin, [{
 	        key: 'componentDidMount',
 	        value: function componentDidMount() {
-
 	            this.retrieveCurrentEvent();
+	            this.retrieveCurrentClimbers();
 	            this.retrieveCurrentDetail();
 	            this.retrieveCategories();
 	            this.retrieveRecommendedID();
 	        }
 	    }, {
+	        key: 'retrieveClimbers',
+	        value: function retrieveClimbers() {
+	            var that = this;
+	            var currentEvent = this.state.currentEvent;
+
+	            // console.log("currentEvent", currentEvent);
+
+	            var femaleEvent = "";
+
+	            if (currentEvent === "UF") {
+	                femaleEvent = "UFF";
+	            } else {
+	                femaleEvent = currentEvent.charAt(0) + 'WF';
+	            }
+
+	            climberManagementAPI.retrieveClimbers(femaleEvent).then(function (response) {
+	                // console.log("female event", femaleEvent);
+	                var fTemp = [];
+	                response.forEach(function (climber) {
+	                    fTemp.push({ value: climber, label: climber });
+	                });
+
+	                that.setState({
+	                    femaleClimbers: fTemp
+	                });
+	            });
+
+	            climberManagementAPI.retrieveClimbers(currentEvent.charAt(0) + 'MF').then(function (response) {
+	                // console.log(` soooo, ${currentEvent.charAt(0)}MF`);
+	                var mTemp = [];
+	                response.forEach(function (climber) {
+	                    mTemp.push({ value: climber, label: climber });
+	                });
+
+	                that.setState({
+	                    maleClimbers: mTemp
+	                });
+	            });
+	        }
+	    }, {
 	        key: 'retrieveCurrentEvent',
 	        value: function retrieveCurrentEvent() {
 	            var that = this;
-	            climberManagementAPI.getCurrentEvent().then(function (response) {
+	            climberManagementAPI.getCurrentFinalEvent().then(function (response) {
 	                // console.log("Current event", response);
 	                that.setState({
 	                    currentEvent: response.message
 	                });
 
+	                that.retrieveClimbers();
+
 	                if (response.message.length > 0) {
 	                    that.retrieveNumDetails(response.message);
 	                }
+	            });
+	        }
+	    }, {
+	        key: 'retrieveCurrentClimbers',
+	        value: function retrieveCurrentClimbers() {
+	            var that = this;
+	            climberManagementAPI.getCurrentClimbers().then(function (response) {
+	                // console.log("currentClimbers", response);
+	                that.setState({
+	                    currentMaleClimber: response['male'],
+	                    currentFemaleClimber: response['female']
+	                });
 	            });
 	        }
 	    }, {
@@ -10803,7 +10855,7 @@
 
 	            var that = this;
 	            scoreAPI.retrieveDetails(category).then(function (response) {
-	                console.log("response", response);
+	                // console.log("response", response);
 	                that.setState({
 	                    numDetails: response['num_of_details']
 	                });
@@ -10816,22 +10868,27 @@
 	            this.retrieveNumDetails(val.value);
 	        }
 	    }, {
+	        key: 'selectMale',
+	        value: function selectMale(val) {
+	            this.setState({ selectedMaleClimber: val.value });
+	        }
+	    }, {
+	        key: 'selectFemale',
+	        value: function selectFemale(val) {
+	            this.setState({ selectedFemaleClimber: val.value });
+	        }
+	    }, {
 	        key: 'selectCategoryUtil',
-	        value: function selectCategoryUtil(val) {
-	            console.log("val", val);
-	            this.setState({ selectedCategoryUtil: val.value });
-	            this.retrieveNumDetails(val.value);
+	        value: function selectCategoryUtil(event) {
+	            var selectedCategoryUtil = event.target.value;
+	            console.log("selectedCategoryUtil", selectedCategoryUtil);
+	            this.setState({ selectedCategoryUtil: selectedCategoryUtil });
 	        }
 	    }, {
 	        key: 'handleChange',
 	        value: function handleChange(e) {
-
 	            var val = e.target.value;
-	            console.log("val");
-
-	            this.setState({
-	                gender: val
-	            });
+	            this.setState({ gender: val });
 	        }
 	    }, {
 	        key: 'editRecord',
@@ -10977,14 +11034,16 @@
 	                if (selectedCategoryUtil === "") {
 	                    alert("Niggaaaaaa, select an event.");
 	                } else {
-	                    climberManagementAPI.startEvent(selectedCategoryUtil).then(function (response) {
-
-	                        that.retrieveNumDetails(selectedCategoryUtil);
-
+	                    climberManagementAPI.startFinalEvent(selectedCategoryUtil).then(function (response) {
+	                        // that.retrieveNumDetails(selectedCategoryUtil);
 	                        that.setState({
 	                            hasEventStarted: true,
-	                            currentEvent: selectedCategoryUtil
+	                            currentEvent: selectedCategoryUtil,
+	                            currentMaleClimber: "-",
+	                            currentFemaleClimber: "-"
 	                        });
+
+	                        that.retrieveClimbers();
 
 	                        that.setDetail(1);
 	                    });
@@ -11064,7 +11123,7 @@
 	        value: function endEvent() {
 
 	            var that = this;
-	            climberManagementAPI.endEvent().then(function (response) {
+	            climberManagementAPI.endFinalEvent().then(function (response) {
 
 	                that.setState({
 	                    currentEvent: '-',
@@ -11130,8 +11189,65 @@
 	            }
 	        }
 	    }, {
+	        key: 'resetClimber',
+	        value: function resetClimber(gender) {
+	            var that = this;
+	            switch (gender) {
+	                case 'm':
+	                    climberManagementAPI.setMaleClimber("-").then(function (response) {
+	                        that.setState({
+	                            currentMaleClimber: "-",
+	                            selectedMaleClimber: ""
+	                        });
+	                    });
+	                    break;
+	                case 'f':
+	                    climberManagementAPI.setFemaleClimber("-").then(function (response) {
+	                        that.setState({
+	                            currentFemaleClimber: "-",
+	                            selectedFemaleClimber: ""
+	                        });
+	                    });
+	                    break;
+	                default:
+	                    console.log("nothing here");
+	                    break;
+	            }
+	        }
+	    }, {
+	        key: 'setClimber',
+	        value: function setClimber(gender) {
+	            var that = this;
+	            switch (gender) {
+	                case 'm':
+	                    var selectedMaleClimber = this.state.selectedMaleClimber;
+
+	                    climberManagementAPI.setMaleClimber(selectedMaleClimber).then(function (response) {
+	                        console.log(response);
+	                        that.setState({
+	                            currentMaleClimber: selectedMaleClimber
+	                        });
+	                    });
+	                    break;
+	                case 'f':
+	                    var selectedFemaleClimber = this.state.selectedFemaleClimber;
+
+	                    climberManagementAPI.setFemaleClimber(selectedFemaleClimber).then(function (response) {
+	                        console.log(response);
+	                        that.setState({
+	                            currentFemaleClimber: selectedFemaleClimber
+	                        });
+	                    });
+	                    break;
+	                default:
+	                    console.log("nothing here");
+	                    break;
+	            }
+	        }
+	    }, {
 	        key: 'render',
 	        value: function render() {
+	            var _this2 = this;
 
 	            var that = this;
 	            var _state6 = this.state;
@@ -11146,6 +11262,12 @@
 	            var currentEvent = _state6.currentEvent;
 	            var hasEventStarted = _state6.hasEventStarted;
 	            var editMessage = _state6.editMessage;
+	            var currentFemaleClimber = _state6.currentFemaleClimber;
+	            var currentMaleClimber = _state6.currentMaleClimber;
+	            var selectedFemaleClimber = _state6.selectedFemaleClimber;
+	            var selectedMaleClimber = _state6.selectedMaleClimber;
+	            var maleClimbers = _state6.maleClimbers;
+	            var femaleClimbers = _state6.femaleClimbers;
 
 
 	            return React.createElement(
@@ -11189,12 +11311,21 @@
 	                                    React.createElement(
 	                                        'b',
 	                                        null,
-	                                        'Current detail'
+	                                        'Current Male Climber'
 	                                    ),
 	                                    ': ',
-	                                    currentDetail === 0 ? "-" : currentDetail,
-	                                    '/',
-	                                    numDetails === 0 ? "-" : numDetails
+	                                    currentMaleClimber
+	                                ),
+	                                React.createElement(
+	                                    'p',
+	                                    null,
+	                                    React.createElement(
+	                                        'b',
+	                                        null,
+	                                        'Current Female Climber'
+	                                    ),
+	                                    ': ',
+	                                    currentFemaleClimber
 	                                ),
 	                                React.createElement(
 	                                    'form',
@@ -11208,12 +11339,36 @@
 	                                            React.createElement(
 	                                                'label',
 	                                                null,
-	                                                'Category',
-	                                                React.createElement(Select, { name: 'selectedCategory',
-	                                                    value: selectedCategoryUtil,
-	                                                    options: categories,
-	                                                    placeholder: "Category",
-	                                                    onChange: this.selectCategoryUtil.bind(this) })
+	                                                'Event',
+	                                                React.createElement(
+	                                                    'select',
+	                                                    { ref: 'selectedCategoryUtil', onChange: this.selectCategoryUtil.bind(this) },
+	                                                    React.createElement(
+	                                                        'option',
+	                                                        { value: '' },
+	                                                        'Event'
+	                                                    ),
+	                                                    React.createElement(
+	                                                        'option',
+	                                                        { value: 'UF' },
+	                                                        'U17 Finals'
+	                                                    ),
+	                                                    React.createElement(
+	                                                        'option',
+	                                                        { value: 'NF' },
+	                                                        'Novice Finals'
+	                                                    ),
+	                                                    React.createElement(
+	                                                        'option',
+	                                                        { value: 'IF' },
+	                                                        'Intermediate Finals'
+	                                                    ),
+	                                                    React.createElement(
+	                                                        'option',
+	                                                        { value: 'OF' },
+	                                                        'Open Finals'
+	                                                    )
+	                                                )
 	                                            )
 	                                        )
 	                                    ),
@@ -11224,16 +11379,6 @@
 	                                            'a',
 	                                            { className: 'button proceed margin-left-tiny', onClick: this.launchStartEventDialog.bind(this) },
 	                                            'Start Event'
-	                                        ),
-	                                        React.createElement(
-	                                            'a',
-	                                            { className: 'button proceed margin-left-tiny', onClick: this.nextDetail.bind(this) },
-	                                            'Start Next Detail'
-	                                        ),
-	                                        React.createElement(
-	                                            'a',
-	                                            { className: 'button proceed margin-left-tiny', onClick: this.previousDetail.bind(this) },
-	                                            'Previous Detail'
 	                                        ),
 	                                        React.createElement(
 	                                            'a',
@@ -11249,6 +11394,86 @@
 	                                            'a',
 	                                            { className: 'button cancel margin-left-tiny', onClick: this.clearTableByCat.bind(this) },
 	                                            'Clear Results by Category'
+	                                        )
+	                                    )
+	                                ),
+	                                React.createElement(
+	                                    'form',
+	                                    null,
+	                                    React.createElement(
+	                                        'div',
+	                                        { className: 'row' },
+	                                        React.createElement(
+	                                            'div',
+	                                            { className: 'columns large-6' },
+	                                            React.createElement(
+	                                                'label',
+	                                                null,
+	                                                'Current Male Climber',
+	                                                React.createElement(Select, { name: 'selectedCategory',
+	                                                    value: selectedMaleClimber,
+	                                                    options: maleClimbers,
+	                                                    placeholder: "Current Male Climber",
+	                                                    onChange: this.selectMale.bind(this) })
+	                                            )
+	                                        ),
+	                                        React.createElement(
+	                                            'div',
+	                                            { className: 'margin-top-small' },
+	                                            React.createElement(
+	                                                'a',
+	                                                { className: 'button proceed margin-left-tiny', onClick: function onClick() {
+	                                                        return _this2.setClimber('m');
+	                                                    } },
+	                                                'Set Climber'
+	                                            ),
+	                                            React.createElement(
+	                                                'a',
+	                                                { className: 'button cancel margin-left-tiny', onClick: function onClick() {
+	                                                        return _this2.resetClimber('m');
+	                                                    } },
+	                                                'Reset'
+	                                            )
+	                                        )
+	                                    )
+	                                ),
+	                                React.createElement(
+	                                    'form',
+	                                    null,
+	                                    React.createElement(
+	                                        'div',
+	                                        { className: 'row' },
+	                                        React.createElement(
+	                                            'div',
+	                                            { className: 'columns large-6' },
+	                                            React.createElement(
+	                                                'label',
+	                                                null,
+	                                                'Current Female Climber',
+	                                                React.createElement(Select, { name: 'selectedCategory',
+	                                                    value: selectedFemaleClimber,
+	                                                    options: femaleClimbers,
+	                                                    placeholder: "Current Female Climber",
+	                                                    onChange: this.selectFemale.bind(this) })
+	                                            )
+	                                        ),
+	                                        React.createElement(
+	                                            'div',
+	                                            { className: 'margin-top-small' },
+	                                            React.createElement(
+	                                                'a',
+	                                                { className: 'button proceed margin-left-tiny', onClick: function onClick() {
+	                                                        return _this2.setClimber('f');
+	                                                    } },
+	                                                'Set Climber'
+	                                            ),
+	                                            React.createElement(
+	                                                'a',
+	                                                { className: 'button cancel margin-left-tiny', onClick: function onClick() {
+	                                                        return _this2.resetClimber('f');
+	                                                    } },
+	                                                'Reset'
+	                                            )
 	                                        )
 	                                    )
 	                                )
@@ -48510,6 +48735,8 @@
 
 	/* WEBPACK VAR INJECTION */(function($) {"use strict";
 
+	function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
 	var ADD_CLIMBER_URL = "http://office.livestudios.com:41111/backend/api/add_climber.php";
 	var REGISTER_PARTICIPANT_URL = "http://office.livestudios.com:41111/backend/api/register_participant.php";
 	var START_EVENT_URL = "http://office.livestudios.com:41111/backend/api/start_event.php";
@@ -48521,6 +48748,13 @@
 	var GET_ALL_RESULTS_URL = "http://office.livestudios.com:41111/backend/api/get_past_results.php";
 	var CLEAR_RESULTS_URL = "http://office.livestudios.com:41111/backend/api/clear_results_database.php";
 	var CLEAR_RESULTS_BY_CAT_URL = "http://office.livestudios.com:41111/backend/api/clear_completed_event_results.php";
+	var SET_MALE_URL = "http://office.livestudios.com:41111/backend/api/set_finals_male_climber.php";
+	var SET_FEMALE_URL = "http://office.livestudios.com:41111/backend/api/set_finals_female_climber.php";
+	var GET_FINALISTS_URL = "http://office.livestudios.com:41111/backend/api/getFinalists.php";
+	var GET_CURRENT_CLIMBERS_URL = "http://office.livestudios.com:41111/backend/api/get_finals_climbers.php";
+	var GET_CURRENT_FINAL_EVENT_URL = "http://office.livestudios.com:41111/backend/api/get_current_final_event.php";
+	var START_FINAL_EVENT_URL = "http://office.livestudios.com:41111/backend/api/start_final_event.php";
+	var STOP_FINAL_EVENT_URL = "http://office.livestudios.com:41111/backend/api/stop_final_event.php";
 
 	module.exports = {
 
@@ -48537,6 +48771,51 @@
 	            },
 	            success: function success(response) {
 	                console.log("Add API", response);
+	            }
+	        });
+	    },
+
+	    retrieveClimbers: function retrieveClimbers(categoryID) {
+	        var _$$ajax;
+
+	        return $.ajax((_$$ajax = {
+	            type: "POST",
+	            beforeSend: function beforeSend(request) {
+	                request.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+	            },
+	            data: { categoryID: categoryID },
+	            url: GET_FINALISTS_URL
+	        }, _defineProperty(_$$ajax, "data", { categoryID: categoryID }), _defineProperty(_$$ajax, "success", function success(response) {
+	            // console.log("name", response);
+	        }), _$$ajax));
+	    },
+
+	    setMaleClimber: function setMaleClimber(name) {
+
+	        return $.ajax({
+	            type: "POST",
+	            beforeSend: function beforeSend(request) {
+	                request.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+	            },
+	            url: SET_MALE_URL,
+	            data: { name: name },
+	            success: function success(response) {
+	                console.log("name", response);
+	            }
+	        });
+	    },
+
+	    setFemaleClimber: function setFemaleClimber(name) {
+	        console.log("name", name);
+	        return $.ajax({
+	            type: "POST",
+	            beforeSend: function beforeSend(request) {
+	                request.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+	            },
+	            url: SET_FEMALE_URL,
+	            data: { name: name },
+	            success: function success(response) {
+	                console.log("name", response);
 	            }
 	        });
 	    },
@@ -48596,6 +48875,20 @@
 	        });
 	    },
 
+	    startFinalEvent: function startFinalEvent(categoryID) {
+	        return $.ajax({
+	            type: "POST",
+	            beforeSend: function beforeSend(request) {
+	                request.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+	            },
+	            url: START_FINAL_EVENT_URL,
+	            data: { categoryID: categoryID },
+	            success: function success(response) {
+	                // console.log("Tres manifique, monsieur", response);
+	            }
+	        });
+	    },
+
 	    startEvent: function startEvent(categoryID) {
 	        var data = {
 	            categoryID: categoryID
@@ -48622,6 +48915,20 @@
 	                request.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
 	            },
 	            url: STOP_EVENT_URL,
+	            success: function success(response) {
+	                console.log("response", response);
+	            }
+	        });
+	    },
+
+	    endFinalEvent: function endFinalEvent() {
+
+	        return $.ajax({
+	            type: "POST",
+	            beforeSend: function beforeSend(request) {
+	                request.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+	            },
+	            url: STOP_FINAL_EVENT_URL,
 	            success: function success(response) {
 	                console.log("response", response);
 	            }
@@ -48656,6 +48963,19 @@
 	        });
 	    },
 
+	    getCurrentFinalEvent: function getCurrentFinalEvent() {
+	        return $.ajax({
+	            type: "POST",
+	            beforeSend: function beforeSend(request) {
+	                request.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+	            },
+	            url: GET_CURRENT_FINAL_EVENT_URL,
+	            success: function success(response) {
+	                // console.log("Tres manifique, monsieur", response);
+	            }
+	        });
+	    },
+
 	    getCurrentDetail: function getCurrentDetail() {
 	        return $.ajax({
 	            type: "POST",
@@ -48663,6 +48983,19 @@
 	                request.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
 	            },
 	            url: GET_CURRENT_DETAIL_URL,
+	            success: function success(response) {
+	                // console.log("Tres manifique, monsieur", response);
+	            }
+	        });
+	    },
+
+	    getCurrentClimbers: function getCurrentClimbers() {
+	        return $.ajax({
+	            type: "POST",
+	            beforeSend: function beforeSend(request) {
+	                request.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+	            },
+	            url: GET_CURRENT_CLIMBERS_URL,
 	            success: function success(response) {
 	                // console.log("Tres manifique, monsieur", response);
 	            }
@@ -52291,9 +52624,8 @@
 	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 	var React = __webpack_require__(14);
-	var WatchList = __webpack_require__(446);
-	var Tableaux = __webpack_require__(644);
-	var Results = __webpack_require__(645);
+	var Tableaux = __webpack_require__(446);
+	var Results = __webpack_require__(644);
 	var FontAwesome = __webpack_require__(420);
 	var climberManagementAPI = __webpack_require__(423);
 
@@ -52306,19 +52638,17 @@
 	var Link = _require2.Link;
 	var IndexLink = _require2.IndexLink;
 
-	var HOST = 'ws://office.livestudios.com:41000';
+	var HOST = 'ws://office.livestudios.com:41001';
 
 	var EVENTS = {
-	    "NWQ": "Novice Women Qualifiers",
-	    "NMQ": "Novice Men Qualifiers",
-	    "UMQ": "U17 Boys Qualifiers",
-	    "UWQ": "U17 Girls Qualifiers",
-	    "IMQ": "Intermediate Men Qualifiers",
-	    "IWQ": "Intermediate Women Qualifiers",
-	    "OMQ": "Open Men Qualifiers",
-	    "OWQ": "Open Women Qualifiers",
-	    "OMS": "Open Women Semi-Finals",
-	    "OWS": "Open Women Semi-Finals"
+	    "NWF": "Novice Women Finals",
+	    "NMF": "Novice Men Finals",
+	    "UMF": "U17 Boys Finals",
+	    "UFF": "U17 Girls Finals",
+	    "IMF": "Intermediate Men Finals",
+	    "IWF": "Intermediate Women Finals",
+	    "OMF": "Open Men Finals",
+	    "OWF": "Open Women Finals"
 	};
 
 	var Dashboard = function (_React$Component) {
@@ -52331,11 +52661,13 @@
 
 	        _this.state = {
 	            connection: null,
-	            results: [],
-	            currentDetail: '-',
-	            currentEvent: '-',
-	            totalDetails: '-',
+	            maleResults: [],
+	            femaleResults: [],
+	            currentMaleEvent: '-',
+	            currentFemaleEvent: '-',
 	            currentTime: '-',
+	            currentMaleClimber: '-',
+	            currentFemaleClimber: '-',
 	            allResults: {}
 	        };
 	        return _this;
@@ -52353,7 +52685,6 @@
 	        value: function getAllResults() {
 	            var that = this;
 	            climberManagementAPI.getAllResults().then(function (response) {
-	                // console.log("response", response);
 	                that.setState({
 	                    allResults: response
 	                });
@@ -52369,46 +52700,30 @@
 	                connection.subscribe('', function (topic, data) {
 
 	                    timestamp = (0, _moment2.default)().format('YYYY-MM-DD, h:mm:ss a');
-	                    // console.log("jalapeño", connection);
 
-	                    var results = [];
-	                    console.log("data", data);
+	                    var maleResults = [];
+	                    var femaleResults = [];
 
-	                    if (data !== null) {
-	                        var rawResults = data['list'];
-	                        var rank = 0;
-	                        var prev_score = "0";
+	                    if (data !== null && data.hasOwnProperty('M') && data.hasOwnProperty('W')) {
 
-	                        for (var i = 0; i < rawResults.length; i++) {
-	                            if (rawResults[i]["score"] != prev_score) {
-	                                rank++;
-	                            }
-	                            var row = {
-	                                "rank": rank,
-	                                "category": that.state.currentEvent,
-	                                "ID": rawResults[i]["ID"],
-	                                "name": rawResults[i]["name"],
-	                                "detail": rawResults[i]["detail"],
-	                                "score": rawResults[i]["score"]
-	                            };
-	                            prev_score = rawResults[i]["score"];
+	                        if (data['M'].hasOwnProperty('list') && data['W'].hasOwnProperty('list')) {
+	                            maleResults = that.churnOutResults(data['M']['list']);
+	                            femaleResults = that.churnOutResults(data['W']['list']);
 
-	                            results.push(row);
+	                            that.setState({
+	                                maleResults: maleResults,
+	                                femaleResults: femaleResults,
+	                                connection: connection,
+	                                currentTime: timestamp,
+	                                currentMaleClimber: data['M']['current_climber'],
+	                                currentFemaleClimber: data['W']['current_climber'],
+	                                currentMaleEvent: data['M']['current_event'],
+	                                currentFemaleEvent: data['W']['current_event']
+	                            });
 	                        }
 	                    } else {
-	                        console.warn('problem siol');
+	                        console.warn('Problem siol - connection error');
 	                    }
-
-	                    // console.log("results", results);
-
-	                    that.setState({
-	                        connection: connection,
-	                        currentTime: timestamp,
-	                        currentEvent: data['current_event'],
-	                        currentDetail: parseInt(data['current_detail']),
-	                        totalDetails: parseInt(data['total_details']['num_of_details']),
-	                        results: results
-	                    });
 	                });
 	            }, function () {
 
@@ -52419,6 +52734,34 @@
 	                    this.connect();
 	                }
 	            }, { 'skipSubprotocolCheck': true });
+	        }
+	    }, {
+	        key: 'churnOutResults',
+	        value: function churnOutResults(rawResults) {
+
+	            var rank = 0;
+	            var prev_score = "0";
+	            var results = [];
+	            // console.log("raw Results", rawResults);
+	            if (rawResults !== undefined) {
+	                for (var i = 0; i < rawResults.length; i++) {
+	                    if (rawResults[i]["score"] != prev_score) {
+	                        rank++;
+	                    }
+	                    var row = {
+	                        "rank": rank,
+	                        "ID": rawResults[i]["ID"],
+	                        "name": rawResults[i]["name"],
+	                        "detail": rawResults[i]["detail"],
+	                        "score": rawResults[i]["score"]
+	                    };
+	                    prev_score = rawResults[i]["score"];
+
+	                    results.push(row);
+	                }
+	            }
+
+	            return results;
 	        }
 	    }, {
 	        key: 'componentWillUnmount',
@@ -52433,8 +52776,12 @@
 	        key: 'render',
 	        value: function render() {
 	            var _state = this.state;
-	            var results = _state.results;
-	            var currentEvent = _state.currentEvent;
+	            var maleResults = _state.maleResults;
+	            var femaleResults = _state.femaleResults;
+	            var currentMaleClimber = _state.currentMaleClimber;
+	            var currentFemaleClimber = _state.currentFemaleClimber;
+	            var currentMaleEvent = _state.currentMaleEvent;
+	            var currentFemaleEvent = _state.currentFemaleEvent;
 	            var currentTime = _state.currentTime;
 	            var currentDetail = _state.currentDetail;
 	            var totalDetails = _state.totalDetails;
@@ -52449,6 +52796,11 @@
 	                    { className: 'row' },
 	                    React.createElement(
 	                        'div',
+	                        null,
+	                        React.createElement('img', { src: 'images/banner2.jpg', style: { marginBottom: '1.5rem', padding: "0rem 1rem" } })
+	                    ),
+	                    React.createElement(
+	                        'div',
 	                        { className: 'columns small-12 medium-12 large-6' },
 	                        React.createElement(
 	                            'div',
@@ -52459,13 +52811,22 @@
 	                                React.createElement(
 	                                    'div',
 	                                    { className: 'page-title' },
-	                                    'Watch List'
+	                                    'Current Event: ',
+	                                    currentMaleEvent === "-" ? "-" : EVENTS[currentMaleEvent],
+	                                    ' '
+	                                ),
+	                                React.createElement(
+	                                    'div',
+	                                    { className: 'header-md' },
+	                                    'Current Climber: ',
+	                                    currentMaleClimber === "-" ? "-" : currentMaleClimber,
+	                                    ' '
 	                                )
 	                            ),
 	                            React.createElement(
 	                                'div',
 	                                { className: 'callout callout-dark', id: 'watchList2' },
-	                                React.createElement(WatchList, { data: results })
+	                                React.createElement(Tableaux, { data: maleResults })
 	                            )
 	                        )
 	                    ),
@@ -52479,17 +52840,21 @@
 	                                'div',
 	                                { className: 'page-title' },
 	                                'Current Event: ',
-	                                currentEvent === "" ? "-" : currentEvent,
-	                                ' ',
-	                                currentDetail === 0 ? "-" : currentDetail,
-	                                '/',
-	                                totalDetails === 0 ? "-" : totalDetails
+	                                currentFemaleEvent === "-" ? "-" : EVENTS[currentFemaleEvent],
+	                                ' '
+	                            ),
+	                            React.createElement(
+	                                'div',
+	                                { className: 'header-md' },
+	                                'Current Climber: ',
+	                                currentFemaleClimber === "-" ? "-" : currentFemaleClimber,
+	                                ' '
 	                            )
 	                        ),
 	                        React.createElement(
 	                            'div',
 	                            { className: 'callout callout-dark', id: 'bfg' },
-	                            React.createElement(Tableaux, { data: results })
+	                            React.createElement(Tableaux, { data: femaleResults })
 	                        )
 	                    )
 	                ),
@@ -52551,7 +52916,7 @@
 	                                        { className: 'header-md margin-bottom-small' },
 	                                        'U17 Girls - Qualifiers'
 	                                    ),
-	                                    React.createElement(Results, { data: allResults['UWQ'] }),
+	                                    React.createElement(Results, { data: allResults['UFQ'] }),
 	                                    React.createElement(
 	                                        'div',
 	                                        { className: 'header-md margin-top-md margin-bottom-small' },
@@ -52685,7 +53050,8 @@
 	                                    paddingTop: "1em",
 	                                    fontSize: "small",
 	                                    fontWeight: "100",
-	                                    fontFamily: "'Roboto', sans-serif"
+	                                    fontFamily: "'Roboto', sans-serif",
+	                                    marginBottom: "1.5rem"
 	                                } },
 	                            'Copyright © 2016 ',
 	                            React.createElement('img', { src: 'images/monochrome.png', style: { height: "2em" } }),
@@ -52710,19 +53076,9 @@
 /* 446 */
 /***/ function(module, exports, __webpack_require__) {
 
-	'use strict';
+	/* WEBPACK VAR INJECTION */(function($) {'use strict';
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-	var _reactRedux = __webpack_require__(111);
-
-	var Redux = _interopRequireWildcard(_reactRedux);
-
-	var _actions = __webpack_require__(139);
-
-	var actions = _interopRequireWildcard(_actions);
-
-	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -52732,183 +53088,117 @@
 
 	var React = __webpack_require__(14);
 	var Griddle = __webpack_require__(447);
-	var ReactDOM = __webpack_require__(272);
-
-
-	var dataList = [];
-
-	var RemoveComponent = function (_React$Component) {
-	    _inherits(RemoveComponent, _React$Component);
-
-	    function RemoveComponent(props) {
-	        _classCallCheck(this, RemoveComponent);
-
-	        return _possibleConstructorReturn(this, Object.getPrototypeOf(RemoveComponent).call(this, props));
-	    }
-
-	    _createClass(RemoveComponent, [{
-	        key: 'handleClick',
-	        value: function handleClick(data) {
-	            var cookieData = document.cookie;
-	            var cookieDataArr = cookieData.split(',');
-	            var index = cookieDataArr.indexOf(data);
-	            var temp = cookieDataArr.splice(index, 1);
-
-	            document.cookie = cookieDataArr.join();
-	        }
-	    }, {
-	        key: 'render',
-	        value: function render() {
-	            var _this2 = this;
-
-	            return React.createElement(
-	                'div',
-	                { id: 'unpin-btn', className: 'sensorBlock remove', onClick: function onClick() {
-	                        return _this2.handleClick(_this2.props.data);
-	                    } },
-	                'Un-Pin'
-	            );
-	        }
-	    }]);
-
-	    return RemoveComponent;
-	}(React.Component);
-
-	;
+	var axios = __webpack_require__(247);
+	var FontAwesome = __webpack_require__(420);
 
 	var tableMetaData = [{
-	    "columnName": "ID",
+	    "columnName": "rank",
 	    "order": 1,
+	    "locked": true,
+	    "visible": true,
+	    "displayName": "Rank",
+	    "sortable": true
+	}, {
+	    "columnName": "ID",
+	    "order": 2,
 	    "locked": false,
 	    "visible": true,
+	    "sortable": true,
 	    "displayName": "ID"
 	}, {
 	    "columnName": "name",
-	    "order": 2,
-	    "locked": true,
+	    "order": 3,
+	    "locked": false,
 	    "visible": true,
+	    "sortable": true,
 	    "displayName": "Name"
 	}, {
 	    "columnName": "score",
-	    "order": 3,
-	    "locked": true,
-	    "visible": true,
-	    "displayName": "Score"
-	}, {
-	    "columnName": "category",
 	    "order": 4,
-	    "locked": true,
+	    "locked": false,
 	    "visible": true,
-	    "displayName": "Category"
-	}, {
-	    "columnName": "ranking",
-	    "order": 5,
-	    "locked": true,
-	    "visible": true,
-	    "displayName": "Ranking"
-	}, {
-	    "columnName": "remove",
-	    "order": 6,
-	    "locked": true,
-	    "visible": true,
-	    "sortable": false,
-	    "displayName": "Remove",
-	    "customComponent": RemoveComponent
+	    "sortable": true,
+	    "displayName": "Score"
 	}];
 
-	var rowMetaData = {
-	    "bodyCssClassName": "customTableRow"
+	var columnDisplayName = {
+	    "Rank": "rank",
+	    "ID": "ID",
+	    "Name": "name",
+	    "Score": "score"
 	};
 
-	var WatchList = function (_React$Component2) {
-	    _inherits(WatchList, _React$Component2);
+	var Tableaux = function (_React$Component) {
+	    _inherits(Tableaux, _React$Component);
 
-	    function WatchList(props) {
-	        _classCallCheck(this, WatchList);
+	    function Tableaux(props) {
+	        _classCallCheck(this, Tableaux);
 
-	        var _this3 = _possibleConstructorReturn(this, Object.getPrototypeOf(WatchList).call(this, props));
+	        var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(Tableaux).call(this, props));
 
-	        _this3.state = {
-	            pinned: [],
-	            watchlist: []
+	        _this.state = {
+	            dataList: [],
+	            results: []
 	        };
-	        return _this3;
+	        return _this;
 	    }
 
-	    _createClass(WatchList, [{
+	    _createClass(Tableaux, [{
 	        key: 'componentWillReceiveProps',
-	        value: function componentWillReceiveProps(props) {
-	            var pinned = this.state.pinned;
+	        value: function componentWillReceiveProps() {
 
-	            var results = props.data;
-	            var that = this;
-	            var r = [];
+	            var results = [];
+	            var rawResults = this.props.data;
 
-	            console.log("document.cookie", document.cookie);
+	            var rank = 0;
+	            var prev_score = "0";
 
-	            var pinnedStr = document.cookie;
+	            if (rawResults) {
+	                for (var i = 0; i < rawResults.length; i++) {
+	                    if (rawResults[i]["score"] != prev_score) {
+	                        rank++;
+	                    }
+	                    var row = {
+	                        "rank": rank,
+	                        "ID": rawResults[i]["ID"],
+	                        "name": rawResults[i]["name"],
+	                        "score": rawResults[i]["score"]
+	                    };
+	                    prev_score = rawResults[i]["score"];
 
-	            if (pinnedStr.length > 0) {
-	                that.setState({
-	                    pinned: pinnedStr.split(',')
-	                });
-	            } else {
-	                that.setState({
-	                    pinned: [],
-	                    watchlist: []
-	                });
+	                    results.push(row);
+	                }
 	            }
 
-	            if (pinned.length > 0 && results.length > 0) {
-
-	                results.forEach(function (climber) {
-	                    var climberID = climber.ID;
-
-	                    pinned.forEach(function (pinnedClimber) {
-	                        if (climberID === pinnedClimber) {
-	                            var row = {
-	                                ID: climber.ID,
-	                                detail: climber.detail,
-	                                name: climber.name,
-	                                score: climber.score,
-	                                category: climber.category,
-	                                ranking: climber.rank,
-	                                remove: climber.ID
-	                            };
-	                            r.push(row);
-	                        }
-	                    });
-	                });
-
-	                this.setState({
-	                    watchlist: r
-	                });
-	            }
+	            this.setState({ results: results });
 	        }
 	    }, {
 	        key: 'render',
 	        value: function render() {
-	            var watchlist = this.state.watchlist;
+
+	            var that = this;
+	            var results = this.state.results;
 
 
-	            return React.createElement(
-	                'div',
-	                null,
-	                React.createElement(Griddle, { results: watchlist,
-	                    showFilter: true,
-	                    initialSort: 'building_name',
-	                    tableClassName: 'piOverviewTable',
-	                    columns: ["ID", "name", "score", "category", "ranking", "remove"],
-	                    columnMetadata: tableMetaData,
-	                    rowMetaData: rowMetaData })
-	            );
+	            var currentlySelected = ["rank", "ID", "name", "score"];
+
+	            var findStuff = $('#bfg').find('table > thead > tr > th > span');
+	            if (findStuff.length > 0) {
+	                currentlySelected = [];
+	                for (var i = 0; i < findStuff.length; i++) {
+	                    currentlySelected.push(columnDisplayName[findStuff[i].innerHTML]);
+	                }
+	            }
+
+	            return React.createElement(Griddle, { results: results, columnMetadata: tableMetaData, tableClassName: 'table', showFilter: true, columns: currentlySelected, resultsPerPage: 20, showSettings: false });
 	        }
 	    }]);
 
-	    return WatchList;
+	    return Tableaux;
 	}(React.Component);
 
-	module.exports = (0, _reactRedux.connect)()(WatchList);
+	module.exports = Tableaux;
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(9)))
 
 /***/ },
 /* 447 */
@@ -61464,216 +61754,6 @@
 /* 644 */
 /***/ function(module, exports, __webpack_require__) {
 
-	/* WEBPACK VAR INJECTION */(function($) {'use strict';
-
-	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-	var React = __webpack_require__(14);
-	var Griddle = __webpack_require__(447);
-	var axios = __webpack_require__(247);
-	var FontAwesome = __webpack_require__(420);
-
-	var WatchComponent = function (_React$Component) {
-	    _inherits(WatchComponent, _React$Component);
-
-	    function WatchComponent(props) {
-	        _classCallCheck(this, WatchComponent);
-
-	        return _possibleConstructorReturn(this, Object.getPrototypeOf(WatchComponent).call(this, props));
-	    }
-
-	    _createClass(WatchComponent, [{
-	        key: 'arrNoDupe',
-	        value: function arrNoDupe(a) {
-	            var temp = {};
-	            for (var i = 0; i < a.length; i++) {
-	                temp[a[i]] = true;
-	                var r = [];
-	                for (var k in temp) {
-	                    r.push(k);
-	                }
-	            }
-
-	            return r.join();
-	        }
-	    }, {
-	        key: 'handleClick',
-	        value: function handleClick(data) {
-
-	            var originalShizz = document.cookie;
-	            var temp = '';
-
-	            if (originalShizz.length > 0) {
-	                var pinned = originalShizz + ',' + data.ID;
-	                temp = this.arrNoDupe(pinned.split(','));
-	            } else {
-	                temp = data.ID;
-	            }
-
-	            document.cookie = temp;
-	        }
-	    }, {
-	        key: 'render',
-	        value: function render() {
-	            var _this2 = this;
-
-	            // console.log("this.props.data" ,this.props);
-	            return React.createElement(
-	                'div',
-	                { id: 'unpin-btn', className: 'sensorBlock remove', onClick: function onClick() {
-	                        return _this2.handleClick(_this2.props.rowData);
-	                    } },
-	                'Pin'
-	            );
-	        }
-	    }]);
-
-	    return WatchComponent;
-	}(React.Component);
-
-	;
-
-	var tableMetaData = [{
-	    "columnName": "rank",
-	    "order": 1,
-	    "locked": true,
-	    "visible": true,
-	    "displayName": "Rank",
-	    "sortable": true
-	}, {
-	    "columnName": "ID",
-	    "order": 2,
-	    "locked": false,
-	    "visible": true,
-	    "sortable": true,
-	    "displayName": "ID"
-	}, {
-	    "columnName": "name",
-	    "order": 3,
-	    "locked": false,
-	    "visible": true,
-	    "sortable": true,
-	    "displayName": "Name"
-	}, {
-	    "columnName": "detail",
-	    "order": 4,
-	    "locked": false,
-	    "visible": true,
-	    "sortable": true,
-	    "displayName": "Detail"
-	}, {
-	    "columnName": "score",
-	    "order": 5,
-	    "locked": false,
-	    "visible": true,
-	    "sortable": true,
-	    "displayName": "Score"
-	}, {
-	    "columnName": "actions",
-	    "order": 6,
-	    "locked": false,
-	    "visible": true,
-	    "sortable": true,
-	    "displayName": "Actions",
-	    "customComponent": WatchComponent
-	}];
-
-	var columnDisplayName = {
-	    "Rank": "rank",
-	    "ID": "ID",
-	    "Name": "name",
-	    "Detail": "detail",
-	    "Actions": "actions",
-	    "Score": "score"
-	};
-
-	var Tableaux = function (_React$Component2) {
-	    _inherits(Tableaux, _React$Component2);
-
-	    function Tableaux(props) {
-	        _classCallCheck(this, Tableaux);
-
-	        var _this3 = _possibleConstructorReturn(this, Object.getPrototypeOf(Tableaux).call(this, props));
-
-	        _this3.state = {
-	            dataList: [],
-	            results: []
-	        };
-	        return _this3;
-	    }
-
-	    _createClass(Tableaux, [{
-	        key: 'componentWillReceiveProps',
-	        value: function componentWillReceiveProps() {
-
-	            var results = [];
-	            var rawResults = this.props.data;
-
-	            var rank = 0;
-	            var prev_score = "0";
-	            // to do
-	            // check for last result;
-
-	            if (rawResults) {
-	                // console.log(rawResults);
-	                for (var i = 0; i < rawResults.length; i++) {
-	                    if (rawResults[i]["score"] != prev_score) {
-	                        rank++;
-	                    }
-	                    var row = {
-	                        "rank": rank,
-	                        "ID": rawResults[i]["ID"],
-	                        "name": rawResults[i]["name"],
-	                        "detail": rawResults[i]["detail"],
-	                        "score": rawResults[i]["score"],
-	                        "actions": rawResults[i]["ID"]
-	                    };
-	                    prev_score = rawResults[i]["score"];
-
-	                    results.push(row);
-	                }
-	            }
-
-	            this.setState({ results: results });
-	        }
-	    }, {
-	        key: 'render',
-	        value: function render() {
-
-	            var that = this;
-	            var results = this.state.results;
-
-
-	            var currentlySelected = ["rank", "ID", "name", "score", "detail", "actions"];
-	            var findStuff = $('#bfg').find('table > thead > tr > th > span');
-	            // console.log(findStuff);
-	            if (findStuff.length > 0) {
-	                currentlySelected = [];
-	                for (var i = 0; i < findStuff.length; i++) {
-	                    currentlySelected.push(columnDisplayName[findStuff[i].innerHTML]);
-	                }
-	            }
-
-	            return React.createElement(Griddle, { results: results, columnMetadata: tableMetaData, tableClassName: 'table', showFilter: true, columns: currentlySelected, resultsPerPage: 20, showSettings: false });
-	        }
-	    }]);
-
-	    return Tableaux;
-	}(React.Component);
-
-	module.exports = Tableaux;
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(9)))
-
-/***/ },
-/* 645 */
-/***/ function(module, exports, __webpack_require__) {
-
 	'use strict';
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
@@ -61832,7 +61912,7 @@
 	module.exports = Results;
 
 /***/ },
-/* 646 */
+/* 645 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -61846,11 +61926,11 @@
 
 	var redux = _interopRequireWildcard(_redux);
 
-	var _reduxThunk = __webpack_require__(647);
+	var _reduxThunk = __webpack_require__(646);
 
 	var _reduxThunk2 = _interopRequireDefault(_reduxThunk);
 
-	var _reducers = __webpack_require__(648);
+	var _reducers = __webpack_require__(647);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -61876,7 +61956,7 @@
 	};
 
 /***/ },
-/* 647 */
+/* 646 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -61904,7 +61984,7 @@
 	exports['default'] = thunk;
 
 /***/ },
-/* 648 */
+/* 647 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -62042,16 +62122,16 @@
 	};
 
 /***/ },
-/* 649 */
+/* 648 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(650);
+	var content = __webpack_require__(649);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
-	var update = __webpack_require__(652)(content, {});
+	var update = __webpack_require__(651)(content, {});
 	if(content.locals) module.exports = content.locals;
 	// Hot Module Replacement
 	if(false) {
@@ -62068,10 +62148,10 @@
 	}
 
 /***/ },
-/* 650 */
+/* 649 */
 /***/ function(module, exports, __webpack_require__) {
 
-	exports = module.exports = __webpack_require__(651)();
+	exports = module.exports = __webpack_require__(650)();
 	// imports
 
 
@@ -62082,7 +62162,7 @@
 
 
 /***/ },
-/* 651 */
+/* 650 */
 /***/ function(module, exports) {
 
 	/*
@@ -62138,7 +62218,7 @@
 
 
 /***/ },
-/* 652 */
+/* 651 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*
@@ -62390,16 +62470,16 @@
 
 
 /***/ },
-/* 653 */
+/* 652 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(654);
+	var content = __webpack_require__(653);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
-	var update = __webpack_require__(652)(content, {});
+	var update = __webpack_require__(651)(content, {});
 	if(content.locals) module.exports = content.locals;
 	// Hot Module Replacement
 	if(false) {
@@ -62416,10 +62496,10 @@
 	}
 
 /***/ },
-/* 654 */
+/* 653 */
 /***/ function(module, exports, __webpack_require__) {
 
-	exports = module.exports = __webpack_require__(651)();
+	exports = module.exports = __webpack_require__(650)();
 	// imports
 	exports.push([module.id, "@import url(http://fonts.googleapis.com/css?family=Roboto:300,400);", ""]);
 	exports.push([module.id, "@import url(https://fonts.googleapis.com/css?family=Pathway+Gothic+One);", ""]);
@@ -62432,16 +62512,16 @@
 
 
 /***/ },
-/* 655 */
+/* 654 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(656);
+	var content = __webpack_require__(655);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
-	var update = __webpack_require__(652)(content, {});
+	var update = __webpack_require__(651)(content, {});
 	if(content.locals) module.exports = content.locals;
 	// Hot Module Replacement
 	if(false) {
@@ -62458,10 +62538,10 @@
 	}
 
 /***/ },
-/* 656 */
+/* 655 */
 /***/ function(module, exports, __webpack_require__) {
 
-	exports = module.exports = __webpack_require__(651)();
+	exports = module.exports = __webpack_require__(650)();
 	// imports
 	exports.push([module.id, "@import url(http://fonts.googleapis.com/css?family=Roboto:300,400);", ""]);
 	exports.push([module.id, "@import url(https://fonts.googleapis.com/css?family=Pathway+Gothic+One);", ""]);
@@ -62474,16 +62554,16 @@
 
 
 /***/ },
-/* 657 */
+/* 656 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(658);
+	var content = __webpack_require__(657);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
-	var update = __webpack_require__(652)(content, {});
+	var update = __webpack_require__(651)(content, {});
 	if(content.locals) module.exports = content.locals;
 	// Hot Module Replacement
 	if(false) {
@@ -62500,10 +62580,10 @@
 	}
 
 /***/ },
-/* 658 */
+/* 657 */
 /***/ function(module, exports, __webpack_require__) {
 
-	exports = module.exports = __webpack_require__(651)();
+	exports = module.exports = __webpack_require__(650)();
 	// imports
 
 
@@ -62514,16 +62594,16 @@
 
 
 /***/ },
-/* 659 */
+/* 658 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(660);
+	var content = __webpack_require__(659);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
-	var update = __webpack_require__(652)(content, {});
+	var update = __webpack_require__(651)(content, {});
 	if(content.locals) module.exports = content.locals;
 	// Hot Module Replacement
 	if(false) {
@@ -62540,10 +62620,10 @@
 	}
 
 /***/ },
-/* 660 */
+/* 659 */
 /***/ function(module, exports, __webpack_require__) {
 
-	exports = module.exports = __webpack_require__(651)();
+	exports = module.exports = __webpack_require__(650)();
 	// imports
 	exports.push([module.id, "@import url(http://fonts.googleapis.com/css?family=Roboto:300,400);", ""]);
 	exports.push([module.id, "@import url(https://fonts.googleapis.com/css?family=Pathway+Gothic+One);", ""]);
@@ -62556,16 +62636,16 @@
 
 
 /***/ },
-/* 661 */
+/* 660 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(662);
+	var content = __webpack_require__(661);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
-	var update = __webpack_require__(652)(content, {});
+	var update = __webpack_require__(651)(content, {});
 	if(content.locals) module.exports = content.locals;
 	// Hot Module Replacement
 	if(false) {
@@ -62582,10 +62662,10 @@
 	}
 
 /***/ },
-/* 662 */
+/* 661 */
 /***/ function(module, exports, __webpack_require__) {
 
-	exports = module.exports = __webpack_require__(651)();
+	exports = module.exports = __webpack_require__(650)();
 	// imports
 
 
@@ -62596,16 +62676,16 @@
 
 
 /***/ },
-/* 663 */
+/* 662 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(664);
+	var content = __webpack_require__(663);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
-	var update = __webpack_require__(652)(content, {});
+	var update = __webpack_require__(651)(content, {});
 	if(content.locals) module.exports = content.locals;
 	// Hot Module Replacement
 	if(false) {
@@ -62622,10 +62702,10 @@
 	}
 
 /***/ },
-/* 664 */
+/* 663 */
 /***/ function(module, exports, __webpack_require__) {
 
-	exports = module.exports = __webpack_require__(651)();
+	exports = module.exports = __webpack_require__(650)();
 	// imports
 
 
